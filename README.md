@@ -1,2 +1,2 @@
 # docker-tag-options
-cron ssh nfs options
+edit FROM ....
