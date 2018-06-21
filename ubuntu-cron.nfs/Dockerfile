@@ -1,6 +1,6 @@
-FROM babim/phpbase:7fpm
+FROM babim/apache
 
-RUN  apt-get update && apt-get install -y cron nfs-common
+RUN apt-get update && apt-get install -y cron nfs-common
 
 RUN apt-get clean && \
     apt-get autoclean && \

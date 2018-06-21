@@ -1,6 +1,6 @@
-FROM babim/nginx:php7.2
+FROM babim/apache
 
-RUN apt-get update && apt-get install -y openssh-server cron
+RUN apt-get update && apt-get install -y openssh-server nfs-common
 
 RUN mkdir /var/run/sshd
 # set password root is root
@@ -24,5 +24,5 @@ RUN apt-get clean && \
     
 ADD runssh.sh /runssh.sh
 RUN chmod +x /runssh.sh
-COPY runcron.sh /runcron.sh
-RUN chmod +x /runcron.sh
+COPY mountnfs.sh /mountnfs.sh
+RUN chmod +x /mountnfs.sh

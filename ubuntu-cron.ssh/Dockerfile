@@ -1,6 +1,6 @@
-FROM babim/phpbase:7fpm
+FROM babim/apache
 
-RUN apt-get update && apt-get install -y openssh-server nfs-common
+RUN apt-get update && apt-get install -y openssh-server cron
 
 RUN mkdir /var/run/sshd
 # set password root is root
@@ -24,5 +24,5 @@ RUN apt-get clean && \
     
 ADD runssh.sh /runssh.sh
 RUN chmod +x /runssh.sh
-COPY mountnfs.sh /mountnfs.sh
-RUN chmod +x /mountnfs.sh
+COPY runcron.sh /runcron.sh
+RUN chmod +x /runcron.sh

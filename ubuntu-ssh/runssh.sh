@@ -1,14 +1,4 @@
-#!/bin/sh
-
-if [ ! -f "/etc/ssh/ssh_host_rsa_key" ]; then
-	# generate fresh rsa key
-	ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
-fi
-if [ ! -f "/etc/ssh/ssh_host_dsa_key" ]; then
-	# generate fresh dsa key
-	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
-fi
-
+#!/bin/bash
 # SSH
 if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
     echo "=> Found authorized keys"
@@ -33,12 +23,7 @@ fi
 SSHPASS=${SSHPASS:-root}
 echo "root:$SSHPASS" | chpasswd
 
-#prepare run dir
-if [ ! -d "/var/run/sshd" ]; then
-  mkdir -p /var/run/sshd
-fi
-
-# check other script and run ssh
-/usr/sbin/sshd
+# run ssh
+service ssh start
 
 exec "$@"

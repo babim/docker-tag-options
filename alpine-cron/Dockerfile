@@ -1,4 +1,4 @@
-FROM babim/mariadb:10.1.alpine
+FROM babim/apache:alpine
 
 RUN mkdir -p /etc-start/periodic /etc-start/periodic && \
     cp -R /etc/crontabs/* /etc-start/crontabs && cp -R /etc/periodic/* /etc-start/periodic 

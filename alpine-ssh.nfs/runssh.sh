@@ -1,4 +1,14 @@
-#!/bin/bash
+#!/bin/sh
+
+if [ ! -f "/etc/ssh/ssh_host_rsa_key" ]; then
+	# generate fresh rsa key
+	ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+fi
+if [ ! -f "/etc/ssh/ssh_host_dsa_key" ]; then
+	# generate fresh dsa key
+	ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+fi
+
 # SSH
 if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
     echo "=> Found authorized keys"
@@ -23,9 +33,12 @@ fi
 SSHPASS=${SSHPASS:-root}
 echo "root:$SSHPASS" | chpasswd
 
-# check other script and run ssh
-if [ -f "/boot.sh" ] && [ -f "/first.sh" ] && [ -f "/firstrun.sh" ] && [ ! -f "/start.sh" ] && [ -f "/starting.sh" ] && [ -f "/startup.sh" ] && [ -f "/run.sh" ] && [ -f "/entry.sh" ] && [ -f "/entrypoint.sh" ] && [ -f "/entry-point.sh" ] && [ -f "/docker-entrypoint.sh" ]; then
-    service ssh start
+#prepare run dir
+if [ ! -d "/var/run/sshd" ]; then
+  mkdir -p /var/run/sshd
 fi
+
+# check other script and run ssh
+/usr/sbin/sshd
 
 exec "$@"
