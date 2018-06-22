@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #  ____        _     _
 # | __ )  __ _| |__ (_)_ __ ___
 # |  _ \ / _` | '_ \| | '_ ` _  \
@@ -7,12 +7,15 @@
 
 ####################################################
 # check os
+echo 'Check OS'
 if [ -f /etc/redhat-release ]; then
-  OSRUN=redhat
+export OSRUN=redhat
 elif [ -f /etc/lsb-release ]; then
-  OSRUN=ubuntu
+export OSRUN=ubuntu
 elif [ -f /etc/alpine-release ]; then
-  OSRUN=alpine
+export OSRUN=alpine
+else
+    exit
 fi
 
 ####################################################
@@ -42,7 +45,7 @@ fi
 ####################################################
 # create static environment group command
 ssh-create() {
-    if [ ! -f "/SSH" ]; then 
+    if [ ! -f "/SSH" ]; then
     os-update
     ssh-start
     os-clean
@@ -99,67 +102,69 @@ upgrade-remove() {
 # detect run group
 synology-remove() {
     if [ -f "/SYNOLOGY" ]; then rm -f /SYNOLOGY; fi
-    if [ OSRUN=redhat ]; then redhat-synology-remove; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-synology-remove; fi
-    if [ OSRUN=alpine ]; then alpine-synology-remove; fi
+    if [ $OSRUN = redhat ]; then redhat-synology-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-synology-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-synology-remove; fi
 }
 os-clean() {
-    if [ OSRUN=redhat ]; then redhat-clean; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-clean; fi
-    if [ OSRUN=alpine ]; then alpine-clean; fi
+    if [ $OSRUN = redhat ]; then redhat-clean; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-clean; fi
+    if [ $OSRUN = alpine ]; then alpine-clean; fi
 }
 ssh-start() {
-    if [ OSRUN=redhat ]; then redhat-ssh-start; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-ssh-start; fi
-    if [ OSRUN=alpine ]; then alpine-ssh-start; fi
+    if [ $OSRUN = redhat ]; then redhat-ssh-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-ssh-start; fi
+    if [ $OSRUN = alpine ]; then alpine-ssh-start; fi
 }
 ssh-run() {
-    if [ OSRUN=redhat ]; then redhat-ssh; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-ssh; fi
-    if [ OSRUN=alpine ]; then alpine-ssh; fi
+    if [ $OSRUN = redhat ]; then redhat-ssh; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-ssh; fi
+    if [ $OSRUN = alpine ]; then alpine-ssh; fi
 }
 nfs-start() {
-    if [ OSRUN=redhat ]; then redhat-nfs-start; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-nfs-start; fi
-    if [ OSRUN=alpine ]; then alpine-nfs-start; fi
+    if [ $OSRUN = redhat ]; then redhat-nfs-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-nfs-start; fi
+    if [ $OSRUN = alpine ]; then alpine-nfs-start; fi
 }
 nfs-run() {
-    if [ OSRUN=redhat ]; then redhat-nfs; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-nfs; fi
-    if [ OSRUN=alpine ]; then alpine-nfs; fi
+    if [ $OSRUN = redhat ]; then redhat-nfs; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-nfs; fi
+    if [ $OSRUN = alpine ]; then alpine-nfs; fi
 }
 cron-start() {
-    if [ OSRUN=redhat ]; then redhat-cron-start; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-cron-start; fi
-    if [ OSRUN=alpine ]; then alpine-cron-start; fi
+    if [ $OSRUN = redhat ]; then redhat-cron-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-cron-start; fi
+    if [ $OSRUN = alpine ]; then alpine-cron-start; fi
 }
 cron-run() {
-    if [ OSRUN=redhat ]; then redhat-cron; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-cron; fi
-    if [ OSRUN=alpine ]; then alpine-cron; fi
+    if [ $OSRUN = redhat ]; then redhat-cron; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-cron; fi
+    if [ $OSRUN = alpine ]; then alpine-cron; fi
 }
 synology-start() {
-    if [ OSRUN=redhat ]; then redhat-synology-start; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-synology-start; fi
-    if [ OSRUN=alpine ]; then alpine-synology-start; fi
+    if [ $OSRUN = redhat ]; then redhat-synology-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-synology-start; fi
+    if [ $OSRUN = alpine ]; then alpine-synology-start; fi
 }
 os-upgrade() {
-    if [ OSRUN=redhat ]; then redhat-upgrade; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-upgrade; fi
-    if [ OSRUN=alpine ]; then alpine-upgrade; fi
+    if [ $OSRUN = redhat ]; then redhat-upgrade; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-upgrade; fi
+    if [ $OSRUN = alpine ]; then alpine-upgrade; fi
 }
 os-update() {
-    if [ OSRUN=redhat ]; then redhat-update; fi
-    if [ OSRUN=ubuntu ]; then ubuntu-update; fi
-    if [ OSRUN=alpine ]; then alpine-update; fi
+    if [ $OSRUN = redhat ]; then redhat-update; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-update; fi
+    if [ $OSRUN = alpine ]; then alpine-update; fi
 }
 
 ####################################################
 # clean group command
 alpine-clean() {
+    echo 'Clean OS'
     rm -rf /var/cache/apk/
 }
 ubuntu-clean() {
+    echo 'Clean OS'
     apt-get clean && \
     apt-get autoclean && \
     apt-get autoremove -y && \
@@ -169,6 +174,7 @@ ubuntu-clean() {
     rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
 }
 redhat-clean() {
+    echo 'Clean OS'
     yum clean all && \
     rm -rf /var/cache/yum && \
     rm -rf /var/tmp/yum-*
@@ -177,25 +183,31 @@ redhat-clean() {
 ####################################################
 # update group command
 alpine-update() {
+    echo 'Update OS'
     echo 'no need update'
     #apk update
 }
 ubuntu-update() {
+    echo 'Update OS'
     apt-get update
 }
 redhat-update() {
+    echo 'Update OS'
     echo 'no need update'
 }
 
 ####################################################
 # upgrade group command
 alpine-upgrade() {
-    apk upgrade
+    echo 'Upgrade OS'
+    apk --no-cache upgrade
 }
 ubuntu-upgrade() {
+    echo 'Upgrade OS'
     apt-get upgrade -y
 }
 redhat-upgrade() {
+    echo 'Upgrade OS'
     yum update -y
 }
 
