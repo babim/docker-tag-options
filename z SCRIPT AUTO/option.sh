@@ -50,6 +50,10 @@ ssh-create() {
     ssh-start
     os-clean
     touch /SSH
+    exit
+    else
+    ssh-run
+    exit
     fi
 }
 cron-create() {
@@ -58,6 +62,10 @@ cron-create() {
     cron-start
     os-clean
     touch /CRON
+    exit
+    else
+    cron-run
+    exit
     fi
 }
 nfs-create() {
@@ -66,12 +74,19 @@ nfs-create() {
     ssh-start
     os-clean
     touch /NFS
+    exit
+    else
+    nfs-run
+    exit
     fi
 }
 synology-create() {
     if [ ! -f "/SYNOLOGY" ]; then
     synology-start
     touch /SYNOLOGY
+    exit
+    else
+    exit
     fi
 }
 upgrade-create() {
@@ -80,6 +95,9 @@ upgrade-create() {
     os-upgrade
     os-clean
     touch /UPGRADE
+    exit
+    else
+    exit
     fi
 }
 
@@ -332,18 +350,18 @@ alpine-synology-start() {
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
 }
-alpine-synology-remove() {
-# Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        deluser xfs && delgroup ${USER1} && \
-        addgroup -g 1023 ${USER1} && adduser -D -H -G ${USER1} -s /bin/false -u 1024 ${USER1}
-    fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        deluser xfs && delgroup ${USER2} && \
-        addgroup -g 66 ${USER2} && adduser -D -H -G ${USER2} -s /bin/false -u 66 ${USER2}
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
-    fi
-}
+# alpine-synology-remove() {
+# # Checking user account
+#     if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         deluser xfs && delgroup ${USER1} && \
+#         addgroup -g 1023 ${USER1} && adduser -D -H -G ${USER1} -s /bin/false -u 1024 ${USER1}
+#     fi
+#     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         deluser xfs && delgroup ${USER2} && \
+#         addgroup -g 66 ${USER2} && adduser -D -H -G ${USER2} -s /bin/false -u 66 ${USER2}
+#         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+#     fi
+# }
 
 redhat-cron-start() {
     yum install -y cronie
@@ -397,15 +415,15 @@ redhat-synology-start() {
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
 }
-redhat-synology-remove() {
-    # Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
-    fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
-    fi
-}
+# redhat-synology-remove() {
+#     # Checking user account
+#     if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
+#     fi
+#     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+#     fi
+# }
 
 ubuntu-cron-start() {
     # install
@@ -471,15 +489,15 @@ ubuntu-synology-start() {
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
 }
-ubuntu-synology-remove() {
-    # Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
-    fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
-    fi
-}
+# ubuntu-synology-remove() {
+#     # Checking user account
+#     if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
+#     fi
+#     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+#         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+#     fi
+# }
 
 ####################################################
 # START PROGRAMS
@@ -487,17 +505,14 @@ ubuntu-synology-remove() {
 # ssh
     if [ SSHOPTION=true ]; then
         ssh-create
-        ssh-run
     fi
 # nfs
     if [ NFSOPTION=true ]; then
         nfs-create
-        nfs-run
     fi
 # cron
     if [ CRONOPTION=true ]; then
        cron-create
-       cron-run
     fi
 # synology
     if [ SYNOLOGYOPTION=true ]; then
