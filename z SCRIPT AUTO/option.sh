@@ -50,6 +50,7 @@ ssh-create() {
     ssh-start
     os-clean
     touch /SSH
+    ssh-run
     exit
     else
     ssh-run
@@ -62,6 +63,7 @@ cron-create() {
     cron-start
     os-clean
     touch /CRON
+    cron-run
     exit
     else
     cron-run
@@ -74,6 +76,7 @@ nfs-create() {
     nfs-start
     os-clean
     touch /NFS
+    nfs-run
     exit
     else
     nfs-run
@@ -145,9 +148,9 @@ nfs-start() {
     if [ $OSRUN = alpine ]; then alpine-nfs-start; fi
 }
 nfs-run() {
-    if [ $OSRUN = redhat ]; then redhat-nfs; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-nfs; fi
-    if [ $OSRUN = alpine ]; then alpine-nfs; fi
+    if [ $OSRUN = redhat ]; then nfs-mount; fi
+    if [ $OSRUN = ubuntu ]; then nfs-mount; fi
+    if [ $OSRUN = alpine ]; then nfs-mount; fi
 }
 cron-start() {
     if [ $OSRUN = redhat ]; then redhat-cron-start; fi
@@ -251,7 +254,7 @@ alpine-nfs-start() {
     apk add --no-cache nfs-utils
 }
 
-nfs() {
+nfs-mount() {
     # mount nfs
     FSTYPE2=${FSTYPE2:-$FSTYPE}
     MOUNT_OPTIONS2=${MOUNT_OPTIONS2:-$MOUNT_OPTIONS}
