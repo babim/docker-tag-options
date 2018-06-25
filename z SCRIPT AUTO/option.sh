@@ -71,7 +71,7 @@ cron-create() {
 nfs-create() {
     if [ ! -f "/NFS" ]; then
     os-update
-    ssh-start
+    nfs-start
     os-clean
     touch /NFS
     exit
