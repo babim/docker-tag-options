@@ -15,7 +15,7 @@ export OSRUN=ubuntu
 elif [ -f /etc/alpine-release ]; then
 export OSRUN=alpine
 else
-    exit
+    quit_command
 fi
 
 ####################################################
@@ -30,7 +30,7 @@ export MYSQLUSEROPTION=${MYSQLUSER:-mysql}
 export USER1=${USER1:-$WWWUSER}
 export USER2=${USER2:-$MYSQLUSER}
 # environment set true all
-if [ FULLOPTION=true ]; then
+if [ "$FULLOPTION" = "true" ]; then
 export SSHOPTION=${SSH:-true}
 export CRONOPTION=${CRON:-true}
 export NFSOPTION=${NFS:-true}
@@ -51,10 +51,10 @@ ssh-create() {
     os-clean
     touch /SSH
     ssh-run
-    exit
+    quit_command
     else
     ssh-run
-    exit
+    quit_command
     fi
 }
 cron-create() {
@@ -64,10 +64,10 @@ cron-create() {
     os-clean
     touch /CRON
     cron-run
-    exit
+    quit_command
     else
     cron-run
-    exit
+    quit_command
     fi
 }
 nfs-create() {
@@ -77,19 +77,19 @@ nfs-create() {
     os-clean
     touch /NFS
     nfs-run
-    exit
+    quit_command
     else
     nfs-run
-    exit
+    quit_command
     fi
 }
 synology-create() {
     if [ ! -f "/SYNOLOGY" ]; then
     synology-start
     touch /SYNOLOGY
-    exit
+    quit_command
     else
-    exit
+    quit_command
     fi
 }
 upgrade-create() {
@@ -98,9 +98,9 @@ upgrade-create() {
     os-upgrade
     os-clean
     touch /UPGRADE
-    exit
+    quit_command
     else
-    exit
+    quit_command
     fi
 }
 
@@ -502,27 +502,32 @@ ubuntu-synology-start() {
 #     fi
 # }
 
+quit_command() {
+# QUIT
+    exec "$@"
+}
+
 ####################################################
 # START PROGRAMS
 ####################################################
 # ssh
-    if [ SSHOPTION=true ]; then
+    if [ "$SSHOPTION" = "true" ]; then
         ssh-create
     fi
 # nfs
-    if [ NFSOPTION=true ]; then
+    if [ "$NFSOPTION" = "true" ]; then
         nfs-create
     fi
 # cron
-    if [ CRONOPTION=true ]; then
+    if [ "$CRONOPTION" = "true" ]; then
        cron-create
     fi
 # synology
-    if [ SYNOLOGYOPTION=true ]; then
+    if [ "$SYNOLOGYOPTION" = "true" ]; then
        synology-create
     fi
 # upgrade
-    if [ UPGRADEOPTION=true ]; then
+    if [ "$UPGRADEOPTION" = "true" ]; then
        upgrade-create
     fi
 
