@@ -495,8 +495,8 @@ redhat-ssh() {
         done
     fi
     # set password root is root
-    SSHPASS1=${SSHPASS:-root}
-    echo "root:$SSHPASS1" | chpasswd
+    SSHPASS=${SSHPASS:-root}
+    echo "root:$SSHPASS" | chpasswd
     # run sshd
     service sshd start
 }
@@ -699,6 +699,7 @@ quit_command() {
 # ssh
     # install
     if [ "$SSHOPTION" = "true" ]; then
+        echo "install SSH"
         ssh-create
     fi
     #remove
@@ -706,6 +707,7 @@ quit_command() {
 # nfs
     # install
     if [ "$NFSOPTION" = "true" ]; then
+        echo "install NFS"
         nfs-create
     fi
     #remove
@@ -713,6 +715,7 @@ quit_command() {
 # cron
     # install
     if [ "$CRONOPTION" = "true" ]; then
+       echo "install CRON"
        cron-create
     fi
     #remove
@@ -720,6 +723,7 @@ quit_command() {
 # synology
     # install
     if [ "$SYNOLOGYOPTION" = "true" ]; then
+       echo "setup SYNOLOGY environment"
        synology-create
     fi
     #remove
@@ -727,6 +731,7 @@ quit_command() {
 # upgrade
     # install
     if [ "$UPGRADEOPTION" = "true" ]; then
+       echo "Upgrade OS"
        upgrade-create
     fi
     #remove
@@ -734,6 +739,7 @@ quit_command() {
 # pagespeed
     # install
     if [ "$PAGESPEEDOPTION" = "true" ]; then
+       echo "install PAGESPEED"
        pagespeed-create
     fi
     #remove
@@ -741,6 +747,7 @@ quit_command() {
 # modsecurity
     # install
     if [ "$MODSECURITYOPTION" = "true" ]; then
+       echo "install apache MOD-SECURITY"
        modsecurity-create
     fi
     #remove
