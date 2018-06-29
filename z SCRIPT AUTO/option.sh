@@ -31,6 +31,7 @@ export USER1=${USER1:-$WWWUSER}
 export USER2=${USER2:-$MYSQLUSER}
 export PAGESPEEDOPTION=${PAGESPEED:-false}
 export MODSECURITYOPTION=${MODSECURITY:-false}
+export DNSOPTION=${DNS:-false}
 # environment set true all
 if [ "$FULLOPTION" = "true" ]; then
     export SSHOPTION=${SSH:-true}
@@ -752,7 +753,16 @@ quit_command() {
     fi
     #remove
     if [ "$SSHOPTION" = "false" ] && [ -f /MODSECURITY ]; then modsecurity-del; fi
-
+# DNS
+    # install
+    if [ "$DNS" = "google" ]; then
+       echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+    elif [ "$DNS" = "cloudflare" ]; then
+        echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+    elif [ "$DNS" = "true" ]; then
+        echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+        echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+    fi
 
 ####################################################
 # QUIT
