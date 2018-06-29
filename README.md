@@ -18,8 +18,21 @@ RUN apk add --no-cache wget bash && cd / && wget --no-check-certificate https://
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 ## Environment ssh, cron option
+
+#### SSH = SSH service for docker container
+#### SSHPASS = password for SSH service
+#### CRON = Crontab service for container
+#### NFS = NFS client mount for container (need full permission)
+#### SYNOLOGY = SYNOLOGY user ID
+#### UPGRADE = upgrade OS for container
+#### DNS = DNS google, cloudflare for this container
+#### FULLOPTION = all option above
+
+
 ```
 SSH=false
+SSHPASS=root (or you set)
+
 CRON=false
 NFS=false
 SYNOLOGY=false
@@ -27,6 +40,7 @@ UPGRADE=false
 WWWUSER=www-data
 MYSQLUSER=mysql
 FULLOPTION=true
+DNS=false
 ```
 
 ## NFS option

@@ -32,6 +32,8 @@ export USER2=${USER2:-$MYSQLUSER}
 export PAGESPEEDOPTION=${PAGESPEED:-false}
 export MODSECURITYOPTION=${MODSECURITY:-false}
 export DNSOPTION=${DNS:-false}
+export CLOUDFLARE=1.1.1.1
+export GOOGLE=8.8.8.8
 # environment set true all
 if [ "$FULLOPTION" = "true" ]; then
     export SSHOPTION=${SSH:-true}
@@ -41,6 +43,7 @@ if [ "$FULLOPTION" = "true" ]; then
     export UPGRADEOPTION=${UPGRADE:-true}
     export PAGESPEEDOPTION=${PAGESPEED:-true}
     export MODSECURITYOPTION=${MODSECURITY:-true}
+    export DNSOPTION=${DNS:-true}
 fi
 
 ####################################################
@@ -755,13 +758,13 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /MODSECURITY ]; then modsecurity-del; fi
 # DNS
     # install
-    if [ "$DNS" = "google" ]; then
-       echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-    elif [ "$DNS" = "cloudflare" ]; then
-        echo "nameserver 1.1.1.1" >> /etc/resolv.conf
-    elif [ "$DNS" = "true" ]; then
-        echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-        echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+    if [ "$DNSOPTION" = "google" ]; then
+       echo "nameserver $GOOGLE" >> /etc/resolv.conf
+    elif [ "$DNSOPTION" = "cloudflare" ]; then
+        echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
+    elif [ "$DNSOPTION" = "true" ]; then
+        echo "nameserver $GOOGLE" >> /etc/resolv.conf
+        echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
     fi
 
 ####################################################
