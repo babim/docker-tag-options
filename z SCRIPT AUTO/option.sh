@@ -15,7 +15,7 @@ elif [ -f /etc/lsb-release ]; then
 elif [ -f /etc/alpine-release ]; then
     export OSRUN=alpine
 else
-    quit_command
+    exit
 fi
 
 ####################################################
