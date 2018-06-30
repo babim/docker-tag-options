@@ -12,6 +12,8 @@ if [ -f /etc/redhat-release ]; then
     export OSRUN=redhat
 elif [ -f /etc/lsb-release ]; then
     export OSRUN=ubuntu
+elif [ -f /etc/debian_version ]; then
+    export OSRUN=ubuntu
 elif [ -f /etc/alpine-release ]; then
     export OSRUN=alpine
 else
