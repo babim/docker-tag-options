@@ -61,7 +61,7 @@ ssh-create() {
         os-clean
         touch /SSH
         ssh-run
-    else
+    elif [ -f "/SSH" ]; then
         ssh-run
     fi
 }
@@ -78,7 +78,7 @@ cron-create() {
         os-clean
         touch /CRON
         cron-run
-    else
+    elif [ -f "/CRON" ]; then
         cron-run
     fi
 }
@@ -95,7 +95,7 @@ nfs-create() {
         os-clean
         touch /NFS
         nfs-run
-    else
+    elif [ -f "/NFS" ]; then
         nfs-run
     fi
 }
@@ -109,7 +109,7 @@ synology-create() {
     if [ ! -f "/SYNOLOGY" ]; then
         synology-start
         touch /SYNOLOGY
-    else
+    elif [ -f "/SYNOLOGY" ]; then
         echo done
     fi
 }
@@ -123,7 +123,7 @@ upgrade-create() {
         os-upgrade
         os-clean
         touch /UPGRADE
-    else
+    elif [ -f "/UPGRADE" ]; then
         echo done
     fi
 }
@@ -139,7 +139,7 @@ pagespeed-create() {
         os-clean
         touch /PAGESPEED
         quit_command
-    else
+    elif [ -f "/PAGESPEED" ]; then
         quit_command
     fi
 }
@@ -150,13 +150,13 @@ pagespeed-del() {
 }
 
 modsecurity-create() {
-    if [ ! -f "/UPGRADE" ]; then
+    if [ ! -f "/MODSECURITY" ]; then
         os-update
         modsecurity-start
         os-clean
         touch /MODSECUROTY
         quit_command
-    else
+    elif [ -f "/MODSECURITY" ]; then
         quit_command
     fi
 }
