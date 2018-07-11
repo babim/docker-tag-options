@@ -59,7 +59,6 @@ ssh-create() {
         os-update
         ssh-start
         os-clean
-        touch /SSH
         ssh-run
     elif [ -f "/SSH" ]; then
         ssh-run
@@ -76,7 +75,6 @@ cron-create() {
         os-update
         cron-start
         os-clean
-        touch /CRON
         cron-run
     elif [ -f "/CRON" ]; then
         cron-run
@@ -93,7 +91,6 @@ nfs-create() {
         os-update
         nfs-start
         os-clean
-        touch /NFS
         nfs-run
     elif [ -f "/NFS" ]; then
         nfs-run
@@ -108,7 +105,6 @@ nfs-del() {
 synology-create() {
     if [ ! -f "/SYNOLOGY" ]; then
         synology-start
-        touch /SYNOLOGY
     elif [ -f "/SYNOLOGY" ]; then
         echo done
     fi
@@ -122,7 +118,6 @@ upgrade-create() {
         os-update
         os-upgrade
         os-clean
-        touch /UPGRADE
     elif [ -f "/UPGRADE" ]; then
         echo done
     fi
@@ -137,7 +132,6 @@ pagespeed-create() {
         os-update
         pagespeed-start
         os-clean
-        touch /PAGESPEED
         quit_command
     elif [ -f "/PAGESPEED" ]; then
         quit_command
@@ -154,7 +148,6 @@ modsecurity-create() {
         os-update
         modsecurity-start
         os-clean
-        touch /MODSECUROTY
         quit_command
     elif [ -f "/MODSECURITY" ]; then
         quit_command
@@ -320,14 +313,17 @@ redhat-update() {
 alpine-upgrade() {
     echo 'Upgrade OS'
     apk --no-cache upgrade
+    touch /UPGRADE
 }
 ubuntu-upgrade() {
     echo 'Upgrade OS'
     apt-get upgrade -y
+    touch /UPGRADE
 }
 redhat-upgrade() {
     echo 'Upgrade OS'
     yum update -y
+    touch /UPGRADE
 }
 
 ####################################################
@@ -338,6 +334,7 @@ redhat-upgrade() {
 alpine-cron-start() {
     mkdir -p /etc-start/periodic /etc-start/periodic && \
     cp -R /etc/crontabs/* /etc-start/crontabs && cp -R /etc/periodic/* /etc-start/periodic
+    touch /CRON
 }
 alpine-cron-remove() {
     echo "No need do anything"
@@ -356,6 +353,7 @@ alpine-nfs-start() {
     export MOUNT_OPTIONS=${MOUNT_OPTIONS:-nfsvers=4}
     export MOUNTPOINT=${MOUNTPOINT:-/mnt/nfs-1}
     apk add --no-cache nfs-utils
+    touch /NFS
 }
 alpine-nfs-remove() {
     apk del nfs-utils
@@ -369,6 +367,7 @@ alpine-ssh-start() {
     mkdir /var/run/sshd
     # allow root ssh
     sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+    touch /SSH
 }
 alpine-ssh-remove() {
     # remove ssh
@@ -425,6 +424,7 @@ alpine-synology-start() {
         addgroup -g 66 ${USER2} && adduser -D -H -G ${USER2} -s /bin/false -u 66 ${USER2}
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
+    touch /SYNOLOGY
 }
 alpine-synology-remove() {
 # Checking user account
@@ -437,6 +437,7 @@ alpine-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /PAGESPEED
 }
 alpine-pagespeed-remove() {
     echo "not found on alpine linux"
@@ -448,6 +449,7 @@ alpine-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /MODSECUROTY
 }
 alpine-modsecurity-remove() {
     echo "not found on alpine linux"
@@ -457,6 +459,7 @@ alpine-modsecurity-remove() {
 
 redhat-cron-start() {
     yum install -y cronie
+    touch /CRON
 }
 redhat-cron-remove() {
     yum remove -y cronie
@@ -468,6 +471,7 @@ redhat-cron() {
 
 redhat-nfs-start() {
     yum install -y nfs-utils
+    touch /NFS
 }
 redhat-nfs-remove() {
     yum remove -y nfs-utils
@@ -475,6 +479,7 @@ redhat-nfs-remove() {
 
 redhat-ssh-start() {
     yum install -y openssh-server
+    touch /SSH
 }
 redhat-ssh-remove() {
     yum remove -y openssh-server
@@ -515,6 +520,7 @@ redhat-synology-start() {
     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
+    touch /SYNOLOGY
 }
 redhat-synology-remove() {
     echo "No need do anything"
@@ -530,6 +536,7 @@ redhat-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /PAGESPEED
 }
 redhat-pagespeed-remove() {
     yum remove -y *pagespeed*
@@ -541,6 +548,7 @@ redhat-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /MODSECUROTY
 }
 redhat-modsecurity-remove() {
         yum remove -y mod_security
@@ -551,6 +559,7 @@ redhat-modsecurity-remove() {
 ubuntu-cron-start() {
     # install
     apt-get install -y cron
+    touch /CRON
 }
 ubuntu-cron-remove() {
     # remove
@@ -564,6 +573,7 @@ ubuntu-cron() {
 ubuntu-nfs-start() {
 # install
     apt-get install -y nfs-common
+    touch /NFS
 }
 ubuntu-nfs-remove() {
 # remove
@@ -582,6 +592,7 @@ ubuntu-ssh-start() {
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
     export NOTVISIBLE="in users profile"
     echo "export VISIBLE=now" >> /etc/profile
+    touch /SSH
 }
 ubuntu-ssh-remove() {
 # remove
@@ -623,6 +634,7 @@ ubuntu-synology-start() {
     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
+    touch /SYNOLOGY
 }
 ubuntu-synology-remove() {
     echo "No need do anything"
@@ -638,6 +650,7 @@ ubuntu-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /PAGESPEED
 }
 ubuntu-pagespeed-remove() {
         apt-get purge -y *pagespeed*
@@ -650,6 +663,7 @@ ubuntu-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
+    touch /MODSECUROTY
 }
 ubuntu-modsecurity-remove() {
         apt-get purge -y libapache2-mod-security2
