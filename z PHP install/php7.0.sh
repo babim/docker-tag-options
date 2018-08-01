@@ -34,6 +34,11 @@ if [[ -f /etc/lsb-release ]]; then
     echo "extension=oci8.so" > /etc/php/$PHP_VERSION/apache2/conf.d/30-oci8.ini && \
     echo "extension=oci8.so" > /etc/php/$PHP_VERSION/cli/conf.d/30-oci8.ini && \
     rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
+# download entrypoint
+	cd / && \
+	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
+	chmod 755 start.sh
+# remove packages
 	apt-get purge wget curl -y
 # prepare etc start
     [[ -d /etc-start ]] || rm -rf /etc-start && \
