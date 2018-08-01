@@ -35,7 +35,7 @@ if [[ -f /etc/lsb-release ]]; then
     ln -s /usr/local/instantclient_12_2 /usr/local/instantclient && \
     ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
-    echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.0.12 && \
+    echo 'instantclient,/usr/local/instantclient' | pecl install oci8 && \
     echo "extension=oci8.so" > /etc/php/$PHP_VERSION/apache2/conf.d/30-oci8.ini && \
     echo "extension=oci8.so" > /etc/php/$PHP_VERSION/cli/conf.d/30-oci8.ini && \
     rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
