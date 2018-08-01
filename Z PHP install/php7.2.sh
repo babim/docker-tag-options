@@ -1,19 +1,21 @@
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
-	[[ -d /etc/apache2 ]] || apt-get install -y --force-yes php7.2 libapache2-mod-php7.2 && \
-	[[ -d /etc/nginx ]] || apt-get install -y --force-yes php7.2-fpm && \
+# install PHP
+	export PHP_VERSION=7.2
+	[[ -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
+	[[ -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
     apt-get install -y --force-yes imagemagick curl \
-    php7.2-cgi php7.2-cli php7.2-phpdbg libphp7.2-embed php7.2-dev php-xdebug sqlite3 \
-    php7.2-curl php7.2-gd php7.2-imap php7.2-interbase php7.2-intl php7.2-ldap php7.2-readline php7.2-odbc \
-    php7.2-pgsql php7.2-pspell php7.2-recode php7.2-tidy php7.2-xmlrpc php7.2 php7.2-json php-all-dev php7.2-sybase \
-    php7.2-sqlite3 php7.2-mysql php7.2-opcache php7.2-bz2 php7.2-mbstring php7.2-zip php-apcu php-imagick \
+    php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
+    php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-readline php$PHP_VERSION-odbc \
+    php$PHP_VERSION-pgsql php$PHP_VERSION-pspell php$PHP_VERSION-recode php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION php$PHP_VERSION-json php-all-dev php$PHP_VERSION-sybase \
+    php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
     php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
-    php7.2-gmp php7.2-xml php7.2-bcmath php7.2-enchant php7.2-soap php7.2-xsl && \
+    php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl && \
     [[ -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 # install composer
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # fix shortcut bin
-    ln -sf /usr/bin/php7.2 /etc/alternatives/php
+    ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
 # install option for webapp (owncloud)
 	apt-get install -y --force-yes smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin
 # install oracle client extension
@@ -29,8 +31,8 @@ if [[ -f /etc/lsb-release ]]; then
     ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so && \
     ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus && \
     echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.0.12 && \
-    echo "extension=oci8.so" > /etc/php/7.2/apache2/conf.d/30-oci8.ini && \
-    echo "extension=oci8.so" > /etc/php/7.2/cli/conf.d/30-oci8.ini && \
+    echo "extension=oci8.so" > /etc/php/$PHP_VERSION/apache2/conf.d/30-oci8.ini && \
+    echo "extension=oci8.so" > /etc/php/$PHP_VERSION/cli/conf.d/30-oci8.ini && \
     rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
 	apt-get purge wget curl -y
 # prepare etc start
