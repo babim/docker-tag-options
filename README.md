@@ -1,6 +1,6 @@
-# docker-tag-options
-
 # Download option
+(C) AQ.jsc Viet Nam
+
 ## ubuntu/debian
 ```
 RUN apt-get update && \
@@ -18,7 +18,7 @@ RUN apk add --no-cache wget bash && cd / && wget --no-check-certificate https://
     chmod 755 /option.sh && apk del --purge wget
 ```
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+`if [ -f "/option.sh" ]; then /option.sh; fi`
 
 ## Environment ssh, cron option
 

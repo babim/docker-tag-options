@@ -1,3 +1,8 @@
+echo 'Check root'
+if [ "x$(id -u)" != 'x0' ]; then
+    echo 'Error: this script can only be executed by root'
+    exit 1
+fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 # install PHP
