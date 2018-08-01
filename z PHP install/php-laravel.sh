@@ -51,7 +51,7 @@ if [[ -f /etc/lsb-release ]]; then
 	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
 	chmod 755 start.sh
 # remove packages
-	apt-get purge wget curl -y
+	apt-get purge wget curl git -y
 # prepare etc start
     [[ -d /etc-start ]] || rm -rf /etc-start && \
     [[ -d /etc/nginx ]] || mkdir -p /etc-start/nginx && \
