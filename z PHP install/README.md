@@ -1,5 +1,5 @@
 # Install php
-(C) AQ.jsc Viet Nam
+(C) AQ.jsc Viet Nam (https://matmagoc.com)
 
 ## install depend
 `apt-get install curl bash -y`
