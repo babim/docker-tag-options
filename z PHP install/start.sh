@@ -158,9 +158,11 @@ fi
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # run PHP-fpm
+if [ ! -f "/PHPFPM" ]; then 
 if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6 -D; fi
 if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0 -D; fi
 if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1 -D; fi
 if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2 -D; fi
+fi
 
 exec "$@"
