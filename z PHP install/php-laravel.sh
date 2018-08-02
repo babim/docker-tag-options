@@ -7,8 +7,9 @@ echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 # install PHP
 	export PHP_VERSION=7.2
-	[[ -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
-	[[ -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
+	[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
+	[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
+	[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
     apt-get install -y --force-yes imagemagick curl \
     php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
     php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-readline php$PHP_VERSION-odbc \
@@ -16,7 +17,7 @@ if [[ -f /etc/lsb-release ]]; then
     php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
     php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
     php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl && \
-    [[ -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
+    [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 # install composer
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 # fix shortcut bin
@@ -50,18 +51,14 @@ if [[ -f /etc/lsb-release ]]; then
 	cd / && \
 	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
 	chmod 755 start.sh
-# remove packages
-	apt-get purge wget curl git -y
+# download entrypoint
+	cd / && \
+	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
+	chmod 755 start.sh
 # prepare etc start
-    [[ -d /etc-start ]] || rm -rf /etc-start && \
-    [[ -d /etc/nginx ]] || mkdir -p /etc-start/nginx && \
-    [[ -d /etc/nginx ]] || cp -R /etc/nginx/* /etc-start/nginx && \
-    [[ -d /etc/php ]] || mkdir -p /etc-start/php && \
-    [[ -d /etc/php ]] || cp -R /etc/php/* /etc-start/php && \
-    [[ -d /etc/apache2 ]] || mkdir -p /etc-start/apache2 && \
-    [[ -d /etc/apache2 ]] || cp -R /etc/apache2/* /etc-start/apache2 && \
-    [[ -d /var/www ]] || mkdir -p /etc-start/www && \
-    [[ -d /var/www ]] || cp -R /var/www/* /etc-start/www
+    curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
+# remove packages
+	apt-get purge wget curl -y
 else
     echo "Not support your OS"
     exit
