@@ -5,6 +5,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
+
 # install PHP
 	export PHP_VERSION=5.6
 	[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
@@ -48,6 +49,7 @@ if [[ -f /etc/lsb-release ]]; then
     curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
 # remove packages
 	apt-get purge wget curl -y
+
 else
     echo "Not support your OS"
     exit
