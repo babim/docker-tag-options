@@ -8,7 +8,7 @@ echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 
 # install ssl
-apt-get install -y --no-install-recommends wget apt-transport-https ca-certificates
+apt-get install -y --no-install-recommends wget apt-transport-https ca-certificates gpg
 
 # add gosu for easy step-down from root
 export GOSU_VERSION=1.10
