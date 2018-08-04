@@ -14,6 +14,7 @@ if [[ -f /etc/debian_version ]]; then
 groupadd -r mysql && useradd -r -g mysql mysql
 
 # install mysql over repo with major version
+export DEBIAN_FRONTEND=noninteractive
 wget -q --no-check-certificate "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O mysql.tar.gz \
 	&& mkdir /usr/local/mysql \
 	&& tar -xzf mysql.tar.gz -C /usr/local/mysql --strip-components=1 \

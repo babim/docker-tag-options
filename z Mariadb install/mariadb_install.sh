@@ -13,6 +13,7 @@ if [[ -f /etc/debian_version ]]; then
 groupadd -r mysql && useradd -r -g mysql mysql
 
 # install mysql over repo with major version
+export DEBIAN_FRONTEND=noninteractive
 echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \

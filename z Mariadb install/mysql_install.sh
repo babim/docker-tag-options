@@ -15,6 +15,7 @@ groupadd -r mysql && useradd -r -g mysql mysql
 
 echo "deb http://repo.mysql.com/apt/debian/ $OSDEB mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 
+export DEBIAN_FRONTEND=noninteractive
 # the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
 # also, we set debconf keys to make APT a little quieter
 { \
