@@ -5,7 +5,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 
 echo 'Check OS'
-if [[ -f /etc/lsb-release ]]; then
+if [[ -f /etc/debian_version ]]; then
 
 # install ssl
 apt-get install -y --no-install-recommends wget apt-transport-https ca-certificates

@@ -4,7 +4,7 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
-if [[ -f /etc/lsb-release ]]; then
+if [[ -f /etc/debian_version ]]; then
 
 # set version
 #export MYSQL_MAJOR=5.5
