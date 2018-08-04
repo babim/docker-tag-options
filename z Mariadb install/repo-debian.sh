@@ -20,15 +20,25 @@ set -ex; \
 	gosu nobody true
 
 # add repo Mariadb
-export GPG_KEYS="199369E5404BD5FC7D2FE43BCBCB082A1BB943DB;430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A;4D1BB29D63D98E422B2113B19334A25F8507EFA5"
 set -ex; \
+	key='199369E5404BD5FC7D2FE43BCBCB082A1BB943DB'; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-	done; \
-	gpg --export $GPG_KEYS > /etc/apt/trusted.gpg.d/mariadb.gpg; \
-	rm -r "$GNUPGHOME"; \
-	apt-key list
+	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
+	rm -rf "$GNUPGHOME"; \
+	apt-key list > /dev/null
+	key='430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A'; \
+	export GNUPGHOME="$(mktemp -d)"; \
+	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
+	rm -rf "$GNUPGHOME"; \
+	apt-key list > /dev/null
+	key='4D1BB29D63D98E422B2113B19334A25F8507EFA5'; \
+	export GNUPGHOME="$(mktemp -d)"; \
+	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
+	rm -rf "$GNUPGHOME"; \
+	apt-key list > /dev/null
 
 # add Percona's repo for xtrabackup (which is useful for Galera)
 echo "deb https://repo.percona.com/apt $OSDEB main" > /etc/apt/sources.list.d/percona.list \
