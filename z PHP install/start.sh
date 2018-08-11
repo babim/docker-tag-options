@@ -1,13 +1,17 @@
 #!/bin/bash -e
 export TERM=xterm
 
+if [ -d "/etc-start/apache2" ];then
 # copy config apache
 if [ -d "/etc/apache2" ]; then
 if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi
 fi
+fi
 
+if [ -d "/start/nginx" ];then
 # copy config nginx
 if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
+fi
 
 # copy default www
 if [ -d "/var/www" ]; then
@@ -72,17 +76,21 @@ fi
 agid=${agid:-$auid}
 auser=${auser:-www-data}
 
-	# create folder
+	# set nginx
+	if [ -d "/etc/nginx" ]; then
+	[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx
+	[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
 	[[ ! -d /var/cache/nginx ]] || chown -R $auser /var/cache/nginx
 	[[ ! -d /var/log/nginx ]] || chown -R $auser /var/log/nginx
+	fi
 
 if [[ -z "${auid}" ]]; then
   echo "start"
 elif [[ "$auid" = "0" ]] || [[ "$aguid" == "0" ]]; then
 	echo "run in user root"
 	export auser=root
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
 	#Set php user
 if [ -d "/etc/php" ]; then
 if [ -z "`ls /etc/php`" ]; then 
@@ -118,8 +126,8 @@ if [ -z "`ls /etc/php`" ]; then
 fi
 fi
 
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
 	# usermod alpine
 		#deluser $auser && delgroup $auser
 		#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
@@ -128,8 +136,8 @@ fi
 		groupmod -g $agid $auser
 else
         echo "user does not exist"
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
-	[[ -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
 	# create user alpine
 	#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
 	# create user ubuntu/debian
