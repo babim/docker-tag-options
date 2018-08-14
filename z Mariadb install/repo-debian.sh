@@ -66,8 +66,6 @@ mkdir /docker-entrypoint-initdb.d
 # install "pwgen" for randomizing passwords
 apt-get install -y --no-install-recommends pwgen
 
-if [[ -f /etc/debian_version ]]; then
-
 # set version
 #export MARIADB_MAJOR=10.0
 
