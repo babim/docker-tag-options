@@ -76,7 +76,7 @@ groupadd -r mysql && useradd -r -g mysql mysql
 
 # install mysql over repo with major version
 export DEBIAN_FRONTEND=noninteractive
-echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main" > /etc/apt/sources.list.d/mariadb.list \
+echo "deb http://ftp.osuosl.org/pub/mariadb/repo/10.3/debian $OSDEB main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
@@ -84,8 +84,8 @@ echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB ma
 	} > /etc/apt/preferences.d/mariadb
 
 { \
-		echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password password 'unused'; \
-		echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password_again password 'unused'; \
+		echo "mariadb-server-10.3" mysql-server/root_password password 'unused'; \
+		echo "mariadb-server-10.3" mysql-server/root_password_again password 'unused'; \
 	} | debconf-set-selections \
 	&& apt-get update \
 	&& apt-get install -y \
