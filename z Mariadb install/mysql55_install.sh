@@ -1,3 +1,10 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
 echo 'Check root'
 if [ "x$(id -u)" != 'x0' ]; then
     echo 'Error: this script can only be executed by root'
@@ -5,6 +12,26 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
+
+# add Percona's repo for xtrabackup (which is useful for Galera)
+echo "deb https://repo.percona.com/apt $OSDEB main" > /etc/apt/sources.list.d/percona.list \
+	&& { \
+		echo 'Package: *'; \
+		echo 'Pin: release o=Percona Development Team'; \
+		echo 'Pin-Priority: 998'; \
+	} > /etc/apt/preferences.d/percona
+
+# add repo Mysql
+set -ex; \
+# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
+	key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
+	export GNUPGHOME="$(mktemp -d)"; \
+	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
+	rm -rf "$GNUPGHOME"; \
+	apt-key list > /dev/null
+
+mkdir /docker-entrypoint-initdb.d
 
 # set version
 #export MYSQL_MAJOR=5.5
