@@ -21,21 +21,18 @@ set -ex; \
 	gpg --export "$key" > /etc/apt/trusted.gpg.d/mariadb.gpg; \
 	command -v gpgconf > /dev/null && gpgconf --kill all || :; \
 	rm -rf "$GNUPGHOME"; \
-	apt-key list > /dev/null
 	key='177F4010FE56CA3336300305F1656F24C74CD1D8'; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	gpg --export "$key" > /etc/apt/trusted.gpg.d/mariadb.gpg; \
 	command -v gpgconf > /dev/null && gpgconf --kill all || :; \
 	rm -rf "$GNUPGHOME"; \
-	apt-key list > /dev/null
 	key='430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A'; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	gpg --export "$key" > /etc/apt/trusted.gpg.d/mariadb.gpg; \
 	command -v gpgconf > /dev/null && gpgconf --kill all || :; \
 	rm -rf "$GNUPGHOME"; \
-	apt-key list > /dev/null
 	key='4D1BB29D63D98E422B2113B19334A25F8507EFA5'; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
@@ -72,14 +69,15 @@ groupadd -r mysql && useradd -r -g mysql mysql
 
 # install mysql over repo with major version
 export DEBIAN_FRONTEND=noninteractive
+set -e;\
 echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
 		echo 'Pin-Priority: 999'; \
 	} > /etc/apt/preferences.d/mariadb
-
-{ \
+set -e;\
+	{ \
 		echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password password 'unused'; \
 		echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password_again password 'unused'; \
 	} | debconf-set-selections \
