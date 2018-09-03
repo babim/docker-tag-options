@@ -44,6 +44,9 @@ echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB ma
 # don't reverse lookup hostnames, they are usually another container
 	echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
+# install "pwgen" for randomizing passwords
+apt-get install -y --no-install-recommends pwgen
+
 # download entrypoint
 	cd / && \
 	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install/start.sh && \
