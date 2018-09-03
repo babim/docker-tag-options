@@ -6,6 +6,8 @@ shopt -s nullglob
 if [ -d "/etc/mysql" ]; then
 if [ -z "`ls /etc/mysql`" ]; then cp -R /etc-start/mysql/* /etc/mysql; fi
 fi
+# option
+if [ -f "/option.sh" ]; then /option.sh; fi
 
 # if command starts with an option, prepend mysqld
 if [ "${1:0:1}" = '-' ]; then
@@ -188,8 +190,5 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo
 	fi
 fi
-
-# option
-if [ -f "/option.sh" ]; then /option.sh; fi
 
 exec "$@"
