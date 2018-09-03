@@ -1,3 +1,10 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
 echo 'Check root'
 if [ "x$(id -u)" != 'x0' ]; then
     echo 'Error: this script can only be executed by root'
@@ -5,18 +12,6 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
-
-# install ssl
-apt-get install -y --no-install-recommends wget apt-transport-https ca-certificates gpg
-
-# add gosu for easy step-down from root
-export GOSU_VERSION=1.10
-set -ex; \
-	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-	wget --no-check-certificate --progress=bar:force -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-	chmod +x /usr/local/bin/gosu; \
-# verify that the binary works
-	gosu nobody true
 
 # add repo Mariadb
 set -ex; \
@@ -99,9 +94,6 @@ echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB ma
 		| xargs -rt -0 sed -Ei 's/^(bind-address|log)/#&/'
 # don't reverse lookup hostnames, they are usually another container
 	echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
-
-# install "pwgen" for randomizing passwords
-apt-get install -y --no-install-recommends pwgen
 
 # download entrypoint
 	cd / && \
