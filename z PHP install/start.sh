@@ -32,6 +32,9 @@ if [ -d "/etc/php" ]; then
 if [ -z "`ls /etc/php`" ]; then 
 	cp -R /etc-start/php/* /etc/php
 
+# option with entrypoint
+if [ -f "/option.sh" ]; then /option.sh; fi
+
  # Set environments
     TIMEZONE1=${TIMEZONE:-Asia/Ho_Chi_Minh}
     PHP_MEMORY_LIMIT1=${PHP_MEMORY_LIMIT:-512M}
@@ -167,9 +170,6 @@ fi
 fi
 
 fi
-
-# option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
 
 # run PHP-fpm
 if [ ! -f "/PHPFPM" ]; then 
