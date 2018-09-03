@@ -21,6 +21,7 @@ else
 fi
 
 ####################################################
+export DEBIAN_FRONTEND=noninteractive
 # environment value
 export SSHOPTION=${SSH:-false}
 export CRONOPTION=${CRON:-false}
