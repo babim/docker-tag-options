@@ -37,7 +37,7 @@ if [[ -f /etc/alpine-release ]]; then
 		rm -rf /var/cache/apk/* /kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz
 	else
   	# the default "server.host" is "localhost" in 5+
-		&& sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
+		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
 		&& grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
   	# ensure the default configuration is useful when using --link
 		&& sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml \
