@@ -38,7 +38,7 @@ export DNSOPTION=${DNS:-false}
 export CLOUDFLARE=1.1.1.1
 export GOOGLE=8.8.8.8
 # environment set true all
-if [ "$FULLOPTION" = "true" ]; then
+if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then
     export SSHOPTION=${SSH:-true}
     export CRONOPTION=${CRON:-true}
     export NFSOPTION=${NFS:-true}
@@ -719,7 +719,7 @@ quit_command() {
 ####################################################
 # ssh
     # install
-    if [ "$SSHOPTION" = "true" ]; then
+    if [ "$SSHOPTION" = "true" ] || [ "$SSHOPTION" = "on" ]; then
         echo "install SSH"
         ssh-create
     fi
@@ -727,7 +727,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /SSH ]; then ssh-del; fi
 # nfs
     # install
-    if [ "$NFSOPTION" = "true" ]; then
+    if [ "$NFSOPTION" = "true" ] || [ "$NFSOPTION" = "on" ]; then
         echo "install NFS"
         nfs-create
     fi
@@ -735,7 +735,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /NFS ]; then nfs-del; fi
 # cron
     # install
-    if [ "$CRONOPTION" = "true" ]; then
+    if [ "$CRONOPTION" = "true" ] || [ "$CRONOPTION" = "on" ]; then
        echo "install CRON"
        cron-create
     fi
@@ -743,7 +743,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /CRON ]; then cron-del; fi
 # synology
     # install
-    if [ "$SYNOLOGYOPTION" = "true" ]; then
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
        echo "setup SYNOLOGY environment"
        synology-create
     fi
@@ -751,7 +751,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /SYNOLOGY ]; then synology-del; fi
 # upgrade
     # install
-    if [ "$UPGRADEOPTION" = "true" ]; then
+    if [ "$UPGRADEOPTION" = "true" ] || [ "$UPGRADEOPTION" = "on" ]; then
        echo "Upgrade OS"
        upgrade-create
     fi
@@ -759,7 +759,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /UPGRADE ]; then upgrade-del; fi
 # pagespeed
     # install
-    if [ "$PAGESPEEDOPTION" = "true" ]; then
+    if [ "$PAGESPEEDOPTION" = "true" ] || [ "$PAGESPEEDOPTION" = "on" ]; then
        echo "install PAGESPEED"
        pagespeed-create
     fi
@@ -767,7 +767,7 @@ quit_command() {
     if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED ]; then pagespeed-del; fi
 # modsecurity
     # install
-    if [ "$MODSECURITYOPTION" = "true" ]; then
+    if [ "$MODSECURITYOPTION" = "true" ] || [ "$MODSECURITYOPTION" = "on" ]; then
        echo "install apache MOD-SECURITY"
        modsecurity-create
     fi
@@ -779,7 +779,7 @@ quit_command() {
        echo "nameserver $GOOGLE" >> /etc/resolv.conf
     elif [ "$DNSOPTION" = "cloudflare" ]; then
         echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
-    elif [ "$DNSOPTION" = "true" ]; then
+    elif [ "$DNSOPTION" = "true" ] || [ "$DNSOPTION" = "on" ]; then
         echo "nameserver $GOOGLE" >> /etc/resolv.conf
         echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
     fi
