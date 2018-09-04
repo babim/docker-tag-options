@@ -12,6 +12,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
+export DEBIAN_FRONTEND=noninteractive
 # install PHP
 	export PHP_VERSION=7.2
 	[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
