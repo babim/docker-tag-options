@@ -54,16 +54,18 @@ if [[ -f /etc/alpine-release ]]; then
 	# download config files
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
-			cd /
 		if [[ "$KIBANA" = "6" ]]; then
 			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana6_start.sh
 		else
 			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana_start.sh
 		fi
-			chmod 755 start.sh
+			chmod 755 /start.sh
 		}
 	if [[ "$KIBANA" = "4" ]]; then
 		wget -O /usr/share/kibana/config/kibana.yml --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana_config/4/kibana.yml
+		downloadentrypoint
+	else
+		downloadentrypoint
 	fi
 else
     echo "Not support your OS"

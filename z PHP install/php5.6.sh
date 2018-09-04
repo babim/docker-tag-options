@@ -54,14 +54,12 @@ apt-get update
     rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
 # download entrypoint
 	[[ ! -f /start.sh ]] || rm -f /start.sh
-	cd / && \
-	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
-	chmod 755 start.sh
+	wget -O /start --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
+	chmod 755 /start.sh
 # prepare etc start
     curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
 # remove packages
 	apt-get purge wget curl -y
-
 else
     echo "Not support your OS"
     exit

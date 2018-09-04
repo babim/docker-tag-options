@@ -50,7 +50,7 @@ if [[ -f /etc/alpine-release ]]; then
 		else
 			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/elasticsearch_start.sh
 		fi
-			chmod 755 start.sh
+			chmod 755 /start.sh
 		}
 		prepareconfig() {
 			[[ ! -f /usr/share/elasticsearch/config/elasticsearch.yml ]] || rm -f /usr/share/elasticsearch/config/elasticsearch.yml

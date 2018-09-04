@@ -23,9 +23,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 # download entrypoint
 	[[ ! -f /start.sh ]] || rm -f /start.sh
-	cd / && \
-	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
-	chmod 755 start.sh
+	wget -O /start --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
+	chmod 755 /start.sh
 # prepare etc start
     curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
 
