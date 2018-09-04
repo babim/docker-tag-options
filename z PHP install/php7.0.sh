@@ -13,6 +13,9 @@ fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 export DEBIAN_FRONTEND=noninteractive
+# add repo php ubuntu
+curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo-ubuntu.sh | bash
+apt-get update
 # install PHP
 	export PHP_VERSION=7.0
 	[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
@@ -24,7 +27,8 @@ export DEBIAN_FRONTEND=noninteractive
     php$PHP_VERSION-pgsql php$PHP_VERSION-pspell php$PHP_VERSION-recode php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION php$PHP_VERSION-json php-all-dev php$PHP_VERSION-sybase \
     php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
     php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
-    php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl && \
+    php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
+# enable apache mod
     [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 # Fix run suck
     [[ -d /run/php ]] || mkdir -p /run/php/
@@ -51,6 +55,7 @@ export DEBIAN_FRONTEND=noninteractive
     echo "extension=oci8.so" > /etc/php/$PHP_VERSION/cli/conf.d/30-oci8.ini && \
     rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
 # download entrypoint
+	[[ ! -f /start.sh ]] || rm -f /start.sh
 	cd / && \
 	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
 	chmod 755 start.sh

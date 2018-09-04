@@ -98,6 +98,7 @@ set -e;\
 	echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
 # download entrypoint
+	[[ ! -f /start.sh ]] || rm -f /start.sh
 	cd / && \
 	wget --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install/start.sh && \
 	chmod 755 start.sh
