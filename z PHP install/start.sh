@@ -71,26 +71,26 @@ fi
 }
 
  # Set environments
-    TIMEZONE1=${TIMEZONE:-Asia/Ho_Chi_Minh}
-    PHP_MEMORY_LIMIT1=${PHP_MEMORY_LIMIT:-512M}
-    MAX_UPLOAD1=${MAX_UPLOAD:-520M}
-    PHP_MAX_FILE_UPLOAD1=${PHP_MAX_FILE_UPLOAD:-200}
-    PHP_MAX_POST1=${PHP_MAX_POST:-520M}
-    MAX_INPUT_TIME1=${MAX_INPUT_TIME:-3600}
-    MAX_EXECUTION_TIME1=${MAX_EXECUTION_TIME:-3600}
+    TIMEZONE=${TIMEZONE:-Asia/Ho_Chi_Minh}
+    PHP_MEMORY_LIMIT=${PHP_MEMORY_LIMIT:-512M}
+    MAX_UPLOAD=${MAX_UPLOAD:-520M}
+    PHP_MAX_FILE_UPLOAD=${PHP_MAX_FILE_UPLOAD:-200}
+    PHP_MAX_POST=${PHP_MAX_POST:-520M}
+    MAX_INPUT_TIME=${MAX_INPUT_TIME:-3600}
+    MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME:-3600}
 	
 	# set php value
 	for VARIABLE in /etc/php/*
 	do
 	if [ -f "$VARIABLE/php.ini" ]; then
 	sed -i -E \
-		-e "s|;*date.timezone =.*|date.timezone = ${TIMEZONE1}|i" \
-		-e "s|;*memory_limit =.*|memory_limit = ${MAX_UPLOAD1}|i" \
-		-e "s|;*upload_max_filesize =.*|upload_max_filesize = ${MAX_UPLOAD1}|i" \
-		-e "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD1}|i" \
-		-e "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST1}|i" \
-		-e "s/max_input_time = 60/max_input_time = ${MAX_INPUT_TIME1}/" \
-		-e "s/max_execution_time = 30/max_execution_time = ${MAX_EXECUTION_TIME1}/" \
+		-e "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" \
+		-e "s|;*memory_limit =.*|memory_limit = ${MAX_UPLOAD}|i" \
+		-e "s|;*upload_max_filesize =.*|upload_max_filesize = ${MAX_UPLOAD}|i" \
+		-e "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD}|i" \
+		-e "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" \
+		-e "s/max_input_time = 60/max_input_time = ${MAX_INPUT_TIME}/" \
+		-e "s/max_execution_time = 30/max_execution_time = ${MAX_EXECUTION_TIME}/" \
 		-e "s/error_reporting = .*/error_reporting = E_ALL/" \
 		-e "s/display_errors = .*/display_errors = On/" \
 	$VARIABLE/php.ini
@@ -129,7 +129,7 @@ auser=${auser:-www-data}
 
 	if [[ -z "${auid}" ]]; then
 	  echo "start"
-	elif [[ "$auid" = "0" ]] || [[ "$aguid" == "0" ]]; then
+	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
 		export auser=root
 		setapacheuser
@@ -163,10 +163,10 @@ auser=${auser:-www-data}
 
 # run PHP-fpm
 if [ ! -f "/PHPFPM" ]; then 
-if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6 -D; fi
-if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0 -D; fi
-if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1 -D; fi
-if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2 -D; fi
+	if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6 -D; fi
+	if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0 -D; fi
+	if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1 -D; fi
+	if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2 -D; fi
 fi
 
 exec "$@"

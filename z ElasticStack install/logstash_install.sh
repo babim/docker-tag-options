@@ -16,6 +16,7 @@ if [[ -f /etc/alpine-release ]]; then
 	LOGSTASH_URL=${LOGSTASH_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	LOGSTASH_TARBALL="${DOWNLOAD_URL}/logstash-${LS_VERSION}.tar.gz"
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
+	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache wget ca-certificates gnupg openssl
 	# Install Oracle Java
@@ -41,23 +42,27 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 			cd /
-			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_start.sh
+			wget -O /start.sh $DOWN_URL/logstash_start.sh
 			chmod 755 /start.sh
 		}
 	if [[ "$LOGSTASH" = "6" ]]; then
-		[[ ! -f /usr/share/logstash/config/log4j2.properties ]] || rm -rf /usr/share/logstash/config/log4j2.properties
-		[[ ! -f /usr/share/logstash/config/logstash.yml ]] || rm -rf /usr/share/logstash/config/logstash.yml
-		[[ ! -f /usr/share/logstash/pipeline/logstash.conf ]] || rm -rf /usr/share/logstash/pipeline/logstash.conf
-		wget -O /usr/share/logstash/config/log4j2.properties --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_config/6/logstash/log4j2.properties
-		wget -O /usr/share/logstash/config/logstash.yml --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_config/6/logstash/logstash.yml
-		wget -O /usr/share/logstash/pipeline/logstash.conf --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_config/6/pipeline/default.conf
+		FILETEMP=/usr/share/logstash/config/log4j2.properties
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/logstash_config/6/logstash/log4j2.properties
+		FILETEMP=/usr/share/logstash/config/logstash.yml
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/logstash_config/6/logstash/logstash.yml
+		FILETEMP=/usr/share/logstash/pipeline/logstash.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/logstash_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
-		[[ ! -f /usr/share/logstash/config/logstash.yml ]] || rm -rf /usr/share/logstash/config/logstash.yml
-		wget -O /usr/share/logstash/config/logstash.yml --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_config/xpack/logstash/logstash.yml
+		FILETEMP=/usr/share/logstash/config/logstash.yml
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
 	fi
 else
     echo "Not support your OS"

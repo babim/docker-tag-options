@@ -16,6 +16,7 @@ if [[ -f /etc/alpine-release ]]; then
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
 	BIT=${BIT:-"x86_64"}
 	TARBAL="${DOWNLOAD_URL}/kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz"
+	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache nodejs su-exec
 		apk add --no-cache wget curl ca-certificates gnupg openssl
@@ -55,14 +56,14 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 		if [[ "$KIBANA" = "6" ]]; then
-			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana6_start.sh
+			wget -O /start.sh $DOWN_URL/kibana6_start.sh
 		else
-			wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana_start.sh
+			wget -O /start.sh $DOWN_URL/kibana_start.sh
 		fi
 			chmod 755 /start.sh
 		}
 	if [[ "$KIBANA" = "4" ]]; then
-		wget -O /usr/share/kibana/config/kibana.yml --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana_config/4/kibana.yml
+		wget -O /usr/share/kibana/config/kibana.yml $DOWN_URL/kibana_config/4/kibana.yml
 		downloadentrypoint
 	else
 		downloadentrypoint
