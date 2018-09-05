@@ -63,7 +63,7 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/usr/share/elasticsearch/config
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			wget -O $FILETEMP  $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
+			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
 		else
 			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
 		fi

@@ -1,7 +1,7 @@
 # add gosu for easy step-down from root
 GOSU_VERSION=1.10
 set -ex; \
-	yum -y install epel-release; \
+	yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
 	yum -y install wget dpkg; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
