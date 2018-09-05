@@ -56,40 +56,53 @@ if [[ -f /etc/alpine-release ]]; then
 		prepareconfig() {
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+			wget -O $FILETEMP  $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
+		else
+			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
+		fi
+		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+			echo not download
+		else
 			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
+		fi
+		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 			FILETEMP=/usr/share/elasticsearch/config/logging.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+		fi
 			FILETEMP=/usr/share/elasticsearch/config
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
 		prepagelogrotage() {
+		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+			echo not download
+		else
 			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
+		fi
 			FILETEMP=/etc/logrotate.d/elasticsearch
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
 	if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 		prepareconfig
-		wget -O /usr/share/elasticsearch/config/elasticsearch.yml $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
-		wget -O /usr/share/elasticsearch/config/logging.yml $DOWN_URL/elasticsearch_config/2/logging.yml
 	# download entrypoint
 		downloadentrypoint
 	else
 		prepagelogrotage
-		wget -O /etc/logrotate.d/elasticsearch/logrotate $DOWN_URL/elasticsearch_config/5/logrotate
 		prepareconfig
-		wget -O /usr/share/elasticsearch/config/elasticsearch.yml $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
-		wget -O /usr/share/elasticsearch/config/log4j2.properties $DOWN_URL/elasticsearch_config/5/log4j2.properties
 	# download entrypoint
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
 		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 		FILETEMP=/usr/share/elasticsearch/config/x-pack
 		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		wget -O /usr/share/elasticsearch/config/x-pack/log4j2.properties $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 	fi
 else
     echo "Not support your OS"
