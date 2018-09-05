@@ -60,9 +60,10 @@ if [[ -f /etc/debian_version ]]; then
 		echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
 	# download entrypoint
-		[[ ! -f /start.sh ]] || rm -f /start.sh
-		wget -O /start.sh --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 /start.sh
+		FILETEMP=/start.sh
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 $FILETEMP
 	# download backup script
 		wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
 		chmod 755 /backup.sh

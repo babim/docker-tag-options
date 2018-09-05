@@ -41,9 +41,10 @@ if [[ -f /etc/alpine-release ]]; then
 		fi
 	# download config files
 		downloadentrypoint() {
-			[[ ! -f /start.sh ]] || rm -f /start.sh
-			wget -O /start.sh $DOWN_URL/logstash_start.sh
-			chmod 755 /start.sh
+			FILETEMP=/start.sh
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
+			chmod 755 $FILETEMP
 		}
 	if [[ "$LOGSTASH" = "6" ]]; then
 		FILETEMP=/usr/share/logstash/config

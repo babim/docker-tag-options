@@ -36,9 +36,10 @@ if [[ -f /etc/lsb-release ]]; then
 	    curl -s $DOWN_URL/include.sh | bash
 
 	# download entrypoint
-		[[ ! -f /start.sh ]] || rm -f /start.sh
-		wget -O /start --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 /start.sh
+		FILETEMP=/start.sh
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 $FILETEMP
 	# prepare etc start
 	    curl -s $DOWN_URL/prepare_final.sh | bash
 

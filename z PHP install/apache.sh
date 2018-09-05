@@ -23,15 +23,18 @@ if [[ -f /etc/lsb-release ]]; then
 	  	[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 
 	# download entrypoint
-		[[ ! -f /start.sh ]] || rm -f /start.sh
-		wget -O /start --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 /start.sh
+		FILETEMP=/start.sh
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 $FILETEMP
 	# prepare etc start
 		curl -s $DOWN_URL/prepare_final.sh | bash
 
 	# default config with mod rewrite
 	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
 	if [[ "$CONFIGMODREWRITE" = "true" ]]; then
+		FILETEMP=/etc/apache2/site-available
+		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/etc/apache2/site-available/000-default.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/000-default.conf
