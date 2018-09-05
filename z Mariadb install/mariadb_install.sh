@@ -41,7 +41,7 @@ if [[ -f /etc/debian_version ]]; then
 			echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password_again password 'unused'; \
 		} | debconf-set-selections \
 		&& apt-get update \
-		&& apt-get install -y \
+		&& apt-get install -y --force-yes \
 			mariadb-server \
 			percona-xtrabackup \
 			socat
