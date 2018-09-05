@@ -161,6 +161,7 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/supervisor
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
+
 		downloadentrypoint
 		prepareconfig
 	if [[ "$STACK_NEW" = "false" ]]; then
