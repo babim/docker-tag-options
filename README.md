@@ -1,4 +1,4 @@
-#(C) AQ.jsc Viet Nam (https://matmagoc.com)
+# (C) AQ.jsc Viet Nam (https://matmagoc.com)
 Run option for docker container (ssh, nfs, update...)
 
 ## ubuntu/debian
