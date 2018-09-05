@@ -22,9 +22,9 @@ if [[ -f /etc/alpine-release ]]; then
 	ES_DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	LS_DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	KB_DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
-	ES_TARBAL="${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"
-	LS_TARBAL="${DOWNLOAD_URL}/logstash-${LS_VERSION}.tar.gz"
-	KB_TARBAL="${DOWNLOAD_URL}/kibana-${KB_VERSION}.tar.gz"
+	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
+	LS_TARBAL=${LS_TARBAL:-"${DOWNLOAD_URL}/logstash-${LS_VERSION}.tar.gz"}
+	KB_TARBAL=${KB_TARBAL:-"${DOWNLOAD_URL}/kibana-${KB_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/etc/logstash"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 
@@ -104,6 +104,10 @@ if [[ -f /etc/alpine-release ]]; then
 		}
 		prepareconfig() {
 		# elasticsearch
+			FILETEMP=/usr/share/elasticsearch/config
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+			FILETEMP=/etc/logrotate.d/elasticsearch
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
@@ -113,11 +117,13 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
-			FILETEMP=/usr/share/elasticsearch/config
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/logrotate.d/elasticsearch
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		# logstash
+			FILETEMP=/etc/logstash/conf.d
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+			FILETEMP=/opt/logstash/patterns
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+			FILETEMP=/etc/logstash
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/etc/logstash/conf.d/02-beats-input.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
@@ -136,13 +142,9 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logstash/logstash.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
-			FILETEMP=/etc/logstash/conf.d
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/opt/logstash/patterns
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/logstash
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		# nginx
+			FILETEMP=/etc/nginx/conf.d
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/etc/nginx/nginx.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
@@ -152,14 +154,12 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
-			FILETEMP=/etc/nginx/conf.d
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		# supervisor
+			FILETEMP=/etc/supervisor
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/etc/supervisor/supervisord.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/supervisord.conf
-			FILETEMP=/etc/supervisor
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
 
 		downloadentrypoint

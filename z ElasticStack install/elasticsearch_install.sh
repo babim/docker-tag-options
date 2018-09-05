@@ -14,7 +14,7 @@ echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
-	ES_TARBAL="${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"
+	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache ca-certificates gnupg openssl
@@ -60,6 +60,8 @@ if [[ -f /etc/alpine-release ]]; then
 		prepareconfig() {
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			FILETEMP=/usr/share/elasticsearch/config
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 			wget -O $FILETEMP  $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
 		else
@@ -77,10 +79,10 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
 		fi
-			FILETEMP=/usr/share/elasticsearch/config
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
 		prepagelogrotage() {
+			FILETEMP=/etc/logrotate.d/elasticsearch
+			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 			echo not download
 		else
@@ -88,8 +90,6 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
 		fi
-			FILETEMP=/etc/logrotate.d/elasticsearch
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
 	if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 		prepareconfig
@@ -102,11 +102,11 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
+		FILETEMP=/usr/share/elasticsearch/config/x-pack
+		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
-		FILETEMP=/usr/share/elasticsearch/config/x-pack
-		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 	fi
 else
     echo "Not support your OS"

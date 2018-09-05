@@ -15,7 +15,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
 	BIT=${BIT:-"x86_64"}
-	TARBAL="${DOWNLOAD_URL}/kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz"
+	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache nodejs su-exec
