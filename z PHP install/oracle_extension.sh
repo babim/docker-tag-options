@@ -1,8 +1,8 @@
 	    export ORACLE_VERSION=12.2.0.1.0
 		apt-get install -y --force-yes wget unzip libaio-dev php$PHP_VERSION-dev php-pear
-		wget http://media.matmagoc.com/oracle/instantclient-basic-linux.x64-$ORACLE_VERSION.zip && \
-		wget http://media.matmagoc.com/oracle/instantclient-sdk-linux.x64-$ORACLE_VERSION.zip && \
-		wget http://media.matmagoc.com/oracle/instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip && \
+		wget --progress=bar:force http://media.matmagoc.com/oracle/instantclient-basic-linux.x64-$ORACLE_VERSION.zip && \
+		wget --progress=bar:force http://media.matmagoc.com/oracle/instantclient-sdk-linux.x64-$ORACLE_VERSION.zip && \
+		wget --progress=bar:force http://media.matmagoc.com/oracle/instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip && \
 		unzip instantclient-basic-linux.x64-$ORACLE_VERSION.zip -d /usr/local/ && \
 		unzip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip -d /usr/local/ && \
 		unzip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip -d /usr/local/ && \

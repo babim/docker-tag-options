@@ -59,16 +59,16 @@ if [ -f /etc/redhat-release ]; then
 	# Download setup files
 	cd $INSTALL_DIR/ && \
 	if [[ -z "${INSTALL_FILE_1}" ]]; then
-		wget $HOST_DOWN/$INSTALL_FILE_1
+		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1
 	fi
 	if [[ -z "${INSTALL_FILE_2}" ]]; then
-		wget $HOST_DOWN/$INSTALL_FILE_2
+		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2
 	fi
 	if [[ -z "${INSTALL_FILE_3}" ]]; then
-		wget $HOST_DOWN/$INSTALL_FILE_3
+		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3
 	fi
 	if [[ -z "${INSTALL_FILE_4}" ]]; then
-		wget $HOST_DOWN/$INSTALL_FILE_4
+		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4
 	fi
 	# Install prepare setup
 		sync && \
