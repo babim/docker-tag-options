@@ -12,7 +12,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [ -f /etc/redhat-release ]; then
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
+	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
 	HOST_DOWN="http://media.matmagoc.com/oracle"
 	# set code
 	if [[ "$VERSION" == "12.2.0.1" ]]; then
@@ -45,31 +45,31 @@ if [ -f /etc/redhat-release ]; then
 	# -------------
 	mkdir -p $INSTALL_DIR/
 	cd $INSTALL_DIR/
-		wget -O $INSTALL_RSP $DOWN_URL/template/$INSTALL_RSP-$VERSION
-		wget $DOWN_URL/config/$SETUP_LINUX_FILE
-		wget $DOWN_URL/config/$CHECK_SPACE_FILE
-		wget $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
+		wget -O $INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
+		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
+		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
+		wget --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
 	cd $ORACLE_BASE/
-		wget $DOWN_URL/config/$RUN_FILE
-		wget $DOWN_URL/config/$START_FILE
-		wget $DOWN_URL/config/$CREATE_DB_FILE
-		wget -O $CONFIG_RSP $DOWN_URL/template/$CONFIG_RSP-$VERSION
-		wget $DOWN_URL/config/$PWD_FILE
-		wget $DOWN_URL/config/$USER_SCRIPTS_FILE
+		wget --no-check-certificate $DOWN_URL/config/$RUN_FILE
+		wget --no-check-certificate $DOWN_URL/config/$START_FILE
+		wget --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
+		wget -O $CONFIG_RSP --no-check-certificate $DOWN_URL/template/$CONFIG_RSP-$VERSION
+		wget --no-check-certificate $DOWN_URL/config/$PWD_FILE
+		wget --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
 	# Download setup files
 	cd $INSTALL_DIR/ && \
 	if [[ -z "${INSTALL_FILE_1}" ]]; then
-		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1
+		wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1
 	fi
 	if [[ -z "${INSTALL_FILE_2}" ]]; then
-		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2
+		wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2
 	fi
 	if [[ -z "${INSTALL_FILE_3}" ]]; then
-		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3
+		wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3
 	fi
 	if [[ -z "${INSTALL_FILE_4}" ]]; then
-		wget --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4
+		wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4
 	fi
 	# Install prepare setup
 		sync && \
