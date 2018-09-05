@@ -30,13 +30,13 @@ if [[ -f /etc/lsb-release ]]; then
 		php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
 		php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
 	# enable apache mod
-	    [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
+		[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 	# Fix run suck
-	    [[ -d /run/php ]] || mkdir -p /run/php/
+		[[ -d /run/php ]] || mkdir -p /run/php/
 	# install composer
-	    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+		curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 	# fix shortcut bin
-	    ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
+		ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
 	# install option for webapp (owncloud)
 		apt-get install -y --force-yes smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin
 	# install oracle client extension

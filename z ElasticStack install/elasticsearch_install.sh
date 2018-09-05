@@ -48,6 +48,10 @@ if [[ -f /etc/alpine-release ]]; then
 			cd /
 		if [[ "$ES" = "6" ]]; then
 			wget -O /start.sh $DOWN_URL/elasticsearch6_start.sh
+		elif [[ "$ES" = "1" ]]; then
+			wget -O /start.sh $DOWN_URL/elasticsearch1_start.sh
+		elif [[ "$ES" = "2" ]]; then
+			wget -O /start.sh $DOWN_URL/elasticsearch2_start.sh
 		else
 			wget -O /start.sh $DOWN_URL/elasticsearch_start.sh
 		fi
