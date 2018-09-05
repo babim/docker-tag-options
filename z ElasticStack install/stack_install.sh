@@ -68,12 +68,12 @@ if [[ -f /etc/alpine-release ]]; then
 		  && if [ -f "$LS_SETTINGS_DIR/logstash.yml" ]; then \
 		  		sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"; \
 		  	fi \
-		  && echo "Configure [Kibana] ==========================================================" \
+		  && echo "Configure [Kibana] =========================================================="
 		  # the default "server.host" is "localhost" in 5+
-		  && sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
-		  && grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml \
+		  sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
+		  && grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml
 		  # usr alpine nodejs and not bundled version
-		  && bundled='NODE="${DIR}/node/bin/node"' \
+		  bundled='NODE="${DIR}/node/bin/node"' \
 		  && apline_node='NODE="/usr/bin/node"' \
 		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana-plugin \
 		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana \
@@ -161,7 +161,8 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/supervisor
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		}
-
+		downloadentrypoint
+		prepareconfig
 	if [[ "$STACK_NEW" = "false" ]]; then
 			FILETEMP=/etc/supervisor/supervisord.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP

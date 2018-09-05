@@ -37,7 +37,7 @@ if [[ -f /etc/alpine-release ]]; then
 		set -ex; \
 		if [ -f "$LS_SETTINGS_DIR/log4j2.properties" ]; then \
 		cp "$LS_SETTINGS_DIR/log4j2.properties" "$LS_SETTINGS_DIR/log4j2.properties.dist"; \
-		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"; \
+		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties";
 	# download config files
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
