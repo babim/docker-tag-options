@@ -20,14 +20,26 @@ if [[ -f /etc/lsb-release ]]; then
 	# install apache
 		apt-get update && apt-get install apache2 -y 
 	# enable apache mod
-	    [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
+	  	[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 
 	# download entrypoint
 		[[ ! -f /start.sh ]] || rm -f /start.sh
 		wget -O /start --no-check-certificate $DOWN_URL/start.sh && \
 		chmod 755 /start.sh
 	# prepare etc start
-	    curl -s $DOWN_URL/prepare_final.sh | bash
+		curl -s $DOWN_URL/prepare_final.sh | bash
+
+	# default config with mod rewrite
+	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
+	if [[ "$CONFIGMODREWRITE" = "true" ]]; then
+		FILETEMP=/etc/apache2/site-available/000-default.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/000-default.conf
+		FILETEMP=/etc/apache2/site-available/default-ssl.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/default-ssl.conf
+	fi
+
 else
     echo "Not support your OS"
     exit
