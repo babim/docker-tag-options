@@ -19,6 +19,9 @@ if [[ -f /etc/debian_version ]]; then
 	# add Percona's repo for xtrabackup (which is useful for Galera)
 		curl -s $DOWN_URL/percona_repo.sh | bash
 
+	# install gosu
+		curl -s $DOWN_URL/gosu_install.sh | bash
+
 	mkdir /docker-entrypoint-initdb.d
 
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added

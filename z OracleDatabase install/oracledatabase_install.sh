@@ -74,8 +74,10 @@ if [ -f /etc/redhat-release ]; then
 		sync && \
 		$INSTALL_DIR/$CHECK_SPACE_FILE && \
 		$INSTALL_DIR/$SETUP_LINUX_FILE
+	# install gosu
+		curl -s $DOWN_URL/gosu_install.sh | bash
 	# Install DB software binaries
-	su -H -u oracle bash -c '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
+	gosu oracle '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
 	# Clean
 		$ORACLE_BASE/oraInventory/orainstRoot.sh && \
 		$ORACLE_HOME/root.sh && \
