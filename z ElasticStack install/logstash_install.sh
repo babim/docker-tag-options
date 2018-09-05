@@ -29,19 +29,19 @@ if [[ -f /etc/alpine-release ]]; then
 	# install logstash
 		set -ex \
 		&& cd /tmp \
-		&& wget --no-check-certificate --progress=bar:force -O logstash.tar.gz "$LOGSTASH_TARBALL"; \
-		tar -xzf logstash.tar.gz \
+		&& wget --no-check-certificate --progress=bar:force -O logstash.tar.gz "$LOGSTASH_TARBALL" \
+		&& tar -xzf logstash.tar.gz \
 		&& mv logstash-$LS_VERSION /usr/share/logstash \
 		&& rm -rf /tmp/*
 	# config setting
 		set -ex; \
 		if [ -f "$LS_SETTINGS_DIR/log4j2.properties" ]; then \
 		cp "$LS_SETTINGS_DIR/log4j2.properties" "$LS_SETTINGS_DIR/log4j2.properties.dist"; \
-		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties";
+		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"; \
+		fi
 	# download config files
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
-			cd /
 			wget -O /start.sh $DOWN_URL/logstash_start.sh
 			chmod 755 /start.sh
 		}

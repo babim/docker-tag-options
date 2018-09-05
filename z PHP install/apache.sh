@@ -12,22 +12,22 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
-export DEBIAN_FRONTEND=noninteractive
-# add repo apache
-	add-apt-repository ppa:ondrej/apache2 -y
+	export DEBIAN_FRONTEND=noninteractive
+	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	# add repo apache
+		add-apt-repository ppa:ondrej/apache2 -y
 
-# install apache
-	apt-get update && apt-get install apache2 -y 
-# enable apache mod
-    [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
+	# install apache
+		apt-get update && apt-get install apache2 -y 
+	# enable apache mod
+	    [[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 
-# download entrypoint
-	[[ ! -f /start.sh ]] || rm -f /start.sh
-	wget -O /start --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/start.sh && \
-	chmod 755 /start.sh
-# prepare etc start
-    curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
-
+	# download entrypoint
+		[[ ! -f /start.sh ]] || rm -f /start.sh
+		wget -O /start --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 /start.sh
+	# prepare etc start
+	    curl -s $DOWN_URL/prepare_final.sh | bash
 else
     echo "Not support your OS"
     exit

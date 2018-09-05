@@ -12,54 +12,14 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
-
+	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
 	# add repo Mariadb
-	set -ex; \
-		key='199369E5404BD5FC7D2FE43BCBCB082A1BB943DB'; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		gpg --export "$key" > /etc/apt/trusted.gpg.d/mariadb.gpg; \
-		rm -rf "$GNUPGHOME"; \
-		key='177F4010FE56CA3336300305F1656F24C74CD1D8'; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		gpg --export "$key" >> /etc/apt/trusted.gpg.d/mariadb.gpg; \
-		rm -rf "$GNUPGHOME"; \
-		key='430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A'; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		gpg --export "$key" >> /etc/apt/trusted.gpg.d/mariadb.gpg; \
-		rm -rf "$GNUPGHOME"; \
-		key='4D1BB29D63D98E422B2113B19334A25F8507EFA5'; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		gpg --export "$key" >> /etc/apt/trusted.gpg.d/mariadb.gpg; \
-		command -v gpgconf > /dev/null && gpgconf --kill all || :; \
-		rm -rf "$GNUPGHOME"; \
-		apt-key list > /dev/null
+		curl -s $DOWN_URL/mariadb_repo.sh | bash
 
 	# add Percona's repo for xtrabackup (which is useful for Galera)
-	echo "deb https://repo.percona.com/apt $OSDEB main" > /etc/apt/sources.list.d/percona.list \
-		&& { \
-			echo 'Package: *'; \
-			echo 'Pin: release o=Percona Development Team'; \
-			echo 'Pin-Priority: 998'; \
-		} > /etc/apt/preferences.d/percona
-
-	# add repo Mysql
-	set -ex; \
-	# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
-		key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
-		rm -rf "$GNUPGHOME"; \
-		apt-key list > /dev/null
+		curl -s $DOWN_URL/percona_repo.sh | bash
 
 	mkdir /docker-entrypoint-initdb.d
-
-	# set version
-	#export MARIADB_MAJOR=10.0
 
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 	groupadd -r mysql && useradd -r -g mysql mysql
@@ -67,8 +27,7 @@ if [[ -f /etc/debian_version ]]; then
 	# install mysql over repo with major version
 	export DEBIAN_FRONTEND=noninteractive
 	set -e;\
-	echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main" > /etc/apt/sources.list.d/mariadb.list \
-		&& { \
+		{ \
 			echo 'Package: *'; \
 			echo 'Pin: release o=MariaDB'; \
 			echo 'Pin-Priority: 999'; \
@@ -99,13 +58,13 @@ if [[ -f /etc/debian_version ]]; then
 
 	# download entrypoint
 		[[ ! -f /start.sh ]] || rm -f /start.sh
-		wget -O /start.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install/start.sh && \
+		wget -O /start.sh --no-check-certificate $DOWN_URL/start.sh && \
 		chmod 755 /start.sh
 	# download backup script
-		wget -O /backup.sh --no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install/backup.sh && \
+		wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
 		chmod 755 /backup.sh
 	# prepare etc start
-	    curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/prepare_final.sh | bash
+		curl -s $DOWN_URL/prepare_final.sh | bash
 	# remove packages
 		apt-get purge wget curl -y
 
