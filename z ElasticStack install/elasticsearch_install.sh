@@ -53,7 +53,7 @@ if [[ -f /etc/alpine-release ]]; then
 		elif [[ "$ES" = "2" ]]; then
 			wget -O /start.sh $DOWN_URL/elasticsearch2_start.sh
 		else
-			wget -O /start.sh $DOWN_URL/elasticsearch_start.sh
+			wget -O /start.sh $DOWN_URL/elasticsearch5_start.sh
 		fi
 			chmod 755 /start.sh
 		}
