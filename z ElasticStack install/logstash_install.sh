@@ -46,6 +46,10 @@ if [[ -f /etc/alpine-release ]]; then
 			chmod 755 /start.sh
 		}
 	if [[ "$LOGSTASH" = "6" ]]; then
+		FILETEMP=/usr/share/logstash/config
+		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+		FILETEMP=/usr/share/logstash/pipeline
+		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/logstash/config/log4j2.properties
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL/logstash_config/6/logstash/log4j2.properties
