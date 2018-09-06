@@ -41,16 +41,16 @@ if [[ -f /etc/alpine-release ]]; then
 	 && rm -rf /tmp/*
 
 	# install Plex
-	UID=797
-	UNAME=plex
-	GID=797
-	GNAME=plex
+	PUID=797
+	PUNAME=plex
+	PGID=797
+	PGNAME=plex
 		FILETEMP=/start_pms.patch
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 
-	addgroup -g $GID $GNAME \
-	 && adduser -SH -u $UID -G $GNAME -s /usr/sbin/nologin $UNAME \
+	addgroup -g $PGID $PGNAME \
+	 && adduser -SH -u $PUID -G $PGNAME -s /usr/sbin/nologin $PUNAME \
 	 && apk add --no-cache xz binutils patchelf openssl file xmlstarlet \
 	 && wget -O plexmediaserver.deb 'https://plex.tv/downloads/latest/1?channel=8&build=linux-ubuntu-x86_64&distro=ubuntu' \
 	 && ar x plexmediaserver.deb \
