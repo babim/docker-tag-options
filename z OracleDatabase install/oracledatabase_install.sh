@@ -15,11 +15,11 @@ if [ -f /etc/redhat-release ]; then
 	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
 	HOST_DOWN="http://media.matmagoc.com/oracle"
 	# set code
-	if [[ "$VERSION" == "12.2.0.1" ]]; then
+	if [[ "$VERSION" == "12.2.0.1" ]] || [[ "$VERSION" == "12cr2" ]]; then
 		export CODE=${CODE:-"server-12cR2-preinstall"}
-	elif [[ "$VERSION" == "12.1.0.2" ]]; then
+	elif [[ "$VERSION" == "12.1.0.2" ]] || [[ "$VERSION" == "12cr1" ]]; then
 		export CODE=${CODE:-"server-12cR1-preinstall"}
-	elif [[ "$VERSION" == "18.3.0" ]]; then
+	elif [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
 		export CODE=${CODE:-"preinstall-18c"}
 	fi
 	# set environment
@@ -80,7 +80,7 @@ if [ -f /etc/redhat-release ]; then
 		curl -s $DOWN_URL/gosu_install.sh | bash
 	# Install DB software binaries
 	# su -H -u oracle bash -c '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
-		gosu oracle '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
+		gosu oracle $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT
 
 	# Clean
 		$ORACLE_BASE/oraInventory/orainstRoot.sh && \
