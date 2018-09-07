@@ -48,8 +48,8 @@ if [ -f /etc/redhat-release ]; then
 	mkdir -p $INSTALL_DIR/
 	cd $INSTALL_DIR/ && pwd
 		wget -O $INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
-#		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
-#		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
+		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
+		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
 		wget --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
 	cd $ORACLE_BASE/ && pwd
 		wget --no-check-certificate $DOWN_URL/config/$RUN_FILE
@@ -78,10 +78,19 @@ if [ -f /etc/redhat-release ]; then
 	# Install prepare setup
 	echo "Install prepare setup"
 		sync
-#		$INSTALL_DIR/$CHECK_SPACE_FILE
-		curl -s $DOWN_URL/config/$CHECK_SPACE_FILE | bash
+		$INSTALL_DIR/$CHECK_SPACE_FILE
+#		curl -s $DOWN_URL/config/$CHECK_SPACE_FILE | bash
 #		$INSTALL_DIR/$SETUP_LINUX_FILE
-		curl -s $DOWN_URL/config/$SETUP_LINUX_FILE | bash
+#		curl -s $DOWN_URL/config/$SETUP_LINUX_FILE | bash
+mkdir -p $ORACLE_BASE/scripts/setup && \
+mkdir $ORACLE_BASE/scripts/startup && \
+ln -s $ORACLE_BASE/scripts /docker-entrypoint-initdb.d && \
+mkdir $ORACLE_BASE/oradata && \
+chmod ug+x $ORACLE_BASE/*.sh && \
+echo "install oracle prepare" && yum -y install oracle-database-$CODE unzip tar openssl && \
+rm -rf /var/cache/yum && \
+echo oracle:oracle | chpasswd && \
+chown -R oracle:dba $ORACLE_BASE
 
 	# install gosu
 	echo "install gosu"
