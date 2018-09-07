@@ -57,6 +57,7 @@ if [ -f /etc/redhat-release ]; then
 		wget --no-check-certificate $DOWN_URL/config/$PWD_FILE
 		wget --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
+	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files
 		cd $INSTALL_DIR/ && \
 		if [[ ! -z "${INSTALL_FILE_1}" ]]; then
