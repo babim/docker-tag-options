@@ -46,51 +46,42 @@ if [ -f /etc/redhat-release ]; then
 	# -------------
 	echo "Copy binaries"
 	mkdir -p $INSTALL_DIR/
-	cd $INSTALL_DIR/ && pwd
-		wget -O $INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
-		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
-		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
-		wget --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
-	cd $ORACLE_BASE/ && pwd
-		wget --no-check-certificate $DOWN_URL/config/$RUN_FILE
-		wget --no-check-certificate $DOWN_URL/config/$START_FILE
-		wget --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
-		wget -O $CONFIG_RSP --no-check-certificate $DOWN_URL/template/$CONFIG_RSP-$VERSION
-		wget --no-check-certificate $DOWN_URL/config/$PWD_FILE
-		wget --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
+#	cd $INSTALL_DIR/ && pwd
+		wget -O $INSTALL_DIR/$INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
+		wget -O $INSTALL_DIR/$SETUP_LINUX_FILE --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
+		wget -O $INSTALL_DIR/$CHECK_SPACE_FILE --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
+		wget -O $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
+#	cd $ORACLE_BASE/ && pwd
+		wget -O $ORACLE_BASE/$RUN_FILE --no-check-certificate $DOWN_URL/config/$RUN_FILE
+		wget -O $ORACLE_BASE/$START_FILE --no-check-certificate $DOWN_URL/config/$START_FILE
+		wget -O $ORACLE_BASE/$CREATE_DB_FILE --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
+		wget -O $ORACLE_BASE/$CONFIG_RSP --no-check-certificate $DOWN_URL/template/$CONFIG_RSP-$VERSION
+		wget -O $ORACLE_BASE/$PWD_FILE --no-check-certificate $DOWN_URL/config/$PWD_FILE
+		wget -O $ORACLE_BASE/$USER_SCRIPTS_FILE --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
 	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files
 	echo "Download setup files"
-	cd $INSTALL_DIR/ && pwd
+#	cd $INSTALL_DIR/ && pwd
 	if [[ ! -z "${INSTALL_FILE_1}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1; fi
+		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_1 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_2}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2; fi
+		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_2 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_3}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3; fi
+		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_3 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_4}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4; fi
+		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_4 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4; fi
 	fi
 	# Install prepare setup
 	echo "Install prepare setup"
 		sync
 		$INSTALL_DIR/$CHECK_SPACE_FILE
 #		curl -s $DOWN_URL/config/$CHECK_SPACE_FILE | bash
-#		$INSTALL_DIR/$SETUP_LINUX_FILE
+		$INSTALL_DIR/$SETUP_LINUX_FILE
 #		curl -s $DOWN_URL/config/$SETUP_LINUX_FILE | bash
-mkdir -p $ORACLE_BASE/scripts/setup && \
-mkdir $ORACLE_BASE/scripts/startup && \
-ln -s $ORACLE_BASE/scripts /docker-entrypoint-initdb.d && \
-mkdir $ORACLE_BASE/oradata && \
-chmod ug+x $ORACLE_BASE/*.sh && \
-echo "install oracle prepare" && yum -y install oracle-database-$CODE unzip tar openssl && \
-rm -rf /var/cache/yum && \
-echo oracle:oracle | chpasswd && \
-chown -R oracle:dba $ORACLE_BASE
 
 	# install gosu
 	echo "install gosu"
