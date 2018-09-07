@@ -11,103 +11,36 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
-if [[ -f /etc/alpine-release ]]; then
+if [[ -f /etc/debian_version ]]; then
 	# set environment
-	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
-	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Postgresql%20install"
+	export DEBIAN_FRONTEND=noninteractive
+		PG_APP_HOME=${PG_APP_HOME:-"/etc/docker-postgresql"} \
+		PG_USER=${PG_USER:-"postgres"} \
+		PG_HOME=${PG_HOME:-"/var/lib/postgresql"} \
+		PG_RUNDIR=${PG_RUNDIR:-"/run/postgresql"} \
+		PG_LOGDIR=${PG_LOGDIR:-"/var/log/postgresql"} \
+		PG_CERTDIR=${PG_CERTDIR:-"/etc/postgresql/certs"}
 	# install depend
-		apk add --no-cache ca-certificates gnupg openssl
-	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
-	# ensure elasticsearch user exists
-		adduser -DH -s /sbin/nologin elasticsearch
-	# install elasticsearch
-	cd /tmp \
-	  && echo "===> Install Elasticsearch..." \
-	  && wget --no-check-certificate --progress=bar:force -O elasticsearch.tar.gz "$ES_TARBAL"; \
-	  tar -xf elasticsearch.tar.gz \
-	  && ls -lah \
-	  && mv elasticsearch-$ES_VERSION /usr/share/elasticsearch \
-	  && echo "===> Creating Elasticsearch Paths..." \
-	  && for path in \
-	  	/usr/share/elasticsearch/data \
-	  	/usr/share/elasticsearch/logs \
-	  	/usr/share/elasticsearch/config \
-	  	/usr/share/elasticsearch/config/scripts \
-		/usr/share/elasticsearch/tmp \
-	  	/usr/share/elasticsearch/plugins \
-	  ; do \
-	  mkdir -p "$path"; \
-	  chown -R elasticsearch:elasticsearch "$path"; \
-	  done \
-	  && rm -rf /tmp/*
+		wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+		&& echo "deb http://apt.postgresql.org/pub/repos/apt/ $OSDEB-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+		&& apt-get update \
+		&& apt-get install -y acl sudo \
+		postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION} \
+		&& ln -sf ${PG_DATADIR}/postgresql.conf /etc/postgresql/${PG_VERSION}/main/postgresql.conf \
+		&& ln -sf ${PG_DATADIR}/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/pg_hba.conf \
+		&& ln -sf ${PG_DATADIR}/pg_ident.conf /etc/postgresql/${PG_VERSION}/main/pg_ident.conf
+	# clean
+		&& rm -rf ${PG_HOME} \
+		&& apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
+
 	# download config files
-		downloadentrypoint() {
-			[[ ! -f /start.sh ]] || rm -f /start.sh
-			cd /
-		if [[ "$ES" = "6" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch6_start.sh
-		elif [[ "$ES" = "1" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch1_start.sh
-		elif [[ "$ES" = "2" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch2_start.sh
-		else
-			wget -O /start.sh $DOWN_URL/elasticsearch5_start.sh
-		fi
-			chmod 755 /start.sh
-		}
-		prepareconfig() {
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			FILETEMP=/usr/share/elasticsearch/config
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
-		else
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
-		fi
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			echo not download
-		else
-			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
-		fi
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			FILETEMP=/usr/share/elasticsearch/config/logging.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
-		fi
-		}
-		prepagelogrotage() {
-			FILETEMP=/etc/logrotate.d/elasticsearch
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			echo not download
-		else
-			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
-		fi
-		}
-	if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-		prepareconfig
-	# download entrypoint
-		downloadentrypoint
-	else
-		prepagelogrotage
-		prepareconfig
-	# download entrypoint
-		downloadentrypoint
-	fi
-	if [[ "$XPACK" = "true" ]]; then
-		FILETEMP=/usr/share/elasticsearch/config/x-pack
-		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
+		[[ ! -f /entrypoint.sh ]] || rm -f /start.sh
+		FILETEMP=/entrypoint.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
-	fi
+		wget -O $FILETEMP $DOWN_URL$FILETEMP
+		chmod 755 $FILETEMP
+		
 else
     echo "Not support your OS"
     exit

@@ -12,38 +12,38 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
-# set host download
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
-# add Percona's repo for xtrabackup (which is useful for Galera)
-	curl -s $DOWN_URL/percona_repo.sh | bash
-# install gosu
-	curl -s $DOWN_URL/gosu_install.sh | bash
-# add repo Mariadb, Mysql
-	curl -s $DOWN_URL/mariadb_repo.sh | bash
-# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-	groupadd -r mysql && useradd -r -g mysql mysql
-# install "pwgen" for randomizing passwords
-# install "tzdata" for /usr/share/zoneinfo/
-	apt-get install -y --no-install-recommends pwgen dirmngr tzdata
-# make docker-entrypoint-initdb
-	mkdir /docker-entrypoint-initdb.d
-# Set frontend debian
-	export DEBIAN_FRONTEND=noninteractive
-# set loop
-	finish() {
-		# download entrypoint
-			FILETEMP=/start.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
-			chmod 755 $FILETEMP
-		# download backup script
-			wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
-			chmod 755 /backup.sh
-		# prepare etc start
-			curl -s $DOWN_URL/prepare_final.sh | bash
-		# remove packages
-			apt-get purge wget curl -y
-		}
+	# set host download
+		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
+	# add Percona's repo for xtrabackup (which is useful for Galera)
+		curl -s $DOWN_URL/percona_repo.sh | bash
+	# install gosu
+		curl -s $DOWN_URL/gosu_install.sh | bash
+	# add repo Mariadb, Mysql
+		curl -s $DOWN_URL/mariadb_repo.sh | bash
+	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+		groupadd -r mysql && useradd -r -g mysql mysql
+	# install "pwgen" for randomizing passwords
+	# install "tzdata" for /usr/share/zoneinfo/
+		apt-get install -y --no-install-recommends pwgen dirmngr tzdata
+	# make docker-entrypoint-initdb
+		mkdir /docker-entrypoint-initdb.d
+	# Set frontend debian
+		export DEBIAN_FRONTEND=noninteractive
+	# set loop
+		finish() {
+			# download entrypoint
+				FILETEMP=/start.sh
+				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+				chmod 755 $FILETEMP
+			# download backup script
+				wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
+				chmod 755 /backup.sh
+			# prepare etc start
+				curl -s $DOWN_URL/prepare_final.sh | bash
+			# remove packages
+				apt-get purge wget curl -y
+			}
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# install mysql over repo with major version
 	set -e;\

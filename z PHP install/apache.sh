@@ -43,6 +43,11 @@ if [[ -f /etc/lsb-release ]]; then
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/default-ssl.conf
 	fi
 
+	# install php
+	if [[ ! -z "${PHP_VERSION}" ]]; then
+		curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
+	fi
+
 else
     echo "Not support your OS"
     exit

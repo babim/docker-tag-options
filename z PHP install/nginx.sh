@@ -43,6 +43,10 @@ if [[ -f /etc/lsb-release ]]; then
 	# prepare etc start
 	    curl -s $DOWN_URL/prepare_final.sh | bash
 
+	# install php
+	if [[ ! -z "${PHP_VERSION}" ]]; then
+		curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
+	fi
 else
     echo "Not support your OS"
     exit

@@ -1,1 +1,0 @@
-	apk del --purge wget curl ca-certificates gnupg openssl
