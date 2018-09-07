@@ -26,17 +26,17 @@ if [ -f /etc/redhat-release ]; then
 	echo "set environment"
 	export ORACLE_BASE=${ORACLE_BASE:-"/opt/oracle"}
 	export ORACLE_HOME=${ORACLE_HOME:-$ORACLE_BASE/product/$VERSION/dbhome_1}
-	export INSTALL_RSP="db_inst.rsp"
-	export CONFIG_RSP="dbca.rsp.tmpl"
-	export PWD_FILE="setPassword.sh"
-	export RUN_FILE="runOracle.sh"
-	export START_FILE="startDB.sh"
-	export CREATE_DB_FILE="createDB.sh"
-	export SETUP_LINUX_FILE="setupLinuxEnv.sh"
-	export CHECK_SPACE_FILE="checkSpace.sh"
-	export CHECK_DB_FILE="checkDBStatus.sh"
-	export USER_SCRIPTS_FILE="runUserScripts.sh"
-	export INSTALL_DB_BINARIES_FILE="installDBBinaries.sh"
+	export INSTALL_RSP=${INSTALL_RSP:-"db_inst.rsp"}
+	export CONFIG_RSP=${CONFIG_RSP:-"dbca.rsp.tmpl"}
+	export PWD_FILE=${PWD_FILE:-"setPassword.sh"}
+	export RUN_FILE=${RUN_FILE:-"runOracle.sh"}
+	export START_FILE=${START_FILE:-"startDB.sh"}
+	export CREATE_DB_FILE=${CREATE_DB_FILE:-"createDB.sh"}
+	export SETUP_LINUX_FILE=${SETUP_LINUX_FILE:-"setupLinuxEnv.sh"}
+	export CHECK_SPACE_FILE=${CHECK_SPACE_FILE:-"checkSpace.sh"}
+	export CHECK_DB_FILE=${CHECK_DB_FILE:-"checkDBStatus.sh"}
+	export USER_SCRIPTS_FILE=${USER_SCRIPTS_FILE:-"runUserScripts.sh"}
+	export INSTALL_DB_BINARIES_FILE=${INSTALL_DB_BINARIES_FILE:-"installDBBinaries.sh"}
 	# Use second ENV so that variable get substituted
 	export INSTALL_DIR=${INSTALL_DIR:-$ORACLE_BASE/install}
 	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
