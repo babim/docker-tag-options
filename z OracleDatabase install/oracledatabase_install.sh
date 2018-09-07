@@ -24,8 +24,8 @@ if [ -f /etc/redhat-release ]; then
 	fi
 	# set environment
 	echo "set environment"
-#	export ORACLE_BASE=${ORACLE_BASE:-"/opt/oracle"}
-#	export ORACLE_HOME=${ORACLE_HOME:-"$ORACLE_BASE/product/$VERSION/dbhome_1"}
+	export ORACLE_BASE=${ORACLE_BASE:-"/opt/oracle"}
+	export ORACLE_HOME=${ORACLE_HOME:-"$ORACLE_BASE/product/$VERSION/dbhome_1"}
 	export INSTALL_RSP="db_inst.rsp"
 	export CONFIG_RSP="dbca.rsp.tmpl"
 	export PWD_FILE="setPassword.sh"
@@ -38,18 +38,18 @@ if [ -f /etc/redhat-release ]; then
 	export USER_SCRIPTS_FILE="runUserScripts.sh"
 	export INSTALL_DB_BINARIES_FILE="installDBBinaries.sh"
 	# Use second ENV so that variable get substituted
-#	export INSTALL_DIR=${INSTALL_DIR:-"$ORACLE_BASE/install"}
-#	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
-#	export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/lib
-#	export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+	export INSTALL_DIR=${INSTALL_DIR:-"$ORACLE_BASE/install"}
+	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
+	export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/lib
+	export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
 	# Copy binaries
 	# -------------
 	echo "Copy binaries"
 	mkdir -p $INSTALL_DIR/
 	cd $INSTALL_DIR/ && pwd
 		wget -O $INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
-		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
-		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
+#		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
+#		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
 		wget --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
 	cd $ORACLE_BASE/ && pwd
 		wget --no-check-certificate $DOWN_URL/config/$RUN_FILE
@@ -77,9 +77,11 @@ if [ -f /etc/redhat-release ]; then
 	fi
 	# Install prepare setup
 	echo "Install prepare setup"
-		sync && \
-		$INSTALL_DIR/$CHECK_SPACE_FILE && \
-		$INSTALL_DIR/$SETUP_LINUX_FILE
+		sync
+#		$INSTALL_DIR/$CHECK_SPACE_FILE
+		curl -s $DOWN_URL/config/$CHECK_SPACE_FILE | bash
+#		$INSTALL_DIR/$SETUP_LINUX_FILE
+		curl -s $DOWN_URL/config/$SETUP_LINUX_FILE | bash
 
 	# install gosu
 	echo "install gosu"
