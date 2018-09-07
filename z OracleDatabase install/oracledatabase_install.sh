@@ -46,12 +46,12 @@ if [ -f /etc/redhat-release ]; then
 	# -------------
 	echo "Copy binaries"
 	mkdir -p $INSTALL_DIR/
-	cd $INSTALL_DIR/
+	cd $INSTALL_DIR/ && pwd
 		wget -O $INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
 		wget --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
 		wget --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
 		wget --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
-	cd $ORACLE_BASE/
+	cd $ORACLE_BASE/ && pwd
 		wget --no-check-certificate $DOWN_URL/config/$RUN_FILE
 		wget --no-check-certificate $DOWN_URL/config/$START_FILE
 		wget --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
@@ -62,7 +62,7 @@ if [ -f /etc/redhat-release ]; then
 	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files
 	echo "Download setup files"
-	cd $INSTALL_DIR/ && \
+	cd $INSTALL_DIR/ && pwd
 	if [[ ! -z "${INSTALL_FILE_1}" ]]; then
 		if [ ! -f "$INSTALL_FILE_1" ]; then wget --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1; fi
 	fi
