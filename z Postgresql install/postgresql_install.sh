@@ -11,7 +11,7 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
-if [[ -f /etc/debian_version ]]; then
+if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# set environment
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Postgresql%20install"
 	export DEBIAN_FRONTEND=noninteractive

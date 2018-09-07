@@ -44,6 +44,7 @@ if [[ -f /etc/debian_version ]]; then
 			# remove packages
 				apt-get purge wget curl -y
 			}
+			
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# install mysql over repo with major version
 	set -e;\
@@ -105,10 +106,11 @@ elif [[ "$TYPESQL" == "mysql" ]];then
 
 elif [[ "$TYPESQL" == "mysql5" ]];then
 	# install mysql over repo with major version
-	wget -q --no-check-certificate "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O mysql.tar.gz \
+	FILETEMP=mysql.tar.gz
+	wget -q --no-check-certificate "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O $FILETEMP \
 		&& mkdir /usr/local/mysql \
-		&& tar -xzf mysql.tar.gz -C /usr/local/mysql --strip-components=1 \
-		&& rm mysql.tar.gz \
+		&& tar -xzf $FILETEMP -C /usr/local/mysql --strip-components=1 \
+		&& rm $FILETEMP \
 		&& rm -rf /usr/local/mysql/mysql-test /usr/local/mysql/sql-bench \
 		&& rm -rf /usr/local/mysql/bin/*-debug /usr/local/mysql/bin/*_embedded \
 		&& find /usr/local/mysql -type f -name "*.a" -delete \

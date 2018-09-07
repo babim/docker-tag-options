@@ -49,5 +49,5 @@ elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	#export MYSQL_VERSION=5.5.61
 	echo "deb http://repo.mysql.com/apt/debian/ $OSDEB mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 else
-	echo 'Not support your sql"
+	echo "Not support your sql"
 fi
