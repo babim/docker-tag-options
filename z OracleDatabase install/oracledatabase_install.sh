@@ -64,16 +64,16 @@ if [ -f /etc/redhat-release ]; then
 	echo "Download setup files"
 #	cd $INSTALL_DIR/ && pwd
 	if [[ ! -z "${INSTALL_FILE_1}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_1 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1; fi
+		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_1 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_1; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_2}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_2 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2; fi
+		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_2 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_2; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_3}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_3 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3; fi
+		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_3 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_3; fi
 	fi
 	if [[ ! -z "${INSTALL_FILE_4}" ]]; then
-		if [ ! -f "$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_4 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4; fi
+		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_4 --no-check-certificate --progress=bar:force $HOST_DOWN/$INSTALL_FILE_4; fi
 	fi
 	# Install prepare setup
 	echo "Install prepare setup"
