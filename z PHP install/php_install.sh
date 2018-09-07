@@ -113,7 +113,7 @@ elif [[ "$PHP_VERSION" == "7.2" ]];then
 	phpfinal
 	preparefinal
 	laravelinstall
-
+fi
 else
     echo "Not support your OS"
     exit
