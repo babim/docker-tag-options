@@ -25,7 +25,7 @@ if [ -f /etc/redhat-release ]; then
 	# set environment
 	echo "set environment"
 	export ORACLE_BASE=${ORACLE_BASE:-"/opt/oracle"}
-	export ORACLE_HOME=${ORACLE_HOME:-"$ORACLE_BASE/product/$VERSION/dbhome_1"}
+	export ORACLE_HOME=${ORACLE_HOME:-$ORACLE_BASE/product/$VERSION/dbhome_1}
 	export INSTALL_RSP="db_inst.rsp"
 	export CONFIG_RSP="dbca.rsp.tmpl"
 	export PWD_FILE="setPassword.sh"
@@ -38,7 +38,7 @@ if [ -f /etc/redhat-release ]; then
 	export USER_SCRIPTS_FILE="runUserScripts.sh"
 	export INSTALL_DB_BINARIES_FILE="installDBBinaries.sh"
 	# Use second ENV so that variable get substituted
-	export INSTALL_DIR=${INSTALL_DIR:-"$ORACLE_BASE/install"}
+	export INSTALL_DIR=${INSTALL_DIR:-$ORACLE_BASE/install}
 	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
 	export LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/lib
 	export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib

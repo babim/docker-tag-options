@@ -56,12 +56,12 @@ fi
 ####################################################
 # create static environment group command
 ssh-create() {
-    if [ ! -f "/SSH" ]; then
+    if [ ! -f "/SSH.check" ]; then
         os-update
         ssh-start
         os-clean
         ssh-run
-    elif [ -f "/SSH" ]; then
+    elif [ -f "/SSH.check" ]; then
         ssh-run
     fi
 }
@@ -72,12 +72,12 @@ ssh-del() {
 }
 
 cron-create() {
-    if [ ! -f "/CRON" ]; then
+    if [ ! -f "/CRON.check" ]; then
         os-update
         cron-start
         os-clean
         cron-run
-    elif [ -f "/CRON" ]; then
+    elif [ -f "/CRON.check" ]; then
         cron-run
     fi
 }
@@ -88,12 +88,12 @@ cron-del() {
 }
 
 nfs-create() {
-    if [ ! -f "/NFS" ]; then
+    if [ ! -f "/NFS.check" ]; then
         os-update
         nfs-start
         os-clean
         nfs-run
-    elif [ -f "/NFS" ]; then
+    elif [ -f "/NFS.check" ]; then
         nfs-run
     fi
 }
@@ -104,9 +104,9 @@ nfs-del() {
 }
 
 synology-create() {
-    if [ ! -f "/SYNOLOGY" ]; then
+    if [ ! -f "/SYNOLOGY.check" ]; then
         synology-start
-    elif [ -f "/SYNOLOGY" ]; then
+    elif [ -f "/SYNOLOGY.check" ]; then
         echo done
     fi
 }
@@ -115,11 +115,11 @@ synology-del() {
 }
 
 upgrade-create() {
-    if [ ! -f "/UPGRADE" ]; then
+    if [ ! -f "/UPGRADE.check" ]; then
         os-update
         os-upgrade
         os-clean
-    elif [ -f "/UPGRADE" ]; then
+    elif [ -f "/UPGRADE.check" ]; then
         echo done
     fi
 }
@@ -129,12 +129,12 @@ upgrade-del() {
 }
 
 pagespeed-create() {
-    if [ ! -f "/PAGESPEED" ]; then
+    if [ ! -f "/PAGESPEED.check" ]; then
         os-update
         pagespeed-start
         os-clean
         quit_command
-    elif [ -f "/PAGESPEED" ]; then
+    elif [ -f "/PAGESPEED.check" ]; then
         quit_command
     fi
 }
@@ -145,12 +145,12 @@ pagespeed-del() {
 }
 
 modsecurity-create() {
-    if [ ! -f "/MODSECURITY" ]; then
+    if [ ! -f "/MODSECURITY.check" ]; then
         os-update
         modsecurity-start
         os-clean
         quit_command
-    elif [ -f "/MODSECURITY" ]; then
+    elif [ -f "/MODSECURITY.check" ]; then
         quit_command
     fi
 }
@@ -163,47 +163,49 @@ modsecurity-del() {
 ####################################################
 # remove static environment group command
 ssh-remove() {
-    if [ -f "/SSH" ]; then rm -f /SSH; fi
+    if [ -f "/SSH.check" ]; then rm -f /SSH.check; fi
     if [ $OSRUN = redhat ]; then redhat-ssh-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-ssh-remove; fi
     if [ $OSRUN = alpine ]; then alpine-ssh-remove; fi
 }
 cron-remove() {
-    if [ -f "/CRON" ]; then rm -f /CRON; fi
+    if [ -f "/CRON.check" ]; then rm -f /CRON.check; fi
     if [ $OSRUN = redhat ]; then redhat-cron-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-cron-remove; fi
     if [ $OSRUN = alpine ]; then alpine-cron-remove; fi
 }
 nfs-remove() {
-    if [ -f "/NFS" ]; then rm -f /NFS; fi
+    if [ -f "/NFS.check" ]; then rm -f /NFS.check; fi
     if [ $OSRUN = redhat ]; then redhat-nfs-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-nfs-remove; fi
     if [ $OSRUN = alpine ]; then alpine-nfs-remove; fi
 }
 upgrade-remove() {
-    if [ -f "/UPGRADE" ]; then rm -f /UPGRADE; fi
+    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
     if [ $OSRUN = redhat ]; then redhat-upgrade-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-upgrade-remove; fi
     if [ $OSRUN = alpine ]; then alpine-upgrade-remove; fi
 }
 synology-remove() {
-    if [ -f "/SYNOLOGY" ]; then rm -f /SYNOLOGY; fi
+    if [ -f "/SYNOLOGY.check" ]; then rm -f /SYNOLOGY.check; fi
     if [ $OSRUN = redhat ]; then redhat-synology-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-synology-remove; fi
     if [ $OSRUN = alpine ]; then alpine-synology-remove; fi
 }
 pagespeed-remove() {
-    if [ -f "/SYNOLOGY" ]; then rm -f /PAGESPEED; fi
+    if [ -f "/SYNOLOGY.check" ]; then rm -f /PAGESPEED.check; fi
     if [ $OSRUN = redhat ]; then redhat-pagespeed-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-pagespeed-remove; fi
     if [ $OSRUN = alpine ]; then alpine-pagespeed-remove; fi
 }
 modsecurity-remove() {
-    if [ -f "/SYNOLOGY" ]; then rm -f /MODSECURITY; fi
+    if [ -f "/SYNOLOGY.check" ]; then rm -f /MODSECURITY.check; fi
     if [ $OSRUN = redhat ]; then redhat-modsecurity-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-modsecurity-remove; fi
     if [ $OSRUN = alpine ]; then alpine-modsecurity-remove; fi
 }
+os-upgrade-remove() {
+    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
 ####################################################
 # detect run group
 os-clean() {
@@ -251,8 +253,6 @@ os-upgrade() {
     if [ $OSRUN = ubuntu ]; then ubuntu-upgrade; fi
     if [ $OSRUN = alpine ]; then alpine-upgrade; fi
 }
-os-upgrade-remove() {
-    if [ -f "/UPGRADE" ]; then rm -f /UPGRADE; fi
 }
 os-update() {
     if [ $OSRUN = redhat ]; then redhat-update; fi
@@ -314,17 +314,17 @@ redhat-update() {
 alpine-upgrade() {
     echo 'Upgrade OS'
     apk --no-cache upgrade
-    touch /UPGRADE
+    touch /UPGRADE.check
 }
 ubuntu-upgrade() {
     echo 'Upgrade OS'
     apt-get upgrade -y
-    touch /UPGRADE
+    touch /UPGRADE.check
 }
 redhat-upgrade() {
     echo 'Upgrade OS'
     yum update -y
-    touch /UPGRADE
+    touch /UPGRADE.check
 }
 
 ####################################################
@@ -335,7 +335,7 @@ redhat-upgrade() {
 alpine-cron-start() {
     mkdir -p /etc-start/periodic /etc-start/periodic && \
     cp -R /etc/crontabs/* /etc-start/crontabs && cp -R /etc/periodic/* /etc-start/periodic
-    touch /CRON
+    touch /CRON.check
 }
 alpine-cron-remove() {
     echo "No need do anything"
@@ -354,7 +354,7 @@ alpine-nfs-start() {
     export MOUNT_OPTIONS=${MOUNT_OPTIONS:-nfsvers=4}
     export MOUNTPOINT=${MOUNTPOINT:-/mnt/nfs-1}
     apk add --no-cache nfs-utils
-    touch /NFS
+    touch /NFS.check
 }
 alpine-nfs-remove() {
     apk del nfs-utils
@@ -368,7 +368,7 @@ alpine-ssh-start() {
     mkdir /var/run/sshd
     # allow root ssh
     sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
-    touch /SSH
+    touch /SSH.check
 }
 alpine-ssh-remove() {
     # remove ssh
@@ -425,7 +425,7 @@ alpine-synology-start() {
         addgroup -g 66 ${USER2} && adduser -D -H -G ${USER2} -s /bin/false -u 66 ${USER2}
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
-    touch /SYNOLOGY
+    touch /SYNOLOGY.check
 }
 alpine-synology-remove() {
 # Checking user account
@@ -438,7 +438,7 @@ alpine-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /PAGESPEED
+    touch /PAGESPEED.check
 }
 alpine-pagespeed-remove() {
     echo "not found on alpine linux"
@@ -450,7 +450,7 @@ alpine-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /MODSECUROTY
+    touch /MODSECUROTY.check
 }
 alpine-modsecurity-remove() {
     echo "not found on alpine linux"
@@ -460,7 +460,7 @@ alpine-modsecurity-remove() {
 
 redhat-cron-start() {
     yum install -y cronie
-    touch /CRON
+    touch /CRON.check
 }
 redhat-cron-remove() {
     yum remove -y cronie
@@ -472,7 +472,7 @@ redhat-cron() {
 
 redhat-nfs-start() {
     yum install -y nfs-utils
-    touch /NFS
+    touch /NFS.check
 }
 redhat-nfs-remove() {
     yum remove -y nfs-utils
@@ -480,7 +480,7 @@ redhat-nfs-remove() {
 
 redhat-ssh-start() {
     yum install -y openssh-server
-    touch /SSH
+    touch /SSH.check
 }
 redhat-ssh-remove() {
     yum remove -y openssh-server
@@ -521,7 +521,7 @@ redhat-synology-start() {
     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
-    touch /SYNOLOGY
+    touch /SYNOLOGY.check
 }
 redhat-synology-remove() {
     echo "No need do anything"
@@ -537,7 +537,7 @@ redhat-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /PAGESPEED
+    touch /PAGESPEED.check
 }
 redhat-pagespeed-remove() {
     yum remove -y *pagespeed*
@@ -549,7 +549,7 @@ redhat-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /MODSECUROTY
+    touch /MODSECUROTY.check
 }
 redhat-modsecurity-remove() {
         yum remove -y mod_security
@@ -560,7 +560,7 @@ redhat-modsecurity-remove() {
 ubuntu-cron-start() {
     # install
     apt-get install -y cron
-    touch /CRON
+    touch /CRON.check
 }
 ubuntu-cron-remove() {
     # remove
@@ -574,7 +574,7 @@ ubuntu-cron() {
 ubuntu-nfs-start() {
 # install
     apt-get install -y nfs-common
-    touch /NFS
+    touch /NFS.check
 }
 ubuntu-nfs-remove() {
 # remove
@@ -593,7 +593,7 @@ ubuntu-ssh-start() {
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
     export NOTVISIBLE="in users profile"
     echo "export VISIBLE=now" >> /etc/profile
-    touch /SSH
+    touch /SSH.check
 }
 ubuntu-ssh-remove() {
 # remove
@@ -635,7 +635,7 @@ ubuntu-synology-start() {
     if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
         usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
     fi
-    touch /SYNOLOGY
+    touch /SYNOLOGY.check
 }
 ubuntu-synology-remove() {
     echo "No need do anything"
@@ -651,7 +651,7 @@ ubuntu-pagespeed-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /PAGESPEED
+    touch /PAGESPEED.check
 }
 ubuntu-pagespeed-remove() {
         apt-get purge -y *pagespeed*
@@ -664,7 +664,7 @@ ubuntu-modsecurity-start() {
     else
         echo "Not have Apache2 on this Server"
     fi
-    touch /MODSECUROTY
+    touch /MODSECUROTY.check
 }
 ubuntu-modsecurity-remove() {
         apt-get purge -y libapache2-mod-security2
@@ -724,7 +724,7 @@ quit_command() {
         ssh-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /SSH ]; then ssh-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /SSH.check ]; then ssh-del; fi
 # nfs
     # install
     if [ "$NFSOPTION" = "true" ] || [ "$NFSOPTION" = "on" ]; then
@@ -732,7 +732,7 @@ quit_command() {
         nfs-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /NFS ]; then nfs-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /NFS.check ]; then nfs-del; fi
 # cron
     # install
     if [ "$CRONOPTION" = "true" ] || [ "$CRONOPTION" = "on" ]; then
@@ -740,7 +740,7 @@ quit_command() {
        cron-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /CRON ]; then cron-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /CRON.check ]; then cron-del; fi
 # synology
     # install
     if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
@@ -748,7 +748,7 @@ quit_command() {
        synology-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /SYNOLOGY ]; then synology-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /SYNOLOGY.check ]; then synology-del; fi
 # upgrade
     # install
     if [ "$UPGRADEOPTION" = "true" ] || [ "$UPGRADEOPTION" = "on" ]; then
@@ -756,7 +756,7 @@ quit_command() {
        upgrade-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /UPGRADE ]; then upgrade-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /UPGRADE.check ]; then upgrade-del; fi
 # pagespeed
     # install
     if [ "$PAGESPEEDOPTION" = "true" ] || [ "$PAGESPEEDOPTION" = "on" ]; then
@@ -764,7 +764,7 @@ quit_command() {
        pagespeed-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED ]; then pagespeed-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED.check ]; then pagespeed-del; fi
 # modsecurity
     # install
     if [ "$MODSECURITYOPTION" = "true" ] || [ "$MODSECURITYOPTION" = "on" ]; then
@@ -772,7 +772,7 @@ quit_command() {
        modsecurity-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /MODSECURITY ]; then modsecurity-del; fi
+    if [ "$SSHOPTION" = "false" ] && [ -f /MODSECURITY.check ]; then modsecurity-del; fi
 # DNS
     # install
     if [ "$DNSOPTION" = "google" ]; then
