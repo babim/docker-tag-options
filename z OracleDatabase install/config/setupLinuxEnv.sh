@@ -19,7 +19,7 @@ ln -s $ORACLE_BASE/scripts /docker-entrypoint-initdb.d && \
 mkdir $ORACLE_BASE/oradata && \
 chmod ug+x $ORACLE_BASE/*.sh && \
 echo "install package preinstall $CODE" && \
-yum -y install oracle-database-$CODE unzip tar openssl && \
+yum -y install $PREINSTALLPACK unzip tar openssl && \
 rm -rf /var/cache/yum && \
 echo oracle:oracle | chpasswd && \
 chown -R oracle:dba $ORACLE_BASE

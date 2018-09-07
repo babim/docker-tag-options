@@ -16,11 +16,11 @@ if [ -f /etc/redhat-release ]; then
 	HOST_DOWN="http://media.matmagoc.com/oracle"
 	# set code
 	if [[ "$VERSION" == "12.2.0.1" ]] || [[ "$VERSION" == "12cr2" ]]; then
-		export CODE=${CODE:-"server-12cR2-preinstall"}
+		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-server-12cR2-preinstall"}
 	elif [[ "$VERSION" == "12.1.0.2" ]] || [[ "$VERSION" == "12cr1" ]]; then
-		export CODE=${CODE:-"server-12cR1-preinstall"}
+		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-rdbms-server-12cR1-preinstall"}
 	elif [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
-		export CODE=${CODE:-"preinstall-18c"}
+		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-preinstall-18c"}
 	fi
 	# set environment
 	echo "set environment"
