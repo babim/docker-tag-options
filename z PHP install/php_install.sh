@@ -130,6 +130,7 @@ if [[ -f /etc/lsb-release ]]; then
 			sed -i -E \
 			-e "s/listen = .*/listen = \/var\/run\/php-fpm.sock/g" \
 		$VARIABLE/$FILETEMP
+		fi
 		}
 	setphptweakfpm() {
 		# set php value
