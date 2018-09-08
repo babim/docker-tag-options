@@ -131,19 +131,14 @@ if [[ -f /etc/lsb-release ]]; then
 	# Define default command.
 		FILETEMP=/startup.sh
 		echo '#!/bin/bash' > $FILETEMP && \
+		echo '# option with entrypoint' >> $FILETEMP && \
+		echo 'if [ -f "/option.sh" ]; then /option.sh; fi' >> $FILETEMP && \
 		echo "rm -rf /tmp/.X*" >> $FILETEMP && \
 		echo "USER=root" >> $FILETEMP && \
 		echo "HOME=/root" >> $FILETEMP && \
 		echo "export USER HOME" >> $FILETEMP && \
 		echo "vncserver :1" >> $FILETEMP && \
 		chmod +x $FILETEMP
-
-	# clean
-		apt-get purge build-essential automake -y && apt-get clean && \
-		apt-get autoclean && \
-		apt-get autoremove -y --purge && \
-		rm -rf /var/lib/apt/lists/*
-		#disable freerdp-x11 remmina virt-manager
 
 else
     echo "Not support your OS"
