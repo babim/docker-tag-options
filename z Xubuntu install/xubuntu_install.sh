@@ -15,11 +15,11 @@ if [[ -f /etc/lsb-release ]]; then
 	# set environment
 	export DEBIAN_FRONTEND=noninteractive
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
-		FREEFILESYNC=9.3_Ubuntu_16.04_64-bit
-		IPSCAN=3.5.3
-		CROSSOVER=16.2.5-1
-		WIMLIB=1.12.0
-		ADMINAPP=${ADMINAPP:-true}
+		export FREEFILESYNC=9.3_Ubuntu_16.04_64-bit
+		export IPSCAN=3.5.3
+		export CROSSOVER=16.2.5-1
+		export WIMLIB=1.12.0
+		export ADMINAPP=${ADMINAPP:-true}
 	if [[ "$ADMINAPP" == "true" ]];then
 		ADMINAPPALL=${ADMINAPPALL:-true}
 	fi
@@ -61,95 +61,55 @@ if [[ -f /etc/lsb-release ]]; then
 	fi
 	# Wimlib
 		if [[ "$WIMLIB_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		apt-get install -y libxml2-dev ntfs-3g-dev ntfs-3g libfuse-dev libattr1-dev libssl-dev pkg-config build-essential automake && \
-		cd /tmp && wget https://wimlib.net/downloads/wimlib-$WIMLIB.tar.gz && tar xzvpf wimlib* && cd wimlib* && ./configure && make && make install && ldconfig && cd .. && \
-		rm -rf /tmp/winlib*
+			wget -O - $DOWN_URL/wimlib_install.sh | bash
 		fi
 	# crossover
 		if [[ "$CROSSOVER_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		apt-get install -y gcc-5-base:i386 gcc-6-base:i386 krb5-locales libavahi-client3:i386 \
-		libavahi-common-data:i386 libavahi-common3:i386 libbsd0:i386 libc6:i386 \
-		libcomerr2:i386 libcups2:i386 libdbus-1-3:i386 libdrm-amdgpu1:i386 \
-		libdrm-intel1:i386 libdrm-nouveau2:i386 libdrm-radeon1:i386 libdrm2:i386 \
-		libedit2:i386 libelf1:i386 libexpat1:i386 libffi6:i386 libfreetype6:i386 \
-		libgcc1:i386 libgcrypt20:i386 libgl1-mesa-dri:i386 libgl1-mesa-glx:i386 \
-		libglapi-mesa:i386 libglu1-mesa:i386 libgmp10:i386 libgnutls30:i386 \
-		libgpg-error0:i386 libgssapi-krb5-2:i386 libhogweed4:i386 libidn11:i386 \
-		libk5crypto3:i386 libkeyutils1:i386 libkrb5-3:i386 libkrb5support0:i386 \
-		liblcms2-2:i386 libllvm3.8:i386 liblzma5:i386 libnettle6:i386 \
-		libp11-kit0:i386 libpciaccess0:i386 libpcre3:i386 libpng12-0:i386 \
-		libselinux1:i386 libstdc++6:i386 libsystemd0:i386 libtasn1-6:i386 \
-		libtinfo5:i386 libtxc-dxtn-s2tc0:i386 libudev1:i386 libx11-6:i386 \
-		libx11-xcb1:i386 libxau6:i386 libxcb-dri2-0:i386 libxcb-dri3-0:i386 \
-		libxcb-glx0:i386 libxcb-present0:i386 libxcb-sync1:i386 libxcb1:i386 \
-		libxcursor1:i386 libxdamage1:i386 libxdmcp6:i386 libxext6:i386 \
-		libxfixes3:i386 libxi6:i386 libxrandr2:i386 libxrender1:i386 \
-		libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386 && \
-		cd /tmp && wget http://media.matmagoc.com/crossover_$CROSSOVER.deb && dpkg -i crossover*.deb && \
-		rm -rf /tmp/crossover*
-		FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so
+			wget -O - $DOWN_URL/crossover_install.sh | bash
 		fi
 	# freefile sync
 		if [[ "$FREEFILESYNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		wget http://media.matmagoc.com/FreeFileSync_$FREEFILESYNC.tar.gz && \
-		tar -xzvpf FreeFileSync_$FREEFILESYNC.tar.gz -C /opt && rm -f FreeFileSync_$FREEFILESYNC.tar.gz
-		mkdir -p /root/Desktop
-		wget -O /root/Desktop/FreeFileSync.desktop http://media.matmagoc.com/FreeFileSync.desktop && \
-		chmod +x /root/Desktop/FreeFileSync.desktop
+			wget -O - $DOWN_URL/freefilesync_install.sh | bash
 		fi
 		    
 	# navicat_premium
 		if [[ "$NAVICAT_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		wget http://media.matmagoc.com/navicat_premium.tar.gz && \
-		tar -xzvpf navicat_premium.tar.gz -C /opt && rm -f navicat_premium.tar.gz
-		wget -O /root/Desktop/navicat.desktop http://media.matmagoc.com/navicat.desktop && \
-		chmod +x /root/Desktop/navicat.desktop
+			wget -O - $DOWN_URL/navicat_install.sh | bash
 		fi
 
 	# razorsql
 		if [[ "$RAZORSQL_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		wget http://media.matmagoc.com/razorsql_linux_x64.tar.gz && \
-		tar -xzvpf razorsql_linux_x64.tar.gz -C /opt && rm -f razorsql_linux_x64.tar.gz && \
-		wget http://media.matmagoc.com/razorsqlreg.tar.gz && \
-		tar -xzvpf razorsqlreg.tar.gz -C /root && rm -f razorsqlreg.tar.gz
-		wget -O /root/Desktop/razorsql.desktop http://media.matmagoc.com/razorsql.desktop && \
-		chmod +x /root/Desktop/razorsql.desktop
+			wget -O - $DOWN_URL/razorsql_install.sh | bash
 		fi
 		    
 	# angry ip scanner
 		if [[ "$IPSCAN_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		wget https://github.com/angryip/ipscan/releases/download/$IPSCAN/ipscan_$IPSCAN_amd64.deb && \
-		apt-get install -y --force-yes \
-		ca-certificates-java fonts-dejavu-extra java-common libbonobo2-0 \
-		libbonobo2-common libgnome-2-0 libgnome2-common libgnomevfs2-0 \
-		libgnomevfs2-common liborbit-2-0 openjdk-8-jre openjdk-8-jre-headless && \
-		dpkg -i ipscan_$IPSCAN.deb && rm -f ipscan_$IPSCAN.deb
+
+				wget -O - $DOWN_URL/angryip_install.sh | bash	fi
+
+	# google drive ocamfuse
+		if [[ "$GDRIVE_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
+			wget -O - $DOWN_URL/crossover_install.sh | bash
 		fi
 
 # Web server
 	# APACHE
 		if [[ "$APACHE_OPTION" == "true" ]];then
-		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
+			wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
 		fi
 	# NGINX
 		if [[ "$NGINX_OPTION" == "true" ]];then
-		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
+			wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
 		fi
+
+# prepare etc start
+			wget -O - $DOWN_URL/prepare_final.sh | bash
 
 # Define default command.
 		FILETEMP=/startup.sh
-		echo '#!/bin/bash' > $FILETEMP && \
-		echo '# option with entrypoint' >> $FILETEMP && \
-		echo 'if [ -f "/option.sh" ]; then /option.sh; fi' >> $FILETEMP && \
-		echo 'if [ -f "/start.sh" ]; then /start.sh; fi' >> $FILETEMP && \
-		echo "rm -rf /tmp/.X*" >> $FILETEMP && \
-		echo "USER=root" >> $FILETEMP && \
-		echo "HOME=/root" >> $FILETEMP && \
-		echo "export USER HOME" >> $FILETEMP && \
-		echo "vncserver :1" >> $FILETEMP && \
-		chmod +x $FILETEMP
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/$FILETEMP
+			chmod 755 $FILETEMP
 
 else
     echo "Not support your OS"

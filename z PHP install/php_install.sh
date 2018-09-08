@@ -141,7 +141,6 @@ if [[ -f /etc/lsb-release ]]; then
 	fullphpdo() {
 		# config
 			phpfinal
-			preparefinal
 			laravelinstall
 		# tweak
 			setphpvalue
@@ -149,6 +148,8 @@ if [[ -f /etc/lsb-release ]]; then
 			setopcachevalue
 			setopcachevaluefpm
 			setphptweakfpm
+		# final
+			preparefinal
 		}
 
 if [[ "$PHP_VERSION" == "5.6" ]];then
