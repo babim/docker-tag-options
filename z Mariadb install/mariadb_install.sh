@@ -45,7 +45,7 @@ if [[ -f /etc/debian_version ]]; then
 				apt-get purge wget curl -y
 			}
 			
-if [[ "$TYPESQL" == "mariadb" ]];then
+if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]];then
 	# install mysql over repo with major version
 	set -e;\
 		{ \
