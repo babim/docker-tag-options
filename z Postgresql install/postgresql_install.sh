@@ -30,17 +30,15 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		&& ln -sf ${PG_DATADIR}/postgresql.conf /etc/postgresql/${PG_VERSION}/main/postgresql.conf \
 		&& ln -sf ${PG_DATADIR}/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/pg_hba.conf \
 		&& ln -sf ${PG_DATADIR}/pg_ident.conf /etc/postgresql/${PG_VERSION}/main/pg_ident.conf
-	# clean
-		rm -rf ${PG_HOME} \
-		&& apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
-
 	# download config files
 		[[ ! -f /entrypoint.sh ]] || rm -f /start.sh
 		FILETEMP=/entrypoint.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL$FILETEMP
 		chmod 755 $FILETEMP
-		
+	# clean
+		rm -rf ${PG_HOME} \
+		&& apt-get purge -y wget curl && rm -rf /var/lib/apt/lists/*		
 else
     echo "Not support your OS"
     exit
