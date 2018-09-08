@@ -15,7 +15,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
 	BIT=${BIT:-"x86_64"}
-	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz"}
+	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache nodejs su-exec
@@ -28,14 +28,14 @@ if [[ -f /etc/alpine-release ]]; then
 		&& wget --no-check-certificate --progress=bar:force -O kibana.tar.gz "$TARBAL"; \
 		tar -xf kibana.tar.gz \
 		&& ls -lah \
-		&& mv kibana-$KIBANA_VERSION-linux-${BIT} /usr/share/kibana
+		&& mv kibana-$KB_VERSION-linux-${BIT} /usr/share/kibana
 	# Config after install
 	if [[ "$KIBANA" = "4" ]]; then
 		rm /usr/share/kibana/node/bin/node && \
 		rm /usr/share/kibana/node/bin/npm && \
 		ln -s /usr/bin/node /usr/share/kibana/node/bin/node && \
 		ln -s /usr/bin/npm /usr/share/kibana/node/bin/npm && \
-		rm -rf /var/cache/apk/* /kibana-${KIBANA_VERSION}-linux-${BIT}.tar.gz
+		rm -rf /var/cache/apk/* /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 	else
   	# the default "server.host" is "localhost" in 5+
 		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \

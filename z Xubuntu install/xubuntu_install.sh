@@ -33,8 +33,8 @@ if [[ -f /etc/lsb-release ]]; then
 		add-apt-repository ppa:libreoffice/ppa -y
 		add-apt-repository ppa:nilarimogard/webupd8 -y
 		add-apt-repository ppa:n-muench/programs-ppa -y
-		wget -O - http://deb.opera.com/archive.key | apt-key add - && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
-		wget -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+		wget --no-check-certificate -O - http://deb.opera.com/archive.key | apt-key add - && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
+		wget --no-check-certificate -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 		add-apt-repository ppa:pipelight/stable -y
 		add-apt-repository ppa:remmina-ppa-team/remmina-next -y
 		add-apt-repository ppa:synapse-core/testing -y
@@ -61,49 +61,49 @@ if [[ -f /etc/lsb-release ]]; then
 	fi
 	# Wimlib
 		if [[ "$WIMLIB_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/wimlib_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/wimlib_install.sh | bash
 		fi
 	# crossover
 		if [[ "$CROSSOVER_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/crossover_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/crossover_install.sh | bash
 		fi
 	# freefile sync
 		if [[ "$FREEFILESYNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/freefilesync_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/freefilesync_install.sh | bash
 		fi
 		    
 	# navicat_premium
 		if [[ "$NAVICAT_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/navicat_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/navicat_install.sh | bash
 		fi
 
 	# razorsql
 		if [[ "$RAZORSQL_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/razorsql_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/razorsql_install.sh | bash
 		fi
 		    
 	# angry ip scanner
 		if [[ "$IPSCAN_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 
-				wget -O - $DOWN_URL/angryip_install.sh | bash	fi
+				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash	fi
 
 	# google drive ocamfuse
 		if [[ "$GDRIVE_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget -O - $DOWN_URL/crossover_install.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/crossover_install.sh | bash
 		fi
 
 # Web server
 	# APACHE
 		if [[ "$APACHE_OPTION" == "true" ]];then
-			wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
+			wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
 		fi
 	# NGINX
 		if [[ "$NGINX_OPTION" == "true" ]];then
-			wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
+			wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
 		fi
 
 # prepare etc start
-			wget -O - $DOWN_URL/prepare_final.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 
 # Define default command.
 		FILETEMP=/startup.sh

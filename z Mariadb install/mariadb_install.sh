@@ -20,11 +20,11 @@ if [[ -f /etc/debian_version ]]; then
 	# install "tzdata" for /usr/share/zoneinfo/
 		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https
 	# add Percona's repo for xtrabackup (which is useful for Galera)
-		wget -O - $DOWN_URL/percona_repo.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/percona_repo.sh | bash
 	# install gosu
-		wget -O - $DOWN_URL/gosu_install.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
 	# add repo Mariadb, Mysql
-		wget -O - $DOWN_URL/mariadb_repo.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/mariadb_repo.sh | bash
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 		groupadd -r mysql && useradd -r -g mysql mysql
 	# make docker-entrypoint-initdb
@@ -40,7 +40,7 @@ if [[ -f /etc/debian_version ]]; then
 				wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
 				chmod 755 /backup.sh
 			# prepare etc start
-				wget -O - $DOWN_URL/prepare_final.sh | bash
+				wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 			# remove packages
 				apt-get purge wget curl -y
 			}
