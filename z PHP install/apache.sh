@@ -28,7 +28,7 @@ if [[ -f /etc/lsb-release ]]; then
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
 		chmod 755 $FILETEMP
 	# prepare etc start
-		curl -s $DOWN_URL/prepare_final.sh | bash
+		wget -O - $DOWN_URL/prepare_final.sh | bash
 
 	# default config with mod rewrite
 	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
@@ -45,7 +45,7 @@ if [[ -f /etc/lsb-release ]]; then
 
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then
-		curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
+		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
 	fi
 
 else

@@ -79,13 +79,13 @@ if [ -f /etc/redhat-release ]; then
 	echo "Install prepare setup"
 		sync
 		$INSTALL_DIR/$CHECK_SPACE_FILE
-#		curl -s $DOWN_URL/config/$CHECK_SPACE_FILE | bash
+#		wget -O - $DOWN_URL/config/$CHECK_SPACE_FILE | bash
 		$INSTALL_DIR/$SETUP_LINUX_FILE
-#		curl -s $DOWN_URL/config/$SETUP_LINUX_FILE | bash
+#		wget -O - $DOWN_URL/config/$SETUP_LINUX_FILE | bash
 
 	# install gosu
 	echo "install gosu"
-		curl -s $DOWN_URL/gosu_install.sh | bash
+		wget -O - $DOWN_URL/gosu_install.sh | bash
 	# Install DB software binaries
 	echo "Install DB software binaries"
 	# su -H -u oracle bash -c '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'

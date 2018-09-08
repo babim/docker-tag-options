@@ -16,7 +16,7 @@ if [[ -f /etc/lsb-release ]]; then
 		export DEBIAN_FRONTEND=noninteractive
 		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	# add repo php ubuntu
-		curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
+		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
 		apt-get update
 	# install PHP
 		[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
@@ -29,13 +29,13 @@ if [[ -f /etc/lsb-release ]]; then
 		# Fix run suck
 			[[ -d /run/php ]] || mkdir -p /run/php/
 		# install composer
-			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+			wget -O -S https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 		# fix shortcut bin
 			ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
 		# install option for webapp (owncloud)
 			apt-get install -y --force-yes smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin
 		# install oracle client extension
-			curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/oracle_extension.sh | bash
+			wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/oracle_extension.sh | bash
 		}
 	preparefinal() {
 		# download entrypoint
@@ -44,7 +44,7 @@ if [[ -f /etc/lsb-release ]]; then
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
 			chmod 755 $FILETEMP
 		# prepare etc start
-			curl -s $DOWN_URL/prepare_final.sh | bash
+			wget -O - $DOWN_URL/prepare_final.sh | bash
 		# remove packages
 			apt-get purge wget curl -y
 		}
@@ -52,7 +52,7 @@ if [[ -f /etc/lsb-release ]]; then
 		if [[ "$LARAVEL" == "true" ]];then
 		# install laravel depend
 			apt-get install -y php-*dom php-*mbstring zip unzip git curl && \
-			curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+			wget -O -S https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
 			ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
 		# install laravel
 			cd /etc-start/www && git clone https://github.com/laravel/laravel && \
