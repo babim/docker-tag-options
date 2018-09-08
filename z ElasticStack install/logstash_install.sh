@@ -13,8 +13,8 @@ fi
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
-	LOGSTASH_URL=${LOGSTASH_URL:-"https://artifacts.elastic.co/downloads/logstash"}
-	LOGSTASH_TARBALL=${LOGSTASH_TARBALL:-"${LOGSTASH_URL}/logstash-${LS_VERSION}.tar.gz"}
+	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
+	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
@@ -29,7 +29,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install logstash
 		set -ex \
 		&& cd /tmp \
-		&& wget --no-check-certificate --progress=bar:force -O logstash.tar.gz "$LOGSTASH_TARBALL" \
+		&& wget --no-check-certificate --progress=bar:force -O logstash.tar.gz "$LS_TARBAL" \
 		&& tar -xzf logstash.tar.gz \
 		&& mv logstash-$LS_VERSION /usr/share/logstash \
 		&& rm -rf /tmp/*
