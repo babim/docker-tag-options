@@ -29,9 +29,11 @@ export NFSOPTION=${NFS:-false}
 export SYNOLOGYOPTION=${SYNOLOGY:-false}
 export UPGRADEOPTION=${UPGRADE:-false}
 export WWWUSER=${WWWUSER:-www-data}
+export WWWUSERID=${WWWUSERID:-1023}
 export MYSQLUSER=${MYSQLUSER:-mysql}
-export USER1=${USER1:-$WWWUSER}
-export USER2=${USER2:-$MYSQLUSER}
+export MYSQLUSERID=${MYSQLUSERID:-66}
+export POSTGRESUSER=${POSTGRESUSER:-$postgres}
+export POSTGRESUSERID=${POSTGRESUSERID:-55}
 export PAGESPEEDOPTION=${PAGESPEED:-false}
 export MODSECURITYOPTION=${MODSECURITY:-false}
 export DNSOPTION=${DNS:-false}
@@ -416,14 +418,20 @@ alpine-ssh() {
 
 alpine-synology-start() {
 # Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        deluser xfs && delgroup ${USER1} && \
-        addgroup -g 1023 ${USER1} && adduser -D -H -G ${USER1}data -s /bin/false -u 1024 ${USER1}
+    if [ ! -z "$(grep ^${WWWUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        deluser xfs && delgroup ${WWWUSER} && \
+        addgroup -g ${WWWUSERID} ${WWWUSER} && adduser -D -H -G ${WWWUSER} -s /bin/false -u ${WWWUSERID} ${WWWUSER}
+#        usermod -u ${WWWUSERID} ${WWWUSER} && groupmod -g ${WWWUSERID} ${WWWUSER}
     fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        deluser xfs && delgroup ${USER2} && \
-        addgroup -g 66 ${USER2} && adduser -D -H -G ${USER2} -s /bin/false -u 66 ${USER2}
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+    if [ ! -z "$(grep ^${MYSQLUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        deluser xfs && delgroup ${MYSQLUSER} && \
+        addgroup -g ${MYSQLUSERID} ${MYSQLUSER} && adduser -D -H -G ${MYSQLUSER} -s /bin/false -u ${MYSQLUSERID} ${MYSQLUSER}
+#        usermod -u ${MYSQLUSERID} ${MYSQLUSER} && groupmod -g ${MYSQLUSERID} ${MYSQLUSER}
+    fi
+    if [ ! -z "$(grep ^${POSTGRESUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        deluser xfs && delgroup ${POSTGRESUSER} && \
+        addgroup -g ${POSTGRESID} ${POSTGRESUSER} && adduser -D -H -G ${POSTGRESUSER} -s /bin/false -u ${MYSQLUSERID} ${POSTGRESUSER}
+#        usermod -u ${POSTGRESID} ${POSTGRESUSER} && groupmod -g ${POSTGRESID} ${POSTGRESUSER}
     fi
     touch /SYNOLOGY.check
 }
@@ -515,11 +523,14 @@ redhat-ssh() {
 
 redhat-synology-start() {
     # Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
+    if [ ! -z "$(grep ^${WWWUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${WWWUSERID} ${WWWUSER}  && groupmod -g ${WWWUSERID} ${WWWUSER}
     fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+    if [ ! -z "$(grep ^${MYSQLUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${MYSQLUSERID} ${MYSQLUSER} && groupmod -g ${MYSQLUSERID} ${MYSQLUSER}
+    fi
+    if [ ! -z "$(grep ^${POSTGRESUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${POSTGRESUSERID} ${POSTGRESUSER} && groupmod -g ${POSTGRESUSERID} ${POSTGRESUSER}
     fi
     touch /SYNOLOGY.check
 }
@@ -629,11 +640,14 @@ ubuntu-ssh() {
 
 ubuntu-synology-start() {
     # Checking user account
-    if [ ! -z "$(grep ^${USER1}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 1024 ${USER1}  && groupmod -g 1023 ${USER1}
+    if [ ! -z "$(grep ^${WWWUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${WWWUSERID} ${WWWUSER}  && groupmod -g ${WWWUSERID} ${WWWUSER}
     fi
-    if [ ! -z "$(grep ^${USER2}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
-        usermod -u 66 ${USER2} && groupmod -g 66 ${USER2}
+    if [ ! -z "$(grep ^${MYSQLUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${MYSQLUSERID} ${MYSQLUSER} && groupmod -g ${MYSQLUSERID} ${MYSQLUSER}
+    fi
+    if [ ! -z "$(grep ^${POSTGRESUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
+        usermod -u ${POSTGRESUSERID} ${POSTGRESUSER} && groupmod -g ${POSTGRESUSERID} ${POSTGRESUSER}
     fi
     touch /SYNOLOGY.check
 }
