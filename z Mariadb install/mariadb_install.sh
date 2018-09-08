@@ -14,6 +14,11 @@ echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 	# set host download
 		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
+	# Set frontend debian
+		export DEBIAN_FRONTEND=noninteractive
+	# install "pwgen" for randomizing passwords
+	# install "tzdata" for /usr/share/zoneinfo/
+		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https
 	# add Percona's repo for xtrabackup (which is useful for Galera)
 		curl -s $DOWN_URL/percona_repo.sh | bash
 	# install gosu
@@ -22,13 +27,8 @@ if [[ -f /etc/debian_version ]]; then
 		curl -s $DOWN_URL/mariadb_repo.sh | bash
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 		groupadd -r mysql && useradd -r -g mysql mysql
-	# install "pwgen" for randomizing passwords
-	# install "tzdata" for /usr/share/zoneinfo/
-		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https
 	# make docker-entrypoint-initdb
 		mkdir /docker-entrypoint-initdb.d
-	# Set frontend debian
-		export DEBIAN_FRONTEND=noninteractive
 	# set loop
 		finish() {
 			# download entrypoint
