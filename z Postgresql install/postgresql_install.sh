@@ -31,7 +31,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		&& ln -sf ${PG_DATADIR}/pg_hba.conf /etc/postgresql/${PG_VERSION}/main/pg_hba.conf \
 		&& ln -sf ${PG_DATADIR}/pg_ident.conf /etc/postgresql/${PG_VERSION}/main/pg_ident.conf
 	# clean
-		&& rm -rf ${PG_HOME} \
+		rm -rf ${PG_HOME} \
 		&& apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
 
 	# download config files
