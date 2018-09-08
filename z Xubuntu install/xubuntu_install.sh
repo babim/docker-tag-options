@@ -85,7 +85,8 @@ if [[ -f /etc/lsb-release ]]; then
 	# angry ip scanner
 		if [[ "$IPSCAN_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 
-				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash	fi
+				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash
+		fi
 
 	# google drive ocamfuse
 		if [[ "$GDRIVE_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
