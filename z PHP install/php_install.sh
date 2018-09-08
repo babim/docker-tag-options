@@ -126,7 +126,10 @@ if [[ -f /etc/lsb-release ]]; then
 			-e "s/;listen.mode = 0660/listen.mode = 0666/g" \
 			-e "s/^;clear_env = no$/clear_env = no/" \
 		$VARIABLE/$FILETEMP
-		# -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g"
+		if [ ! -f "/etc/nginx/nginx.conf" ]; then
+			sed -i -E \
+			-e "s/listen = .*/listen = \/var\/run\/php-fpm.sock/g" \
+		$VARIABLE/$FILETEMP
 		}
 	setphptweakfpm() {
 		# set php value

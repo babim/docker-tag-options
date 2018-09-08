@@ -33,7 +33,7 @@ if [[ -f /etc/lsb-release ]]; then
 	ln -sf /dev/stderr /var/log/nginx/error.log
 
 	# include
-	    wget -O - $DOWN_URL/include.sh | bash
+	    wget -O - $DOWN_URL/nginx_include.sh | bash
 
 	# download entrypoint
 		FILETEMP=/start.sh
