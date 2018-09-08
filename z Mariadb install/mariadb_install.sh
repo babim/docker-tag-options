@@ -24,7 +24,7 @@ if [[ -f /etc/debian_version ]]; then
 		groupadd -r mysql && useradd -r -g mysql mysql
 	# install "pwgen" for randomizing passwords
 	# install "tzdata" for /usr/share/zoneinfo/
-		apt-get install -y --no-install-recommends pwgen dirmngr tzdata
+		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https
 	# make docker-entrypoint-initdb
 		mkdir /docker-entrypoint-initdb.d
 	# Set frontend debian
