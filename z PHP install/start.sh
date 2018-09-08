@@ -47,6 +47,10 @@ if [ -z "`ls /etc/php`" ]; then
 		-e "/^user = .*/cuser = $auser" \
 		-e "/^group = .*/cgroup = $auser" \
 	$VARIABLE/fpm/php-fpm.conf
+	sed -i -E \
+		-e "/^user = .*/cuser = $auser" \
+		-e "/^group = .*/cgroup = $auser" \
+	$VARIABLE/fpm/pool.d/www.conf
 	fi
 	done
 fi
@@ -78,11 +82,9 @@ fi
     PHP_MAX_POST=${PHP_MAX_POST:-520M}
     MAX_INPUT_TIME=${MAX_INPUT_TIME:-3600}
     MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME:-3600}
-	
-	# set php value
-	for VARIABLE in /etc/php/*
-	do
-	if [ -f "$VARIABLE/php.ini" ]; then
+    DISPLAYERROR=${DISPLAYERROR:-ON}
+
+phpvalue() {
 	sed -i -E \
 		-e "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" \
 		-e "s|;*memory_limit =.*|memory_limit = ${MAX_UPLOAD}|i" \
@@ -92,26 +94,28 @@ fi
 		-e "s/max_input_time = 60/max_input_time = ${MAX_INPUT_TIME}/" \
 		-e "s/max_execution_time = 30/max_execution_time = ${MAX_EXECUTION_TIME}/" \
 		-e "s/error_reporting = .*/error_reporting = E_ALL/" \
-		-e "s/display_errors = .*/display_errors = On/" \
-	$VARIABLE/php.ini
+		-e "s/display_errors = .*/display_errors = ${DISPLAYERROR}/" \
+	$VARIABLE/$FILETEMP
+	}
+
+	# set php value
+	FILETEMP=php.ini
+	for VARIABLE in /etc/php/*
+	do
+	if [ -f "$VARIABLE/$FILETEMP" ]; then
+		phpvalue
 	fi
 	done
 
-	# set opcache
+	# set php fpm value
+	FILETEMP=fpm/php.ini
 	for VARIABLE in /etc/php/*
 	do
-	if [ -f "$VARIABLE/php.ini" ]; then
-	sed -i -E \
-		-e "s|^;*\(opcache.enable\) *=.*|\1 = 1|" \
-		-e "s|^;*\(opcache.enable_cli\) *=.*|\1 = 1|" \
-		-e "s|^;*\(opcache.fast_shutdown\) *=.*|\1 = 1|" \
-		-e "s|^;*\(opcache.interned_strings_buffer\) *=.*|\1 = 8|" \
-		-e "s|^;*\(opcache.max_accelerated_files\) *=.*|\1 = 4000|" \
-		-e "s|^;*\(opcache.memory_consumption\) *=.*|\1 = 128|" \
-		-e "s|^;*\(opcache.revalidate_freq\) *=.*|\1 = 60|" \
-	$VARIABLE/php.ini
+	if [ -f "$VARIABLE/$FILETEMP" ]; then
+		phpvalue
 	fi
 	done
+
 fi
 fi
 
@@ -167,6 +171,12 @@ if [ ! -f "/PHPFPM" ]; then
 	if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0 -D; fi
 	if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1 -D; fi
 	if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2 -D; fi
+fi
+if [ ! -f "/etc/nginx/nginx.conf" ]; then 
+	if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6; fi
+	if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0; fi
+	if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1; fi
+	if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2; fi
 fi
 
 exec "$@"

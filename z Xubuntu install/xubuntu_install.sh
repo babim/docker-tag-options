@@ -48,7 +48,7 @@ if [[ -f /etc/lsb-release ]]; then
 	# install app
 		apt-get install -y --force-yes nano mousepad xfce4-taskmanager gnome-icon-theme-full firefox flashplugin-installer tightvncserver
     
-	# install admin app
+# install admin app
 	if [[ "$ADMINAPP" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 		apt-get install -y --force-yes && \
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg file-roller synaptic\
@@ -128,11 +128,22 @@ if [[ -f /etc/lsb-release ]]; then
 		dpkg -i ipscan_$IPSCAN.deb && rm -f ipscan_$IPSCAN.deb
 		fi
 
-	# Define default command.
+# Web server
+	# APACHE
+		if [[ "$APACHE_OPTION" == "true" ]];then
+		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
+		fi
+	# NGINX
+		if [[ "$NGINX_OPTION" == "true" ]];then
+		wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
+		fi
+
+# Define default command.
 		FILETEMP=/startup.sh
 		echo '#!/bin/bash' > $FILETEMP && \
 		echo '# option with entrypoint' >> $FILETEMP && \
 		echo 'if [ -f "/option.sh" ]; then /option.sh; fi' >> $FILETEMP && \
+		echo 'if [ -f "/start.sh" ]; then /start.sh; fi' >> $FILETEMP && \
 		echo "rm -rf /tmp/.X*" >> $FILETEMP && \
 		echo "USER=root" >> $FILETEMP && \
 		echo "HOME=/root" >> $FILETEMP && \

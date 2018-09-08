@@ -59,6 +59,97 @@ if [[ -f /etc/lsb-release ]]; then
 			cd laravel && composer install && cp .env.example .env
 		fi
 		}
+	phpvalue() {
+		sed -i -E \
+			-e "s/error_reporting = .*/error_reporting = E_ALL/" \
+		$VARIABLE/$FILETEMP
+		}
+	setphpvalue() {
+		# set php value
+			FILETEMP=php.ini
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/$FILETEMP" ]; then
+				phpvalue
+			fi
+			done
+		}
+	setphpvaluefpm() {
+		# set php value
+			FILETEMP=fpm/php.ini
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/$FILETEMP" ]; then
+				phpvalue
+			fi
+			done
+		}
+	opcachevalue() {
+		sed -i -E \
+			-e "s|^;*\(opcache.enable\) *=.*|\1 = 1|" \
+			-e "s|^;*\(opcache.enable_cli\) *=.*|\1 = 1|" \
+			-e "s|^;*\(opcache.fast_shutdown\) *=.*|\1 = 1|" \
+			-e "s|^;*\(opcache.interned_strings_buffer\) *=.*|\1 = 8|" \
+			-e "s|^;*\(opcache.max_accelerated_files\) *=.*|\1 = 4000|" \
+			-e "s|^;*\(opcache.memory_consumption\) *=.*|\1 = 128|" \
+			-e "s|^;*\(opcache.revalidate_freq\) *=.*|\1 = 60|" \
+		$VARIABLE/$FILETEMP
+		}
+	setopcachevalue() {
+		# set php value
+			FILETEMP=php.ini
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/$FILETEMP" ]; then
+				opcachevalue
+			fi
+			done
+		}
+	setopcachevaluefpm() {
+		# set php value
+			FILETEMP=fpm/php.ini
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/$FILETEMP" ]; then
+				opcachevalue
+			fi
+			done
+		}
+	phptweakfpm() {
+		sed -i -E \
+			-e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
+			-e "s/pm.max_children = 5/pm.max_children = 4/g" \
+			-e "s/pm.start_servers = 2/pm.start_servers = 3/g" \
+			-e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" \
+			-e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" \
+			-e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
+			-e "s/;listen.mode = 0660/listen.mode = 0666/g" \
+			-e "s/^;clear_env = no$/clear_env = no/" \
+		$VARIABLE/$FILETEMP
+		# -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g"
+		}
+	setphptweakfpm() {
+		# set php value
+			FILETEMP=fpm/pool.d/www.conf
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/$FILETEMP" ]; then
+				phptweakfpm
+			fi
+			done
+		}
+	fullphpdo() {
+		# config
+			phpfinal
+			preparefinal
+			laravelinstall
+		# tweak
+			setphpvalue
+			setphpvaluefpm
+			setopcachevalue
+			setopcachevaluefpm
+			setphptweakfpm
+		}
 
 if [[ "$PHP_VERSION" == "5.6" ]];then
 	# install PHP
@@ -68,9 +159,7 @@ if [[ "$PHP_VERSION" == "5.6" ]];then
 		php$PHP_VERSION-mbstring imagemagick php$PHP_VERSION-sqlite3 php$PHP_VERSION-sybase php$PHP_VERSION-bcmath php$PHP_VERSION-soap php$PHP_VERSION-xml \
 		php$PHP_VERSION-phpdbg php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-odbc php$PHP_VERSION-interbase php$PHP_VERSION-gmp php$PHP_VERSION-xsl
 	# config
-	phpfinal
-	preparefinal
-	laravelinstall
+		fullphpdo
 
 elif [[ "$PHP_VERSION" == "7.0" ]];then
 	# install PHP
@@ -82,9 +171,7 @@ elif [[ "$PHP_VERSION" == "7.0" ]];then
 		php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
 		php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
 	# config
-	phpfinal
-	preparefinal
-	laravelinstall
+		fullphpdo
 
 elif [[ "$PHP_VERSION" == "7.1" ]];then
 	# install PHP
@@ -96,9 +183,7 @@ elif [[ "$PHP_VERSION" == "7.1" ]];then
 		php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
 		php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
 	# config
-	phpfinal
-	preparefinal
-	laravelinstall
+		fullphpdo
 
 elif [[ "$PHP_VERSION" == "7.2" ]];then
 	# install PHP
@@ -110,9 +195,7 @@ elif [[ "$PHP_VERSION" == "7.2" ]];then
 		php-memcached php-pear libsasl2-dev libssl-dev libsslcommon2-dev libcurl4-openssl-dev \
 		php$PHP_VERSION-gmp php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
 	# config
-	phpfinal
-	preparefinal
-	laravelinstall
+		fullphpdo
 fi
 else
     echo "Not support your OS"
