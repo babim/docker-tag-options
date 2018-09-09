@@ -1,1 +1,1 @@
-apk del --purge wget ca-certificates gnupg
+apk del --purge wget ca-certificates gnupg openssl
