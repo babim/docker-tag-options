@@ -23,7 +23,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# install depend
 		apt-get update \
 		&& apt-get install -y --no-install-recommends \
-			ca-certificates gnupg \
+			ca-certificates gnupg dirmngr \
 			jq \
 			numactl
 
