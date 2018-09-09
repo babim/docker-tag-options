@@ -61,11 +61,12 @@ if [[ -f /etc/lsb-release ]]; then
 		}
 	phpvalue() {
 		sed -i -E \
-			-e "s/error_reporting = .*/error_reporting = E_ALL/" \
+			-e "s/error_reporting =.*/error_reporting = E_ALL/" \
 		$VARIABLE/$FILETEMP
 		}
 	setphpvalue() {
 		# set php value
+		echo "set php value"
 			FILETEMP=php.ini
 			for VARIABLE in /etc/php/*
 			do
@@ -73,9 +74,7 @@ if [[ -f /etc/lsb-release ]]; then
 				phpvalue
 			fi
 			done
-		}
-	setphpvaluefpm() {
-		# set php value
+		echo "set php-fpm value"
 			FILETEMP=fpm/php.ini
 			for VARIABLE in /etc/php/*
 			do
@@ -97,6 +96,7 @@ if [[ -f /etc/lsb-release ]]; then
 		}
 	setopcachevalue() {
 		# set php value
+		echo "set php opcache value"
 			FILETEMP=php.ini
 			for VARIABLE in /etc/php/*
 			do
@@ -105,8 +105,8 @@ if [[ -f /etc/lsb-release ]]; then
 			fi
 			done
 		}
-	setopcachevaluefpm() {
 		# set php value
+		echo "set php-fpm opcache value"
 			FILETEMP=fpm/php.ini
 			for VARIABLE in /etc/php/*
 			do
@@ -128,12 +128,13 @@ if [[ -f /etc/lsb-release ]]; then
 		$VARIABLE/$FILETEMP
 		if [ ! -f "/etc/nginx/nginx.conf" ]; then
 			sed -i -E \
-			-e "s/listen = .*/listen = \/var\/run\/php-fpm.sock/g" \
+			-e "s/listen =.*/listen = \/var\/run\/php-fpm.sock/g" \
 		$VARIABLE/$FILETEMP
 		fi
 		}
 	setphptweakfpm() {
 		# set php value
+		echo "set php-fpm tweak value"
 			FILETEMP=fpm/pool.d/www.conf
 			for VARIABLE in /etc/php/*
 			do
@@ -158,9 +159,7 @@ if [[ -f /etc/lsb-release ]]; then
 			laravelinstall
 		# tweak
 			setphpvalue
-			setphpvaluefpm
 			setopcachevalue
-			setopcachevaluefpm
 			setphptweakfpm
 		# final
 			preparefinal
