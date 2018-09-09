@@ -91,7 +91,7 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/elastic-entrypoint.sh
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
-			FILETEMP=/logstash-entrypoint.shsh
+			FILETEMP=/logstash-entrypoint.sh
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			FILETEMP=/kibana-entrypoint.sh
