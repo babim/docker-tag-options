@@ -85,27 +85,27 @@ elif [ -f /etc/alpine-release ]; then
 			dpkg-dev dpkg \
 			flex \
 			gcc \
-	#		krb5-dev \
+
 			libc-dev \
 			libedit-dev \
 			libxml2-dev \
 			libxslt-dev \
 			make \
-	#		openldap-dev \
-			openssl-dev \
-	# configure: error: prove not found \
-			perl-utils \
-	# configure: error: Perl module IPC::Run is required to run TAP tests \
 			perl-ipc-run \
+			openssl-dev \
+			util-linux-dev \
+			zlib-dev \
+			icu-dev \
+			perl-utils
+	#		openldap-dev \
+	#		krb5-dev \
+	# configure: error: Perl module IPC::Run is required to run TAP tests \
 	#		perl-dev \
 	#		python-dev \
 	#		python3-dev \
 	#		tcl-dev \
-			util-linux-dev \
-			zlib-dev \
-			icu-dev \
-		\
-		&& cd /usr/src/postgresql
+
+		cd /usr/src/postgresql
 	# update "DEFAULT_PGSOCKET_DIR" to "/var/run/postgresql" (matching Debian)
 	# see https://anonscm.debian.org/git/pkg-postgresql/postgresql.git/tree/debian/patches/51-default-sockets-in-var.patch?id=8b539fcb3e093a521c095e70bdfa76887217b89f
 		awk '$1 == "#define" && $2 == "DEFAULT_PGSOCKET_DIR" && $3 == "\"/tmp\"" { $3 = "\"/var/run/postgresql\""; print; next } { print }' src/include/pg_config_manual.h > src/include/pg_config_manual.h.new \
@@ -119,13 +119,9 @@ elif [ -f /etc/alpine-release ]; then
 	# https://anonscm.debian.org/cgit/pkg-postgresql/postgresql.git/tree/debian/rules?h=9.5 \
 		./configure \
 			--build="$gnuArch" \
-	# "/usr/src/postgresql/src/backend/access/common/tupconvert.c:105: undefined reference to `libintl_gettext'" \
-	#		--enable-nls \
 			--enable-integer-datetimes \
 			--enable-thread-safety \
 			--enable-tap-tests \
-	# skip debugging info -- we want tiny size instead \
-	#		--enable-debug \
 			--disable-rpath \
 			--with-uuid=e2fs \
 			--with-gnu-ld \
@@ -134,7 +130,17 @@ elif [ -f /etc/alpine-release ]; then
 			--prefix=/usr/local \
 			--with-includes=/usr/local/include \
 			--with-libraries=/usr/local/lib \
-			\
+			--with-openssl \
+			--with-libxml \
+			--with-libxslt \
+			--with-icu \
+		&& make -j "$(nproc)" world \
+		&& make install-world \
+		&& make -C contrib install
+	# "/usr/src/postgresql/src/backend/access/common/tupconvert.c:105: undefined reference to `libintl_gettext'" \
+	#		--enable-nls \
+	# skip debugging info -- we want tiny size instead \
+	#		--enable-debug \
 	# these make our image abnormally large (at least 100MB larger), which seems uncouth for an "Alpine" (ie, "small") variant :) \
 	#		--with-krb5 \
 	#		--with-gssapi \
@@ -143,15 +149,8 @@ elif [ -f /etc/alpine-release ]; then
 	#		--with-perl \
 	#		--with-python \
 	#		--with-pam \
-			--with-openssl \
-			--with-libxml \
-			--with-libxslt \
-			--with-icu \
-		&& make -j "$(nproc)" world \
-		&& make install-world \
-		&& make -C contrib install \
-		\
-		&& runDeps="$( \
+
+		runDeps="$( \
 			scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 				| tr ',' '\n' \
 				| sort -u \
@@ -161,8 +160,6 @@ elif [ -f /etc/alpine-release ]; then
 			$runDeps \
 			bash \
 			su-exec \
-	# tzdata is optional, but only adds around 1Mb to image size and is recommended by Django documentation: \
-	# https://docs.djangoproject.com/en/1.10/ref/databases/#optimizing-postgresql-s-configuration \
 			tzdata
 
 	# make the sample config easier to munge (and "correct by default") \
