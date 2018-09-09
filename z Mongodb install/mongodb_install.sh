@@ -49,9 +49,9 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
 	# install mongodb
 	set -x \
-		&& apt-get update \
-		&& apt-get install -y \
+		&& apt-get update
 		# install lastest version
+		apt-get install -y \
 			${MONGO_PACKAGE} \
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
@@ -91,8 +91,8 @@ elif [[ -f /etc/redhat-release ]]; then
 	# add repo
 		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
 	# install mongodb
-		yum install -y \
 		# install lastest version
+		yum install -y \
 			${MONGO_PACKAGE} \
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
