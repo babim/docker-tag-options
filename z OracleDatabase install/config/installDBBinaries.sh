@@ -54,7 +54,7 @@ if [[ ! -z "${INSTALL_FILE_1}" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_1 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 	fi
-	unzip $INSTALL_FILE_1 && \
+	unzip $INSTALL_FILE_1 && ls && \
 	rm $INSTALL_FILE_1
 fi
 if [[ ! -z "${INSTALL_FILE_2}" ]]; then
@@ -62,7 +62,7 @@ if [[ ! -z "${INSTALL_FILE_2}" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_2 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 	fi
-	unzip $INSTALL_FILE_2 && \
+	unzip $INSTALL_FILE_2 && ls && \
 	rm $INSTALL_FILE_2
 fi
 if [[ ! -z "${INSTALL_FILE_3}" ]]; then
@@ -70,7 +70,7 @@ if [[ ! -z "${INSTALL_FILE_3}" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 	fi
-	unzip $INSTALL_FILE_3 && \
+	unzip $INSTALL_FILE_3 && ls && \
 	rm $INSTALL_FILE_3
 fi
 if [[ ! -z "${INSTALL_FILE_4}" ]]; then
@@ -78,7 +78,7 @@ if [[ ! -z "${INSTALL_FILE_4}" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 	fi
-	unzip $INSTALL_FILE_4 && \
+	unzip $INSTALL_FILE_4 && ls && \
 	rm $INSTALL_FILE_4
 fi
 
