@@ -45,6 +45,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# install js-yaml
 		wget --no-check-certificate -O - $DOWN_URL/js-yaml_install.sh | bash
 
+	mkdir /docker-entrypoint-initdb.d
 	# add repo
 		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
 	# install mongodb
