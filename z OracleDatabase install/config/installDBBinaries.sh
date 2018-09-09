@@ -48,38 +48,53 @@ sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" $INSTALL_DIR/$INSTALL_RSP && \
 sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" $INSTALL_DIR/$INSTALL_RSP
 
 # Install Oracle binaries
-cd $INSTALL_DIR
 if [[ ! -z "${INSTALL_FILE_1}" ]]; then
 	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_1 $ORACLE_HOME/
 		cd $ORACLE_HOME/
+		unzip $INSTALL_FILE_1 && ls && \
+		rm $INSTALL_FILE_1
+	else
+		cd $INSTALL_DIR
+		unzip $INSTALL_FILE_1 && ls && \
+		rm $INSTALL_FILE_1
 	fi
-	unzip $INSTALL_FILE_1 && ls && \
-	rm $INSTALL_FILE_1
 fi
 if [[ ! -z "${INSTALL_FILE_2}" ]]; then
 	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_2 $ORACLE_HOME/
 		cd $ORACLE_HOME/
+		unzip $INSTALL_FILE_2 && ls && \
+		rm $INSTALL_FILE_2
+	else
+		cd $INSTALL_DIR
+		unzip $INSTALL_FILE_2 && ls && \
+		rm $INSTALL_FILE_2
 	fi
-	unzip $INSTALL_FILE_2 && ls && \
-	rm $INSTALL_FILE_2
 fi
 if [[ ! -z "${INSTALL_FILE_3}" ]]; then
 	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
 		cd $ORACLE_HOME/
+		unzip $INSTALL_FILE_3 && ls && \
+		rm $INSTALL_FILE_3
+	else
+		cd $INSTALL_DIR
+		unzip $INSTALL_FILE_3 && ls && \
+		rm $INSTALL_FILE_3
 	fi
-	unzip $INSTALL_FILE_3 && ls && \
-	rm $INSTALL_FILE_3
 fi
 if [[ ! -z "${INSTALL_FILE_4}" ]]; then
 	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
-		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
+		mv $INSTALL_DIR/$INSTALL_FILE_4 $ORACLE_HOME/
 		cd $ORACLE_HOME/
+		unzip $INSTALL_FILE_4 && ls && \
+		rm $INSTALL_FILE_4
+	else
+		cd $INSTALL_DIR
+		unzip $INSTALL_FILE_4 && ls && \
+		rm $INSTALL_FILE_4
 	fi
-	unzip $INSTALL_FILE_4 && ls && \
-	rm $INSTALL_FILE_4
 fi
 
 if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
@@ -126,5 +141,5 @@ fi
 		$ORACLE_HOME/perl/bin/perl -v || \
 		$INSTALL_DIR/installPerl.sh
 	else
-		echo "No need install Perl"
+		echo "This Oracle Database version no need install Perl"
 	fi
