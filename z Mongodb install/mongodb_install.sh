@@ -11,11 +11,22 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
+	# set global environment
+	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
+	export MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
+
+	# download entrypoint
+	downloadentry() {
+		FILETEMP=/start.sh
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
+		chmod 755 $FILETEMP
+		}
+
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# set environment
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
+	export DEBIAN_FRONTEND=noninteractive
 	export MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org-unstable}
-	export MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
 	if [ -f /etc/lsb-release ]; then
     		export OSRUN=ubuntu
 	elif [ -f /etc/debian_version ]; then
@@ -40,12 +51,18 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	set -x \
 		&& apt-get update \
 		&& apt-get install -y \
-			${MONGO_PACKAGE}=$MONGO_VERSION \
-			${MONGO_PACKAGE}-server=$MONGO_VERSION \
-			${MONGO_PACKAGE}-shell=$MONGO_VERSION \
-			${MONGO_PACKAGE}-mongos=$MONGO_VERSION \
-			${MONGO_PACKAGE}-tools=$MONGO_VERSION \
-		&& rm -rf /var/lib/apt/lists/* \
+		# install lastest version
+			${MONGO_PACKAGE} \
+			${MONGO_PACKAGE}-server \
+			${MONGO_PACKAGE}-shell \
+			${MONGO_PACKAGE}-mongos \
+			${MONGO_PACKAGE}-tools \
+		# install correct version
+		#	${MONGO_PACKAGE}=$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-server=$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-shell=$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-mongos=$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-tools=$MONGO_VERSION \
 		&& rm -rf /var/lib/mongodb \
 		&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
@@ -53,10 +70,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		&& chown -R mongodb:mongodb /data/db /data/configdb
 
 	# download entrypoint
-		FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
-		chmod 755 $FILETEMP
+		downloadentry
 
 	# clean os
 		apt-get purge -y wget curl && \
@@ -66,7 +80,35 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
    		rm -rf /build && \
    		rm -rf /tmp/* /var/tmp/* && \
    		rm -rf /var/lib/apt/lists/*	
-	
+
+elif [[ -f /etc/redhat-release ]]; then
+	# set environment
+	export MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org}
+	# install gosu
+		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
+	# install js-yaml
+		wget --no-check-certificate -O - $DOWN_URL/js-yaml_install.sh | bash
+	# add repo
+		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
+	# install mongodb
+		yum install -y \
+		# install lastest version
+			${MONGO_PACKAGE} \
+			${MONGO_PACKAGE}-server \
+			${MONGO_PACKAGE}-shell \
+			${MONGO_PACKAGE}-mongos \
+			${MONGO_PACKAGE}-tools \
+		# install correct version
+		#	${MONGO_PACKAGE}-$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-server-$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-shell-$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-mongos-$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-tools-$MONGO_VERSION \
+	# download entrypoint
+		downloadentry
+	# clean os
+		yum clean all
+
 else
     echo "Not support your OS"
     exit

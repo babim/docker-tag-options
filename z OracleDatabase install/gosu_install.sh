@@ -1,5 +1,13 @@
 # add gosu for easy step-down from root
 GOSU_VERSION=1.10
+if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+set -ex; \
+	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+	wget --no-check-certificate --progress=bar:force -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	chmod +x /usr/local/bin/gosu; \
+# verify that the binary works
+	gosu nobody true
+elif [[ -f /etc/redhat-release ]]; then
 set -ex; \
 	yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm; \
 	yum -y install wget dpkg; \
@@ -17,3 +25,4 @@ set -ex; \
 	chmod +x /usr/bin/gosu; \
 # verify that the binary works
 	gosu nobody true;
+fi
