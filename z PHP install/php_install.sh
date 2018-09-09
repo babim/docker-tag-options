@@ -104,7 +104,6 @@ if [[ -f /etc/lsb-release ]]; then
 				opcachevalue
 			fi
 			done
-		}
 		# set php value
 		echo "set php-fpm opcache value"
 			FILETEMP=fpm/php.ini
