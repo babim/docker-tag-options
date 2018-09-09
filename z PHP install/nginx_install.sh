@@ -47,7 +47,6 @@ if [[ -f /etc/lsb-release ]]; then
 	if [[ ! -z "${PHP_VERSION}" ]]; then
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
 	else
-	else
 		# clean os
 		apt-get purge -y wget curl && \
 		apt-get clean && \
