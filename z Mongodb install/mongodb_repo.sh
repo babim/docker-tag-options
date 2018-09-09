@@ -1,3 +1,10 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org-unstable}
 	MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
