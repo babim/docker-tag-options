@@ -49,6 +49,7 @@ if [ -f /etc/redhat-release ]; then
 	# -------------
 	echo "Copy binaries"
 	mkdir -p $INSTALL_DIR/
+	mkdir -p $ORACLE_HOME/
 #	cd $INSTALL_DIR/ && pwd
 		wget -O $INSTALL_DIR/$INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
 		wget -O $INSTALL_DIR/$SETUP_LINUX_FILE --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
