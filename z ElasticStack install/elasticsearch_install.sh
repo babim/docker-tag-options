@@ -58,26 +58,22 @@ if [[ -f /etc/alpine-release ]]; then
 			chmod 755 /start.sh
 		}
 		prepareconfig() {
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			FILETEMP=/usr/share/elasticsearch/config
+		FILETEMP=/usr/share/elasticsearch/config
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
-		else
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
-		fi
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			echo not download
-		else
-			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
-		fi
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/logging.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+		else
+			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
+			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
+				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
 		fi
 		}
 		prepagelogrotage() {
