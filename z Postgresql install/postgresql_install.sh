@@ -23,10 +23,11 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		PG_RUNDIR=${PG_RUNDIR:-"/run/postgresql"} \
 		PG_LOGDIR=${PG_LOGDIR:-"/var/log/postgresql"} \
 		PG_CERTDIR=${PG_CERTDIR:-"/etc/postgresql/certs"}
-	# install depend
+	# add repo
 		wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-		&& echo "deb http://apt.postgresql.org/pub/repos/apt/ $OSDEB-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-		&& apt-get update \
+		&& echo "deb http://apt.postgresql.org/pub/repos/apt/ $OSDEB-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+	# install
+		apt-get update \
 		&& apt-get install -y acl sudo \
 		postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION} \
 		&& ln -sf ${PG_DATADIR}/postgresql.conf /etc/postgresql/${PG_VERSION}/main/postgresql.conf \
