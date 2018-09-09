@@ -50,18 +50,34 @@ sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" $INSTALL_DIR/$INSTALL_RSP
 # Install Oracle binaries
 cd $INSTALL_DIR
 if [[ ! -z "${INSTALL_FILE_1}" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+		mv $INSTALL_DIR/$INSTALL_FILE_1 $ORACLE_HOME/
+		cd $ORACLE_HOME/
+	fi
 	unzip $INSTALL_FILE_1 && \
 	rm $INSTALL_FILE_1
 fi
 if [[ ! -z "${INSTALL_FILE_2}" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+		mv $INSTALL_DIR/$INSTALL_FILE_2 $ORACLE_HOME/
+		cd $ORACLE_HOME/
+	fi
 	unzip $INSTALL_FILE_2 && \
 	rm $INSTALL_FILE_2
 fi
 if [[ ! -z "${INSTALL_FILE_3}" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
+		cd $ORACLE_HOME/
+	fi
 	unzip $INSTALL_FILE_3 && \
 	rm $INSTALL_FILE_3
 fi
 if [[ ! -z "${INSTALL_FILE_4}" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
+		cd $ORACLE_HOME/
+	fi
 	unzip $INSTALL_FILE_4 && \
 	rm $INSTALL_FILE_4
 fi
