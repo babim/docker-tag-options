@@ -85,7 +85,6 @@ elif [ -f /etc/alpine-release ]; then
 			dpkg-dev dpkg \
 			flex \
 			gcc \
-
 			libc-dev \
 			libedit-dev \
 			libxml2-dev \

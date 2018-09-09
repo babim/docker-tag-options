@@ -1,1 +1,1 @@
-apk del --purge wget
+apk del --purge wget ca-certificates
