@@ -12,11 +12,6 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
-	if [ -f /etc/lsb-release ]; then
-    		export OSRUN=ubuntu
-	elif [ -f /etc/debian_version ]; then
-    		export OSRUN=debian
-	fi
 	# set environment
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
 	MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org-unstable}
@@ -28,7 +23,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# install depend
 		apt-get update \
 		&& apt-get install -y --no-install-recommends \
-			ca-certificates \
+			ca-certificates gnupg \
 			jq \
 			numactl
 
@@ -38,7 +33,13 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		wget --no-check-certificate -O - $DOWN_URL/js-yaml_install.sh | bash
 
 	# add repo
-		key='E162F504A20CDF15827F718D4B7C549A058F8B6B'; \
+	if [ -f /etc/lsb-release ]; then
+    		export OSRUN=ubuntu
+		key='E162F504A20CDF15827F718D4B7C549A058F8B6B'
+	elif [ -f /etc/debian_version ]; then
+    		export OSRUN=debian
+		key='2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
+	fi		
 		export GNUPGHOME="$(mktemp -d)"; \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 		gpg --export "$key" >> /etc/apt/trusted.gpg.d/mariadb.gpg; \
