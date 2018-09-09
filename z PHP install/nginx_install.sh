@@ -41,11 +41,21 @@ if [[ -f /etc/lsb-release ]]; then
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
 		chmod 755 $FILETEMP
 	# prepare etc start
-	    wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
+	else
+	else
+		# clean os
+		apt-get purge -y wget curl && \
+		apt-get clean && \
+  		apt-get autoclean && \
+  		apt-get autoremove -y && \
+   		rm -rf /build && \
+   		rm -rf /tmp/* /var/tmp/* && \
+   		rm -rf /var/lib/apt/lists/*	
 	fi
 else
     echo "Not support your OS"
