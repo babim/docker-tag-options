@@ -105,16 +105,16 @@ elif [ -f /etc/alpine-release ]; then
 			zlib-dev \
 			icu-dev \
 		\
-		&& cd /usr/src/postgresql \
-	# update "DEFAULT_PGSOCKET_DIR" to "/var/run/postgresql" (matching Debian) \
-	# see https://anonscm.debian.org/git/pkg-postgresql/postgresql.git/tree/debian/patches/51-default-sockets-in-var.patch?id=8b539fcb3e093a521c095e70bdfa76887217b89f \
-		&& awk '$1 == "#define" && $2 == "DEFAULT_PGSOCKET_DIR" && $3 == "\"/tmp\"" { $3 = "\"/var/run/postgresql\""; print; next } { print }' src/include/pg_config_manual.h > src/include/pg_config_manual.h.new \
+		&& cd /usr/src/postgresql
+	# update "DEFAULT_PGSOCKET_DIR" to "/var/run/postgresql" (matching Debian)
+	# see https://anonscm.debian.org/git/pkg-postgresql/postgresql.git/tree/debian/patches/51-default-sockets-in-var.patch?id=8b539fcb3e093a521c095e70bdfa76887217b89f
+		awk '$1 == "#define" && $2 == "DEFAULT_PGSOCKET_DIR" && $3 == "\"/tmp\"" { $3 = "\"/var/run/postgresql\""; print; next } { print }' src/include/pg_config_manual.h > src/include/pg_config_manual.h.new \
 		&& grep '/var/run/postgresql' src/include/pg_config_manual.h.new \
 		&& mv src/include/pg_config_manual.h.new src/include/pg_config_manual.h \
-		&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
-	# explicitly update autoconf config.guess and config.sub so they support more arches/libcs \
-		&& wget -O config/config.guess 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess?id=7d3d27baf8107b630586c962c057e22149653deb' \
-		&& wget -O config/config.sub 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub?id=7d3d27baf8107b630586c962c057e22149653deb' \
+		&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" 
+	# explicitly update autoconf config.guess and config.sub so they support more arches/libcs
+		wget -O config/config.guess 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess?id=7d3d27baf8107b630586c962c057e22149653deb' \
+		&& wget -O config/config.sub 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub?id=7d3d27baf8107b630586c962c057e22149653deb'
 	# configure options taken from: \
 	# https://anonscm.debian.org/cgit/pkg-postgresql/postgresql.git/tree/debian/rules?h=9.5 \
 		&& ./configure \
