@@ -35,7 +35,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# install option for webapp (owncloud)
 			apt-get install -y --force-yes smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin
 		# install oracle client extension
-			wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/oracle_extension.sh | bash
+			wget --no-check-certificate -O - $DOWN_URL/oracle_extension.sh | bash
 		}
 	preparefinal() {
 		# download entrypoint
@@ -51,7 +51,7 @@ if [[ -f /etc/lsb-release ]]; then
 	laravelinstall() {
 		if [[ "$LARAVEL" == "true" ]];then
 		# install laravel depend
-			apt-get install -y php-*dom php-*mbstring zip unzip git curl && \
+			apt-get install -y --force-yes php-*dom php-*mbstring zip unzip git curl && \
 			wget -O -S https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
 			ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
 		# install laravel
@@ -166,6 +166,7 @@ if [[ -f /etc/lsb-release ]]; then
 
 if [[ "$PHP_VERSION" == "5.6" ]];then
 	# install PHP
+	echo "install PHP $PHP_VERSION"
 	apt-get install -y --force-yes imagemagick curl \
 		php$PHP_VERSION-json php$PHP_VERSION-gd php$PHP_VERSION-sqlite php$PHP_VERSION-curl php$PHP_VERSION-ldap php$PHP_VERSION-mysql php$PHP_VERSION-pgsql \
 		php$PHP_VERSION-imap php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION-zip php$PHP_VERSION-mcrypt php$PHP_VERSION-memcache php$PHP_VERSION-intl \
@@ -176,6 +177,7 @@ if [[ "$PHP_VERSION" == "5.6" ]];then
 
 elif [[ "$PHP_VERSION" == "7.0" ]];then
 	# install PHP
+	echo "install PHP $PHP_VERSION"
 	apt-get install -y --force-yes imagemagick curl \
 		php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
 		php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-mcrypt php$PHP_VERSION-readline php$PHP_VERSION-odbc \
@@ -188,6 +190,7 @@ elif [[ "$PHP_VERSION" == "7.0" ]];then
 
 elif [[ "$PHP_VERSION" == "7.1" ]];then
 	# install PHP
+	echo "install PHP $PHP_VERSION"
 	apt-get install -y --force-yes imagemagick curl \
 		php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
 		php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-mcrypt php$PHP_VERSION-readline php$PHP_VERSION-odbc \
@@ -200,6 +203,7 @@ elif [[ "$PHP_VERSION" == "7.1" ]];then
 
 elif [[ "$PHP_VERSION" == "7.2" ]];then
 	# install PHP
+	echo "install PHP $PHP_VERSION"
 	apt-get install -y --force-yes imagemagick curl \
 		php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
 		php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-readline php$PHP_VERSION-odbc \
