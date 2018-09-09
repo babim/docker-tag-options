@@ -22,10 +22,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 
 	# install depend
 		apt-get update \
-		&& apt-get install -y --no-install-recommends \
-			ca-certificates gnupg dirmngr \
-			jq \
-			numactl
+		&& apt-get install -y ca-certificates gnupg dirmngr jq numactl
 
 	# install gosu
 		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
