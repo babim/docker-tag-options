@@ -56,13 +56,13 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
 			${MONGO_PACKAGE}-mongos \
-			${MONGO_PACKAGE}-tools \
+			${MONGO_PACKAGE}-tools
 		# install correct version
 		#	${MONGO_PACKAGE}=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-server=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-shell=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-mongos=$MONGO_VERSION \
-		#	${MONGO_PACKAGE}-tools=$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-tools=$MONGO_VERSION
 		rm -rf /var/lib/mongodb \
 		&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
@@ -97,13 +97,13 @@ elif [[ -f /etc/redhat-release ]]; then
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
 			${MONGO_PACKAGE}-mongos \
-			${MONGO_PACKAGE}-tools \
+			${MONGO_PACKAGE}-tools
 		# install correct version
 		#	${MONGO_PACKAGE}-$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-server-$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-shell-$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-mongos-$MONGO_VERSION \
-		#	${MONGO_PACKAGE}-tools-$MONGO_VERSION \
+		#	${MONGO_PACKAGE}-tools-$MONGO_VERSION
 	# download entrypoint
 		downloadentry
 	# clean os
