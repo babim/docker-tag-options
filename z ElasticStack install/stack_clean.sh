@@ -1,1 +1,1 @@
-	apk del --purge wget curl ca-certificates
+	apk del --purge wget ca-certificates

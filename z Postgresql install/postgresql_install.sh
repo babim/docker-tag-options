@@ -117,7 +117,7 @@ elif [ -f /etc/alpine-release ]; then
 		&& wget -O config/config.sub 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub?id=7d3d27baf8107b630586c962c057e22149653deb'
 	# configure options taken from: \
 	# https://anonscm.debian.org/cgit/pkg-postgresql/postgresql.git/tree/debian/rules?h=9.5 \
-		&& ./configure \
+		./configure \
 			--build="$gnuArch" \
 	# "/usr/src/postgresql/src/backend/access/common/tupconvert.c:105: undefined reference to `libintl_gettext'" \
 	#		--enable-nls \
