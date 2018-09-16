@@ -84,6 +84,18 @@ fi
     MAX_EXECUTION_TIME=${MAX_EXECUTION_TIME:-3600}
     DISPLAYERROR=${DISPLAYERROR:-ON}
 
+setnginxphpvalue() {
+#Set nginx user
+if [ -z "`ls /etc/nginx`" ]; then 
+	if [ -f "/etc/nginx/nginx.conf" ]; then
+	sed -i -E \
+		-e "/^client_max_body_size  .*/cclient_max_body_size  $PHP_MAX_POST" \
+		-e "/^keepalive_timeout  .*/ckeepalive_timeout  $MAX_INPUT_TIME" \
+	/etc/nginx/nginx.conf
+	fi
+fi
+}
+
 phpvalue() {
 	sed -i -E \
 		-e "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" \
@@ -116,6 +128,10 @@ phpvalue() {
 	fi
 	done
 
+	# set nginx php value
+	if [ -d "/etc/nginx" ]; then
+		setnginxphpvalue
+	fi
 fi
 fi
 
@@ -213,7 +229,7 @@ auser=${auser:-www-data}
 	   	touch /PAGESPEED.check
 	fi
 	#remove
-	if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED.check ]; then
+	if [ "$PAGESPEED" = "false" ] && [ -f /PAGESPEED.check ]; then
 		apt-get purge *pagespeed* -y
 		rm -f /PAGESPEED.check
 	fi

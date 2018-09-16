@@ -36,8 +36,8 @@ if [[ -f /etc/lsb-release ]]; then
 	    wget --no-check-certificate -O - $DOWN_URL/nginx_include.sh | bash
 
 	# Supervisor config
-		mkdir -p /var/log/supervisor
-		mkdir -p /etc/supervisor/conf.d/
+		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
 	# download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
