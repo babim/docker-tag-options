@@ -1,1 +1,0 @@
-/usr/bin/supervisord -nc /etc/supervisor/supervisord.conf

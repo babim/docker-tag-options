@@ -17,7 +17,7 @@ if [[ -f /etc/alpine-release ]]; then
 	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache ca-certificates gnupg openssl
+		apk add --no-cache ca-certificates gnupg openssl supervisor
 	# Install Oracle Java
 		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
 	# ensure elasticsearch user exists
@@ -56,6 +56,16 @@ if [[ -f /etc/alpine-release ]]; then
 			wget -O /start.sh $DOWN_URL/elasticsearch5_start.sh
 		fi
 			chmod 755 /start.sh
+		# Supervisor config
+			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+		# download sypervisord config
+		FILETEMP=/etc/supervisor/supervisord.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+		FILETEMP=/etc/supervisor/conf.d/elasticsearch.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/elasticsearch.conf
 		}
 		prepareconfig() {
 		FILETEMP=/usr/share/elasticsearch/config

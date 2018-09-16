@@ -102,6 +102,25 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			chmod 755 /*.sh
+		# Supervisor config
+			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+		# download sypervisord config
+		FILETEMP=/etc/supervisor/supervisord.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/supervisord.conf
+		FILETEMP=/etc/supervisor/conf.d/elasticsearch.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/elasticsearch.conf
+		FILETEMP=/etc/supervisor/conf.d/kibana.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/kibana.conf
+		FILETEMP=/etc/supervisor/conf.d/logstash.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/logstash.conf
+		FILETEMP=/etc/supervisor/conf.d/nginx.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/nginx.conf
 		}
 		prepareconfig() {
 		# elasticsearch
@@ -155,12 +174,6 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
-		# supervisor
-			FILETEMP=/etc/supervisor
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/supervisor/supervisord.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/supervisord.conf
 		}
 
 		downloadentrypoint

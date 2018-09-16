@@ -19,7 +19,7 @@ if [[ -f /etc/alpine-release ]]; then
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache nodejs su-exec
-		apk add --no-cache wget curl ca-certificates gnupg openssl
+		apk add --no-cache wget curl ca-certificates gnupg openssl supervisor
 	# ensure kibana user exists
 		adduser -DH -s /sbin/nologin kibana
 	# install kibana
@@ -61,6 +61,16 @@ if [[ -f /etc/alpine-release ]]; then
 			wget -O /start.sh $DOWN_URL/kibana_start.sh
 		fi
 			chmod 755 /start.sh
+		# Supervisor config
+			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+		# download sypervisord config
+		FILETEMP=/etc/supervisor/supervisord.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+		FILETEMP=/etc/supervisor/conf.d/kibana.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/kibana.conf
 		}
 	if [[ "$KIBANA" = "4" ]]; then
 		wget -O /usr/share/kibana/config/kibana.yml $DOWN_URL/kibana_config/4/kibana.yml

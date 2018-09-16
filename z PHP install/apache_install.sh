@@ -36,24 +36,24 @@ if [[ -f /etc/lsb-release ]]; then
 	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
 	if [[ "$CONFIGMODREWRITE" = "true" ]]; then
 		# config default site
-		FILETEMP=/etc/apache2/site-available
+		FILETEMP=/etc/apache2/sites-available
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		FILETEMP=/etc/apache2/site-available/000-default.conf
+		FILETEMP=/etc/apache2/sites-available/000-default.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/000-default.conf
-		FILETEMP=/etc/apache2/site-available/default-ssl.conf
+		FILETEMP=/etc/apache2/sites-available/default-ssl.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/default-ssl.conf
 		# config ssl default
-		FILETEMP=/etc/apache/certs
+		FILETEMP=/etc/apache2/certs
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		FILETEMP=/etc/apache/certs/example-cert.pem
+		FILETEMP=/etc/apache2/certs/example-cert.pem
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/example-cert.pem
-		FILETEMP=/etc/apache/certs/example-key.pem
+		FILETEMP=/etc/apache2/certs/example-key.pem
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/example-key.pem
-		FILETEMP=/etc/apache/certs/ca-cert.pem
+		FILETEMP=/etc/apache2/certs/ca-cert.pem
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/ca-cert.pem
 	fi
