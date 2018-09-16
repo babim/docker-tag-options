@@ -132,8 +132,6 @@ phpvalue() {
 	if [ -d "/etc/nginx" ]; then
 		setnginxphpvalue
 	fi
-fi
-fi
 
 # Pass real-ip to logs when behind ELB, etc
 if [[ "$REAL_IP_HEADER" == "1" ]] ; then
