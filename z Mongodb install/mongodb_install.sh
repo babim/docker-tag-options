@@ -21,6 +21,13 @@ echo 'Check OS'
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
 		chmod 755 $FILETEMP
+	# Supervisor config
+		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+	# download sypervisord config
+	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/mongodb.conf
 		}
 
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
@@ -34,7 +41,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	fi
 
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-		groupadd -r mongodb && useradd -r -g mongodb mongodb
+		groupadd -r mongodb && useradd -r -g mongodb mongodb supervisor
 
 	# install depend
 		apt-get update \

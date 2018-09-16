@@ -37,6 +37,8 @@ export POSTGRESUSERID=${POSTGRESUSERID:-55}
 export DNSOPTION=${DNS:-false}
 export CLOUDFLARE=1.1.1.1
 export GOOGLE=8.8.8.8
+
+DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20SCRIPT%20AUTO"
 # environment set true all
 if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then
     export SSHOPTION=${SSH:-true}
@@ -280,9 +282,18 @@ alpine-cron-start() {
     mkdir -p /etc-start/periodic /etc-start/periodic && \
     cp -R /etc/crontabs/* /etc-start/crontabs && cp -R /etc/periodic/* /etc-start/periodic
     touch /CRON.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	apk add --no-cache wget
+	FILETEMP=/etc/supervisor/conf.d/cron.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+	apk del --purge wget
+	fi
 }
 alpine-cron-remove() {
     echo "No need do anything"
+    if [ -f "/etc/supervisor/supervisord.conf" ]; then rm -f /etc/supervisor/conf.d/cron.conf; fi
 }
 
 alpine-cron() {
@@ -290,7 +301,7 @@ alpine-cron() {
     if [ -z "`ls /etc/crontabs`" ]; then cp -R /etc-start/crontabs/* /etc/crontabs; fi
     if [ -z "`ls /etc/periodic`" ]; then cp -R /etc-start/periodic/* /etc/periodic; fi
 # start cron
-    /usr/sbin/crond -b -L 8
+    if [ ! -f "/etc/supervisor/supervisord.conf" ]; then /usr/sbin/crond -b -L 8; fi
 }
 
 alpine-nfs-start() {
@@ -313,6 +324,14 @@ alpine-ssh-start() {
     # allow root ssh
     sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
     touch /SSH.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	apk add --no-cache wget
+	FILETEMP=/etc/supervisor/conf.d/ssh.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+	apk del --purge wget
+	fi
 }
 alpine-ssh-remove() {
     # remove ssh
@@ -387,13 +406,22 @@ alpine-synology-remove() {
 redhat-cron-start() {
     yum install -y cronie
     touch /CRON.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	yum install -y wget
+	FILETEMP=/etc/supervisor/conf.d/cron.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+	yum remove -y wget
+	fi
 }
 redhat-cron-remove() {
     yum remove -y cronie
+    if [ -f "/etc/supervisor/supervisord.conf" ]; then /etc/supervisor/conf.d/cron.conf; fi
 }
 
 redhat-cron() {
-    service crond start
+    if [ ! -f "/etc/supervisor/supervisord.conf" ]; then service crond start; fi
 }
 
 redhat-nfs-start() {
@@ -407,6 +435,14 @@ redhat-nfs-remove() {
 redhat-ssh-start() {
     yum install -y openssh-server
     touch /SSH.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	yum install -y wget
+	FILETEMP=/etc/supervisor/conf.d/ssh.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+	yum remove -y wget
+	fi
 }
 redhat-ssh-remove() {
     yum remove -y openssh-server
@@ -462,14 +498,23 @@ ubuntu-cron-start() {
     # install
     apt-get install -y cron
     touch /CRON.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	apt-get install wget -y
+	FILETEMP=/etc/supervisor/conf.d/cron.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+	apt-get purge -y wget
+	fi
 }
 ubuntu-cron-remove() {
     # remove
     apt-get purge -y cron
+    if [ -f "/etc/supervisor/supervisord.conf" ]; then rm -f /etc/supervisor/conf.d/cron.conf; fi
 }
 
 ubuntu-cron() {
-    service cron start
+    if [ ! -f "/etc/supervisor/supervisord.conf" ]; then service cron start; fi
 }
 
 ubuntu-nfs-start() {
@@ -495,10 +540,19 @@ ubuntu-ssh-start() {
     export NOTVISIBLE="in users profile"
     echo "export VISIBLE=now" >> /etc/profile
     touch /SSH.check
+	# supervisor
+	if [ -f "/etc/supervisor/supervisord.conf" ]; then
+	apt-get install -y wget
+	FILETEMP=/etc/supervisor/conf.d/ssh.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+	apt-get purge -y wget
+	fi
 }
 ubuntu-ssh-remove() {
 # remove
     apt-get purge -y openssh-server
+    if [ -f "/etc/supervisor/supervisord.conf" ]; then rm -f /etc/supervisor/conf.d/ssh.conf; fi
 }
 
 ubuntu-ssh() {
@@ -525,7 +579,7 @@ ubuntu-ssh() {
     SSHPASS=${SSHPASS:-root}
     echo "root:$SSHPASS" | chpasswd
     # run ssh
-    service ssh start
+    if [ ! -f "/etc/supervisor/supervisord.conf" ]; then service ssh start; fi
 }
 
 ubuntu-synology-start() {
