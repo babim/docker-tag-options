@@ -184,18 +184,38 @@ auser=${auser:-www-data}
 
 	fi
 
-# run PHP-fpm
-if [ ! -f "/PHPFPM" ]; then 
-	if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6 -D; fi
-	if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0 -D; fi
-	if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1 -D; fi
-	if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2 -D; fi
-fi
-if [ ! -f "/etc/nginx/nginx.conf" ]; then 
-	if [ -f "/usr/bin/php-fpm5.6" ]; then php-fpm5.6; fi
-	if [ -f "/usr/bin/php-fpm7.0" ]; then php-fpm7.0; fi
-	if [ -f "/usr/bin/php-fpm7.1" ]; then php-fpm7.1; fi
-	if [ -f "/usr/bin/php-fpm7.2" ]; then php-fpm7.2; fi
-fi
+	# install modsecurity
+	if [[ "$MODSECURITY" = "true" ]]; then
+		if [ -z "`ls /etc/apache2`" ]; then
+			apt-get install -y --force-yes libapache2-mod-security2
+			a2enmod security2
+		else
+			echo "Not have Apache2 on this Server"
+		fi
+		touch /MODSECUROTY.check
+	fi
+	#remove
+	if [ "$MODSECURITY" = "false" ] && [ -f /MODSECURITY.check ]; then
+		apt-get purge libapache2-mod-security2 -y
+		rm -f /MODSECURITY.check
+	fi
+
+	# install pagespeed
+	if [[ "$PAGESPEED" = "true" ]]; then
+		if [ -z "`ls /etc/apache2`" ]; then
+			apt-get install -y --force-yes wget
+			wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+			dpkg -i mod-pagespeed-stable_current_amd64.deb
+			rm -f mod-pagespeed-stable_current_amd64.deb
+		else
+			echo "Not have Apache2 on this Server"
+		fi
+	   	touch /PAGESPEED.check
+	fi
+	#remove
+	if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED.check ]; then
+		apt-get purge *pagespeed* -y
+		rm -f /PAGESPEED.check
+	fi
 
 exec "$@"

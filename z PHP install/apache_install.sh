@@ -14,11 +14,13 @@ echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	export DEBIAN_FRONTEND=noninteractive
 	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	MODSECURITY=${MODSECURITY:-false}
+	PAGESPEED=${PAGESPEED:-false}
 	# add repo apache
 		add-apt-repository ppa:ondrej/apache2 -y
 
 	# install apache
-		apt-get update && apt-get install apache2 -y --force-yes
+		apt-get update && apt-get install apache2 supervisor -y --force-yes
 	# enable apache mod
 	  	[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
 
@@ -56,9 +58,42 @@ if [[ -f /etc/lsb-release ]]; then
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/ca-cert.pem
 	fi
 
+	# install modsecurity
+	if [[ "$MODSECURITY" = "true" ]]; then
+		if [ -z "`ls /etc/apache2`" ]; then
+			apt-get install -y --force-yes libapache2-mod-security2
+			a2enmod security2
+		else
+			echo "Not have Apache2 on this Server"
+		fi
+		touch /MODSECUROTY.check
+	fi
+	# install pagespeed
+	if [[ "$PAGESPEED" = "true" ]]; then
+		if [ -z "`ls /etc/apache2`" ]; then
+			wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
+			dpkg -i mod-pagespeed-stable_current_amd64.deb
+			rm -f mod-pagespeed-stable_current_amd64.deb
+		else
+			echo "Not have Apache2 on this Server"
+		fi
+	   	touch /PAGESPEED.check
+	fi
+
+	# Supervisor config
+		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+	# download sypervisord config
+	FILETEMP=/etc/supervisor/supervisord.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=/etc/supervisor/conf.d/apache.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/apache.conf
+
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then
-		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/php_install.sh | bash
 	else
 		# clean os
 		apt-get purge -y wget curl && \

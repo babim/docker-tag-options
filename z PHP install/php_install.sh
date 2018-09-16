@@ -17,11 +17,20 @@ if [[ -f /etc/lsb-release ]]; then
 		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	# add repo php ubuntu
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
-		apt-get update
+		apt-get update && apt-get install supervisor -y
 	# install PHP
 		[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
 		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
 		[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm
+
+	# Supervisor config
+		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
+	# download sypervisord config
+	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/phpfpm-${PHP_VERSION}.conf
+
 	# set loop
 	phpfinal() {	
 		# enable apache mod

@@ -17,7 +17,7 @@ if [[ -f /etc/lsb-release ]]; then
 	export nginx=stable
 	    echo "deb http://ppa.launchpad.net/nginx/$nginx/ubuntu xenial main" > /etc/apt/sources.list.d/nginx-$nginx.list && \
 	    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C && \
-	    apt-get update && apt-get install -y --force-yes nginx && \
+	    apt-get update && apt-get install -y --force-yes nginx supervisor && \
 	    chown -R www-data:www-data /var/lib/nginx && \
 	    apt-get purge -y apache*
 
@@ -34,6 +34,17 @@ if [[ -f /etc/lsb-release ]]; then
 
 	# include
 	    wget --no-check-certificate -O - $DOWN_URL/nginx_include.sh | bash
+
+	# Supervisor config
+		mkdir -p /var/log/supervisor
+		mkdir -p /etc/supervisor/conf.d/
+	# download sypervisord config
+	FILETEMP=/etc/supervisor/supervisord.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=/etc/supervisor/conf.d/nginx.conf
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
 
 	# download entrypoint
 		FILETEMP=/start.sh

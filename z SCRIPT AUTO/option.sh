@@ -8,13 +8,13 @@
 ####################################################
 # check os
 echo 'Check OS'
-if [ -f /etc/redhat-release ]; then
+if [[ -f /etc/redhat-release ]]; then
     export OSRUN=redhat
-elif [ -f /etc/lsb-release ]; then
+elif [[ -f /etc/lsb-release ]]; then
     export OSRUN=ubuntu
-elif [ -f /etc/debian_version ]; then
+elif [[ -f /etc/debian_version ]]; then
     export OSRUN=ubuntu
-elif [ -f /etc/alpine-release ]; then
+elif [[ -f /etc/alpine-release ]]; then
     export OSRUN=alpine
 else
     exit
@@ -34,8 +34,6 @@ export MYSQLUSER=${MYSQLUSER:-mysql}
 export MYSQLUSERID=${MYSQLUSERID:-66}
 export POSTGRESUSER=${POSTGRESUSER:-$postgres}
 export POSTGRESUSERID=${POSTGRESUSERID:-55}
-export PAGESPEEDOPTION=${PAGESPEED:-false}
-export MODSECURITYOPTION=${MODSECURITY:-false}
 export DNSOPTION=${DNS:-false}
 export CLOUDFLARE=1.1.1.1
 export GOOGLE=8.8.8.8
@@ -46,8 +44,6 @@ if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then
     export NFSOPTION=${NFS:-true}
     export SYNOLOGYOPTION=${SYNOLOGY:-true}
     export UPGRADEOPTION=${UPGRADE:-true}
-    export PAGESPEEDOPTION=${PAGESPEED:-true}
-    export MODSECURITYOPTION=${MODSECURITY:-true}
     export DNSOPTION=${DNS:-true}
 fi
 
@@ -130,38 +126,6 @@ upgrade-del() {
         os-clean
 }
 
-pagespeed-create() {
-    if [ ! -f "/PAGESPEED.check" ]; then
-        os-update
-        pagespeed-start
-        os-clean
-        quit_command
-    elif [ -f "/PAGESPEED.check" ]; then
-        quit_command
-    fi
-}
-pagespeed-del() {
-        os-update
-        pagespeed-remove
-        os-clean
-}
-
-modsecurity-create() {
-    if [ ! -f "/MODSECURITY.check" ]; then
-        os-update
-        modsecurity-start
-        os-clean
-        quit_command
-    elif [ -f "/MODSECURITY.check" ]; then
-        quit_command
-    fi
-}
-modsecurity-del() {
-        os-update
-        modsecurity-remove
-        os-clean
-}
-
 ####################################################
 # remove static environment group command
 ssh-remove() {
@@ -193,18 +157,6 @@ synology-remove() {
     if [ $OSRUN = redhat ]; then redhat-synology-remove; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-synology-remove; fi
     if [ $OSRUN = alpine ]; then alpine-synology-remove; fi
-}
-pagespeed-remove() {
-    if [ -f "/SYNOLOGY.check" ]; then rm -f /PAGESPEED.check; fi
-    if [ $OSRUN = redhat ]; then redhat-pagespeed-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-pagespeed-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-pagespeed-remove; fi
-}
-modsecurity-remove() {
-    if [ -f "/SYNOLOGY.check" ]; then rm -f /MODSECURITY.check; fi
-    if [ $OSRUN = redhat ]; then redhat-modsecurity-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-modsecurity-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-modsecurity-remove; fi
 }
 os-upgrade-remove() {
     if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
@@ -260,16 +212,6 @@ os-update() {
     if [ $OSRUN = redhat ]; then redhat-update; fi
     if [ $OSRUN = ubuntu ]; then ubuntu-update; fi
     if [ $OSRUN = alpine ]; then alpine-update; fi
-}
-pagespeed-start() {
-    if [ $OSRUN = redhat ]; then redhat-pagespeed-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-pagespeed-start; fi
-    if [ $OSRUN = alpine ]; then alpine-pagespeed-start; fi
-}
-modsecurity-start() {
-    if [ $OSRUN = redhat ]; then redhat-modsecurity-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-modsecurity-start; fi
-    if [ $OSRUN = alpine ]; then alpine-modsecurity-start; fi
 }
 
 ####################################################
@@ -440,30 +382,6 @@ alpine-synology-remove() {
     echo "No need do anything"
 }
 
-alpine-pagespeed-start() {
-    if [ ! -z "`ls /etc/apache2`" ]; then
-        echo "not found on alpine linux"
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /PAGESPEED.check
-}
-alpine-pagespeed-remove() {
-    echo "not found on alpine linux"
-}
-
-alpine-modsecurity-start() {
-    if [ ! -z "`ls /etc/apache2`" ]; then
-        echo "not found on alpine linux"
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /MODSECUROTY.check
-}
-alpine-modsecurity-remove() {
-    echo "not found on alpine linux"
-}
-
 # REDHAT
 
 redhat-cron-start() {
@@ -536,34 +454,6 @@ redhat-synology-start() {
 }
 redhat-synology-remove() {
     echo "No need do anything"
-}
-
-redhat-pagespeed-start() {
-    if [ ! -z "`ls /etc/apache2`" ]; then
-        yum install -y wget
-        wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_x86_64.rpm
-        rpm -ivh mod-pagespeed-stable_current_x86_64.rpm
-        rm -f mod-pagespeed-stable_current_x86_64.rpm
-        yum remove -y wget
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /PAGESPEED.check
-}
-redhat-pagespeed-remove() {
-    yum remove -y *pagespeed*
-}
-
-redhat-modsecurity-start() {
-    if [ ! -z "`ls /etc/apache2`" ]; then
-        yum install -y mod_security
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /MODSECUROTY.check
-}
-redhat-modsecurity-remove() {
-        yum remove -y mod_security
 }
 
 # UBUNTU
@@ -655,35 +545,6 @@ ubuntu-synology-remove() {
     echo "No need do anything"
 }
 
-ubuntu-pagespeed-start() {
-    if [ -z "`ls /etc/apache2`" ]; then
-        apt-get install -y --force-yes wget
-        wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
-        dpkg -i mod-pagespeed-stable_current_amd64.deb
-        rm -f mod-pagespeed-stable_current_amd64.deb
-        apt-get purge -y wget
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /PAGESPEED.check
-}
-ubuntu-pagespeed-remove() {
-        apt-get purge -y *pagespeed*
-}
-
-ubuntu-modsecurity-start() {
-    if [ -z "`ls /etc/apache2`" ]; then
-        apt-get install -y --force-yes libapache2-mod-security2
-        a2enmod security2
-    else
-        echo "Not have Apache2 on this Server"
-    fi
-    touch /MODSECUROTY.check
-}
-ubuntu-modsecurity-remove() {
-        apt-get purge -y libapache2-mod-security2
-}
-
 # NFS mount
 nfs-mount() {
     # mount nfs
@@ -771,22 +632,6 @@ quit_command() {
     fi
     #remove
     if [ "$SSHOPTION" = "false" ] && [ -f /UPGRADE.check ]; then upgrade-del; fi
-# pagespeed
-    # install
-    if [ "$PAGESPEEDOPTION" = "true" ] || [ "$PAGESPEEDOPTION" = "on" ]; then
-       echo "install PAGESPEED"
-       pagespeed-create
-    fi
-    #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /PAGESPEED.check ]; then pagespeed-del; fi
-# modsecurity
-    # install
-    if [ "$MODSECURITYOPTION" = "true" ] || [ "$MODSECURITYOPTION" = "on" ]; then
-       echo "install apache MOD-SECURITY"
-       modsecurity-create
-    fi
-    #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /MODSECURITY.check ]; then modsecurity-del; fi
 # DNS
     # install
     if [ "$DNSOPTION" = "google" ]; then

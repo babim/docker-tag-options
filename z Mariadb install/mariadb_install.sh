@@ -45,96 +45,96 @@ if [[ -f /etc/debian_version ]]; then
 				apt-get purge wget -y
 			}
 			
-if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]];then
-	# install mysql over repo with major version
-	set -e;\
+	if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]];then
+		# install mysql over repo with major version
+		set -e;\
+			{ \
+				echo 'Package: *'; \
+				echo 'Pin: release o=MariaDB'; \
+				echo 'Pin-Priority: 999'; \
+			} > /etc/apt/preferences.d/mariadb
+		set -e;\
+			{ \
+				echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password password 'unused'; \
+				echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password_again password 'unused'; \
+			} | debconf-set-selections \
+			&& apt-get update \
+			&& apt-get install -y --force-yes \
+				mariadb-server \
+				percona-xtrabackup \
+				socat
+		# comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
+			sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/*
+		# purge and re-create /var/lib/mysql with appropriate ownership
+			rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql var/run/mysqld \
+			&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+		# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
+			chmod 777 /var/run/mysqld
+		# comment out a few problematic configuration values
+			find /etc/mysql/ -name '*.cnf' -print0 \
+				| xargs -0 grep -lZE '^(bind-address|log)' \
+				| xargs -rt -0 sed -Ei 's/^(bind-address|log)/#&/'
+		# don't reverse lookup hostnames, they are usually another container
+			echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
+
+		# finish
+		finish
+
+	elif [[ "$TYPESQL" == "mysql" ]];then
+		# the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
+		# also, we set debconf keys to make APT a little quieter
 		{ \
-			echo 'Package: *'; \
-			echo 'Pin: release o=MariaDB'; \
-			echo 'Pin-Priority: 999'; \
-		} > /etc/apt/preferences.d/mariadb
-	set -e;\
-		{ \
-			echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password password 'unused'; \
-			echo "mariadb-server-$MARIADB_MAJOR" mysql-server/root_password_again password 'unused'; \
-		} | debconf-set-selections \
-		&& apt-get update \
-		&& apt-get install -y --force-yes \
-			mariadb-server \
-			percona-xtrabackup \
-			socat
-	# comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
-		sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/*
-	# purge and re-create /var/lib/mysql with appropriate ownership
-		rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql var/run/mysqld \
-		&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
-	# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
-		chmod 777 /var/run/mysqld
-	# comment out a few problematic configuration values
-		find /etc/mysql/ -name '*.cnf' -print0 \
-			| xargs -0 grep -lZE '^(bind-address|log)' \
-			| xargs -rt -0 sed -Ei 's/^(bind-address|log)/#&/'
-	# don't reverse lookup hostnames, they are usually another container
-		echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
+				echo mysql-community-server mysql-community-server/data-dir select ''; \
+				echo mysql-community-server mysql-community-server/root-pass password ''; \
+				echo mysql-community-server mysql-community-server/re-root-pass password ''; \
+				echo mysql-community-server mysql-community-server/remove-test-db select false; \
+			} | debconf-set-selections \
+			&& apt-get update && apt-get install -y mysql-server && rm -rf /var/lib/apt/lists/* \
+			&& rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql /var/run/mysqld \
+			&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+		# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
+			chmod 777 /var/run/mysqld
+		# comment out a few problematic configuration values
+			find /etc/mysql/ -name '*.cnf' -print0 \
+				| xargs -0 grep -lZE '^(bind-address|log)' \
+				| xargs -rt -0 sed -Ei 's/^(bind-address|log)/#&/'
+		# don't reverse lookup hostnames, they are usually another container
+			echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
 
-	# finish
-	finish
+		# finish
+		finish
 
-elif [[ "$TYPESQL" == "mysql" ]];then
-	# the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
-	# also, we set debconf keys to make APT a little quieter
-	{ \
-			echo mysql-community-server mysql-community-server/data-dir select ''; \
-			echo mysql-community-server mysql-community-server/root-pass password ''; \
-			echo mysql-community-server mysql-community-server/re-root-pass password ''; \
-			echo mysql-community-server mysql-community-server/remove-test-db select false; \
-		} | debconf-set-selections \
-		&& apt-get update && apt-get install -y mysql-server && rm -rf /var/lib/apt/lists/* \
-		&& rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql /var/run/mysqld \
-		&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
-	# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
-		chmod 777 /var/run/mysqld
-	# comment out a few problematic configuration values
-		find /etc/mysql/ -name '*.cnf' -print0 \
-			| xargs -0 grep -lZE '^(bind-address|log)' \
-			| xargs -rt -0 sed -Ei 's/^(bind-address|log)/#&/'
-	# don't reverse lookup hostnames, they are usually another container
-		echo '[mysqld]\nskip-host-cache\nskip-name-resolve' > /etc/mysql/conf.d/docker.cnf
+	elif [[ "$TYPESQL" == "mysql5" ]];then
+		# install mysql over repo with major version
+		FILETEMP=mysql.tar.gz
+		wget -q --no-check-certificate "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O $FILETEMP \
+			&& mkdir /usr/local/mysql \
+			&& tar -xzf $FILETEMP -C /usr/local/mysql --strip-components=1 \
+			&& rm $FILETEMP \
+			&& rm -rf /usr/local/mysql/mysql-test /usr/local/mysql/sql-bench \
+			&& rm -rf /usr/local/mysql/bin/*-debug /usr/local/mysql/bin/*_embedded \
+			&& find /usr/local/mysql -type f -name "*.a" -delete \
+			&& apt-get update && apt-get install -y binutils && rm -rf /var/lib/apt/lists/* \
+			&& { find /usr/local/mysql -type f -executable -exec strip --strip-all '{}' + || true; } \
+			&& apt-get purge -y --auto-remove binutils
+		export PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/scripts
 
-	# finish
-	finish
+		mkdir -p /etc/mysql/conf.d \
+			&& { \
+				echo '[mysqld]'; \
+				echo 'skip-host-cache'; \
+				echo 'skip-name-resolve'; \
+				echo 'datadir = /var/lib/mysql'; \
+				echo '!includedir /etc/mysql/conf.d/'; \
+			} > /etc/mysql/my.cnf
 
-elif [[ "$TYPESQL" == "mysql5" ]];then
-	# install mysql over repo with major version
-	FILETEMP=mysql.tar.gz
-	wget -q --no-check-certificate "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" -O $FILETEMP \
-		&& mkdir /usr/local/mysql \
-		&& tar -xzf $FILETEMP -C /usr/local/mysql --strip-components=1 \
-		&& rm $FILETEMP \
-		&& rm -rf /usr/local/mysql/mysql-test /usr/local/mysql/sql-bench \
-		&& rm -rf /usr/local/mysql/bin/*-debug /usr/local/mysql/bin/*_embedded \
-		&& find /usr/local/mysql -type f -name "*.a" -delete \
-		&& apt-get update && apt-get install -y binutils && rm -rf /var/lib/apt/lists/* \
-		&& { find /usr/local/mysql -type f -executable -exec strip --strip-all '{}' + || true; } \
-		&& apt-get purge -y --auto-remove binutils
-	export PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/scripts
+		# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
+		mkdir -p /var/lib/mysql /var/run/mysqld \
+			&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+			chmod 777 /var/run/mysqld
 
-	mkdir -p /etc/mysql/conf.d \
-		&& { \
-			echo '[mysqld]'; \
-			echo 'skip-host-cache'; \
-			echo 'skip-name-resolve'; \
-			echo 'datadir = /var/lib/mysql'; \
-			echo '!includedir /etc/mysql/conf.d/'; \
-		} > /etc/mysql/my.cnf
-
-	# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
-	mkdir -p /var/lib/mysql /var/run/mysqld \
-		&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
-		chmod 777 /var/run/mysqld
-
-	# finish
-	finish
+		# finish
+		finish
 fi
 else
     echo "Not support your OS"
