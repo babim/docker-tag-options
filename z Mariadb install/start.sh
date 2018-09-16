@@ -9,7 +9,7 @@ set -eo pipefail
 shopt -s nullglob
 
 # copy mysql config
-if [ -d "/etc/mysql" ]; then
+if [ -d "/etc/mysql" ] && [ -d "/etc-start/mysql" ]; then
 if [ -z "`ls /etc/mysql`" ]; then cp -R /etc-start/mysql/* /etc/mysql; fi
 fi
 # option

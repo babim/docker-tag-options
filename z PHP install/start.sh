@@ -7,20 +7,18 @@
 
 export TERM=xterm
 
-if [ -d "/etc-start/apache2" ];then
 # copy config apache
-if [ -d "/etc/apache2" ]; then
+if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
 if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi
 fi
-fi
 
-if [ -d "/etc-start/nginx" ];then
 # copy config nginx
+if [ -d "/etc/nginx" ] && [ -d "/etc-start/nginx" ];then
 if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
 fi
 
 # copy default www
-if [ -d "/var/www" ]; then
+if [ -d "/var/www" ] && [ -d "/etc-start/www" ]; then
 if [ -z "`ls /var/www`" ]; then
 	cp -R /etc-start/www/* /var/www
 	chown -R www-data:www-data /var/www
@@ -28,9 +26,11 @@ fi
 fi
 
 # copy config php
-if [ -d "/etc/php" ]; then
+if [ -d "/etc/php" ] && [ -d "/etc-start/php" ]; then
 if [ -z "`ls /etc/php`" ]; then 
 	cp -R /etc-start/php/* /etc/php
+fi
+fi
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi

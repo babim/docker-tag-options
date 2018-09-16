@@ -95,7 +95,7 @@ if [[ -f /etc/debian_version ]]; then
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/conf.d/default_naxsi.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx_config/http2-ssl.conf
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
 	FILETEMP=/etc/nginx/conf.d/kibana.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/conf.d/kibana.conf

@@ -75,7 +75,7 @@ if [[ -f /etc/debian_version ]]; then
 	cp /usr/src/modsecurity/unicode.mapping /etc/nginx/
 	mkdir -p /opt/modsecurity/var/audit/
 
-	# install signature
+	# install owasp-modsecurity-crs signature
 	git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git /usr/src/owasp-modsecurity-crs
 		cp -R /usr/src/owasp-modsecurity-crs/rules/ /etc/nginx/conf/
 		mv /etc/nginx/conf/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf{.example,}
@@ -109,7 +109,7 @@ if [[ -f /etc/debian_version ]]; then
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/conf.d/default_modsecurity.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx_config/http2-ssl.conf
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
 
 	# download nginx modsecurity
 	FILETEMP=/etc/nginx/modsec_includes.conf
