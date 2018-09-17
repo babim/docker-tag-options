@@ -21,7 +21,7 @@ if [[ -f /etc/debian_version ]]; then
 	apt-get update
 	apt-get install -y \
 		git build-essential libpcre3 libpcre3-dev libssl-dev libtool autoconf \
-		apache2-dev libxml2-dev libcurl4-openssl-dev supervisor
+		apache2-dev libxml2-dev libcurl4-openssl-dev
 
 	# make modsecurity
 	cd /usr/src/
@@ -85,19 +85,6 @@ if [[ -f /etc/debian_version ]]; then
 	apt-get purge -y build-essential git
 	rm /nginx-$NGINX_VERSION.tar.gz
 
-	# Supervisor config
-		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-	# download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisord.conf
-		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisor/conf.d/nginx.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
-
 	# download config files
 		mkdir -p /var/lib/nginx/body
 		mkdir -p /var/log/supervisor
@@ -134,6 +121,8 @@ if [[ -f /etc/debian_version ]]; then
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/modsecurity_start.sh
 		chmod 755 $FILETEMP
 
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor_modsecurity.sh | bash
 	# prepare etc start
 	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 	# clean os

@@ -27,10 +27,10 @@ if [[ -f /etc/alpine-release ]]; then
 	LS_TARBAL=${LS_TARBAL:-"${LS_DOWNLOAD_URL}/logstash-${LS_VERSION}.tar.gz"}
 	KB_TARBAL=${KB_TARBAL:-"${KB_DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/etc/logstash"}
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 
 	# install depend
-		apk add --no-cache libzmq bash nodejs supervisor nginx apache2-utils openssl libc6-compat
+		apk add --no-cache libzmq bash nodejs nginx apache2-utils openssl libc6-compat
 	# Install Oracle Java
 		apk add --no-cache openjdk8-jre tini su-exec
 	# make libzmq.so
@@ -102,31 +102,10 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			chmod 755 /*.sh
-		# Supervisor config
-			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-		# download sypervisord config
-		FILETEMP=/etc/supervisor/supervisord.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/supervisord.conf
-		FILETEMP=/etc/supervisord.conf
-			[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
-		FILETEMP=/etc/supervisor/conf.d/elasticsearch.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/elasticsearch.conf
-		FILETEMP=/etc/supervisor/conf.d/kibana.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/kibana.conf
-		FILETEMP=/etc/supervisor/conf.d/logstash.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/logstash.conf
-		FILETEMP=/etc/supervisor/conf.d/nginx.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/nginx.conf
+		# Supervisor
+			wget --no-check-certificate -O - $DOWN_URL/supervisor_stack.sh | bash
 		# prepare etc start
-			[[ ! -d /etc-start ]] || rm -rf /etc-start
-			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
+			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
 		prepareconfig() {
 		# elasticsearch

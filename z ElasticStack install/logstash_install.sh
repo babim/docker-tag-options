@@ -16,9 +16,9 @@ if [[ -f /etc/alpine-release ]]; then
 	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache wget ca-certificates gnupg openssl supervisor
+		apk add --no-cache wget ca-certificates gnupg openssl
 	# Install Oracle Java
 		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
 	# make libzmq.so
@@ -45,22 +45,10 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
 			chmod 755 $FILETEMP
-		# Supervisor config
-			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-		# download sypervisord config
-		FILETEMP=/etc/supervisor/supervisord.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-		FILETEMP=/etc/supervisord.conf
-			[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-		FILETEMP=/etc/supervisor/conf.d/logstash.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/logstash.conf
+		# Supervisor
+			wget --no-check-certificate -O - $DOWN_URL/supervisor_logstash.sh | bash
 		# prepare etc start
-			[[ ! -d /etc-start ]] || rm -rf /etc-start
-			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
+			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
 	if [[ "$LOGSTASH" = "6" ]]; then
 		FILETEMP=/usr/share/logstash/config
@@ -69,13 +57,13 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/logstash/config/log4j2.properties
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/logstash_config/6/logstash/log4j2.properties
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/log4j2.properties
 		FILETEMP=/usr/share/logstash/config/logstash.yml
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/logstash_config/6/logstash/logstash.yml
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/logstash.yml
 		FILETEMP=/usr/share/logstash/pipeline/logstash.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/logstash_config/6/pipeline/default.conf
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
 		downloadentrypoint
@@ -83,7 +71,7 @@ if [[ -f /etc/alpine-release ]]; then
 	if [[ "$XPACK" = "true" ]]; then
 		FILETEMP=/usr/share/logstash/config/logstash.yml
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
 	fi
 else
     echo "Not support your OS"

@@ -13,7 +13,7 @@ fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	export DEBIAN_FRONTEND=noninteractive
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	MODSECURITY=${MODSECURITY:-false}
 	PAGESPEED=${PAGESPEED:-false}
 	# add repo apache
@@ -23,14 +23,6 @@ if [[ -f /etc/lsb-release ]]; then
 		apt-get update && apt-get install apache2 supervisor -y --force-yes
 	# enable apache mod
 	  	[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
-
-	# download entrypoint
-		FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 $FILETEMP
-	# prepare etc start
-		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 
 	# default config with mod rewrite
 	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
@@ -80,18 +72,16 @@ if [[ -f /etc/lsb-release ]]; then
 	   	touch /PAGESPEED.check
 	fi
 
-	# Supervisor config
-		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-	# download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor_apache.sh | bash
+
+	# download entrypoint
+		FILETEMP=/start.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisord.conf
-		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisor/conf.d/apache.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/apache.conf
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 $FILETEMP
+	# prepare etc start
+		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then

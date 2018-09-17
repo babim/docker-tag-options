@@ -15,9 +15,9 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache ca-certificates gnupg openssl supervisor
+		apk add --no-cache ca-certificates gnupg openssl
 	# Install Oracle Java
 		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
 	# ensure elasticsearch user exists
@@ -47,31 +47,19 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 			cd /
 		if [[ "$ES" = "6" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch6_start.sh
+			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
 		elif [[ "$ES" = "1" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch1_start.sh
+			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch1_start.sh
 		elif [[ "$ES" = "2" ]]; then
-			wget -O /start.sh $DOWN_URL/elasticsearch2_start.sh
+			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch2_start.sh
 		else
-			wget -O /start.sh $DOWN_URL/elasticsearch5_start.sh
+			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch5_start.sh
 		fi
 			chmod 755 /start.sh
-		# Supervisor config
-			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-		# download sypervisord config
-		FILETEMP=/etc/supervisor/supervisord.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-		FILETEMP=/etc/supervisord.conf
-			[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-		FILETEMP=/etc/supervisor/conf.d/elasticsearch.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/elasticsearch.conf
+		# Supervisor
+			wget --no-check-certificate -O - $DOWN_URL/supervisor_elasticsearch.sh | bash
 		# prepare etc start
-			[[ ! -d /etc-start ]] || rm -rf /etc-start
-			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
+			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
 		prepareconfig() {
 		FILETEMP=/usr/share/elasticsearch/config
@@ -79,17 +67,17 @@ if [[ -f /etc/alpine-release ]]; then
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/logging.yml
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/logging.yml
 		else
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/log4j2.properties
 		fi
 		}
 		prepagelogrotage() {
@@ -100,7 +88,7 @@ if [[ -f /etc/alpine-release ]]; then
 		else
 			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/logrotate
 		fi
 		}
 	if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
@@ -118,7 +106,7 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 	fi
 else
     echo "Not support your OS"

@@ -12,7 +12,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 	# set global environment
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
 	export MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
 
 	# download entrypoint
@@ -21,22 +21,10 @@ echo 'Check OS'
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
 		chmod 755 $FILETEMP
-	# Supervisor config
-		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-	# download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisord.conf
-		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/mongodb.conf
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor_mongodb.sh | bash
 	# prepare etc start
-		[[ ! -d /etc-start ]] || rm -rf /etc-start
-		[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-		[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
+		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
 
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
@@ -99,6 +87,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
    		rm -rf /var/lib/apt/lists/*	
 
 elif [[ -f /etc/redhat-release ]]; then
+	yum install -y supervisor
 	# set environment
 	export MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org}
 	# install gosu

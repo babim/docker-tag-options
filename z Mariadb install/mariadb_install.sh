@@ -13,13 +13,13 @@ fi
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 	# set host download
-		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
 	# Set frontend debian
 		export DEBIAN_FRONTEND=noninteractive
 	apt-get update
 	# install "pwgen" for randomizing passwords
 	# install "tzdata" for /usr/share/zoneinfo/
-		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https gnupg supervisor
+		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https ca-certificates gnupg
 	# add Percona's repo for xtrabackup (which is useful for Galera)
 		wget --no-check-certificate -O - $DOWN_URL/percona_repo.sh | bash
 	# install gosu
@@ -37,21 +37,8 @@ if [[ -f /etc/debian_version ]]; then
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
 				chmod 755 $FILETEMP
-			# Supervisor config
-				[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-				[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-			# download sypervisord config
-			FILETEMP=/etc/supervisor/supervisord.conf
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-			FILETEMP=/etc/supervisord.conf
-				[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-			FILETEMP=/etc/supervisor/conf.d/mysql.conf
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-				wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/mysql.conf
-			# prepare etc start
-			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-				[[ ! -d /etc-start ]] || rm -rf /etc-start
+			# Supervisor
+				wget --no-check-certificate -O - $DOWN_URL/supervisor_install.sh | bash
 
 			# download backup script
 				wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \

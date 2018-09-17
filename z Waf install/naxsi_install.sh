@@ -72,22 +72,6 @@ if [[ -f /etc/debian_version ]]; then
 			python setup.py install
 	fi
 
-	# Supervisor config
-		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-	# download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisord.conf
-		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisor/conf.d/nginx.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
-	FILETEMP=/etc/supervisor/conf.d/nxtool.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nxtool.conf
-
 	# download config files
 		mkdir -p /etc/nginx/naxsi-local-rules
 		mkdir -p /var/lib/nginx/body
@@ -141,6 +125,8 @@ if [[ -f /etc/debian_version ]]; then
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/naxsi_start.sh
 		chmod 755 $FILETEMP
 
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor_modsecurity.sh | bash
 	# prepare etc start
 	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 	# clean os

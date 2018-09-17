@@ -14,7 +14,7 @@ echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	# Set environment
 		export DEBIAN_FRONTEND=noninteractive
-		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	# add repo php ubuntu
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
 		apt-get update && apt-get install supervisor -y
@@ -23,18 +23,8 @@ if [[ -f /etc/lsb-release ]]; then
 		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
 		[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm
 
-	# Supervisor config
-		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
-		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
-	# download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisord.conf
-		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
-	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor_php.sh | bash
 
 	# set loop
 	phpfinal() {	
