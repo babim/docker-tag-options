@@ -45,11 +45,14 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
 			chmod 755 $FILETEMP
+		# Supervisor config
+			[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
+			[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
 		# download sypervisord config
 		FILETEMP=/etc/supervisor/supervisord.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
-		FILETEMP=/etc/supervisor/conf.d/kibana.conf
+		FILETEMP=/etc/supervisor/conf.d/logstash.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/logstash.conf
 		# prepare etc start
