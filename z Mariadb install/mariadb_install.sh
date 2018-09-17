@@ -45,7 +45,7 @@ if [[ -f /etc/debian_version ]]; then
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 				wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
 			FILETEMP=/etc/supervisord.conf
-				[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
+				[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
 			FILETEMP=/etc/supervisor/conf.d/mysql.conf
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 				wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/mysql.conf
