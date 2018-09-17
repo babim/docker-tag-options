@@ -29,7 +29,7 @@ if [[ -f /etc/lsb-release ]]; then
 	# download sypervisord config
 	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/phpfpm-${PHP_VERSION}.conf
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 
 	# set loop
 	phpfinal() {	
