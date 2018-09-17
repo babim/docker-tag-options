@@ -15,7 +15,11 @@ FILETEMP=/etc/nginx/certs
 	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 
 	# config default site
-	FILETEMP=/etc/nginx/conf.d/default.conf
+	FILETEMP=/etc/nginx/sites-available/default
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	FILETEMP=/etc/nginx/sites-enable/default
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	FILETEMP=/etc/nginx/sites-enable/default.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx_config/default.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
