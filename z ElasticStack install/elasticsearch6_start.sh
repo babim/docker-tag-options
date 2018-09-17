@@ -15,6 +15,8 @@ fi
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
+es_opts=''
+
 umask 0002
 
 declare -a es_opts
@@ -42,7 +44,7 @@ fi
 
 # Add elasticsearch as command if needed
 if [ "${1:0:1}" = '-' ]; then
-	set -- elasticsearch "$@"
+	set -- elasticsearch "$@" ${es_opts}
 fi
 
 # Drop root privileges if we are running elasticsearch
@@ -51,7 +53,7 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of user-mutable directories to elasticsearch
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/{data,logs}
 
-	set -- su-exec elasticsearch "$@" "${es_opts[@]}"
+	set -- su-exec elasticsearch /sbin/tini -s -- "$@" ${es_opts}
 fi
 
 exec "$@"

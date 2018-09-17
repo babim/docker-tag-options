@@ -15,9 +15,11 @@ fi
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
+es_opts=''
+
 # Add elasticsearch as command if needed
 if [ "${1:0:1}" = '-' ]; then
-	set -- elasticsearch "$@"
+	set -- elasticsearch "$@" ${es_opts}
 fi
 
 # Drop root privileges if we are running elasticsearch
@@ -26,7 +28,7 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of /usr/share/elasticsearch/data to elasticsearch
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 
-	set -- su-exec elasticsearch tini -- "$@"
+	set -- su-exec elasticsearch /sbin/tini -s -- "$@" ${es_opts}
 	#exec su-exec elasticsearch "$BASH_SOURCE" "$@"
 fi
 
@@ -50,7 +52,7 @@ if [ "$1" = 'master' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of /usr/share/elasticsearch/data to elasticsearch
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 
-	set -- su-exec elasticsearch tini -- elasticsearch
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 	#exec su-exec elasticsearch "$BASH_SOURCE" "$@"
 fi
 
@@ -67,7 +69,7 @@ if [ "$1" = 'client' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of /usr/share/elasticsearch/data to elasticsearch
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 
-	set -- su-exec elasticsearch tini -- elasticsearch
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 	#exec su-exec elasticsearch "$BASH_SOURCE" "$@"
 fi
 
@@ -81,7 +83,7 @@ if [ "$1" = 'data' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of /usr/share/elasticsearch/data to elasticsearch
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 
-	set -- su-exec elasticsearch tini -- elasticsearch
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 	#exec su-exec elasticsearch "$BASH_SOURCE" "$@"
 fi
 

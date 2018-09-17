@@ -33,7 +33,7 @@ export ES_JAVA_OPTS="-Des.cgroups.hierarchy.override=/ $ES_JAVA_OPTS"
 
 # Add elasticsearch as command if needed
 if [ "${1:0:1}" = '-' ]; then
-	set -- elasticsearch "$@" ${es_opts}
+	set -- elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 fi
 
 ################################################
@@ -50,7 +50,7 @@ if [ "$1" = 'master' -a "$(id -u)" = '0' ]; then
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch "$@" ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 fi
 
 ################################################
@@ -71,7 +71,7 @@ if [ "$1" = 'ingest' -a "$(id -u)" = '0' ]; then
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch "$@" ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 fi
 
 ################################################
@@ -92,7 +92,7 @@ if [ "$1" = 'data' -a "$(id -u)" = '0' ]; then
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch "$@" ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 
 fi
 
@@ -103,7 +103,7 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch "$@" ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 fi
 
 exec "$@"

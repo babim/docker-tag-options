@@ -18,7 +18,7 @@ if [[ -f /etc/alpine-release ]]; then
 	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache nodejs su-exec
+		apk add --no-cache nodejs su-exec tini
 		apk add --no-cache wget curl ca-certificates gnupg openssl supervisor
 	# ensure kibana user exists
 		adduser -DH -s /sbin/nologin kibana
