@@ -48,8 +48,11 @@ if [[ -f /etc/debian_version ]]; then
 		--http-proxy-temp-path=/var/lib/nginx/proxy \
 		--lock-path=/var/lock/nginx.lock \
 		--pid-path=/var/run/nginx.pid \
+		--with-debug \
+		--with-ipv6 \
 		--with-http_ssl_module \
 		--with-http_geoip_module \
+		--without-http_auth_basic_module \
 		--without-mail_pop3_module \
 		--without-mail_smtp_module \
 		--without-mail_imap_module \
