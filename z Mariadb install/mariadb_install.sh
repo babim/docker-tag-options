@@ -16,6 +16,7 @@ if [[ -f /etc/debian_version ]]; then
 		DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mariadb%20install"
 	# Set frontend debian
 		export DEBIAN_FRONTEND=noninteractive
+	apt-get update
 	# install "pwgen" for randomizing passwords
 	# install "tzdata" for /usr/share/zoneinfo/
 		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https supervisor
