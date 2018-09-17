@@ -17,9 +17,9 @@ FILETEMP=/etc/nginx/certs
 	# config default site
 	FILETEMP=/etc/nginx/sites-available/default
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-	FILETEMP=/etc/nginx/sites-enable/default
+	FILETEMP=/etc/nginx/sites-enabled/default
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-	FILETEMP=/etc/nginx/sites-enable/default.conf
+	FILETEMP=/etc/nginx/sites-enabled/default.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx_config/default.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf

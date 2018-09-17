@@ -94,20 +94,20 @@ if [[ -f /etc/debian_version ]]; then
 	# download nginx conf.d
 	FILETEMP=/etc/nginx/sites-available/default
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-	FILETEMP=/etc/nginx/sites-enable/default
+	FILETEMP=/etc/nginx/sites-enabled/default
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 	FILETEMP=/etc/nginx/nginx.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/nginx.conf
-	FILETEMP=/etc/nginx/sites-enable/default.conf
+	FILETEMP=/etc/nginx/sites-enabled/default.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enable/default_naxsi.conf
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/default_naxsi.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
-	FILETEMP=/etc/nginx/sites-enable/kibana.conf
+	FILETEMP=/etc/nginx/sites-enabled/kibana.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enable/kibana.conf
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/kibana.conf
 	# download naxsi rules
 	FILETEMP=/etc/nginx/naxsi.rules
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
