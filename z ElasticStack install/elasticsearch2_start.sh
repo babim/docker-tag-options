@@ -42,7 +42,7 @@ if [ "$1" = 'master' -a "$(id -u)" = '0' ]; then
 		set -- su-exec elasticsearch /sbin/tini -s -- "$@" ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
 fi
 
 ################################################
@@ -66,10 +66,10 @@ if [ "$1" = 'client' -a "$(id -u)" = '0' ]; then
 		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-		set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
+		set -- su-exec elasticsearch /sbin/tini -- $@" ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- elasticsearch
+	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
 fi
 
 ################################################
@@ -96,7 +96,7 @@ if [ "$1" = 'data' -a "$(id -u)" = '0' ]; then
 		set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
 fi
 
 # Drop root privileges if we are running elasticsearch
@@ -106,7 +106,7 @@ if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
+	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
 fi
 
 exec "$@"
