@@ -109,6 +109,8 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/etc/supervisor/supervisord.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/supervisord.conf
+		FILETEMP=/etc/supervisord.conf
+			[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
 		FILETEMP=/etc/supervisor/conf.d/elasticsearch.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/elasticsearch.conf

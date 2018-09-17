@@ -68,6 +68,8 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/etc/supervisor/supervisord.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+		FILETEMP=/etc/supervisord.conf
+			[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
 		FILETEMP=/etc/supervisor/conf.d/kibana.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/kibana.conf

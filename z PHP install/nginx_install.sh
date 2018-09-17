@@ -42,6 +42,8 @@ if [[ -f /etc/lsb-release ]]; then
 	FILETEMP=/etc/supervisor/supervisord.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=/etc/supervisord.conf
+		[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
 	FILETEMP=/etc/supervisor/conf.d/nginx.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf

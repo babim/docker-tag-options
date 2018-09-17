@@ -28,6 +28,8 @@ echo 'Check OS'
 	FILETEMP=/etc/supervisor/supervisord.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=/etc/supervisord.conf
+		[[ ! -f $FILETEMP ]] || ln -sf /etc/supervisor/supervisord.conf $FILETEMP
 	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/mongodb.conf
