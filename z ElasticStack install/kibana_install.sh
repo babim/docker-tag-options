@@ -74,7 +74,7 @@ if [[ -f /etc/alpine-release ]]; then
 		# prepare etc start
 			[[ ! -d /etc-start ]] || rm -rf /etc-start
 			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-			[[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor
+			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
 		}
 	if [[ "$KIBANA" = "4" ]]; then
 		wget -O /usr/share/kibana/config/kibana.yml $DOWN_URL/kibana_config/4/kibana.yml

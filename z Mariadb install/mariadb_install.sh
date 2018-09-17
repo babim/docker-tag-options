@@ -19,7 +19,7 @@ if [[ -f /etc/debian_version ]]; then
 	apt-get update
 	# install "pwgen" for randomizing passwords
 	# install "tzdata" for /usr/share/zoneinfo/
-		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https supervisor
+		apt-get install -y --no-install-recommends pwgen dirmngr tzdata apt-transport-https gnupg supervisor
 	# add Percona's repo for xtrabackup (which is useful for Galera)
 		wget --no-check-certificate -O - $DOWN_URL/percona_repo.sh | bash
 	# install gosu

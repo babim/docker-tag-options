@@ -69,7 +69,7 @@ if [[ -f /etc/alpine-release ]]; then
 		# prepare etc start
 			[[ ! -d /etc-start ]] || rm -rf /etc-start
 			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
-			[[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor
+			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
 		}
 		prepareconfig() {
 		FILETEMP=/usr/share/elasticsearch/config

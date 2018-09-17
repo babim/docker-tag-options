@@ -121,6 +121,10 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/etc/supervisor/conf.d/nginx.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/supervisord/conf.d/nginx.conf
+		# prepare etc start
+			[[ ! -d /etc-start ]] || rm -rf /etc-start
+			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
+			[[ ! -d /etc/supervisor ]] || cp -R /etc/supervisor/* /etc-start/supervisor
 		}
 		prepareconfig() {
 		# elasticsearch
