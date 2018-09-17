@@ -7,6 +7,11 @@
 
 set -e
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 

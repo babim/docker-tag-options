@@ -18,7 +18,7 @@ if [[ -f /etc/alpine-release ]]; then
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache wget ca-certificates gnupg openssl
+		apk add --no-cache wget ca-certificates gnupg openssl supervisor
 	# Install Oracle Java
 		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
 	# make libzmq.so
@@ -39,12 +39,23 @@ if [[ -f /etc/alpine-release ]]; then
 		cp "$LS_SETTINGS_DIR/log4j2.properties" "$LS_SETTINGS_DIR/log4j2.properties.dist"; \
 		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"; \
 		fi
-	# download config files
+	# download entrypoint files
 		downloadentrypoint() {
 			FILETEMP=/start.sh
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
 			chmod 755 $FILETEMP
+		# download sypervisord config
+		FILETEMP=/etc/supervisor/supervisord.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+		FILETEMP=/etc/supervisor/conf.d/kibana.conf
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/logstash.conf
+		# prepare etc start
+			[[ ! -d /etc-start ]] || rm -rf /etc-start
+			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
+			[[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor
 		}
 	if [[ "$LOGSTASH" = "6" ]]; then
 		FILETEMP=/usr/share/logstash/config

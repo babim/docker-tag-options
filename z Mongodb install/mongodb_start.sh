@@ -1,8 +1,13 @@
 #!/bin/bash
 set -Eeuo pipefail
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
 # option with entrypoint
-`if [ -f "/option.sh" ]; then /option.sh; fi`
+if [ -f "/option.sh" ]; then /option.sh; fi
 
 if [ "${1:0:1}" = '-' ]; then
 	set -- mongod "$@"

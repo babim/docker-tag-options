@@ -52,7 +52,7 @@ if [[ -f /etc/alpine-release ]]; then
 		&& chown -R kibana:kibana /usr/share/kibana \
 		&& rm -rf /tmp/*
 	fi
-	# download config files
+	# download entrypoint files
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 		if [[ "$KIBANA" = "6" ]]; then
@@ -71,6 +71,10 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/etc/supervisor/conf.d/kibana.conf
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/kibana.conf
+		# prepare etc start
+			[[ ! -d /etc-start ]] || rm -rf /etc-start
+			[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
+			[[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor
 		}
 	if [[ "$KIBANA" = "4" ]]; then
 		wget -O /usr/share/kibana/config/kibana.yml $DOWN_URL/kibana_config/4/kibana.yml

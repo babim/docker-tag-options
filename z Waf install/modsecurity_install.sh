@@ -129,7 +129,7 @@ if [[ -f /etc/debian_version ]]; then
 	# download entrypoint
 	FILETEMP=/start.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/start.sh
+		wget --no-check-certificate -O $FILETEMP $DOWN_URL/modsecurity_start.sh
 		chmod 755 $FILETEMP
 
 	# prepare etc start

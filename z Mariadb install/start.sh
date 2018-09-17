@@ -12,7 +12,13 @@ shopt -s nullglob
 if [ -d "/etc/mysql" ] && [ -d "/etc-start/mysql" ]; then
 if [ -z "`ls /etc/mysql`" ]; then cp -R /etc-start/mysql/* /etc/mysql; fi
 fi
-# option
+
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
+# option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # if command starts with an option, prepend mysqld

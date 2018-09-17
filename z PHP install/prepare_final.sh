@@ -8,3 +8,5 @@
     [[ ! -d /etc/apache2 ]] || cp -R /etc/apache2/* /etc-start/apache2
     [[ ! -d /var/www ]] || mkdir -p /etc-start/www
     [[ ! -d /var/www ]] || cp -R /var/www/* /etc-start/www
+    [[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
+    [[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor

@@ -1,16 +1,16 @@
 #!/bin/bash
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 if [ -d "/etc-start/nginx" ];then
 # copy config nginx
 if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
-fi
-
-if [ -d "/etc-start/supervisor" ];then
-# copy config nginx
-if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
 fi
 
 #Check if we are asked to process old logs

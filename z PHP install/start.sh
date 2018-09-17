@@ -7,6 +7,11 @@
 
 export TERM=xterm
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
 # copy config apache
 if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
 if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi

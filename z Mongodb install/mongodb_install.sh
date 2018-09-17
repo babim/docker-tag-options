@@ -28,6 +28,10 @@ echo 'Check OS'
 	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/mongodb.conf
+	# prepare etc start
+		[[ ! -d /etc-start ]] || rm -rf /etc-start
+		[[ ! -d /etc/supervisor ]] || mkdir -p /etc-start/supervisor
+		[[ ! -d /etc/supervisor ]] || cp -R /etc/nginx/* /etc-start/supervisor
 		}
 
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then

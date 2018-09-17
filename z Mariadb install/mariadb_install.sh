@@ -47,6 +47,10 @@ if [[ -f /etc/debian_version ]]; then
 			FILETEMP=/etc/supervisor/conf.d/mysql.conf
 				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 				wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/mysql.conf
+			# prepare etc start
+			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+				[[ ! -d /etc-start ]] || rm -rf /etc-start
+
 			# download backup script
 				wget -O /backup.sh --no-check-certificate $DOWN_URL/backup.sh && \
 				chmod 755 /backup.sh
