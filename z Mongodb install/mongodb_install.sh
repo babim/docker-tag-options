@@ -12,7 +12,7 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 echo 'Check OS'
 	# set global environment
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
+	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
 	export MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
 
 	# download entrypoint
