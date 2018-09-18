@@ -203,4 +203,9 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 fi
 
-exec "$@"
+# run exec
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
+	supervisord -nc etc/supervisor/supervisord.conf
+else
+	exec "$@"
+fi
