@@ -19,7 +19,7 @@ if [[ -f /etc/alpine-release ]]; then
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
 		apk add --no-cache nodejs su-exec tini
-		apk add --no-cache wget curl ca-certificates gnupg openssl
+		apk add --no-cache ca-certificates gnupg openssl
 	# ensure kibana user exists
 		adduser -DH -s /sbin/nologin kibana
 	# install kibana
