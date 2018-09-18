@@ -48,9 +48,9 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 			cd /
-		if [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.3"]]; then
+		if [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.3" ]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
-		elif [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.4"]]; then
+		elif [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.4" ]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
 		elif [[ "$ES" = "1" ]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch1_start.sh
