@@ -66,7 +66,7 @@ if [ "$1" = 'client' -a "$(id -u)" = '0' ]; then
 		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
 		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
 
-		set -- su-exec elasticsearch /sbin/tini -- $@" ${es_opts}
+		set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
 	fi
 
 	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}

@@ -17,7 +17,7 @@ if [[ -f /etc/lsb-release ]]; then
 	export nginx=stable
 	    echo "deb http://ppa.launchpad.net/nginx/$nginx/ubuntu xenial main" > /etc/apt/sources.list.d/nginx-$nginx.list && \
 	    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C && \
-	    apt-get update && apt-get install -y --force-yes nginx supervisor && \
+	    apt-get update && apt-get install -y --force-yes nginx && \
 	    chown -R www-data:www-data /var/lib/nginx && \
 	    apt-get purge -y apache*
 

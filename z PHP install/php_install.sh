@@ -17,7 +17,6 @@ if [[ -f /etc/lsb-release ]]; then
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	# add repo php ubuntu
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
-		apt-get update && apt-get install supervisor -y
 	# install PHP
 		[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
 		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
@@ -221,6 +220,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 	fi
+		cleanos
 else
     echo "Not support your OS"
     exit
