@@ -1,3 +1,5 @@
+	# install
+	apt-get install -y --no-install-recommends supervisor
 	# Supervisor config
 		[[ -d /var/log/supervisor ]] || mkdir -p /var/log/supervisor/
 		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/

@@ -15,7 +15,7 @@ if [[ -f /etc/debian_version ]]; then
 	# set environment
 	DEBIAN_FRONTEND=noninteractive
 	NGINX_VERSION=${NGINX_VERSION:-"1.15.3"}
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Waf%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Waf%20install"
 	
 	# update and install dependencies
 	apt-get update

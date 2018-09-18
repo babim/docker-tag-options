@@ -17,7 +17,7 @@ if [[ -f /etc/debian_version ]]; then
 	NGINX_VERSION=${NGINX_VERSION:-"1.15.3"}
 	NAXSI_VERSION=${NAXSI_VERSION:-"master"}
 	ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-"elasticsearch"}
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Waf%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Waf%20install"
 	
 	# update and install dependencies
 		apt-get update
