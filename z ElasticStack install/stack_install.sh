@@ -151,6 +151,12 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logstash/logstash.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
+		# missing files
+		if [[ "$STACK_NEW" = "true" ]]; then
+			FILETEMP=/etc/logstash/log4j2.properties
+			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/log4j2.properties
+		fi
 		# nginx
 			FILETEMP=/etc/nginx/conf.d
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
