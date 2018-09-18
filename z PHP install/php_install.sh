@@ -22,6 +22,9 @@ if [[ -f /etc/lsb-release ]]; then
 		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
 		[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm
 
+	# Fix run suck
+		mkdir -p /run/php/
+
 	# Supervisor
 		wget --no-check-certificate -O - $DOWN_URL/supervisor_php.sh | bash
 

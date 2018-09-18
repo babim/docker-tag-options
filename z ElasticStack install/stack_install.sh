@@ -19,6 +19,8 @@ if [[ -f /etc/alpine-release ]]; then
 		LS_VERSION=$STACK
 		KB_VERSION=$STACK
 	fi
+	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
+	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 	BIT=${BIT:-"x86_64"}
 	ES_DOWNLOAD_URL=${ES_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	LS_DOWNLOAD_URL=${LS_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/logstash"}

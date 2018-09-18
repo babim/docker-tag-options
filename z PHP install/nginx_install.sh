@@ -13,7 +13,7 @@ fi
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	export DEBIAN_FRONTEND=noninteractive
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	export nginx=stable
 	    echo "deb http://ppa.launchpad.net/nginx/$nginx/ubuntu xenial main" > /etc/apt/sources.list.d/nginx-$nginx.list && \
 	    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C && \
@@ -21,19 +21,16 @@ if [[ -f /etc/lsb-release ]]; then
 	    chown -R www-data:www-data /var/lib/nginx && \
 	    apt-get purge -y apache*
 
-	# Fix run suck
-	    mkdir -p /run/php/
-
 	# create folder    
-	[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx && \
-	[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
+		[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx && \
+		[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
 
 	# forward request and error logs to docker log collector
-	ln -sf /dev/stdout /var/log/nginx/access.log
-	ln -sf /dev/stderr /var/log/nginx/error.log
+		ln -sf /dev/stdout /var/log/nginx/access.log
+		ln -sf /dev/stderr /var/log/nginx/error.log
 
 	# include
-	    wget --no-check-certificate -O - $DOWN_URL/nginx_include.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/nginx_include.sh | bash
 
 	# Supervisor
 		wget --no-check-certificate -O - $DOWN_URL/supervisor_nginx.sh | bash

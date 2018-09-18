@@ -13,6 +13,8 @@ fi
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
+	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
+	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
@@ -46,9 +48,9 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 			cd /
-		if [[ "$ES" = "6" ]] && [[ "ES_VERSION" = "6.3"]]; then
+		if [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.3"]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
-		elif [[ "$ES" = "6" ]] && [[ "ES_VERSION" = "6.4"]]; then
+		elif [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.4"]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
 		elif [[ "$ES" = "1" ]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch1_start.sh

@@ -13,6 +13,8 @@ fi
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
+	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
+	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
 	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
