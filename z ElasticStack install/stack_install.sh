@@ -102,9 +102,13 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			chmod 755 /*.sh
-		# Supervisor
+		}
+	# Supervisor
+		supervisorconfig() {
 			wget --no-check-certificate -O - $DOWN_URL/supervisor_stack.sh | bash
-		# prepare etc start
+		}
+	# prepare etc start
+		preparefinal() {
 			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
 		prepareconfig() {
@@ -161,13 +165,14 @@ if [[ -f /etc/alpine-release ]]; then
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
 		}
 
-		downloadentrypoint
 		prepareconfig
-	if [[ "$STACK_NEW" = "false" ]]; then
-			FILETEMP=/etc/supervisor/supervisord.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/3/supervisord/supervisord.conf
-	fi
+		downloadentrypoint
+		supervisorconfig
+		preparefinal
+
+	# remove packages
+		wget --no-check-certificate -O - $DOWN_URL/stack_clean.sh | bash
+	
 else
     echo "Not support your OS"
     exit

@@ -72,6 +72,10 @@ if [[ -f /etc/alpine-release ]]; then
 	else
 		downloadentrypoint
 	fi
+
+	# remove packages
+		wget --no-check-certificate -O - $DOWN_URL/kibana_clean.sh | bash
+
 else
     echo "Not support your OS"
     exit

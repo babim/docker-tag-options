@@ -73,6 +73,10 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
 	fi
+
+	# remove packages
+		wget --no-check-certificate -O - $DOWN_URL/logstash_clean.sh | bash
+
 else
     echo "Not support your OS"
     exit

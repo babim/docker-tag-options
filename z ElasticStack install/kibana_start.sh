@@ -7,9 +7,17 @@
 
 set -e
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+fi
+
+# option with entrypoint
+if [ -f "/option.sh" ]; then /option.sh; fi
+
 # Add kibana as command if needed
 if [[ "$1" == -* ]]; then
-	set -- kibana "$@"
+	set -- kibana kibana
 fi
 
 # Run as user "kibana" if the command is "kibana"
@@ -18,7 +26,7 @@ if [ "$1" = 'kibana' ]; then
 		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 '$ELASTICSEARCH_URL'!" /usr/share/kibana/config/kibana.yml
 	fi
 
-	set -- su-exec kibana /sbin/tini -- "$@"
+	set -- su-exec kibana /sbin/tini -- kibana
 fi
 
 exec "$@"

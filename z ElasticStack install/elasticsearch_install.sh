@@ -46,7 +46,9 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
 			cd /
-		if [[ "$ES" = "6" ]]; then
+		if [[ "$ES" = "6" ]] && [[ "ES_VERSION" = "6.3"]]; then
+			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
+		elif [[ "$ES" = "6" ]] && [[ "ES_VERSION" = "6.4"]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
 		elif [[ "$ES" = "1" ]]; then
 			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch1_start.sh
@@ -108,6 +110,10 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 	fi
+
+	# remove packages
+		wget --no-check-certificate -O - $DOWN_URL/elasticsearch_clean.sh | bash
+
 else
     echo "Not support your OS"
     exit
