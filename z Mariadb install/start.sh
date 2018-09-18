@@ -23,7 +23,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # if command starts with an option, prepend mysqld
 if [ "${1:0:1}" = '-' ]; then
-	set -- mysqld mysqld
+	set -- mysqld "$@"
 fi
 
 # skip setup if they want an option that stops mysqld
@@ -60,7 +60,7 @@ file_env() {
 }
 
 _check_config() {
-	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
+	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
@@ -76,23 +76,23 @@ _check_config() {
 # latter only show values present in config files, and not server defaults
 _get_config() {
 	local conf="$1"; shift
-	mysqld --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null | awk '$1 == "'"$conf"'" { print $2; exit }'
+	"$@" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null | awk '$1 == "'"$conf"'" { print $2; exit }'
 }
 
 # allow the container to be started with `--user`
 if [ "$1" = 'mysqld' -a -z "$wantHelp" -a "$(id -u)" = '0' ]; then
-	_check_config mysqld
-	DATADIR="$(_get_config 'datadir' mysqld)"
+	_check_config "$@"
+	DATADIR="$(_get_config 'datadir' "$@")"
 	mkdir -p "$DATADIR"
 	chown -R mysql:mysql "$DATADIR"
-	exec gosu mysql "$BASH_SOURCE" mysqld
+	exec gosu mysql "$BASH_SOURCE" "$@"
 fi
 
 if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	# still need to check config, container may have started with --user
-	_check_config mysqld
+	_check_config "$@"
 	# Get config
-	DATADIR="$(_get_config 'datadir' mysqld)"
+	DATADIR="$(_get_config 'datadir' "$@")"
 
 	if [ ! -d "$DATADIR/mysql" ]; then
 		file_env 'MYSQL_ROOT_PASSWORD'
@@ -109,8 +109,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		mysql_install_db --datadir="$DATADIR" --rpm "${@:2}"
 		echo 'Database initialized'
 
-		SOCKET="$(_get_config 'socket' mysqld)"
-		mysqld --skip-networking --socket="${SOCKET}" &
+		SOCKET="$(_get_config 'socket' "$@")"
+		"$@" --skip-networking --socket="${SOCKET}" &
 		pid="$!"
 
 		mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
@@ -202,3 +202,5 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo
 	fi
 fi
+
+exec "$@"
