@@ -18,9 +18,9 @@ if [[ -f /etc/alpine-release ]]; then
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache wget ca-certificates gnupg openssl
+		apk add --no-cache ca-certificates gnupg openssl
 	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
+		apk add --no-cache openjdk8-jre tini su-exec libzmq libc6-compat
 	# make libzmq.so
 		mkdir -p /usr/local/lib \
 		&& ln -s /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so

@@ -30,9 +30,9 @@ if [[ -f /etc/alpine-release ]]; then
 	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 
 	# install depend
-		apk add --no-cache libzmq bash nodejs nginx apache2-utils openssl libc6-compat
+		apk add --no-cache nodejs nginx apache2-utils openssl ca-certificates gnupg openssl
 	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec
+		apk add --no-cache openjdk8-jre tini su-exec libzmq libc6-compat
 	# make libzmq.so
 		mkdir -p /usr/local/lib \
 		&& ln -s /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
@@ -151,12 +151,6 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logstash/logstash.yml
 			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
-		# missing files
-		if [[ "$STACK_NEW" = "true" ]]; then
-			FILETEMP=/etc/logstash/log4j2.properties
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/log4j2.properties
-		fi
 		# nginx
 			FILETEMP=/etc/nginx/conf.d
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
