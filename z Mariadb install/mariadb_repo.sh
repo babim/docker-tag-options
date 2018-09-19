@@ -11,7 +11,7 @@ if [[ "$TYPESQL" == "mariadb" ]];then
 	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 	# set version
 	#export MARIADB_MAJOR=10.0
-	add-apt-repository 'deb [arch=amd64,i386,ppc64el] https://ftp.harukasan.org/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main'
+	add-apt-repository "deb [arch=amd64,i386,ppc64el] https://ftp.harukasan.org/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
 
 elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# add repo Mysql
