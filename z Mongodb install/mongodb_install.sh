@@ -56,12 +56,21 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	set -x \
 		&& apt-get update
 		# install lastest version
+	if [ "$MONGO_MAJOR" == "4.1" ]; then
+		apt-get install -y \
+			${MONGO_PACKAGE}-unstable \
+			${MONGO_PACKAGE}-unstable-server \
+			${MONGO_PACKAGE}-unstable-shell \
+			${MONGO_PACKAGE}-unstable-mongos \
+			${MONGO_PACKAGE}-unstable-tools
+	else
 		apt-get install -y \
 			${MONGO_PACKAGE} \
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
 			${MONGO_PACKAGE}-mongos \
 			${MONGO_PACKAGE}-tools
+	fi
 		# install correct version
 		#	${MONGO_PACKAGE}=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-server=$MONGO_VERSION \
