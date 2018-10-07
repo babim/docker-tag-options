@@ -38,7 +38,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	fi
 
 	# add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
-		groupadd -r mongodb && useradd -r -g mongodb mongodb supervisor
+		groupadd -r mongodb && useradd -r -g mongodb mongodb
 
 	# install depend
 		apt-get update \
