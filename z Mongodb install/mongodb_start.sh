@@ -332,7 +332,7 @@ if [ "$originalArgOne" = 'mongod' ]; then
 	fi
 
 	# MongoDB 3.6+ defaults to localhost-only binding
-	if [ "$MONGO_MAJOR" == "3.4" ] || [ "$MONGO_MAJOR" == "3.2" ]; then
+	if [ "$MONGO_MAJOR" == "3.0" ] || [ "$MONGO_MAJOR" == "3.1" ] || [ "$MONGO_MAJOR" == "3.2" ] || [ "$MONGO_MAJOR" == "3.3" ] || [ "$MONGO_MAJOR" == "3.4" ] || [ "$MONGO_MAJOR" == "3.5" ]; then
 		echo "done"
 	else
 		haveBindIp=
