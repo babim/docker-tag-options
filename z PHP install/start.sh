@@ -163,10 +163,10 @@ auser=${auser:-www-data}
 
 	# set nginx
 	if [ -d "/etc/nginx" ]; then
-	[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx
-	[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
-	[[ ! -d /var/cache/nginx ]] || chown -R $auser /var/cache/nginx
-	[[ ! -d /var/log/nginx ]] || chown -R $auser /var/log/nginx
+		[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx
+		[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
+		[[ ! -d /var/cache/nginx ]] || chown -R $auser /var/cache/nginx
+		[[ ! -d /var/log/nginx ]] || chown -R $auser /var/log/nginx
 	fi
 
 	if [[ -z "${auid}" ]]; then
@@ -236,5 +236,24 @@ auser=${auser:-www-data}
 		apt-get purge *pagespeed* -y
 		rm -f /PAGESPEED.check
 	fi
+
+if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/apache2ctl -DFOREGROUND
+fi
+if [[ -f "/usr/sbin/nginx" ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/nginx -g "daemon off;"
+fi
+if [[ -f "/usr/sbin/php-fpm5.6 " ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/php-fpm5.6 -F
+fi
+if [[ -f "/usr/sbin/php-fpm7.0 " ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/php-fpm7.0 -F
+fi
+if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/php-fpm7.1 -F
+fi
+if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/sbin/php-fpm7.2 -F
+fi
 
 exec "$@"
