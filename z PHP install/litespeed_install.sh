@@ -79,6 +79,7 @@ elif [[ -f /etc/redhat-release ]]; then
 			lsphp${PHP_VERSION}-tidy lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-xmlrpc lsphp${PHP_VERSION}-zip
 		else
 			echo "Not support your PHP version"
+		fi
 	fi
 
 	# Supervisor
