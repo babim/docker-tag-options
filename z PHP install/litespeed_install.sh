@@ -66,7 +66,7 @@ elif [[ -f /etc/redhat-release ]]; then
 			lsphp${PHP_VERSION}-process lsphp${PHP_VERSION}-mbstring lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-mcrypt \
 			lsphp${PHP_VERSION}-pdo lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-soap lsphp${PHP_VERSION}-bcmath
 			ln -sf /usr/local/lsws/lsphp54/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
-		elseif [[ "$PHP_VERSION" == "70" ]] || [[ "$PHP_VERSION" == "71" ]] || [[ "$PHP_VERSION" == "72" ]];then
+		elif [[ "$PHP_VERSION" == "70" ]] || [[ "$PHP_VERSION" == "71" ]] || [[ "$PHP_VERSION" == "72" ]];then
 			yum install -y lsphp${PHP_VERSION} lsphp${PHP_VERSION}-mcrypt lsphp${PHP_VERSION}-bcmath lsphp${PHP_VERSION}-common \
 			lsphp${PHP_VERSION}-dba lsphp${PHP_VERSION}-dbg lsphp${PHP_VERSION}-devel lsphp${PHP_VERSION}-enchant lsphp${PHP_VERSION}-gd \
 			lsphp${PHP_VERSION}-gmp lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-intl lsphp${PHP_VERSION}-json lsphp${PHP_VERSION}-ldap \
