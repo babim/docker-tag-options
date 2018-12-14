@@ -11,16 +11,17 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
-if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install
+if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
 	apt-get install -y --no-install-recommends supervisor
 	fi
 elif [[ -f /etc/redhat-release ]]; then
-	# install
 	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
 	yum install -y supervisor
 	fi
+elif [[ -f /etc/alpine-release ]]; then
+	apk add --no-cache supervisor
 else
     echo "Not support your OS"
     exit

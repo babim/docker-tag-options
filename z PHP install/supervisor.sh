@@ -11,16 +11,17 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 echo 'Check OS'
-if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install
+if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
 	apt-get install -y --no-install-recommends supervisor
 	fi
 elif [[ -f /etc/redhat-release ]]; then
-	# install
 	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then
 	yum install -y supervisor
 	fi
+elif [[ -f /etc/alpine-release ]]; then
+	apk add --no-cache supervisor
 else
     echo "Not support your OS"
     exit
@@ -45,16 +46,19 @@ if [[ ! -z "${PHP_VERSION}" ]]; then
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 fi
+	# apache
 if [[ -f "/usr/sbin/apache2ctl" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/apache.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/apache.conf
 fi
+	# nginx
 if [[ -f "/usr/sbin/nginx" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/nginx.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
 fi
+	# litespeed
 if [[ -f "/usr/local/lsws/bin/lswsctrl" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/litespeed.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
