@@ -237,23 +237,35 @@ auser=${auser:-www-data}
 		rm -f /PAGESPEED.check
 	fi
 
+# run programs
+	# apache
 if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/apache2ctl -DFOREGROUND
 fi
+	# nginx
 if [[ -f "/usr/sbin/nginx" ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/nginx -g "daemon off;"
 fi
+	# php fpm 5.6
 if [[ -f "/usr/sbin/php-fpm5.6 " ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/php-fpm5.6 -F
 fi
+	# php fpm 7.0
 if [[ -f "/usr/sbin/php-fpm7.0 " ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/php-fpm7.0 -F
 fi
+	# php fpm 7.1
 if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/php-fpm7.1 -F
 fi
+	# php fpm 7.2
 if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/sbin/php-fpm7.2 -F
+fi
+	# litespeed
+if [[ -f "/usr/local/lsws/bin/lswsctrl" ]] && [[ -f "/nosupervisor" ]]; then
+	/usr/local/lsws/bin/lswsctrl start
+	seep infinity
 fi
 
 exec "$@"

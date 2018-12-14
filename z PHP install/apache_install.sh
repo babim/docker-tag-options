@@ -72,8 +72,17 @@ if [[ -f /etc/lsb-release ]]; then
 	   	touch /PAGESPEED.check
 	fi
 
+	# install php
+	if [[ ! -z "${PHP_VERSION}" ]]; then
+	if [[ "$PHP_VERSION" == "56" ]];then export PHP_VERSION=5.6;fi
+	if [[ "$PHP_VERSION" == "70" ]];then export PHP_VERSION=7.0;fi
+	if [[ "$PHP_VERSION" == "71" ]];then export PHP_VERSION=7.1;fi
+	if [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION=7.2;fi
+		wget --no-check-certificate -O - $DOWN_URL/php_install.sh | bash
+	fi
+
 	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor_apache.sh | bash
+		wget --no-check-certificate -O - $DOWN_URL/supervisor.sh | bash
 
 	# download entrypoint
 		FILETEMP=/start.sh
@@ -83,19 +92,14 @@ if [[ -f /etc/lsb-release ]]; then
 	# prepare etc start
 		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 
-	# install php
-	if [[ ! -z "${PHP_VERSION}" ]]; then
-		wget --no-check-certificate -O - $DOWN_URL/php_install.sh | bash
-	else
-		# clean os
-		apt-get purge -y wget curl && \
-		apt-get clean && \
-  		apt-get autoclean && \
-  		apt-get autoremove -y && \
-   		rm -rf /build && \
-   		rm -rf /tmp/* /var/tmp/* && \
-   		rm -rf /var/lib/apt/lists/*	
-	fi
+	# clean os
+	apt-get purge -y wget curl && \
+	apt-get clean && \
+	apt-get autoclean && \
+	apt-get autoremove -y && \
+	rm -rf /build && \
+	rm -rf /tmp/* /var/tmp/* && \
+	rm -rf /var/lib/apt/lists/*
 
 else
     echo "Not support your OS"
