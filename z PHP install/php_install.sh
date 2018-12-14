@@ -15,12 +15,19 @@ if [[ -f /etc/lsb-release ]]; then
 	# Set environment
 		export DEBIAN_FRONTEND=noninteractive
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	# fix value version
+	if [[ "$PHP_VERSION" == "56" ]];then export PHP_VERSION1=5.6
+	elif [[ "$PHP_VERSION" == "70" ]];then export PHP_VERSION1=7.0
+	elif [[ "$PHP_VERSION" == "71" ]];then export PHP_VERSION1=7.1
+	elif [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION1=7.2
+	else export PHP_VERSION1=$PHP_VERSION;fi
+
 	# add repo php ubuntu
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php-repo.sh | bash
 	# install PHP
-		[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION libapache2-mod-php$PHP_VERSION && \
-		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm && \
-		[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION-fpm
+		[[ ! -d /etc/apache2 ]] || apt-get install -y --force-yes php$PHP_VERSION1 libapache2-mod-php$PHP_VERSION1 && \
+		[[ ! -d /etc/nginx ]] || apt-get install -y --force-yes php$PHP_VERSION1-fpm && \
+		[[ ! -f /PHPFPM ]] || apt-get install -y --force-yes php$PHP_VERSION1-fpm
 
 	# Fix run suck
 		mkdir -p /run/php/
@@ -37,7 +44,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# install composer
 			wget -O -S https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 		# fix shortcut bin
-			ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
+			ln -sf /usr/bin/php$PHP_VERSION1 /etc/alternatives/php
 		# install option for webapp (owncloud)
 			apt-get install -y --force-yes smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin
 		# install oracle client extension
@@ -59,7 +66,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# install laravel depend
 			apt-get install -y --force-yes php-*dom php-*mbstring zip unzip git curl && \
 			wget -O -S https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-			ln -sf /usr/bin/php$PHP_VERSION /etc/alternatives/php
+			ln -sf /usr/bin/php$PHP_VERSION1 /etc/alternatives/php
 		# install laravel
 			cd /etc-start/www && git clone https://github.com/laravel/laravel && \
 			cd laravel && composer install && cp .env.example .env
@@ -170,55 +177,55 @@ if [[ -f /etc/lsb-release ]]; then
 			preparefinal
 		}
 
-	if [[ "$PHP_VERSION" == "5.6" ]];then
+	if [[ "$PHP_VERSION1" == "5.6" ]];then
 		# install PHP
-		echo "install PHP $PHP_VERSION"
+		echo "install PHP $PHP_VERSION1"
 		apt-get install -y --force-yes imagemagick \
-			php$PHP_VERSION-json php$PHP_VERSION-gd php$PHP_VERSION-sqlite php$PHP_VERSION-curl php$PHP_VERSION-ldap php$PHP_VERSION-mysql php$PHP_VERSION-pgsql \
-			php$PHP_VERSION-imap php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION-zip php$PHP_VERSION-mcrypt php$PHP_VERSION-memcache php$PHP_VERSION-intl \
-			php$PHP_VERSION-mbstring php$PHP_VERSION-sqlite3 php$PHP_VERSION-sybase php$PHP_VERSION-bcmath php$PHP_VERSION-soap php$PHP_VERSION-xml \
-			php$PHP_VERSION-phpdbg php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-odbc php$PHP_VERSION-interbase php$PHP_VERSION-gmp php$PHP_VERSION-xsl
+			php$PHP_VERSION1-json php$PHP_VERSION1-gd php$PHP_VERSION1-sqlite php$PHP_VERSION1-curl php$PHP_VERSION1-ldap php$PHP_VERSION1-mysql php$PHP_VERSION1-pgsql \
+			php$PHP_VERSION1-imap php$PHP_VERSION1-tidy php$PHP_VERSION1-xmlrpc php$PHP_VERSION1-zip php$PHP_VERSION1-mcrypt php$PHP_VERSION1-memcache php$PHP_VERSION1-intl \
+			php$PHP_VERSION1-mbstring php$PHP_VERSION1-sqlite3 php$PHP_VERSION1-sybase php$PHP_VERSION1-bcmath php$PHP_VERSION1-soap php$PHP_VERSION1-xml \
+			php$PHP_VERSION1-phpdbg php$PHP_VERSION1-opcache php$PHP_VERSION1-bz2 php$PHP_VERSION1-odbc php$PHP_VERSION1-interbase php$PHP_VERSION1-gmp php$PHP_VERSION1-xsl
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.0" ]];then
+	elif [[ "$PHP_VERSION1" == "7.0" ]];then
 		# install PHP
-		echo "install PHP $PHP_VERSION"
+		echo "install PHP $PHP_VERSION1"
 		apt-get install -y --force-yes imagemagick \
-			php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
-			php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-mcrypt php$PHP_VERSION-readline php$PHP_VERSION-odbc \
-			php$PHP_VERSION-pgsql php$PHP_VERSION-pspell php$PHP_VERSION-recode php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION php$PHP_VERSION-json php-all-dev php$PHP_VERSION-sybase \
-			php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
+			php$PHP_VERSION1-cgi php$PHP_VERSION1-cli php$PHP_VERSION1-phpdbg libphp$PHP_VERSION1-embed php$PHP_VERSION1-dev php-xdebug sqlite3 \
+			php$PHP_VERSION1-curl php$PHP_VERSION1-gd php$PHP_VERSION1-imap php$PHP_VERSION1-interbase php$PHP_VERSION1-intl php$PHP_VERSION1-ldap php$PHP_VERSION1-mcrypt php$PHP_VERSION1-readline php$PHP_VERSION1-odbc \
+			php$PHP_VERSION1-pgsql php$PHP_VERSION1-pspell php$PHP_VERSION1-recode php$PHP_VERSION1-tidy php$PHP_VERSION1-xmlrpc php$PHP_VERSION1 php$PHP_VERSION1-json php-all-dev php$PHP_VERSION1-sybase \
+			php$PHP_VERSION1-sqlite3 php$PHP_VERSION1-mysql php$PHP_VERSION1-opcache php$PHP_VERSION1-bz2 php$PHP_VERSION1-mbstring php$PHP_VERSION1-zip php-apcu php-imagick \
 			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
-			php$PHP_VERSION-gmp php-xml php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
+			php$PHP_VERSION1-gmp php-xml php$PHP_VERSION1-xml php$PHP_VERSION1-bcmath php$PHP_VERSION1-enchant php$PHP_VERSION1-soap php$PHP_VERSION1-xsl
 		# disable libsslcommon2-dev
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.1" ]];then
+	elif [[ "$PHP_VERSION1" == "7.1" ]];then
 		# install PHP
-		echo "install PHP $PHP_VERSION"
+		echo "install PHP $PHP_VERSION1"
 		apt-get install -y --force-yes imagemagick \
-			php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
-			php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-mcrypt php$PHP_VERSION-readline php$PHP_VERSION-odbc \
-			php$PHP_VERSION-pgsql php$PHP_VERSION-pspell php$PHP_VERSION-recode php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION php$PHP_VERSION-json php-all-dev php$PHP_VERSION-sybase \
-			php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
+			php$PHP_VERSION1-cgi php$PHP_VERSION1-cli php$PHP_VERSION1-phpdbg libphp$PHP_VERSION1-embed php$PHP_VERSION1-dev php-xdebug sqlite3 \
+			php$PHP_VERSION1-curl php$PHP_VERSION1-gd php$PHP_VERSION1-imap php$PHP_VERSION1-interbase php$PHP_VERSION1-intl php$PHP_VERSION1-ldap php$PHP_VERSION1-mcrypt php$PHP_VERSION1-readline php$PHP_VERSION1-odbc \
+			php$PHP_VERSION1-pgsql php$PHP_VERSION1-pspell php$PHP_VERSION1-recode php$PHP_VERSION1-tidy php$PHP_VERSION1-xmlrpc php$PHP_VERSION1 php$PHP_VERSION1-json php-all-dev php$PHP_VERSION1-sybase \
+			php$PHP_VERSION1-sqlite3 php$PHP_VERSION1-mysql php$PHP_VERSION1-opcache php$PHP_VERSION1-bz2 php$PHP_VERSION1-mbstring php$PHP_VERSION1-zip php-apcu php-imagick \
 			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
-			php$PHP_VERSION-gmp php-xml php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
+			php$PHP_VERSION1-gmp php-xml php$PHP_VERSION1-xml php$PHP_VERSION1-bcmath php$PHP_VERSION1-enchant php$PHP_VERSION1-soap php$PHP_VERSION1-xsl
 		# disable libsslcommon2-dev
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.2" ]];then
+	elif [[ "$PHP_VERSION1" == "7.2" ]];then
 		# install PHP
-		echo "install PHP $PHP_VERSION"
+		echo "install PHP $PHP_VERSION1"
 		apt-get install -y --force-yes imagemagick \
-			php$PHP_VERSION-cgi php$PHP_VERSION-cli php$PHP_VERSION-phpdbg libphp$PHP_VERSION-embed php$PHP_VERSION-dev php-xdebug sqlite3 \
-			php$PHP_VERSION-curl php$PHP_VERSION-gd php$PHP_VERSION-imap php$PHP_VERSION-interbase php$PHP_VERSION-intl php$PHP_VERSION-ldap php$PHP_VERSION-readline php$PHP_VERSION-odbc \
-			php$PHP_VERSION-pgsql php$PHP_VERSION-pspell php$PHP_VERSION-recode php$PHP_VERSION-tidy php$PHP_VERSION-xmlrpc php$PHP_VERSION php$PHP_VERSION-json php-all-dev php$PHP_VERSION-sybase \
-			php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysql php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
+			php$PHP_VERSION1-cgi php$PHP_VERSION1-cli php$PHP_VERSION1-phpdbg libphp$PHP_VERSION1-embed php$PHP_VERSION1-dev php-xdebug sqlite3 \
+			php$PHP_VERSION1-curl php$PHP_VERSION1-gd php$PHP_VERSION1-imap php$PHP_VERSION1-interbase php$PHP_VERSION1-intl php$PHP_VERSION1-ldap php$PHP_VERSION1-readline php$PHP_VERSION1-odbc \
+			php$PHP_VERSION1-pgsql php$PHP_VERSION1-pspell php$PHP_VERSION1-recode php$PHP_VERSION1-tidy php$PHP_VERSION1-xmlrpc php$PHP_VERSION1 php$PHP_VERSION1-json php-all-dev php$PHP_VERSION1-sybase \
+			php$PHP_VERSION1-sqlite3 php$PHP_VERSION1-mysql php$PHP_VERSION1-opcache php$PHP_VERSION1-bz2 php$PHP_VERSION1-mbstring php$PHP_VERSION1-zip php-apcu php-imagick \
 			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
-			php$PHP_VERSION-gmp php-xml php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
+			php$PHP_VERSION1-gmp php-xml php$PHP_VERSION1-xml php$PHP_VERSION1-bcmath php$PHP_VERSION1-enchant php$PHP_VERSION1-soap php$PHP_VERSION1-xsl
 		# disable libsslcommon2-dev
 		# config
 			fullphpdo

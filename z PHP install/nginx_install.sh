@@ -34,10 +34,6 @@ if [[ -f /etc/lsb-release ]]; then
 
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then
-	if [[ "$PHP_VERSION" == "56" ]];then export PHP_VERSION=5.6;fi
-	if [[ "$PHP_VERSION" == "70" ]];then export PHP_VERSION=7.0;fi
-	if [[ "$PHP_VERSION" == "71" ]];then export PHP_VERSION=7.1;fi
-	if [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION=7.2;fi
 		wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/php_install.sh | bash
 	fi
 

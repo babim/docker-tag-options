@@ -22,11 +22,11 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install litespeed
 		apt-get install openlitespeed -y
 	# install php
-	if [[ ! -z "${PHP_VERSION}" ]]; then
-		apt-get install lsphp${PHP_VERSION}-*
+	if [[ ! -z "${PHP_VERSION1}" ]]; then
+		apt-get install lsphp${PHP_VERSION1}-*
 		# create php bin
 		if [[ "$PHP_VERSION" == "56" ]];then
-			ln -sf /usr/local/lsws/lsphp${PHP_VERSION}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
+			ln -sf /usr/local/lsws/lsphp${PHP_VERSION1}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		fi
 	fi
 
@@ -55,28 +55,29 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install litespeed
 		yum install -y openlitespeed
 	# install php
-	if [[ ! -z "${PHP_VERSION}" ]]; then
-	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION=56;fi
-	if [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION=70;fi
-	if [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION=71;fi
-	if [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION=72;fi
+	if [[ ! -z "${PHP_VERSION1}" ]]; then
+	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56
+	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70
+	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71
+	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72
+	else export PHP_VERSION1=$PHP_VERSION;fi
 		# create php bin
 		if [[ "$PHP_VERSION" == "56" ]];then
-			yum install -y lsphp${PHP_VERSION} lsphp${PHP_VERSION}-common lsphp${PHP_VERSION}-mysql lsphp${PHP_VERSION}-gd \
-			lsphp${PHP_VERSION}-process lsphp${PHP_VERSION}-mbstring lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-mcrypt \
-			lsphp${PHP_VERSION}-pdo lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-soap lsphp${PHP_VERSION}-bcmath
+			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-common lsphp${PHP_VERSION1}-mysql lsphp${PHP_VERSION1}-gd \
+			lsphp${PHP_VERSION1}-process lsphp${PHP_VERSION1}-mbstring lsphp${PHP_VERSION1}-xml lsphp${PHP_VERSION1}-mcrypt \
+			lsphp${PHP_VERSION1}-pdo lsphp${PHP_VERSION1}-imap lsphp${PHP_VERSION1}-soap lsphp${PHP_VERSION1}-bcmath
 			ln -sf /usr/local/lsws/lsphp54/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		elif [[ "$PHP_VERSION" == "70" ]] || [[ "$PHP_VERSION" == "71" ]] || [[ "$PHP_VERSION" == "72" ]];then
-			yum install -y lsphp${PHP_VERSION} lsphp${PHP_VERSION}-mcrypt lsphp${PHP_VERSION}-bcmath lsphp${PHP_VERSION}-common \
-			lsphp${PHP_VERSION}-dba lsphp${PHP_VERSION}-dbg lsphp${PHP_VERSION}-devel lsphp${PHP_VERSION}-enchant lsphp${PHP_VERSION}-gd \
-			lsphp${PHP_VERSION}-gmp lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-intl lsphp${PHP_VERSION}-json lsphp${PHP_VERSION}-ldap \
-			lsphp${PHP_VERSION}-mbstring lsphp${PHP_VERSION}-mysqlnd lsphp${PHP_VERSION}-odbc lsphp${PHP_VERSION}-opcache \
-			lsphp${PHP_VERSION}-pdo lsphp${PHP_VERSION}-pear lsphp${PHP_VERSION}-pecl-apcu lsphp${PHP_VERSION}-pecl-apcu-devel \
-			lsphp${PHP_VERSION}-pecl-apcu-panel lsphp${PHP_VERSION}-pecl-igbinary lsphp${PHP_VERSION}-pecl-igbinary-devel \
-			lsphp${PHP_VERSION}-pecl-mcrypt lsphp${PHP_VERSION}-pecl-memcache lsphp${PHP_VERSION}-pecl-memcached lsphp${PHP_VERSION}-pecl-msgpack \
-			lsphp${PHP_VERSION}-pecl-msgpack-devel lsphp${PHP_VERSION}-pecl-redis lsphp${PHP_VERSION}-pgsql lsphp${PHP_VERSION}-process \
-			lsphp${PHP_VERSION}-pspell lsphp${PHP_VERSION}-recode lsphp${PHP_VERSION}-snmp lsphp${PHP_VERSION}-soap \
-			lsphp${PHP_VERSION}-tidy lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-xmlrpc lsphp${PHP_VERSION}-zip
+			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-mcrypt lsphp${PHP_VERSION1}-bcmath lsphp${PHP_VERSION1}-common \
+			lsphp${PHP_VERSION1}-dba lsphp${PHP_VERSION1}-dbg lsphp${PHP_VERSION1}-devel lsphp${PHP_VERSION1}-enchant lsphp${PHP_VERSION1}-gd \
+			lsphp${PHP_VERSION1}-gmp lsphp${PHP_VERSION1}-imap lsphp${PHP_VERSION1}-intl lsphp${PHP_VERSION1}-json lsphp${PHP_VERSION1}-ldap \
+			lsphp${PHP_VERSION1}-mbstring lsphp${PHP_VERSION1}-mysqlnd lsphp${PHP_VERSION1}-odbc lsphp${PHP_VERSION1}-opcache \
+			lsphp${PHP_VERSION1}-pdo lsphp${PHP_VERSION1}-pear lsphp${PHP_VERSION1}-pecl-apcu lsphp${PHP_VERSION1}-pecl-apcu-devel \
+			lsphp${PHP_VERSION1}-pecl-apcu-panel lsphp${PHP_VERSION1}-pecl-igbinary lsphp${PHP_VERSION1}-pecl-igbinary-devel \
+			lsphp${PHP_VERSION1}-pecl-mcrypt lsphp${PHP_VERSION1}-pecl-memcache lsphp${PHP_VERSION1}-pecl-memcached lsphp${PHP_VERSION1}-pecl-msgpack \
+			lsphp${PHP_VERSION1}-pecl-msgpack-devel lsphp${PHP_VERSION1}-pecl-redis lsphp${PHP_VERSION1}-pgsql lsphp${PHP_VERSION1}-process \
+			lsphp${PHP_VERSION1}-pspell lsphp${PHP_VERSION1}-recode lsphp${PHP_VERSION1}-snmp lsphp${PHP_VERSION1}-soap \
+			lsphp${PHP_VERSION1}-tidy lsphp${PHP_VERSION1}-xml lsphp${PHP_VERSION1}-xmlrpc lsphp${PHP_VERSION1}-zip
 		else
 			echo "Not support your PHP version"
 		fi
