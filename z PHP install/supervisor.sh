@@ -44,7 +44,7 @@ if [[ ! -z "${PHP_VERSION}" ]]; then
 	else export PHP_VERSION1=$PHP_VERSION;fi
 	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
+		[[ ! -d /etc/php/${PHP_VERSION}/fpm ]] || wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 fi
 	# apache
 if [[ -f "/usr/sbin/apache2ctl" ]]; then
