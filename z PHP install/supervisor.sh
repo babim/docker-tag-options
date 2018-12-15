@@ -37,10 +37,10 @@ fi
 		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
 	# php
 if [[ ! -z "${PHP_VERSION}" ]]; then
-	if [[ "$PHP_VERSION" == "56" ]];then export PHP_VERSION1=5.6
-	elif [[ "$PHP_VERSION" == "70" ]];then export PHP_VERSION1=7.0
-	elif [[ "$PHP_VERSION" == "71" ]];then export PHP_VERSION1=7.1
-	elif [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION1=7.2
+	if [[ "$PHP_VERSION" == "56" ]];then export PHP_VERSION1=5.6;
+	elif [[ "$PHP_VERSION" == "70" ]];then export PHP_VERSION1=7.0;
+	elif [[ "$PHP_VERSION" == "71" ]];then export PHP_VERSION1=7.1;
+	elif [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION1=7.2;
 	else export PHP_VERSION1=$PHP_VERSION;fi
 	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP

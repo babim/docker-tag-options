@@ -23,10 +23,10 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		apt-get install openlitespeed -y
 	# install php
 	if [[ ! -z "${PHP_VERSION1}" ]]; then
-	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56
-	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70
-	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71
-	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72
+	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
+	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70;
+	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71;
+	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72;
 	else export PHP_VERSION1=$PHP_VERSION;fi
 		apt-get install -y lsphp${PHP_VERSION1}-*
 		# create php bin
@@ -61,10 +61,10 @@ elif [[ -f /etc/redhat-release ]]; then
 		yum install -y openlitespeed
 	# install php
 	if [[ ! -z "${PHP_VERSION1}" ]]; then
-	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56
-	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70
-	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71
-	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72
+	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
+	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70;
+	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71;
+	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72;
 	else export PHP_VERSION1=$PHP_VERSION;fi
 		# create php bin
 		if [[ "$PHP_VERSION" == "56" ]];then
