@@ -28,7 +28,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71
 	elif [[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION1=72
 	else export PHP_VERSION1=$PHP_VERSION;fi
-		apt-get install lsphp${PHP_VERSION1}-*
+		apt-get install -y lsphp${PHP_VERSION1}-*
 		# create php bin
 		if [[ "$PHP_VERSION" == "56" ]];then
 			ln -sf /usr/local/lsws/lsphp${PHP_VERSION1}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
