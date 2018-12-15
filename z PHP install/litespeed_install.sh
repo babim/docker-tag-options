@@ -22,7 +22,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install litespeed
 		apt-get install openlitespeed -y
 	# install php
-	if [[ ! -z "${PHP_VERSION1}" ]]; then
+	if [[ ! -z "${PHP_VERSION}" ]]; then
 	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
 	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70;
 	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71;

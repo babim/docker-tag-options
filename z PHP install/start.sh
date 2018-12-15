@@ -265,7 +265,7 @@ fi
 	# litespeed
 if [[ -f "/usr/local/lsws/bin/lswsctrl" ]] && [[ -f "/nosupervisor" ]]; then
 	/usr/local/lsws/bin/lswsctrl start
-	seep infinity
+	sleep infinity
 fi
 
 exec "$@"

@@ -73,7 +73,7 @@ if [[ -f /etc/lsb-release ]]; then
 	fi
 
 	# install php
-	if [[ ! -z "${PHP_VERSION1}" ]]; then
+	if [[ ! -z "${PHP_VERSION}" ]]; then
 		wget --no-check-certificate -O - $DOWN_URL/php_install.sh | bash
 	fi
 
