@@ -12,7 +12,36 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 
 echo 'Set environment'
+	# set location down
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
+	# set litespeed admin
+	export LITESPEED_ADMIN=${LITESPEED_ADMIN:-admin}
+	export LITESPEED_PASS=${LITESPEED_PASS:-admintest}
+	# set ID litespeed run
+	export auid=${auid:-33}
+	export agid=${agid:-$auid}
+	export auser=${auser:-www-data}
+
+# set loop
+setlitespeedadmin() {
+## Set litespeed admin user
+/usr/local/lsws/admin/misc/admpass.sh <<< "$LITESPEED_ADMIN
+$LITESPEED_PASS
+$LITESPEED_PASS
+"
+}
+preparefinal() {
+## Prepare value
+	# Supervisor
+		wget --no-check-certificate -O - $DOWN_URL/supervisor.sh | bash
+	# download entrypoint
+		FILETEMP=/start.sh
+		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
+		chmod 755 $FILETEMP
+	# prepare etc start
+	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+}
 
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -21,6 +50,8 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		wget -O - http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh | bash
 	# install litespeed
 		apt-get install openlitespeed -y
+	# set admin password
+		setlitespeedadmin
 	# install php
 	if [[ ! -z "${PHP_VERSION}" ]]; then
 	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
@@ -34,17 +65,13 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			ln -sf /usr/local/lsws/lsphp${PHP_VERSION1}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		fi
 	fi
+	if [[ ! -z "${BUILDMODE}" ]]; then
+		apt-get install -y build-essential rcs libpcre3-dev libexpat1-dev libssl-dev libgeoip-dev libudns-dev zlib1g-dev \
+			libxml2 libxml2-dev libpng-dev openssl libcurl4-gnutls-dev libc-client-dev libkrb5-dev libmcrypt-dev
+	fi
 
-	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor.sh | bash
-	# download entrypoint
-		FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 $FILETEMP
-	# prepare etc start
-	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-
+	# prepare final
+	preparefinal
 	# clean os
 	apt-get purge -y wget curl && \
 	apt-get clean && \
@@ -59,6 +86,8 @@ elif [[ -f /etc/redhat-release ]]; then
 		rpm -ivh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el7.noarch.rpm
 	# install litespeed
 		yum install -y openlitespeed
+	# set admin password
+		setlitespeedadmin
 	# install php
 	if [[ ! -z "${PHP_VERSION1}" ]]; then
 	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
@@ -88,16 +117,8 @@ elif [[ -f /etc/redhat-release ]]; then
 		fi
 	fi
 
-	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor.sh | bash
-	# download entrypoint
-		FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 $FILETEMP
-	# prepare etc start
-	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-
+	# prepare final
+	preparefinal
 	# clean os
 	yum clean all
 

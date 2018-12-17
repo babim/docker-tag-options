@@ -56,17 +56,25 @@ fi
 # copy default litespeed
 if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
 	# copy all
-if [ -z "`ls /usr/local/lsws`" ]; then
-	cp -R /etc-start/lsws/* /usr/local/lsws
-	chmod -R 755 /usr/local/lsws
-	chown -R lsadm:lsadm /usr/local/lsws/conf
-	chown -R nobody:nogroup /usr/local/lsws/autoupdate
-	chown -R nobody:nogroup /usr/local/lsws/cachedata
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /usr/local/lsws
-    fi
-fi
+	if [ -z "`ls /usr/local/lsws`" ]; then
+		cp -R /etc-start/lsws/* /usr/local/lsws
+		chmod -R 755 /usr/local/lsws
+		chown -R lsadm:lsadm /usr/local/lsws/conf
+		chown -R nobody:nogroup /usr/local/lsws/autoupdate
+		chown -R nobody:nogroup /usr/local/lsws/cachedata
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /usr/local/lsws
+	    fi
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+		# set ID litespeed run
+		export auid=${auid:-33}
+		export agid=${agid:-$auid}
+		export auser=${auser:-www-data}
+		chown -R $auser:$auser /usr/local/lsws/autoupdate
+		chown -R $auser:$auser /usr/local/lsws/cachedata
+	    fi
+	fi
 	# copy just missing
 	for i in `ls /etc-start/lsws`; do
 		if [ ! -d "/usr/local/lsws/$i" ] && [ -d "/etc-start/lsws/$i" ]; then
@@ -114,7 +122,21 @@ if [ -z "`ls /etc/nginx`" ]; then
 	if [ -f "/etc/nginx/nginx.conf" ]; then
 	sed -i -E \
 		-e "/^user  .*/cuser  $auser" \
+		-e "/^group  .*/group  $auser" \
 	/etc/nginx/nginx.conf
+	fi
+fi
+fi
+}
+setlitespeeduser() {
+#Set litespeed user
+if [ -d "/usr/local/lsws" ]; then
+if [ -z "`ls /usr/local/lsws/conf`" ]; then 
+	if [ -f "/usr/local/lsws/conf/$i" ]; then
+	sed -i -E \
+		-e "/^user  .*/cuser  $auser" \
+
+	/usr/local/lsws/conf/$i
 	fi
 fi
 fi
@@ -218,30 +240,30 @@ auser=${auser:-www-data}
 		setapacheuser
 		setphpuser
 		setnginxuser
+		setlitespeeduser
 	elif id $auid >/dev/null 2>&1; then
 	        echo "UID exists. Please change UID"
 	else
-	if id $auser >/dev/null 2>&1; then
-	        echo "user exists"
-		# usermod alpine
-			#deluser $auser && delgroup $auser
+		if id $auser >/dev/null 2>&1; then
+		        echo "user exists"
+			# usermod alpine
+				#deluser $auser && delgroup $auser
+				#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
+			# usermod ubuntu/debian
+				usermod -u $auid $auser
+				groupmod -g $agid $auser
+			setapacheuser
+			setphpuser
+			setnginxuser
+		else
+			# create user alpine
 			#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
-		# usermod ubuntu/debian
-			usermod -u $auid $auser
-			groupmod -g $agid $auser
-		setapacheuser
-		setphpuser
-		setnginxuser
-	else
-		# create user alpine
-		#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
-		# create user ubuntu/debian
-		groupadd -g $agid $auser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $auser $auser
-		setapacheuser
-		setphpuser
-		setnginxuser
-	fi
-
+			# create user ubuntu/debian
+			groupadd -g $agid $auser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $auser $auser
+			setapacheuser
+			setphpuser
+			setnginxuser
+		fi
 	fi
 
 	# install modsecurity
