@@ -65,6 +65,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			ln -sf /usr/local/lsws/lsphp${PHP_VERSION1}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		fi
 	fi
+	# Build mode
 	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]]; then
 		apt-get install -y build-essential rcs libpcre3-dev libexpat1-dev libssl-dev libgeoip-dev libudns-dev zlib1g-dev \
 			libxml2 libxml2-dev libpng-dev openssl libcurl4-gnutls-dev libc-client-dev libkrb5-dev libmcrypt-dev
@@ -84,6 +85,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 elif [[ -f /etc/redhat-release ]]; then
 	# install repo
 		rpm -ivh http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el7.noarch.rpm
+		yum install epel-release -y
 	# install litespeed
 		yum install -y openlitespeed
 	# set admin password
@@ -97,24 +99,17 @@ elif [[ -f /etc/redhat-release ]]; then
 	else export PHP_VERSION1=$PHP_VERSION;fi
 		# create php bin
 		if [[ "$PHP_VERSION1" == "56" ]];then
-			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-common lsphp${PHP_VERSION1}-mysql lsphp${PHP_VERSION1}-gd \
-			lsphp${PHP_VERSION1}-process lsphp${PHP_VERSION1}-mbstring lsphp${PHP_VERSION1}-xml lsphp${PHP_VERSION1}-mcrypt \
-			lsphp${PHP_VERSION1}-pdo lsphp${PHP_VERSION1}-imap lsphp${PHP_VERSION1}-soap lsphp${PHP_VERSION1}-bcmath
+			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-*
 			ln -sf /usr/local/lsws/lsphp54/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		elif [[ "$PHP_VERSION1" == "70" ]] || [[ "$PHP_VERSION1" == "71" ]] || [[ "$PHP_VERSION1" == "72" ]];then
-			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-mcrypt lsphp${PHP_VERSION1}-bcmath lsphp${PHP_VERSION1}-common \
-			lsphp${PHP_VERSION1}-dba lsphp${PHP_VERSION1}-dbg lsphp${PHP_VERSION1}-devel lsphp${PHP_VERSION1}-enchant lsphp${PHP_VERSION1}-gd \
-			lsphp${PHP_VERSION1}-gmp lsphp${PHP_VERSION1}-imap lsphp${PHP_VERSION1}-intl lsphp${PHP_VERSION1}-json lsphp${PHP_VERSION1}-ldap \
-			lsphp${PHP_VERSION1}-mbstring lsphp${PHP_VERSION1}-mysqlnd lsphp${PHP_VERSION1}-odbc lsphp${PHP_VERSION1}-opcache \
-			lsphp${PHP_VERSION1}-pdo lsphp${PHP_VERSION1}-pear lsphp${PHP_VERSION1}-pecl-apcu lsphp${PHP_VERSION1}-pecl-apcu-devel \
-			lsphp${PHP_VERSION1}-pecl-apcu-panel lsphp${PHP_VERSION1}-pecl-igbinary lsphp${PHP_VERSION1}-pecl-igbinary-devel \
-			lsphp${PHP_VERSION1}-pecl-mcrypt lsphp${PHP_VERSION1}-pecl-memcache lsphp${PHP_VERSION1}-pecl-memcached lsphp${PHP_VERSION1}-pecl-msgpack \
-			lsphp${PHP_VERSION1}-pecl-msgpack-devel lsphp${PHP_VERSION1}-pecl-redis lsphp${PHP_VERSION1}-pgsql lsphp${PHP_VERSION1}-process \
-			lsphp${PHP_VERSION1}-pspell lsphp${PHP_VERSION1}-recode lsphp${PHP_VERSION1}-snmp lsphp${PHP_VERSION1}-soap \
-			lsphp${PHP_VERSION1}-tidy lsphp${PHP_VERSION1}-xml lsphp${PHP_VERSION1}-xmlrpc lsphp${PHP_VERSION1}-zip
+			yum install -y lsphp${PHP_VERSION1} lsphp${PHP_VERSION1}-*
 		else
 			echo "Not support your PHP version"
 		fi
+	fi
+	# Build mode
+	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]]; then
+		yum groupinstall -y 'Development Tools'
 	fi
 
 	# prepare final
