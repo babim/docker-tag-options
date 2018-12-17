@@ -89,7 +89,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# set admin password
 		setlitespeedadmin
 	# install php
-	if [[ ! -z "${PHP_VERSION1}" ]]; then
+	if [[ ! -z "${PHP_VERSION}" ]]; then
 	if [[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION1=56;
 	elif [[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION1=70;
 	elif [[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION1=71;
