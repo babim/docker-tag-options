@@ -10,16 +10,28 @@ export TERM=xterm
 # copy config supervisor
 if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
 if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+       echo "setup SYNOLOGY environment"
+       chmod -R 777 /etc/supervisor
+    fi
 fi
 
 # copy config apache
 if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
 if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+       echo "setup SYNOLOGY environment"
+       chmod -R 777 /etc/apache2
+    fi
 fi
 
 # copy config nginx
 if [ -d "/etc/nginx" ] && [ -d "/etc-start/nginx" ];then
-if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
+	if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+       echo "setup SYNOLOGY environment"
+       chmod -R 777 /etc/nginx
+    fi
 fi
 
 # copy default www
@@ -34,7 +46,36 @@ fi
 if [ -d "/etc/php" ] && [ -d "/etc-start/php" ]; then
 if [ -z "`ls /etc/php`" ]; then 
 	cp -R /etc-start/php/* /etc/php
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+       echo "setup SYNOLOGY environment"
+       chmod -R 777 /etc/php
+    fi
 fi
+fi
+
+# copy default litespeed
+if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
+	# copy all
+if [ -z "`ls /usr/local/lsws`" ]; then
+	cp -R /etc-start/lsws/* /usr/local/lsws
+	chmod -R 755 /usr/local/lsws
+	chown -R lsadm:lsadm /usr/local/lsws/conf
+	chown -R nobody:nogroup /usr/local/lsws/autoupdate
+	chown -R nobody:nogroup /usr/local/lsws/cachedata
+    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
+       echo "setup SYNOLOGY environment"
+       chmod -R 777 /usr/local/lsws
+    fi
+fi
+	# copy just missing
+	for i in `ls /etc-start/lsws`; do
+		if [ ! -d "/usr/local/lsws/$i" ] && [ -d "/etc-start/lsws/$i" ]; then
+		cp -R /etc-start/lsws/$i //usr/local/lsws
+		fi
+	done
+fi
+if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
+	cp -R /etc-start/lsws/Example /usr/local/lsws
 fi
 
 # option with entrypoint
