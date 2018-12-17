@@ -65,7 +65,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			ln -sf /usr/local/lsws/lsphp${PHP_VERSION1}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
 		fi
 	fi
-	if [[ ! -z "${BUILDMODE}" ]]; then
+	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]]; then
 		apt-get install -y build-essential rcs libpcre3-dev libexpat1-dev libssl-dev libgeoip-dev libudns-dev zlib1g-dev \
 			libxml2 libxml2-dev libpng-dev openssl libcurl4-gnutls-dev libc-client-dev libkrb5-dev libmcrypt-dev
 	fi
