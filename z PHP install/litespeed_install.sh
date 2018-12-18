@@ -66,7 +66,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		fi
 	fi
 	# Build mode
-	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]]; then
+	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]] || [[ "$BUILDMODE" == "true" ]]; then
 		apt-get install -y build-essential rcs libpcre3-dev libexpat1-dev libssl-dev libgeoip-dev libudns-dev zlib1g-dev \
 			libxml2 libxml2-dev libpng-dev openssl libcurl4-gnutls-dev libc-client-dev libkrb5-dev libmcrypt-dev
 	fi
