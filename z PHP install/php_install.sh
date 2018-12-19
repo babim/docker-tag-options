@@ -58,8 +58,6 @@ if [[ -f /etc/lsb-release ]]; then
 			chmod 755 $FILETEMP
 		# prepare etc start
 			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-		# remove packages
-			apt-get purge wget curl -y
 		}
 	laravelinstall() {
 		if [[ "$LARAVEL" == "true" ]];then
