@@ -77,6 +77,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			lsphp${PHP_VERSION1}-pecl-msgpack-devel lsphp${PHP_VERSION1}-pecl-redis lsphp${PHP_VERSION1}-pgsql lsphp${PHP_VERSION1}-process \
 			lsphp${PHP_VERSION1}-pspell lsphp${PHP_VERSION1}-recode lsphp${PHP_VERSION1}-snmp lsphp${PHP_VERSION1}-soap \
 			lsphp${PHP_VERSION1}-tidy lsphp${PHP_VERSION1}-xml lsphp${PHP_VERSION1}-xmlrpc lsphp${PHP_VERSION1}-zip
+		fi
 	fi
 	# Build mode
 	if [[ "$BUILDMODE" == "on" ]] || [[ "$BUILDMODE" == "ON" ]] || [[ "$BUILDMODE" == "true" ]]; then
