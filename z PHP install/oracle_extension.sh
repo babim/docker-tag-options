@@ -1,3 +1,18 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
+echo 'Check root'
+if [ "x$(id -u)" != 'x0' ]; then
+    echo 'Error: this script can only be executed by root'
+    exit 1
+fi
+echo 'Check OS'
+if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+	export DEBIAN_FRONTEND=noninteractive
 	    export ORACLE_VERSION=12.2.0.1.0
 		apt-get install -y --force-yes wget unzip libaio-dev php$PHP_VERSION-dev php-pear pkg-config libbson-1.0 libmongoc-1.0-0 php-dev
 		wget --progress=bar:force http://media.matmagoc.com/oracle/instantclient-basic-linux.x64-$ORACLE_VERSION.zip && \
@@ -20,3 +35,7 @@
 		done
 
 		rm -f instantclient-basic-linux.x64-$ORACLE_VERSION.zip instantclient-sdk-linux.x64-$ORACLE_VERSION.zip instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
+else
+    echo "Not support your OS"
+    exit
+fi
