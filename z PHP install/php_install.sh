@@ -155,16 +155,6 @@ if [[ -f /etc/lsb-release ]]; then
 			fi
 			done
 		}
-	cleanos() {
-		# clean os
-			apt-get purge -y wget curl && \
-			apt-get clean && \
-  			apt-get autoclean && \
-  			apt-get autoremove -y && \
-   			rm -rf /build && \
-   			rm -rf /tmp/* /var/tmp/* && \
-	   		rm -rf /var/lib/apt/lists/*	
-		}
 	fullphpdo() {
 		# config
 			phpfinal
@@ -230,7 +220,6 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 	fi
-		cleanos
 else
     echo "Not support your OS"
     exit
