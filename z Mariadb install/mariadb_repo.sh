@@ -5,6 +5,12 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+echo 'Check root'
+if [ "x$(id -u)" != 'x0' ]; then
+    echo 'Error: this script can only be executed by root'
+    exit 1
+fi
+
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# add repo Mariadb
 	apt-get install software-properties-common dirmngr gnupg -y
@@ -14,7 +20,8 @@ if [[ "$TYPESQL" == "mariadb" ]];then
 	apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 	# set version
 	#export MARIADB_MAJOR=10.0
-	add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+	add-apt-repository "deb [arch=amd64,i386,ppc64el] https://ftp.harukasan.org/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+	#add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
 
 elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# add repo Mysql
