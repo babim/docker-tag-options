@@ -18,11 +18,9 @@ if [[ "$TYPESQL" == "mariadb" ]];then
 		apt-get install python-software-properties -y
 	fi
 	apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
-	apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xCBCB082A1BB943DB
 	# set version
 	#export MARIADB_MAJOR=10.0
-		add-apt-repository "deb [arch=amd64,i386] https://ftp.harukasan.org/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
-		#add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+		add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
 
 elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# add repo Mysql
