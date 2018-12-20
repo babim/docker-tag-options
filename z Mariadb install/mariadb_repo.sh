@@ -8,10 +8,10 @@
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# add repo Mariadb
 	apt-get install software-properties-common dirmngr gnupg -y
-	gpg --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
+	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 	# set version
 	#export MARIADB_MAJOR=10.0
-	wget --no-check-certificate -O - https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
+	add-apt-repository 'deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main'
 
 elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# add repo Mysql
