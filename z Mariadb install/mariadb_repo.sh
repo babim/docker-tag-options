@@ -7,7 +7,7 @@
 
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# add repo Mariadb
-	apt-get install software-properties-common python-software-properties dirmngr gnupg -y
+	apt-get install software-properties-common dirmngr gnupg -y
 	if [[ "$OSDEB" == "wheezy" ]];then
 		apt-get install python-software-properties -y
 	fi
