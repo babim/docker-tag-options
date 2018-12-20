@@ -7,7 +7,7 @@
 
 if [[ "$TYPESQL" == "mariadb" ]];then
 	# add repo Mariadb
-	apt-get install software-properties-common dirmngr gnupg -y
+	apt-get install software-properties-common python-software-properties dirmngr gnupg -y
 	apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 	# set version
 	#export MARIADB_MAJOR=10.0
