@@ -1,5 +1,5 @@
 # add gosu for easy step-down from root
-GOSU_VERSION=1.10
+GOSU_VERSION=1.11
 if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 set -ex; \
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -18,7 +18,7 @@ set -ex; \
 	\
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /tmp/gosu.asc /usr/bin/gosu; \
 	rm -r "$GNUPGHOME" /tmp/gosu.asc; \
 	\

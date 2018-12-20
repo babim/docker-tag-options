@@ -21,7 +21,8 @@ if [[ -f /etc/debian_version ]]; then
 	# install "tzdata" for /usr/share/zoneinfo/
 		apt-get install -y --no-install-recommends pwgen tzdata apt-transport-https ca-certificates
 	# add Percona's repo for xtrabackup (which is useful for Galera)
-		wget --no-check-certificate -O - $DOWN_URL/percona_repo.sh | bash
+		wget --no-check-certificate -O - https://repo.percona.com/apt/percona-release_0.1-4.$(lsb_release -sc)_all.deb | dpkg -i
+		#wget --no-check-certificate -O - $DOWN_URL/percona_repo.sh | bash
 	# install gosu
 		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
 	# add repo Mariadb, Mysql

@@ -12,13 +12,13 @@
 	set -ex; \
 		key='430BDF5C56E7C94E848EE60C1C4CBDCDCD2EFD2A'; \
 		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 		gpg --export "$key" > /etc/apt/trusted.gpg.d/percona.gpg; \
 		command -v gpgconf > /dev/null && gpgconf --kill all || :; \
 		rm -rf "$GNUPGHOME"; \
 		key='4D1BB29D63D98E422B2113B19334A25F8507EFA5'; \
 		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 		gpg --export "$key" >> /etc/apt/trusted.gpg.d/percona.gpg; \
 		command -v gpgconf > /dev/null && gpgconf --kill all || :; \
 		rm -rf "$GNUPGHOME"; \
