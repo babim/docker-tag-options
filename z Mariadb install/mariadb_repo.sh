@@ -11,7 +11,7 @@ if [[ "$TYPESQL" == "mariadb" ]];then
 	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 	# set version
 	#export MARIADB_MAJOR=10.0
-	add-apt-repository "deb [arch=amd64,i386,ppc64el] https://ftp.harukasan.org/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+	wget --no-check-certificate -O - https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
 
 elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# add repo Mysql
@@ -19,7 +19,7 @@ elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 	# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
 		key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
 		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 		gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
 		rm -rf "$GNUPGHOME"; \
 		apt-key list > /dev/null
