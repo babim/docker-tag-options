@@ -5,6 +5,13 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+echo 'Check root'
+if [ "x$(id -u)" != 'x0' ]; then
+    echo 'Error: this script can only be executed by root'
+    exit 1
+fi
+
+if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 	apt-get install -y --no-install-recommends \
 	apt-transport-https ca-certificates
@@ -30,3 +37,11 @@
 			echo 'Pin: release o=Percona Development Team'; \
 			echo 'Pin-Priority: 998'; \
 		} > /etc/apt/preferences.d/percona
+
+elif [[ -f /etc/redhat-release ]]; then
+	# add repo Percona
+	rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
+else
+    echo "Not support your OS"
+    exit
+fi
