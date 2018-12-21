@@ -323,6 +323,13 @@ if [[ -f "/usr/sbin/apache2ctl" ]] && [[ -f "/nosupervisor" ]]; then
 fi
 	# litespeed
 if [[ -f "/usr/local/lsws/bin/lswsctrl" ]] && [[ -f "/nosupervisor" ]]; then
+## Set litespeed admin user
+	LITESPEED_ADMIN=${LITESPEED_ADMIN:-admin}
+	LITESPEED_PASS=${LITESPEED_PASS:-admintest}
+/usr/local/lsws/admin/misc/admpass.sh <<< "$LITESPEED_ADMIN
+$LITESPEED_PASS
+$LITESPEED_PASS
+"
 	/usr/local/lsws/bin/lswsctrl start
 	sleep infinity
 fi
