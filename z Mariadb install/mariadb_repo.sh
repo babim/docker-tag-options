@@ -20,8 +20,11 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		fi
 		apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
 		# set version
-		#export MARIADB_MAJOR=10.0
+		if [[ "$OSDEB" == "trusty" ]];then
+			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/ubuntu $OSDEB main"
+		else
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+		fi
 
 	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 		# add repo Mysql
