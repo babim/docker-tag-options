@@ -54,7 +54,11 @@ if [[ -f /etc/lsb-release ]]; then
 	apt-get autoremove -y && \
 	rm -rf /build && \
 	rm -rf /tmp/* /var/tmp/* && \
-	rm -rf /var/lib/apt/lists/*	
+	rm -rf /var/lib/apt/lists/*
+
+	# forward request and error logs to docker log collector
+	ln -sf /dev/stdout /var/log/nginx/access.log \
+	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
 else
     echo "Not support your OS"

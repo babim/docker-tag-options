@@ -94,7 +94,11 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	apt-get autoremove -y && \
 	rm -rf /build && \
 	rm -rf /tmp/* /var/tmp/* && \
-	rm -rf /var/lib/apt/lists/*	
+	rm -rf /var/lib/apt/lists/*
+
+	# forward request and error logs to docker log collector
+	ln -sf /dev/stdout /usr/local/lsws/logs/access.log
+	&& ln -sf /dev/stderr /usr/local/lsws/logs/error.log
 
 elif [[ -f /etc/redhat-release ]]; then
 	# install repo
@@ -141,6 +145,10 @@ elif [[ -f /etc/redhat-release ]]; then
 	preparefinal
 	# clean os
 	yum clean all
+
+	# forward request and error logs to docker log collector
+	ln -sf /dev/stdout /usr/local/lsws/logs/access.log
+	&& ln -sf /dev/stderr /usr/local/lsws/logs/error.log
 
 else
     echo "Not support your OS"
