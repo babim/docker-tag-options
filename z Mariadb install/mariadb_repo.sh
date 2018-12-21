@@ -19,6 +19,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			apt-get install python-software-properties -y
 		fi
 		apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
+		apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xCBCB082A1BB943DB
 		# set version
 		if [[ "$OSDEB" == "trusty" ]];then
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/ubuntu $OSDEB main"
