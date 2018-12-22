@@ -97,7 +97,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	rm -rf /var/lib/apt/lists/*
 
 	# forward request and error logs to docker log collector
-	ln -sf /dev/stdout /usr/local/lsws/logs/access.log
+	ln -sf /dev/stdout /usr/local/lsws/logs/access.log \
 	&& ln -sf /dev/stderr /usr/local/lsws/logs/error.log
 
 elif [[ -f /etc/redhat-release ]]; then
@@ -147,7 +147,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	yum clean all
 
 	# forward request and error logs to docker log collector
-	ln -sf /dev/stdout /usr/local/lsws/logs/access.log
+	ln -sf /dev/stdout /usr/local/lsws/logs/access.log \
 	&& ln -sf /dev/stderr /usr/local/lsws/logs/error.log
 
 else
