@@ -54,169 +54,6 @@ fi
 ####################################################
 
 ####################################################
-# create static environment group command
-ssh-create() {
-    if [ ! -f "/SSH.check" ]; then
-        os-update
-        ssh-start
-        os-clean
-        ssh-run
-    elif [ -f "/SSH.check" ]; then
-        ssh-run
-    fi
-}
-ssh-del() {
-        os-update
-        ssh-remove
-        os-clean
-}
-
-cron-create() {
-    if [ ! -f "/CRON.check" ]; then
-        os-update
-        cron-start
-        os-clean
-        cron-run
-    elif [ -f "/CRON.check" ]; then
-        cron-run
-    fi
-}
-cron-del() {
-        os-update
-        cron-remove
-        os-clean
-}
-
-nfs-create() {
-    if [ ! -f "/NFS.check" ]; then
-        os-update
-        nfs-start
-        os-clean
-        nfs-run
-    elif [ -f "/NFS.check" ]; then
-        nfs-run
-    fi
-}
-nfs-del() {
-        os-update
-        nfs-remove
-        os-clean
-}
-
-synology-create() {
-    if [ ! -f "/SYNOLOGY.check" ]; then
-        synology-start
-    elif [ -f "/SYNOLOGY.check" ]; then
-        echo done
-    fi
-}
-synology-del() {
-        synology-remove
-}
-
-upgrade-create() {
-    if [ ! -f "/UPGRADE.check" ]; then
-        os-update
-        os-upgrade
-        os-clean
-    elif [ -f "/UPGRADE.check" ]; then
-        echo done
-    fi
-}
-upgrade-del() {
-        os-upgrade-remove
-        os-clean
-}
-
-####################################################
-# remove static environment group command
-ssh-remove() {
-    if [ -f "/SSH.check" ]; then rm -f /SSH.check; fi
-    if [ $OSRUN = redhat ]; then redhat-ssh-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-ssh-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-ssh-remove; fi
-}
-cron-remove() {
-    if [ -f "/CRON.check" ]; then rm -f /CRON.check; fi
-    if [ $OSRUN = redhat ]; then redhat-cron-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-cron-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-cron-remove; fi
-}
-nfs-remove() {
-    if [ -f "/NFS.check" ]; then rm -f /NFS.check; fi
-    if [ $OSRUN = redhat ]; then redhat-nfs-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-nfs-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-nfs-remove; fi
-}
-upgrade-remove() {
-    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
-    if [ $OSRUN = redhat ]; then redhat-upgrade-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-upgrade-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-upgrade-remove; fi
-}
-synology-remove() {
-    if [ -f "/SYNOLOGY.check" ]; then rm -f /SYNOLOGY.check; fi
-    if [ $OSRUN = redhat ]; then redhat-synology-remove; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-synology-remove; fi
-    if [ $OSRUN = alpine ]; then alpine-synology-remove; fi
-}
-os-upgrade-remove() {
-    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
-####################################################
-# detect run group
-os-clean() {
-    if [ $OSRUN = redhat ]; then redhat-clean; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-clean; fi
-    if [ $OSRUN = alpine ]; then alpine-clean; fi
-}
-ssh-start() {
-    if [ $OSRUN = redhat ]; then redhat-ssh-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-ssh-start; fi
-    if [ $OSRUN = alpine ]; then alpine-ssh-start; fi
-}
-ssh-run() {
-    if [ $OSRUN = redhat ]; then redhat-ssh; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-ssh; fi
-    if [ $OSRUN = alpine ]; then alpine-ssh; fi
-}
-nfs-start() {
-    if [ $OSRUN = redhat ]; then redhat-nfs-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-nfs-start; fi
-    if [ $OSRUN = alpine ]; then alpine-nfs-start; fi
-}
-nfs-run() {
-    if [ $OSRUN = redhat ]; then nfs-mount; fi
-    if [ $OSRUN = ubuntu ]; then nfs-mount; fi
-    if [ $OSRUN = alpine ]; then nfs-mount; fi
-}
-cron-start() {
-    if [ $OSRUN = redhat ]; then redhat-cron-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-cron-start; fi
-    if [ $OSRUN = alpine ]; then alpine-cron-start; fi
-}
-cron-run() {
-    if [ $OSRUN = redhat ]; then redhat-cron; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-cron; fi
-    if [ $OSRUN = alpine ]; then alpine-cron; fi
-}
-synology-start() {
-    if [ $OSRUN = redhat ]; then redhat-synology-start; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-synology-start; fi
-    if [ $OSRUN = alpine ]; then alpine-synology-start; fi
-}
-os-upgrade() {
-    if [ $OSRUN = redhat ]; then redhat-upgrade; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-upgrade; fi
-    if [ $OSRUN = alpine ]; then alpine-upgrade; fi
-}
-}
-os-update() {
-    if [ $OSRUN = redhat ]; then redhat-update; fi
-    if [ $OSRUN = ubuntu ]; then ubuntu-update; fi
-    if [ $OSRUN = alpine ]; then alpine-update; fi
-}
-
-####################################################
 # clean group command
 alpine-clean() {
     echo 'Clean OS'
@@ -417,9 +254,8 @@ redhat-cron-start() {
 }
 redhat-cron-remove() {
     yum remove -y cronie
-    if [ -f "/etc/supervisor/supervisord.conf" ]; then /etc/supervisor/conf.d/cron.conf; fi
+    if [ -f "/etc/supervisor/conf.d/cron.conf" ]; then rm -f /etc/supervisor/conf.d/cron.conf; fi
 }
-
 redhat-cron() {
     if [ ! -f "/etc/supervisor/supervisord.conf" ]; then service crond start; fi
 }
@@ -447,7 +283,6 @@ redhat-ssh-start() {
 redhat-ssh-remove() {
     yum remove -y openssh-server
 }
-
 redhat-ssh() {
     # SSH
     if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
@@ -512,7 +347,6 @@ ubuntu-cron-remove() {
     apt-get purge -y cron
     if [ -f "/etc/supervisor/supervisord.conf" ]; then rm -f /etc/supervisor/conf.d/cron.conf; fi
 }
-
 ubuntu-cron() {
     if [ ! -f "/etc/supervisor/supervisord.conf" ]; then service cron start; fi
 }
@@ -554,7 +388,6 @@ ubuntu-ssh-remove() {
     apt-get purge -y openssh-server
     if [ -f "/etc/supervisor/supervisord.conf" ]; then rm -f /etc/supervisor/conf.d/ssh.conf; fi
 }
-
 ubuntu-ssh() {
     # SSH
     if [ "${AUTHORIZED_KEYS}" != "**None**" ]; then
@@ -583,7 +416,7 @@ ubuntu-ssh() {
 }
 
 ubuntu-synology-start() {
-    # Checking user account
+    echo Checking user account
     if [ ! -z "$(grep ^${WWWUSER}: /etc/passwd /etc/group)" ] && [ -z "$force" ]; then
         usermod -u ${WWWUSERID} ${WWWUSER}  && groupmod -g ${WWWUSERID} ${WWWUSER}
     fi
@@ -644,6 +477,170 @@ quit_command() {
 }
 
 ####################################################
+# detect run group
+os-clean() {
+    if [ $OSRUN = redhat ]; then redhat-clean; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-clean; fi
+    if [ $OSRUN = alpine ]; then alpine-clean; fi
+}
+ssh-start() {
+    if [ $OSRUN = redhat ]; then redhat-ssh-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-ssh-start; fi
+    if [ $OSRUN = alpine ]; then alpine-ssh-start; fi
+}
+ssh-run() {
+    if [ $OSRUN = redhat ]; then redhat-ssh; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-ssh; fi
+    if [ $OSRUN = alpine ]; then alpine-ssh; fi
+}
+nfs-start() {
+    if [ $OSRUN = redhat ]; then redhat-nfs-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-nfs-start; fi
+    if [ $OSRUN = alpine ]; then alpine-nfs-start; fi
+}
+nfs-run() {
+    if [ $OSRUN = redhat ]; then nfs-mount; fi
+    if [ $OSRUN = ubuntu ]; then nfs-mount; fi
+    if [ $OSRUN = alpine ]; then nfs-mount; fi
+}
+cron-start() {
+    if [ $OSRUN = redhat ]; then redhat-cron-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-cron-start; fi
+    if [ $OSRUN = alpine ]; then alpine-cron-start; fi
+}
+cron-run() {
+    if [ $OSRUN = redhat ]; then redhat-cron; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-cron; fi
+    if [ $OSRUN = alpine ]; then alpine-cron; fi
+}
+synology-start() {
+    if [ $OSRUN = redhat ]; then redhat-synology-start; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-synology-start; fi
+    if [ $OSRUN = alpine ]; then alpine-synology-start; fi
+}
+os-upgrade() {
+    if [ $OSRUN = redhat ]; then redhat-upgrade; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-upgrade; fi
+    if [ $OSRUN = alpine ]; then alpine-upgrade; fi
+}
+os-update() {
+    if [ $OSRUN = redhat ]; then redhat-update; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-update; fi
+    if [ $OSRUN = alpine ]; then alpine-update; fi
+}
+
+####################################################
+# remove static environment group command
+ssh-remove() {
+    if [ -f "/SSH.check" ]; then rm -f /SSH.check; fi
+    if [ $OSRUN = redhat ]; then redhat-ssh-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-ssh-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-ssh-remove; fi
+}
+cron-remove() {
+    if [ -f "/CRON.check" ]; then rm -f /CRON.check; fi
+    if [ $OSRUN = redhat ]; then redhat-cron-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-cron-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-cron-remove; fi
+}
+nfs-remove() {
+    if [ -f "/NFS.check" ]; then rm -f /NFS.check; fi
+    if [ $OSRUN = redhat ]; then redhat-nfs-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-nfs-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-nfs-remove; fi
+}
+upgrade-remove() {
+    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
+    if [ $OSRUN = redhat ]; then redhat-upgrade-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-upgrade-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-upgrade-remove; fi
+}
+synology-remove() {
+    if [ -f "/SYNOLOGY.check" ]; then rm -f /SYNOLOGY.check; fi
+    if [ $OSRUN = redhat ]; then redhat-synology-remove; fi
+    if [ $OSRUN = ubuntu ]; then ubuntu-synology-remove; fi
+    if [ $OSRUN = alpine ]; then alpine-synology-remove; fi
+}
+os-upgrade-remove() {
+    if [ -f "/UPGRADE.check" ]; then rm -f /UPGRADE.check; fi
+}
+
+####################################################
+# create static environment group command
+ssh-create() {
+    if [ ! -f "/SSH.check" ]; then
+        os-update
+        ssh-start
+        os-clean
+        ssh-run
+    elif [ -f "/SSH.check" ]; then
+        ssh-run
+    fi
+}
+ssh-del() {
+        os-update
+        ssh-remove
+        os-clean
+}
+
+cron-create() {
+    if [ ! -f "/CRON.check" ]; then
+        os-update
+        cron-start
+        os-clean
+        cron-run
+    elif [ -f "/CRON.check" ]; then
+        cron-run
+    fi
+}
+cron-del() {
+        os-update
+        cron-remove
+        os-clean
+}
+
+nfs-create() {
+    if [ ! -f "/NFS.check" ]; then
+        os-update
+        nfs-start
+        os-clean
+        nfs-run
+    elif [ -f "/NFS.check" ]; then
+        nfs-run
+    fi
+}
+nfs-del() {
+        os-update
+        nfs-remove
+        os-clean
+}
+
+synology-create() {
+    if [ ! -f "/SYNOLOGY.check" ]; then
+        synology-start
+    elif [ -f "/SYNOLOGY.check" ]; then
+        echo done
+    fi
+}
+synology-del() {
+        synology-remove
+}
+
+upgrade-create() {
+    if [ ! -f "/UPGRADE.check" ]; then
+        os-update
+        os-upgrade
+        os-clean
+    elif [ -f "/UPGRADE.check" ]; then
+        echo done
+    fi
+}
+upgrade-del() {
+        os-upgrade-remove
+        os-clean
+}
+
+####################################################
 # START PROGRAMS
 ####################################################
 # ssh
@@ -661,7 +658,7 @@ quit_command() {
         nfs-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /NFS.check ]; then nfs-del; fi
+    if [ "$NFSOPTION" = "false" ] && [ -f /NFS.check ]; then nfs-del; fi
 # cron
     # install
     if [ "$CRONOPTION" = "true" ] || [ "$CRONOPTION" = "on" ]; then
@@ -669,7 +666,7 @@ quit_command() {
        cron-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /CRON.check ]; then cron-del; fi
+    if [ "$CRONOPTION" = "false" ] && [ -f /CRON.check ]; then cron-del; fi
 # synology
     # install
     if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ]; then
@@ -677,7 +674,7 @@ quit_command() {
        synology-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /SYNOLOGY.check ]; then synology-del; fi
+    if [ "$SYNOLOGYOPTION" = "false" ] && [ -f /SYNOLOGY.check ]; then synology-del; fi
 # upgrade
     # install
     if [ "$UPGRADEOPTION" = "true" ] || [ "$UPGRADEOPTION" = "on" ]; then
@@ -685,7 +682,7 @@ quit_command() {
        upgrade-create
     fi
     #remove
-    if [ "$SSHOPTION" = "false" ] && [ -f /UPGRADE.check ]; then upgrade-del; fi
+    if [ "$UPGRADEOPTION" = "false" ] && [ -f /UPGRADE.check ]; then upgrade-del; fi
 # DNS
     # install
     if [ "$DNSOPTION" = "google" ]; then
