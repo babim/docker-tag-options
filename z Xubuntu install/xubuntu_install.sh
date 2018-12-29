@@ -30,7 +30,6 @@ if [[ -f /etc/lsb-release ]]; then
 	# add repo
 		add-apt-repository ppa:atareao/atareao -y
 		add-apt-repository ppa:diesch/testing -y
-		add-apt-repository ppa:docky-core/stable -y
 		add-apt-repository ppa:libreoffice/ppa -y
 		add-apt-repository ppa:nilarimogard/webupd8 -y
 		add-apt-repository ppa:n-muench/programs-ppa -y
