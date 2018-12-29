@@ -35,8 +35,6 @@ if [[ -f /etc/lsb-release ]]; then
 		wget --no-check-certificate -O - http://deb.opera.com/archive.key | apt-key add - && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
 		wget --no-check-certificate -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 		add-apt-repository ppa:teejee2008/ppa -y
-		add-apt-repository ppa:tualatrix/ppa -y
-		add-apt-repository ppa:ubuntu-wine/ppa -y
 		add-apt-repository ppa:webupd8team/java -y
 	apt-get update
 	# install GUI
