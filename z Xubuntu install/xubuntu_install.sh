@@ -15,10 +15,11 @@ if [[ -f /etc/lsb-release ]]; then
 	# set environment
 	export DEBIAN_FRONTEND=noninteractive
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
-		export FREEFILESYNC=9.3_Ubuntu_16.04_64-bit
-		export IPSCAN=3.5.3
-		export CROSSOVER=16.2.5-1
-		export WIMLIB=1.12.0
+		export FREEFILESYNC=10.7_Linux
+		export IPSCAN=3.5.5
+		export CROSSOVER=18.1.0-1
+		export WIMLIB=1.13.0
+		export REALVNC=6.2.1
 		export ADMINAPP=${ADMINAPP:-true}
 	if [[ "$ADMINAPP" == "true" ]];then
 		ADMINAPPALL=${ADMINAPPALL:-true}
@@ -42,11 +43,11 @@ if [[ -f /etc/lsb-release ]]; then
 		add-apt-repository ppa:tualatrix/ppa -y
 		add-apt-repository ppa:ubuntu-wine/ppa -y
 		add-apt-repository ppa:webupd8team/java -y
-
+	apt-get update
 	# install GUI
 		apt-get install xubuntu-desktop --no-install-recommends -y --force-yes
 	# install app
-		apt-get install -y --force-yes nano mousepad xfce4-taskmanager gnome-icon-theme-full firefox flashplugin-installer tightvncserver
+		apt-get install -y --force-yes nano mousepad xfce4-taskmanager gnome-icon-theme-full firefox flashplugin-installer
     
 # install admin app
 	if [[ "$ADMINAPP" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
@@ -71,7 +72,7 @@ if [[ -f /etc/lsb-release ]]; then
 		if [[ "$FREEFILESYNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 			wget --no-check-certificate -O - $DOWN_URL/freefilesync_install.sh | bash
 		fi
-		    
+
 	# navicat_premium
 		if [[ "$NAVICAT_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 			wget --no-check-certificate -O - $DOWN_URL/navicat_install.sh | bash
@@ -81,11 +82,16 @@ if [[ -f /etc/lsb-release ]]; then
 		if [[ "$RAZORSQL_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 			wget --no-check-certificate -O - $DOWN_URL/razorsql_install.sh | bash
 		fi
-		    
+
 	# angry ip scanner
 		if [[ "$IPSCAN_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 
 				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash
+		fi
+	# REALVNC Server
+		if [[ "$REALVNC" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
+
+				wget --no-check-certificate -O - $DOWN_URL/realvnc_install.sh | bash
 		fi
 
 	# google drive ocamfuse
