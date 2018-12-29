@@ -32,12 +32,8 @@ if [[ -f /etc/lsb-release ]]; then
 		add-apt-repository ppa:diesch/testing -y
 		add-apt-repository ppa:libreoffice/ppa -y
 		add-apt-repository ppa:nilarimogard/webupd8 -y
-		add-apt-repository ppa:n-muench/programs-ppa -y
 		wget --no-check-certificate -O - http://deb.opera.com/archive.key | apt-key add - && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
 		wget --no-check-certificate -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-		add-apt-repository ppa:pipelight/stable -y
-		add-apt-repository ppa:remmina-ppa-team/remmina-next -y
-		add-apt-repository ppa:synapse-core/testing -y
 		add-apt-repository ppa:teejee2008/ppa -y
 		add-apt-repository ppa:tualatrix/ppa -y
 		add-apt-repository ppa:ubuntu-wine/ppa -y
