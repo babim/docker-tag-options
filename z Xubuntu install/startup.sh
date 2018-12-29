@@ -7,4 +7,8 @@ rm -rf /tmp/.X*
 USER=root
 HOME=/root
 export USER HOME
+    # set password root is root
+    SSHPASS=${SSHPASS:-root}
+    echo "root:$SSHPASS" | chpasswd
 vncserver :1
+sleep infinity
