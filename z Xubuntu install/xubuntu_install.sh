@@ -15,11 +15,6 @@ if [[ -f /etc/lsb-release ]]; then
 	# set environment
 	export DEBIAN_FRONTEND=noninteractive
 	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
-		export FREEFILESYNC=10.7_Linux
-		export IPSCAN=3.5.5
-		export CROSSOVER=18.1.0-1
-		export WIMLIB=1.13.0
-		export REALVNC=6.2.1
 		export ADMINAPP=${ADMINAPP:-true}
 	if [[ "$ADMINAPP" == "true" ]];then
 		ADMINAPPALL=${ADMINAPPALL:-true}
