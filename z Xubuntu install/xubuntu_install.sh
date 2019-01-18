@@ -77,7 +77,7 @@ if [[ -f /etc/lsb-release ]]; then
 				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash
 		fi
 	# REALVNC Server
-		if [[ "$REALVNC" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
+		if [[ "$REALVNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 
 				wget --no-check-certificate -O - $DOWN_URL/realvnc_install.sh | bash
 		fi
