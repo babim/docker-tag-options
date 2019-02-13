@@ -100,9 +100,10 @@ if [[ -f /etc/lsb-release ]]; then
 			-e "s|^;*\(opcache.enable_cli\) *=.*|\1 = 1|" \
 			-e "s|^;*\(opcache.fast_shutdown\) *=.*|\1 = 1|" \
 			-e "s|^;*\(opcache.interned_strings_buffer\) *=.*|\1 = 8|" \
-			-e "s|^;*\(opcache.max_accelerated_files\) *=.*|\1 = 4000|" \
+			-e "s|^;*\(opcache.max_accelerated_files\) *=.*|\1 = 10000|" \
 			-e "s|^;*\(opcache.memory_consumption\) *=.*|\1 = 128|" \
 			-e "s|^;*\(opcache.revalidate_freq\) *=.*|\1 = 60|" \
+			-e "s|^;*\(opcache.save_comments\) *=.*|\1 = 1|" \
 		$VARIABLE/$FILETEMP
 		}
 	setopcachevalue() {
