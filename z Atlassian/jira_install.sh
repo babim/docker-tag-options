@@ -104,6 +104,7 @@ if [[ -f /etc/alpine-release ]]; then
 		apk add --no-cache sudo
 		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
 		chown -R root:root /usr/bin/sudo
+		chmod 755 /usr/bin/sudo
 	fi
 	# Install Atlassian
 		installatlassian
@@ -128,6 +129,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		apt-get install --quiet --yes --no-install-recommends sudo
 		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
 		chown -R root:root /usr/bin/sudo
+		chmod 755 /usr/bin/sudo
 	fi
 	# Install Atlassian
 		installatlassian
