@@ -8,9 +8,9 @@
 set -e
 
 # set environment
-	export SOFT=${SOFT:-jira}
-	export SOFT_HOME=${SOFT_HOME:-/var/atlassian/${SOFT}}
-	export SOFT_INSTALL=${SOFT_INSTALL:-/opt/atlassian/${SOFT}}
+#	export SOFT=${SOFT:-jira}
+#	export SOFT_HOME=${SOFT_HOME:-/var/atlassian/${SOFT}}
+#	export SOFT_INSTALL=${SOFT_INSTALL:-/opt/atlassian/${SOFT}}
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
