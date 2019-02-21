@@ -93,7 +93,7 @@ if [[ -f /etc/alpine-release ]]; then
 			echo "Can not install openjdk, please check and rebuild"
 			exit
 		fi
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat tar
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat tar sudo
 	# Install Atlassian
 		installatlassian
 # OS - ubuntu debian

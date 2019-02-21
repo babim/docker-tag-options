@@ -12,7 +12,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
-	apk add --no-cache sudo
 		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
 				sudo cp -R /etc-start/jira/* ${SOFT_INSTALL}
