@@ -11,7 +11,7 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
-	if [ "$VISIBLECODE" = "true" ]; then
+	if [ "${VISIBLECODE}" = "true" ]; then
 		if [ -z "`ls ${SOFTINSTALL}`" ]; then
 			cp -R /etc-start/jira/* ${SOFTINSTALL}
 		## set permission path
@@ -49,7 +49,7 @@ if [ "$(stat -c "%Y" "${SOFTINSTALL}/conf/server.xml")" -eq "0" ]; then
 fi
 
 # visible code
-	if [ "$VISIBLECODE" = "true" ]; then
+	if [ "${VISIBLECODE}" = "true" ]; then
 		${SOFTINSTALL}/bin/start-${SOFT}.sh -fg
 	fi
 
