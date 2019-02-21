@@ -12,11 +12,8 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 
-# set command install
-installatlassian() {
-	# set host download
-		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
-	# set environment
+# set environment
+setenvironment() {
 		export SOFT=${SOFT:-jira}
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
@@ -25,6 +22,11 @@ installatlassian() {
 		export ORACLEV=8
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
 		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+}
+# set command install
+installatlassian() {
+	# set host download
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 	## Check version
 		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
 			echo "Can not install without version. Please check and rebuild"
@@ -79,17 +81,21 @@ installatlassian() {
 echo 'Check OS'
 # OS - alpine linux
 if [[ -f /etc/alpine-release ]]; then
+	# set environment
+		setenvironment
 	# install depend
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apk add --no-cache openjdk${OPENJDKV}; fi
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
 			echo "Can not install openjdk, please check and rebuild"
 			exit
 		fi
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat tar
 	# Install Atlassian
 		installatlassian
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+	# set environment
+		setenvironment
 	# Set frontend debian
 		export DEBIAN_FRONTEND=noninteractive
 	# install depend
