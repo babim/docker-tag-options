@@ -12,23 +12,22 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
-	su - root
+	apk add --no-cache sudo
 		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
-				cp -R /etc-start/jira/* ${SOFT_INSTALL}
-				mkdir -p                "${SOFT_HOME}/caches/indexes"
+				sudo cp -R /etc-start/jira/* ${SOFT_INSTALL}
+				sudo mkdir -p "${SOFT_HOME}/caches/indexes"
 		## set permission path
-			chmod -R 700            "${SOFT_HOME}"
-			chown -R daemon:daemon  "${SOFT_HOME}"
-			chmod -R 700            "${SOFT_INSTALL}/conf"
-			chmod -R 700            "${SOFT_INSTALL}/logs"
-			chmod -R 700            "${SOFT_INSTALL}/temp"
-			chmod -R 700            "${SOFT_INSTALL}/work"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/work"
-	su - daemon
+			sudo chmod -R 700            "${SOFT_HOME}"
+			sudo chown -R daemon:daemon  "${SOFT_HOME}"
+			sudo chmod -R 700            "${SOFT_INSTALL}/conf"
+			sudo chmod -R 700            "${SOFT_INSTALL}/logs"
+			sudo chmod -R 700            "${SOFT_INSTALL}/temp"
+			sudo chmod -R 700            "${SOFT_INSTALL}/work"
+			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
+			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
+			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
+			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 		fi
 	fi
 
