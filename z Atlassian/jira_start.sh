@@ -12,9 +12,13 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
-		if [ -z "`ls ${SOFT_INSTALL}`" ]; then
-			cp -R /etc-start/jira/* ${SOFT_INSTALL}
+		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
+			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
+				cp -R /etc-start/jira/* ${SOFT_INSTALL}
+				mkdir -p                "${SOFT_HOME}/caches/indexes"
 		## set permission path
+			chmod -R 700            "${SOFT_HOME}"
+			chown -R daemon:daemon  "${SOFT_HOME}"
 			chmod -R 700            "${SOFT_INSTALL}/conf"
 			chmod -R 700            "${SOFT_INSTALL}/logs"
 			chmod -R 700            "${SOFT_INSTALL}/temp"
