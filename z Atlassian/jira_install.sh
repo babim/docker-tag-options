@@ -38,27 +38,27 @@ installatlassian() {
 		chown -R daemon:daemon  "${SOFT_HOME}"
 		mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
 	## download and extract source software
-		echo "downloading and install atlassian"
+		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		echo "downloading and install mysql-connector-java"
+		echo "downloading and update mysql-connector-java..."
 		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
 	FILETEMP="${SOFT_INSTALL}/lib/postgresql-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		echo "downloading and install postgresql-connector-java"
+		echo "downloading and update postgresql-connector-java..."
 		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/lib/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
 	FILETEMP="${SOFT_INSTALL}/lib/mssql-jdbc-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		echo "downloading and install mssql-jdbc"
+		echo "downloading and update mssql-jdbc..."
 		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/lib/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
 	FILETEMP="${SOFT_INSTALL}/lib/ojdbc*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		echo "downloading and install oracle-ojdbc"
+		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
 		chmod -R 700            "${SOFT_INSTALL}/conf"
@@ -88,12 +88,22 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apk add --no-cache openjdk${OPENJDKV}; fi
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
+			echo "installing openjdk..."
+			apk add --no-cache openjdk${OPENJDKV}
+		fi
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
 			echo "Can not install openjdk, please check and rebuild"
 			exit
 		fi
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat tar sudo
+			echo "Install depend packages..."
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
+	# visible code
+	if [ "${VISIBLECODE}" = "true" ]; then
+		echo "Install sudo package..."
+		apk add --no-cache sudo
+		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
+	fi
 	# Install Atlassian
 		installatlassian
 # OS - ubuntu debian

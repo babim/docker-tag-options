@@ -14,19 +14,19 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	if [ "${VISIBLECODE}" = "true" ]; then
 		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
-				sudo cp -R /etc-start/jira/* ${SOFT_INSTALL}
-				sudo mkdir -p "${SOFT_HOME}/caches/indexes"
+				sudo -u root -H sh -c 'cp -R /etc-start/jira/* ${SOFT_INSTALL}'
+				sudo -u root -H sh -c 'mkdir -p "${SOFT_HOME}/caches/indexes"'
 		## set permission path
-			sudo chmod -R 700            "${SOFT_HOME}"
-			sudo chown -R daemon:daemon  "${SOFT_HOME}"
-			sudo chmod -R 700            "${SOFT_INSTALL}/conf"
-			sudo chmod -R 700            "${SOFT_INSTALL}/logs"
-			sudo chmod -R 700            "${SOFT_INSTALL}/temp"
-			sudo chmod -R 700            "${SOFT_INSTALL}/work"
-			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-			sudo chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+			sudo -u root -H sh -c 'chmod -R 700            "${SOFT_HOME}"'
+			sudo -u root -H sh -c 'chown -R daemon:daemon  "${SOFT_HOME}"'
+			sudo -u root -H sh -c 'chmod -R 700            "${SOFT_INSTALL}/conf"'
+			sudo -u root -H sh -c 'chmod -R 700            "${SOFT_INSTALL}/logs"'
+			sudo -u root -H sh -c 'chmod -R 700            "${SOFT_INSTALL}/temp"'
+			sudo -u root -H sh -c 'chmod -R 700            "${SOFT_INSTALL}/work"'
+			sudo -u root -H sh -c 'chown -R daemon:daemon  "${SOFT_INSTALL}/conf"'
+			sudo -u root -H sh -c 'chown -R daemon:daemon  "${SOFT_INSTALL}/logs"'
+			sudo -u root -H sh -c 'chown -R daemon:daemon  "${SOFT_INSTALL}/temp"'
+			sudo -u root -H sh -c 'chown -R daemon:daemon  "${SOFT_INSTALL}/work"'
 		fi
 	fi
 
