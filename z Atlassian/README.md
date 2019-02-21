@@ -1,30 +1,27 @@
-# Install Atlassian .... with java framework
-(C) AQ.jsc Viet Nam (https://matmagoc.com)
+# Atlassian JIRA Core in a Docker container
+## (Thanks Martin Aksel Jensen cptactionhank)
 
-## install depend
-`wget`
+## Get me started
 
-## install elasticsearch
-`wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/elasticsearch_install.sh | bash`
-
-## install kibana
-`wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/kibana_install.sh | bash`
-
-## install logstash
-`wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/logstash_install.sh | bash`
-
-## install elasticstack
-`wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install/stack_install.sh | bash`
-
-## Set version
+To quickly get started running a JIRA Core instance, use the following command:
+```bash
+docker run --detach --publish 8080:8080 babim/jira-core:fixed
 ```
-ENV ES_VERSION 1.7 #elasticsearch
-ENV KB_VERSION 6.3.0 #kibana
-ENV LS_VERSION 6.3.0 #logstash
-ENV STACK_NEW true #elasticstack
-	if [[ "$STACK_NEW" == "true" ]]; then
-		ES_VERSION=$STACK
-		LS_VERSION=$STACK
-		KB_VERSION=$STACK
-	fi
 ```
+volume:
+/var/atlassian/jira
+/opt/atlassian/jira
+```
+
+Then simply navigate your preferred browser to `http://[dockerhost]:8080` and finish the configuration.
+
+## Configuration
+
+You can configure a small set of things by supplying the following environment variables
+
+| Environment Variable   | Description |
+| ---------------------- | ----------- |
+| X_PROXY_NAME           | Sets the Tomcat Connectors `ProxyName` attribute |
+| X_PROXY_PORT           | Sets the Tomcat Connectors `ProxyPort` attribute |
+| X_PROXY_SCHEME         | If set to `https` the Tomcat Connectors `secure=true` and `redirectPort` equal to `X_PROXY_PORT`   |
+| X_PATH                 | Sets the Tomcat connectors `path` attribute |
