@@ -103,6 +103,7 @@ if [[ -f /etc/alpine-release ]]; then
 		echo "Install sudo package..."
 		apk add --no-cache sudo
 		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
+		chown -R root:root /usr/bin/sudo
 	fi
 	# Install Atlassian
 		installatlassian
@@ -119,7 +120,15 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			echo "Can not install openjdk, please check and rebuild"
 			exit
 		fi
+			echo "Install depend packages..."
 		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet
+	# visible code
+	if [ "${VISIBLECODE}" = "true" ]; then
+		echo "Install sudo package..."
+		apt-get install --quiet --yes --no-install-recommends sudo
+		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
+		chown -R root:root /usr/bin/sudo
+	fi
 	# Install Atlassian
 		installatlassian
 # OS - redhat
