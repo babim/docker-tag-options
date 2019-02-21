@@ -12,6 +12,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
+	su - root
 		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
 				cp -R /etc-start/jira/* ${SOFT_INSTALL}
@@ -27,6 +28,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 			chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
 			chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
 			chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+	su - daemon
 		fi
 	fi
 
