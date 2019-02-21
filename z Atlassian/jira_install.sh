@@ -14,7 +14,6 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-jira}
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
 		export MYSQLV=5.1.47

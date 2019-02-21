@@ -7,8 +7,14 @@
 
 set -e
 
+# set environment
+
+
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
+	export SOFT=${SOFT:-jira}
+	export SOFT_HOME=${SOFT_HOME:-/var/atlassian/${SOFT}}
+	export SOFT_INSTALL=${SOFT_INSTALL:-/opt/atlassian/${SOFT}}
 
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
