@@ -14,6 +14,8 @@ fi
 
 # set environment
 setenvironment() {
+		export SOFT=${SOFT:-jira}
+		export SOFTSUB=${SOFTSUB:-core}		
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
 		export MYSQLV=5.1.47
@@ -44,7 +46,7 @@ installatlassian() {
 		mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
 	## download and extract source software
 		echo "downloading and install atlassian..."
-		curl -Ls "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		curl -Ls "https://www.atlassian.com/software/jira/downloads/binary/atlassian-${SOFT}-${SOFTSUB}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP

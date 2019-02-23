@@ -10,10 +10,19 @@ set -e
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
+# set environment
+		export SOFT=${SOFT:-jira}
+		export SOFTSUB=${SOFTSUB:-core}	
+	## Check version
+		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
+			echo "Can not run. Please check and rebuild"
+			exit
+		fi
+
 # visible code
 	if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 		if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
-			cp -R /etc-start/jira/* ${SOFT_INSTALL}
+			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
 			mkdir -p "${SOFT_HOME}/caches/indexes"
 	## set permission path
 		chmod -R 700            "${SOFT_HOME}"

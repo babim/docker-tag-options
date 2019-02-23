@@ -10,25 +10,14 @@ set -e
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
-# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
-		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
-			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
-				cp -R /etc-start/jira/* ${SOFT_INSTALL}
-				mkdir -p "${SOFT_HOME}/caches/indexes"
-		## set permission path
-			chmod -R 700            "${SOFT_HOME}"
-			chown -R daemon:daemon  "${SOFT_HOME}"
-			chmod -R 700            "${SOFT_INSTALL}/conf"
-			chmod -R 700            "${SOFT_INSTALL}/logs"
-			chmod -R 700            "${SOFT_INSTALL}/temp"
-			chmod -R 700            "${SOFT_INSTALL}/work"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-			chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+# set environment
+		export SOFT=${SOFT:-jira}
+		export SOFTSUB=${SOFTSUB:-core}	
+	## Check version
+		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
+			echo "Can not run. Please check and rebuild"
+			exit
 		fi
-	fi
 
 # check if the `server.xml` file has been changed since the creation of this
 # Docker image. If the file has been changed the entrypoint script will not
@@ -50,11 +39,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		if [ -n "${X_PATH}" ]; then
 			xmlstarlet ed --inplace --pf --ps --update '//Context/@path' --value "${X_PATH}" "${SOFT_INSTALL}/conf/server.xml"
 		fi
-	fi
-
-# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
-		${SOFT_INSTALL}/bin/start-${SOFT}.sh -fg
 	fi
 
 exec "$@"
