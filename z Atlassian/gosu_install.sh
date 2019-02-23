@@ -16,7 +16,7 @@ set -ex; \
 	yum -y install dpkg; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-	wget --no-check-certificate --progress=bar:force -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	wget --no-check-certificate --progress=bar:force -O /usr/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
 	chmod +x /usr/bin/gosu; \
 	gosu nobody true
 elif [[ -f /etc/alpine-release ]]; then
@@ -26,7 +26,7 @@ set -ex; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
 	wget --no-check-certificate --progress=bar:force -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-	chmod +x /usr/bin/gosu; \
+	chmod +x /usr/local/bin/gosu; \
 	gosu nobody true
 else
 	echo "OS not support."
