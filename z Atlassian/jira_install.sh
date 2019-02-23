@@ -22,6 +22,11 @@ setenvironment() {
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
 		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
 }
+# install gosu
+installgosu() {
+	echo "Install gosu package..."
+	wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
+}
 # set command install
 installatlassian() {
 	# set host download
@@ -100,11 +105,8 @@ if [[ -f /etc/alpine-release ]]; then
 		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
-		echo "Install sudo package..."
-		apk add --no-cache sudo
-		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
-		chown -R root:root /usr/bin/sudo
-		chmod 755 /usr/bin/sudo
+		# install gosu
+		installgosu
 	fi
 	# Install Atlassian
 		installatlassian
@@ -125,11 +127,8 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
-		echo "Install sudo package..."
-		apt-get install --quiet --yes --no-install-recommends sudo
-		echo 'daemon ALL=(ALL) NOPASSWD' >> /etc/sudoers
-		chown -R root:root /usr/bin/sudo
-		chmod 755 /usr/bin/sudo
+		# install gosu
+		installgosu
 	fi
 	# Install Atlassian
 		installatlassian
