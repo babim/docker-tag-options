@@ -21,6 +21,8 @@ setenvironment() {
 		export ORACLEV=8
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
 		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+	# set host download
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
 # install gosu
 installgosu() {
@@ -29,8 +31,6 @@ installgosu() {
 }
 # set command install
 installatlassian() {
-	# set host download
-		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 	## Check version
 		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
 			echo "Can not install without version. Please check and rebuild"
