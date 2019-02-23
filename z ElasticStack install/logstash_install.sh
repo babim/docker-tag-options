@@ -31,7 +31,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install logstash
 		set -ex \
 		&& cd /tmp \
-		&& wget --no-check-certificate --progress=bar:force -O logstash.tar.gz "$LS_TARBAL" \
+		&& wget --no-check-certificate -O logstash.tar.gz "$LS_TARBAL" \
 		&& tar -xzf logstash.tar.gz \
 		&& mv logstash-$LS_VERSION /usr/share/logstash \
 		&& rm -rf /tmp/*

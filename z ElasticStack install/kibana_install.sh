@@ -25,7 +25,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install kibana
 		set -ex && cd /tmp \
 		&& echo "===> Install Kibana..." \
-		&& wget --no-check-certificate --progress=bar:force -O kibana.tar.gz "$TARBAL"; \
+		&& wget --no-check-certificate -O kibana.tar.gz "$TARBAL"; \
 		tar -xf kibana.tar.gz \
 		&& ls -lah \
 		&& mv kibana-$KB_VERSION-linux-${BIT} /usr/share/kibana

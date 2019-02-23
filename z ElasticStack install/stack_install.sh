@@ -45,15 +45,15 @@ if [[ -f /etc/alpine-release ]]; then
 		  && cd /tmp \
 		  && echo "Download Elastic Stack ======================================================" \
 		  && echo "Download Elasticsearch..." \
-		  && wget --no-check-certificate --progress=bar:force -O elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL" \
+		  && wget --no-check-certificate -O elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL" \
 		  && tar -xzf elasticsearch-$ES_VERSION.tar.gz \
 		  && mv elasticsearch-$ES_VERSION /usr/share/elasticsearch \
 		  && echo "Download Logstash..." \
-		  && wget --no-check-certificate --progress=bar:force -O logstash-$LS_VERSION.tar.gz "$LS_TARBAL" \
+		  && wget --no-check-certificate -O logstash-$LS_VERSION.tar.gz "$LS_TARBAL" \
 		  && tar -xzf logstash-$LS_VERSION.tar.gz \
 		  && mv logstash-$LS_VERSION /usr/share/logstash \
 		  && echo "Download Kibana..." \
-		  && wget --no-check-certificate --progress=bar:force -O kibana-$KB_VERSION.tar.gz "$KB_TARBAL" \
+		  && wget --no-check-certificate -O kibana-$KB_VERSION.tar.gz "$KB_TARBAL" \
 		  && tar -xzf kibana-$KB_VERSION.tar.gz \
 		  && mv kibana-$KB_VERSION-linux-x86_64 /usr/share/kibana \
 		  && echo "Configure [Elasticsearch] ===================================================" \
