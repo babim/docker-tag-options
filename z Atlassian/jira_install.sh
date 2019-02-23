@@ -80,7 +80,12 @@ installatlassian() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
+		# visible code
+		if [ "${VISIBLECODE}" = "true" ]; then
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_fixed.sh
+		else
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
+		fi
 		chmod +x $FILETEMP
 	# remove packages
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash

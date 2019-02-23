@@ -13,20 +13,20 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 # visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
-			if [ ! -d ${SOFT_INSTALL} ]; then gosu root 'mkdir -p ${SOFT_INSTALL}'; fi
-				gosu root 'cp -R /etc-start/jira/* ${SOFT_INSTALL}'
-				gosu root 'mkdir -p "${SOFT_HOME}/caches/indexes"'
+			if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
+				cp -R /etc-start/jira/* ${SOFT_INSTALL}
+				mkdir -p "${SOFT_HOME}/caches/indexes"
 		## set permission path
-			gosu root 'chmod -R 700            "${SOFT_HOME}"'
-			gosu root 'chown -R daemon:daemon  "${SOFT_HOME}"'
-			gosu root 'chmod -R 700            "${SOFT_INSTALL}/conf"'
-			gosu root 'chmod -R 700            "${SOFT_INSTALL}/logs"'
-			gosu root 'chmod -R 700            "${SOFT_INSTALL}/temp"'
-			gosu root 'chmod -R 700            "${SOFT_INSTALL}/work"'
-			gosu root 'chown -R daemon:daemon  "${SOFT_INSTALL}/conf"'
-			gosu root 'chown -R daemon:daemon  "${SOFT_INSTALL}/logs"'
-			gosu root 'chown -R daemon:daemon  "${SOFT_INSTALL}/temp"'
-			gosu root 'chown -R daemon:daemon  "${SOFT_INSTALL}/work"'
+			chmod -R 700            "${SOFT_HOME}"
+			chown -R daemon:daemon  "${SOFT_HOME}"
+			chmod -R 700            "${SOFT_INSTALL}/conf"
+			chmod -R 700            "${SOFT_INSTALL}/logs"
+			chmod -R 700            "${SOFT_INSTALL}/temp"
+			chmod -R 700            "${SOFT_INSTALL}/work"
+			chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
+			chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
+			chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
+			chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 		fi
 	fi
 
