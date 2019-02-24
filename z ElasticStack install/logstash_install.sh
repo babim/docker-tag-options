@@ -44,7 +44,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# download entrypoint files
 		downloadentrypoint() {
 			FILETEMP=/start.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
 			chmod 755 $FILETEMP
 		# Supervisor
@@ -58,13 +58,13 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/usr/share/logstash/pipeline
 		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/logstash/config/log4j2.properties
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/log4j2.properties
 		FILETEMP=/usr/share/logstash/config/logstash.yml
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/logstash.yml
 		FILETEMP=/usr/share/logstash/pipeline/logstash.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
@@ -72,7 +72,7 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 	if [[ "$XPACK" = "true" ]]; then
 		FILETEMP=/usr/share/logstash/config/logstash.yml
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
 	fi
 

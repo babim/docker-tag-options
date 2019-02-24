@@ -102,7 +102,7 @@ if [[ -f /etc/lsb-release ]]; then
 
 # Define default command.
 		FILETEMP=/startup.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/$FILETEMP
 			chmod 755 $FILETEMP
 

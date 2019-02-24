@@ -92,16 +92,16 @@ if [[ -f /etc/alpine-release ]]; then
 	# download config files
 		downloadentrypoint() {
 			FILETEMP=/elastic-entrypoint.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			FILETEMP=/logstash-entrypoint.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			FILETEMP=/kibana-entrypoint.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			FILETEMP=/nginx-entrypoint.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 			chmod 755 /*.sh
 		}
@@ -120,13 +120,13 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logrotate.d/elasticsearch
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/log4j2.properties
 			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
 		# logstash
 			FILETEMP=/etc/logstash/conf.d
@@ -136,34 +136,34 @@ if [[ -f /etc/alpine-release ]]; then
 			FILETEMP=/etc/logstash
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/etc/logstash/conf.d/02-beats-input.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
 			FILETEMP=/etc/logstash/conf.d/10-syslog-filter.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/10-syslog-filter.conf
 			FILETEMP=/etc/logstash/conf.d/11-nginx-filter.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/11-nginx-filter.conf
 			FILETEMP=/etc/logstash/conf.d/30-elasticsearch-output.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/30-elasticsearch-output.conf
 			FILETEMP=/opt/logstash/patterns/nginx
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/patterns/nginx
 			FILETEMP=/etc/logstash/logstash.yml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
 		# nginx
 			FILETEMP=/etc/nginx/conf.d
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 			FILETEMP=/etc/nginx/nginx.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
 			FILETEMP=/etc/nginx/conf.d/kibana.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/kibana.conf
 			FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
 		}
 

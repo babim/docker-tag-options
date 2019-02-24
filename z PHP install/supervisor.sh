@@ -31,7 +31,7 @@ fi
 		[[ -d /etc/supervisor/conf.d ]] || mkdir -p /etc/supervisor/conf.d/
 	# download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/supervisord.conf
 	FILETEMP=/etc/supervisord.conf
 		[[ ! -f $FILETEMP ]] || ln -sf $FILETEMP /etc/supervisor/supervisord.conf
@@ -43,24 +43,24 @@ if [[ ! -z "${PHP_VERSION}" ]]; then
 	elif [[ "$PHP_VERSION" == "72" ]];then export PHP_VERSION1=7.2;
 	else export PHP_VERSION1=$PHP_VERSION;fi
 	FILETEMP=/etc/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		[[ ! -d /etc/php/${PHP_VERSION}/fpm ]] || wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 fi
 	# apache
 if [[ -f "/usr/sbin/apache2ctl" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/apache.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/apache.conf
 fi
 	# nginx
 if [[ -f "/usr/sbin/nginx" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/nginx.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
 fi
 	# litespeed
 if [[ -f "/usr/local/lsws/bin/lswsctrl" ]]; then
 	FILETEMP=/etc/supervisor/conf.d/litespeed.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/litespeed.conf
 fi

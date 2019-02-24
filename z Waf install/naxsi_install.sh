@@ -77,51 +77,51 @@ if [[ -f /etc/debian_version ]]; then
 		mkdir -p /var/lib/nginx/body
 	# download nginx conf.d
 	FILETEMP=/etc/nginx/sites-available/default
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	FILETEMP=/etc/nginx/sites-enabled/default
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	FILETEMP=/etc/nginx/nginx.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/nginx.conf
 	FILETEMP=/etc/nginx/sites-enabled/default.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/default_naxsi.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
 	FILETEMP=/etc/nginx/sites-enabled/kibana.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/kibana.conf
 	# download naxsi rules
 	FILETEMP=/etc/nginx/naxsi.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/dokuwiki.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/dokuwiki.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/drupal.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/drupal.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/etherpad-lite.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/etherpad-lite.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/iris.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/iris.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/rutorrent.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/rutorrent.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/zerobin.rules
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/zerobin.rules
 	# download naxsi config
 	FILETEMP=/usr/local/etc/nxapi.json
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/naxsi/nxapi.json
 
 	# download entrypoint
 	FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/naxsi_start.sh
 		chmod 755 $FILETEMP
 

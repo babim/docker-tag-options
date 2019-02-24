@@ -14,14 +14,14 @@ fi
 # set loop
 prepareconfig() {
 		FILETEMP=/Preferences.xml
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 		FILETEMP=/plex-entrypoint.sh
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 			chmod +x $FILETEMP
 		FILETEMP=/usr/local/bin/retrieve-plex-token
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 		}
 
@@ -99,7 +99,7 @@ elif [[ -f /etc/alpine-release ]]; then
 	PGID=797
 	PGNAME=plex
 		FILETEMP=/start_pms.patch
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 
 	addgroup -g $PGID $PGNAME \

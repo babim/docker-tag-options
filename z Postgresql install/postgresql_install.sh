@@ -36,7 +36,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# download config files
 		[[ ! -f /entrypoint.sh ]] || rm -f /start.sh
 		FILETEMP=/entrypoint.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL$FILETEMP
 		chmod 755 $FILETEMP
 	# clean
@@ -170,7 +170,7 @@ elif [ -f /etc/alpine-release ]; then
 
 	# download config files
 		FILETEMP=/alpine_start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL$FILETEMP
 		chmod 755 $FILETEMP
 

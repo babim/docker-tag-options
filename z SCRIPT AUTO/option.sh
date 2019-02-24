@@ -123,7 +123,7 @@ alpine-cron-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	apk add --no-cache wget
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	apk del --purge wget
 	fi
@@ -165,7 +165,7 @@ alpine-ssh-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	apk add --no-cache wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	apk del --purge wget
 	fi
@@ -247,7 +247,7 @@ redhat-cron-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	yum install -y wget
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	yum remove -y wget
 	fi
@@ -275,7 +275,7 @@ redhat-ssh-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	yum install -y wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	yum remove -y wget
 	fi
@@ -337,7 +337,7 @@ ubuntu-cron-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	apt-get install wget -y
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	apt-get purge -y wget
 	fi
@@ -378,7 +378,7 @@ ubuntu-ssh-start() {
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
 	apt-get install -y wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	apt-get purge -y wget
 	fi

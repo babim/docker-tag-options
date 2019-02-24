@@ -70,17 +70,17 @@ if [[ -f /etc/alpine-release ]]; then
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/logging.yml
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/logging.yml
 		else
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
 			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/log4j2.properties
 		fi
 		}
@@ -91,7 +91,7 @@ if [[ -f /etc/alpine-release ]]; then
 			echo not download
 		else
 			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-			[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/logrotate
 		fi
 		}
@@ -109,7 +109,7 @@ if [[ -f /etc/alpine-release ]]; then
 		FILETEMP=/usr/share/elasticsearch/config/x-pack
 		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 	fi
 

@@ -49,22 +49,22 @@ installatlassian() {
 		curl -Ls "https://www.atlassian.com/software/stash/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
-	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
 		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
 	FILETEMP="${SOFT_INSTALL}/lib/postgresql-*.jar"
-	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
 		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/lib/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
 	FILETEMP="${SOFT_INSTALL}/lib/mssql-jdbc-*.jar"
-	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
 		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/lib/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
 	FILETEMP="${SOFT_INSTALL}/lib/ojdbc*.jar"
-	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
@@ -93,7 +93,7 @@ installatlassian() {
 		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		# visible code
 		if [ "${VISIBLECODE}" = "true" ]; then
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_fixed.sh

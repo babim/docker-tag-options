@@ -20,5 +20,5 @@ export CROSSOVER=${CROSSOVER:-18.1.0-1}
 	cd /tmp && wget http://media.matmagoc.com/crossover_$CROSSOVER.deb && dpkg -i crossover*.deb && \
 	rm -rf /tmp/crossover*
 	FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
-	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	wget -O $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so

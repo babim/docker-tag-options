@@ -91,33 +91,33 @@ if [[ -f /etc/debian_version ]]; then
 		mkdir -p /etc/supervisor/conf.d/
 	# download nginx conf.d
 	FILETEMP=/etc/nginx/sites-available/default
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	FILETEMP=/etc/nginx/sites-enabled/default
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	FILETEMP=/etc/nginx/nginx.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/nginx.conf
 	FILETEMP=/etc/nginx/sites-enabled/default.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/default_modsecurity.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
 
 	# download nginx modsecurity
 	FILETEMP=/etc/nginx/modsec_includes.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/modsecurity/modsec_includes.conf
 	FILETEMP=/etc/nginx/modsecurity.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/modsecurity/modsecurity.conf
 	FILETEMP=/etc/nginx/crs-setup.conf
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP --no-check-certificate $DOWN_URL/modsecurity/crs-setup.conf
 
 	# download entrypoint
 	FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget --no-check-certificate -O $FILETEMP $DOWN_URL/modsecurity_start.sh
 		chmod 755 $FILETEMP
 

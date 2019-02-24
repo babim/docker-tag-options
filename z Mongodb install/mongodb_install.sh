@@ -18,7 +18,7 @@ echo 'Check OS'
 	# download entrypoint
 	downloadentry() {
 		FILETEMP=/start.sh
-		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
 		chmod 755 $FILETEMP
 	# Supervisor

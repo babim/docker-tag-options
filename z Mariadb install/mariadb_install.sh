@@ -34,7 +34,7 @@ if [[ -f /etc/debian_version ]]; then
 		finish() {
 			# download entrypoint
 				FILETEMP=/start.sh
-				[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
 				chmod 755 $FILETEMP
 			# Supervisor
