@@ -68,27 +68,29 @@ installatlassian() {
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
-		chmod -R 700            "${SOFT_INSTALL}/conf"
-		chmod -R 700            "${SOFT_INSTALL}/logs"
-		chmod -R 700            "${SOFT_INSTALL}/temp"
-		chmod -R 700            "${SOFT_INSTALL}/work"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700            "${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 	if [[ -f /etc/alpine-release ]]; then
-		ln --symbolic		"/usr/lib/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+		ln -s			"/usr/lib/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		ln --symbolic		"/usr/lib/x86_64-linux-gnu/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+		ln -s			"/usr/lib/x86_64-linux-gnu/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
 	fi
 		sed --in-place		's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
 		# xmlstarlet
+	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
 		xmlstarlet		ed --inplace \
 		  --delete		"Server/Service/Engine/Host/@xmlValidation" \
 		  --delete		"Server/Service/Engine/Host/@xmlNamespaceAware" \
 					"${SOFT_INSTALL}/conf/server.xml"
+	fi
 		# xmlstarlet end
-		touch -d "@0"		"${SOFT_INSTALL}/conf/server.xml"
+		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
