@@ -63,4 +63,4 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	fi
 
 	echo "run app..."
-gosu daemon '/opt/atlassian/jira/bin/start-jira.sh -fg'
+gosu daemon "${SOFT_INSTALL}/bin/start-${SOFT}.sh" -fg
