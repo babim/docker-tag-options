@@ -11,8 +11,8 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # set environment
-		export SOFT=${SOFT:-jira}
-		export SOFTSUB=${SOFTSUB:-core}
+		export SOFT=${SOFT:-bitbucket}
+		#export SOFTSUB=${SOFTSUB:-core}
 	echo "check version"
 	## Check version
 		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
@@ -45,17 +45,17 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	echo "set environment"
 	if [ "$(stat -c "%Y" "${SOFT_INSTALL}/conf/server.xml")" -eq "0" ]; then
 	 	if [ -n "${X_PROXY_NAME}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="7990"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PROXY_PORT}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="7990"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PROXY_SCHEME}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="7990"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ "${X_PROXY_SCHEME}" = "https" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/conf/server.xml"'
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="7990"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="7990"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PATH}" ]; then
 			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Context/@path' --value "${X_PATH}" "${SOFT_INSTALL}/conf/server.xml"'
