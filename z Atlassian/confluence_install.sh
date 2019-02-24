@@ -40,10 +40,10 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		mkdir -p                "${SOFT_HOME}/caches/indexes"
-		chmod -R 700            "${SOFT_HOME}"
-		chown -R daemon:daemon  "${SOFT_HOME}"
-		mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
+		[[ ! -d "${SOFT_HOME}/caches/indexes" ]] 	&& mkdir -p                "${SOFT_HOME}/caches/indexes"
+		[[ -d "${SOFT_HOME}/conf" ]] 			&& chmod -R 700            "${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}/conf" ]] 			&& chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}/conf/Catalina" ]] 	&& mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
@@ -68,16 +68,17 @@ installatlassian() {
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
-		chmod -R 700            "${SOFT_INSTALL}/conf"
-		chmod -R 700            "${SOFT_INSTALL}/logs"
-		chmod -R 700            "${SOFT_INSTALL}/temp"
-		chmod -R 700            "${SOFT_INSTALL}/work"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700            "${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 		echo -e                 "\n${SOFT}.home=${SOFT_HOME}" >> "${SOFT_INSTALL}/${SOFT}/WEB-INF/classes/${SOFT}-init.properties"
 		# xmlstarlet
+	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
     		xmlstarlet		ed --inplace \
         	  --delete		"Server/@debug" \
 		  --delete		"Server/Service/Connector/@debug" \
@@ -88,8 +89,9 @@ installatlassian() {
 		  --delete		"Server/Service/Engine/Host/@debug" \
 		  --delete		"Server/Service/Engine/Host/Context/@debug" \
 					"${SOFT_INSTALL}/conf/server.xml"
+	fi
 		# xmlstarlet end
-		touch -d "@0"           "${SOFT_INSTALL}/conf/server.xml"
+		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"           "${SOFT_INSTALL}/conf/server.xml"
 		chown daemon:daemon	"${JAVA_CACERTS}"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh

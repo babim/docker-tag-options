@@ -40,10 +40,10 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		mkdir -p                "${SOFT_HOME}/lib"
-		chmod -R 700            "${SOFT_HOME}"
-		chown -R daemon:daemon  "${SOFT_HOME}"
-		mkdir -p                "${SOFT_INSTALL}"
+		[[ ! -d "${SOFT_HOME}/lib" ]]		&& mkdir -p                "${SOFT_HOME}/lib"
+		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700            "${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&& chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}/conf" ]]	&& mkdir -p                "${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/stash/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
@@ -77,11 +77,11 @@ installatlassian() {
 		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
 		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 	if [[ -f /etc/alpine-release ]]; then
-		ln -s			"/usr/lib/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+		ln -s "/usr/lib/libtcnative-1.so"			"${SOFT_INSTALL}/lib/native/libtcnative-1.so"
 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		ln -s			"/usr/lib/x86_64-linux-gnu/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+		ln -s "/usr/lib/x86_64-linux-gnu/libtcnative-1.so"	"${SOFT_INSTALL}/lib/native/libtcnative-1.so"
 	fi
-		sed --in-place		's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
+		[[ -f "${SOFT_INSTALL}/bin/setenv.sh" ]] && sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
 		# xmlstarlet
 	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
 		xmlstarlet		ed --inplace \
