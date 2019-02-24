@@ -11,9 +11,8 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # set environment
-		export SOFT=${SOFT:-jira}
-		export SOFTSUB=${SOFTSUB:-core}
-	echo "check version"
+		export SOFT=${SOFT:-confluence}
+#		export SOFTSUB=${SOFTSUB:-core}	
 	## Check version
 		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
 			echo "Can not run. Please check and rebuild"
@@ -21,7 +20,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		fi
 
 # visible code
-	echo "check path and install"
 	if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 		if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
@@ -42,25 +40,23 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 # check if the `server.xml` file has been changed since the creation of this
 # Docker image. If the file has been changed the entrypoint script will not
 # perform modifications to the configuration file.
-	echo "set environment"
 	if [ "$(stat -c "%Y" "${SOFT_INSTALL}/conf/server.xml")" -eq "0" ]; then
 	 	if [ -n "${X_PROXY_NAME}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8090"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PROXY_PORT}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8090"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PROXY_SCHEME}" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8090"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ "${X_PROXY_SCHEME}" = "https" ]; then
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/conf/server.xml"'
-			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8090"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/conf/server.xml"'
+			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="8090"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 		if [ -n "${X_PATH}" ]; then
 			gosu daemon 'xmlstarlet ed --inplace --pf --ps --update '//Context/@path' --value "${X_PATH}" "${SOFT_INSTALL}/conf/server.xml"'
 		fi
 	fi
 
-	echo "run app..."
-gosu daemon '/opt/atlassian/jira/bin/start-jira.sh -fg'
+gosu daemon '/opt/atlassian/confluence/bin/start-confluence.sh -fg'

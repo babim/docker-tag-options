@@ -14,8 +14,8 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-jira}
-		export SOFTSUB=${SOFTSUB:-core}		
+		export SOFT=${SOFT:-confluence}
+#		export SOFTSUB=${SOFTSUB:-core}		
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
 		export MYSQLV=5.1.47
@@ -46,27 +46,27 @@ installatlassian() {
 		mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
 	## download and extract source software
 		echo "downloading and install atlassian..."
-		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFTSUB}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
-		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
 	FILETEMP="${SOFT_INSTALL}/lib/postgresql-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
-		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/lib/postgresql-${POSTGRESQLV}.jar"
+		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
 	FILETEMP="${SOFT_INSTALL}/lib/mssql-jdbc-*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
-		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/lib/mssql-jdbc-${MSSQLV}.jar"
+		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
 	FILETEMP="${SOFT_INSTALL}/lib/ojdbc*.jar"
 	[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
-		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/lib/ojdbc${ORACLEV}.jar"
+		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
 		chmod -R 700            "${SOFT_INSTALL}/conf"
 		chmod -R 700            "${SOFT_INSTALL}/logs"
@@ -76,9 +76,19 @@ installatlassian() {
 		chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
 		chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
 		chown -R daemon:daemon  "${SOFT_INSTALL}/work"
-		sed --in-place          "s/java version/openjdk version/g" "${SOFT_INSTALL}/bin/check-java.sh"
-		echo -e                 "\n${SOFT}.home=${SOFT_HOME}" >> "${SOFT_INSTALL}/atlassian-${SOFT}/WEB-INF/classes/${SOFT}-application.properties"
+		echo -e                 "\n${SOFT}.home=${SOFT_HOME}" >> "${SOFT_INSTALL}/${SOFT}/WEB-INF/classes/${SOFT}-init.properties" \
+    		xmlstarlet              ed --inplace \
+        	--delete               "Server/@debug" \
+		--delete               "Server/Service/Connector/@debug" \
+		--delete               "Server/Service/Connector/@useURIValidationHack" \
+		--delete               "Server/Service/Connector/@minProcessors" \
+		--delete               "Server/Service/Connector/@maxProcessors" \
+		--delete               "Server/Service/Engine/@debug" \
+		--delete               "Server/Service/Engine/Host/@debug" \
+		--delete               "Server/Service/Engine/Host/Context/@debug" \
+					"${SOFT_INSTALL}/conf/server.xml"
 		touch -d "@0"           "${SOFT_INSTALL}/conf/server.xml"
+		chown daemon:daemon	"${JAVA_CACERTS}"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ ! -f $FILETEMP ]] || rm -f $FILETEMP
