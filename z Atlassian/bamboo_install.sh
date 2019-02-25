@@ -116,7 +116,7 @@ if [[ -f /etc/alpine-release ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
@@ -138,7 +138,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet
+		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
