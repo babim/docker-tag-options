@@ -40,10 +40,10 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		[[ ! -d "${SOFT_HOME}/caches/indexes" ]] 	&& mkdir -p                "${SOFT_HOME}/caches/indexes"
-		[[ -d "${SOFT_HOME}/conf" ]] 			&& chmod -R 700            "${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}/conf" ]] 			&& chown -R daemon:daemon  "${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}/conf/Catalina" ]] 	&& mkdir -p                "${SOFT_INSTALL}/conf/Catalina"
+		[[ ! -d "${SOFT_HOME}" ]]		&& mkdir -p                "${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700            "${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&& chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p                "${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFTSUB}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
@@ -79,6 +79,9 @@ installatlassian() {
 		[[ -f "${SOFT_INSTALL}/bin/check-java.sh" ]] && sed --in-place	"s/java version/openjdk version/g" "${SOFT_INSTALL}/bin/check-java.sh"
 		echo -e                 "\n${SOFT}.home=${SOFT_HOME}" >>	"${SOFT_INSTALL}/atlassian-${SOFT}/WEB-INF/classes/${SOFT}-application.properties"
 		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
+	# fix path start file
+		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP

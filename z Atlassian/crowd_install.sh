@@ -14,7 +14,7 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-bitbucket}
+		export SOFT=${SOFT:-bamboo}
 		#export SOFTSUB=${SOFTSUB:-core}	
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
@@ -46,42 +46,37 @@ installatlassian() {
 		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p                "${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
-		curl -Ls "https://www.atlassian.com/software/stash/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
-		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/apache-tomcat/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
 	FILETEMP="${SOFT_INSTALL}/lib/postgresql-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
-		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/lib/postgresql-${POSTGRESQLV}.jar"
+		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
 	FILETEMP="${SOFT_INSTALL}/lib/mssql-jdbc-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
-		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/lib/mssql-jdbc-${MSSQLV}.jar"
+		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
 	FILETEMP="${SOFT_INSTALL}/lib/ojdbc*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
-		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/lib/ojdbc${ORACLEV}.jar"
+		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/ojdbc${ORACLEV}.jar"
 	## set permission path
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700            "${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
-	if [[ -f /etc/alpine-release ]]; then
-		ln -s "/usr/lib/libtcnative-1.so"			"${SOFT_INSTALL}/lib/native/libtcnative-1.so"
-	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		ln -s "/usr/lib/x86_64-linux-gnu/libtcnative-1.so"	"${SOFT_INSTALL}/lib/native/libtcnative-1.so"
-	fi
-		[[ -f "${SOFT_INSTALL}/bin/setenv.sh" ]] && sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/conf"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/logs"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/temp"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/conf"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/logs"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/temp"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/work"
+		[[ -f "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh" ]] && sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh"
 		# xmlstarlet
 	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
 		xmlstarlet		ed --inplace \
@@ -124,7 +119,7 @@ if [[ -f /etc/alpine-release ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat git tomcat-native
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
@@ -146,7 +141,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet git
+		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu

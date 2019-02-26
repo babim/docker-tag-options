@@ -25,7 +25,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
 		if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
-			mkdir -p "${SOFT_HOME}/caches/indexes"
+		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
 	## set permission path
 		chmod -R 700            "${SOFT_HOME}"
 		chown -R daemon:daemon  "${SOFT_HOME}"
