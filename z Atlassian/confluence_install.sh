@@ -119,7 +119,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install depend
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
 			echo "installing openjdk..."
-			apk add --no-cache openjdk${OPENJDKV}
+			apk add --no-cache openjdk${OPENJDKV}-jre
 		fi
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
 			echo "Can not install openjdk${OPENJDKV}, please check and rebuild"
@@ -142,7 +142,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		export DEBIAN_FRONTEND=noninteractive
 	# install depend
 		apt-get update
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apt-get install --quiet --yes openjdk${OPENJDKV}; fi
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apt-get install --quiet --yes openjdk-${OPENJDKV}-jre; fi
 		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
 			echo "Can not install openjdk, please check and rebuild"
 			exit
