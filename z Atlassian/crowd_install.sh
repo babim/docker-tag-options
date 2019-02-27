@@ -47,6 +47,12 @@ installatlassian() {
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		mkdir -p ${SOFT_HOME} && \
+		mkdir -p ${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes && \
+		mkdir -p ${SOFT_INSTALL}/apache-tomcat/lib && \
+		mkdir -p ${SOFT_INSTALL}/apache-tomcat/webapps/ROOT && \
+		mkdir -p ${SOFT_INSTALL}/apache-tomcat/conf/Catalina/localhost && \
+		echo "crowd.home=${SOFT_HOME}" > ${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes/crowd-init.properties
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
@@ -67,17 +73,8 @@ installatlassian() {
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/ojdbc${ORACLEV}.jar"
-	## set permission path
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/conf"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/logs"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/temp"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]] && chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/conf"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/logs"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/temp"
-		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/work"
-		[[ -f "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh" ]] && sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh"
 		# xmlstarlet
+		[[ -f "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh" ]]	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh"
 	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
 		xmlstarlet		ed --inplace \
 		  --delete		"Server/Service/Engine/Host/@xmlValidation" \
@@ -85,10 +82,17 @@ installatlassian() {
 					"${SOFT_INSTALL}/conf/server.xml"
 	fi
 		# xmlstarlet end
-		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
+		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]]		&& touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
 	# fix path start file
-		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
-		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]]		&& mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]]		&& mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+	## set permission path
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/conf"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/logs"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/temp"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
+		[[ -d "${SOFT_HOME}" ]]					&& chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ -d "${SOFT_INSTALL}" ]]				&& chown -R daemon:daemon  "${SOFT_INSTALL}"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
@@ -119,7 +123,7 @@ if [[ -f /etc/alpine-release ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat git openssh
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
@@ -141,7 +145,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
+		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
