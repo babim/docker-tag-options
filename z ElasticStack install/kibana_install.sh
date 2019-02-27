@@ -40,11 +40,11 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ -f "kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 	else
   	# the default "server.host" is "localhost" in 5+
-		[[ "${KB_VERSION}" -gt "6.5" ]]	|| sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml
-		[[ "${KB_VERSION}" -gt "6.5" ]]	|| grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
+		[[ "${KB_VERSION}" -gt "6.6.0" ]] || sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.6.0" ]] || grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
   	# ensure the default configuration is useful when using --link
-		[[ "${KB_VERSION}" -gt "6.5" ]]	|| sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml
-		[[ "${KB_VERSION}" -gt "6.5" ]]	|| grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.6.0" ]] || sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.6.0" ]] || grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /usr/share/kibana/config/kibana.yml
  	 # usr alpine nodejs and not bundled version
 		bundled='NODE="${DIR}/node/bin/node"' \
 		&& apline_node='NODE="/usr/bin/node"' \
