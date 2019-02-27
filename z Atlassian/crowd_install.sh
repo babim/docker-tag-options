@@ -14,7 +14,7 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-bamboo}
+		export SOFT=${SOFT:-crowd}
 		#export SOFTSUB=${SOFTSUB:-core}	
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5

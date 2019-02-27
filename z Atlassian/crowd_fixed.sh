@@ -11,7 +11,7 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # set environment
-		export SOFT=${SOFT:-bamboo}
+		export SOFT=${SOFT:-crowd}
 		#export SOFTSUB=${SOFTSUB:-core}
 	echo "check version"
 	## Check version
