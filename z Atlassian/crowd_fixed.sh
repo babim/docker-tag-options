@@ -27,16 +27,13 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
 		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
 	## set permission path
-		chmod -R 700            "${SOFT_HOME}"
-		chown -R daemon:daemon  "${SOFT_HOME}"
-		chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/conf"
-		chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/logs"
-		chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/temp"
-		chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/conf"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/logs"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/temp"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/apache-tomcat/work"
+		[[ -d "${SOFT_HOME}" ]]					&& chmod -R 700            "${SOFT_HOME}"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/conf" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/conf"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/logs" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/logs"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/temp" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/temp"
+		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
+		[[ -d "${SOFT_HOME}" ]]					&& chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ -d "${SOFT_INSTALL}" ]]				&& chown -R daemon:daemon  "${SOFT_INSTALL}"
 	fi
 
 # check if the `server.xml` file has been changed since the creation of this
@@ -63,4 +60,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	fi
 
 	echo "run app..."
+
+# Run
 gosu daemon "${SOFT_INSTALL}/start-${SOFT}.sh" -fg

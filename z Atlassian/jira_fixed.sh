@@ -63,4 +63,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	fi
 
 	echo "run app..."
+
+# Run
 gosu daemon "${SOFT_INSTALL}/bin/start-${SOFT}.sh" -fg
