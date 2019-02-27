@@ -23,26 +23,28 @@ if [[ -f /etc/alpine-release ]]; then
 	# ensure kibana user exists
 		adduser -DH -s /sbin/nologin kibana
 	# install kibana
-		set -ex && cd /tmp \
-		&& echo "===> Install Kibana..." \
-		&& wget --no-check-certificate -O kibana.tar.gz "$TARBAL"; \
-		tar -xf kibana.tar.gz \
-		&& ls -lah \
-		&& mv kibana-$KB_VERSION-linux-${BIT} /usr/share/kibana
+		cd /tmp
+		echo "===> Install Kibana..."
+		wget --no-check-certificate -O kibana.tar.gz "$TARBAL"
+		tar -xf kibana.tar.gz
+		ls -lah
+		[[ -d "kibana-$KB_VERSION-linux-${BIT}" ]]	&& mv kibana-$KB_VERSION-linux-${BIT} /usr/share/kibana
 	# Config after install
 	if [[ "$KIBANA" = "4" ]]; then
-		rm /usr/share/kibana/node/bin/node && \
-		rm /usr/share/kibana/node/bin/npm && \
-		ln -s /usr/bin/node /usr/share/kibana/node/bin/node && \
-		ln -s /usr/bin/npm /usr/share/kibana/node/bin/npm && \
-		rm -rf /var/cache/apk/* /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
+		[[ -f "/usr/share/kibana/node/bin/node" ]]	&& rm /usr/share/kibana/node/bin/node
+		[[ -f "/usr/share/kibana/node/bin/npm" ]]	&& rm /usr/share/kibana/node/bin/npm
+		ln -s /usr/bin/node /usr/share/kibana/node/bin/node
+		ln -s /usr/bin/npm /usr/share/kibana/node/bin/npm
+		rm -rf /var/cache/apk/*
+		[[ -f "/kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
+		[[ -f "kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 	else
   	# the default "server.host" is "localhost" in 5+
-		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
-		&& grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
+		[[ "${KB_VERSION}" -gt "6.5" ]]	|| sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.5" ]]	|| grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
   	# ensure the default configuration is useful when using --link
-		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml \
-		&& grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.5" ]]	|| sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml
+		[[ "${KB_VERSION}" -gt "6.5" ]]	|| grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /usr/share/kibana/config/kibana.yml
  	 # usr alpine nodejs and not bundled version
 		bundled='NODE="${DIR}/node/bin/node"' \
 		&& apline_node='NODE="/usr/bin/node"' \
