@@ -696,4 +696,8 @@ upgrade-del() {
 
 ####################################################
 # QUIT
+	if [ -n "${DELAYED_START}" ]; then
+		sleep ${DELAYED_START}
+	fi
+
 exec "$@"
