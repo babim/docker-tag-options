@@ -40,7 +40,7 @@ if [[ -f /etc/alpine-release ]]; then
 		[[ -f "kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 	else
   	# the default "server.host" is "localhost" in 5+
-		if [ "${KB_VERSION}" -gt "6.6.0" ]; then
+		if [ "${KB_VERSION}" == "6.6.0" ] || [ "${KB_VERSION}" == "6.6.1" ] || [ "${KB_VERSION}" == "6.6.2" ] || [ "${KB_VERSION}" == "6.6.3" ] || [ "${KB_VERSION}" == "6.6.4" ]; then
 			echo "no need sed value"
 		else
 			sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml
