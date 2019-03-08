@@ -35,15 +35,15 @@ if [[ -f /etc/lsb-release ]]; then
 	# install GUI
 		apt-get install xubuntu-desktop --no-install-recommends -y --force-yes
 	# install app
-		apt-get install -y --force-yes nano mousepad xfce4-taskmanager firefox flashplugin-installer
+		apt-get install -y --force-yes nano mousepad xfce4-taskmanager firefox flashplugin-installer enrampa ristretto
     
 # install admin app
 	if [[ "$ADMINAPP" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
 		apt-get install -y --force-yes \
-		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg file-roller synaptic \
-		regexxer fwbuilder font-manager gnome-subtitles mediainfo-gui gedit qbittorrent inetutils-ping \
-		gtkorphan screenruler zenmap nmap rsync mysql-client ristretto thunar-archive-plugin \
-		tomboy p7zip-full mc pyrenamer telnet
+		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
+		regexxer fwbuilder font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
+		gtkorphan screenruler zenmap nmap rsync mysql-client thunar-archive-plugin \
+		tomboy p7zip-full mc telnet
 		
 		apt-get purge sane* scan* transmission* abiword* gnumeric* parole* banshee* totem* -y --force-yes
 		# opera-stable google-chrome-stable
