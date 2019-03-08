@@ -43,7 +43,7 @@ if [[ -f /etc/lsb-release ]]; then
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
 		regexxer fwbuilder font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
 		gtkorphan screenruler zenmap nmap rsync mysql-client thunar-archive-plugin \
-		tomboy p7zip-full mc telnet
+		tomboy p7zip-full mc telnet fdupes duperemove
 		
 		apt-get purge sane* scan* transmission* abiword* gnumeric* parole* banshee* totem* -y --force-yes
 		# opera-stable google-chrome-stable
