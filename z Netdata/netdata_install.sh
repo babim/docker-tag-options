@@ -40,6 +40,12 @@ installnetdata() {
 	# remove git
 	cd /
 	rm -rf /netdata.git
+	# prepare data
+	if [[ -d /etc/netdata ]];then
+		mkdir -p /etc-start
+		mv /etc/netdata /etc-start/netdata
+		mkdir -p /etc/netdata
+	fi
 }
 # download docker entrypoint
 downloadentry() {

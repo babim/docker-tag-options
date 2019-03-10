@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# copy etc data
+	[[ ! -d "/etc/netdata/override/" ]] && mkdir -p "/etc/netdata/override/"
+	if [[ -z "`ls /etc/netdata`" ]]; then
+		cp -R /etc-start/netdata/* /etc/netdata
+	fi
 # fix permissions due to netdata running as root
 chown root:root /usr/share/netdata/web/ -R
 echo -n "" > /usr/share/netdata/web/version.txt
@@ -109,11 +114,6 @@ if [[ -d "/fakenet/" ]]; then
 	# and report things like "netdata: FATAL: Cannot listen on any socket. Exiting..."
 	sleep 1
 fi
-
-[[ ! -d "/etc/netdata/override/" ]] && mkdir -p "/etc/netdata/override/"
-for f in /etc/netdata/override/*; do
-  cp -a $f /etc/netdata/
-done
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
