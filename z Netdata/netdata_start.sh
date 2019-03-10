@@ -54,6 +54,18 @@ if [[ $SLACK_CHANNEL ]]; then
 	sed -i -e "s@DEFAULT_RECIPIENT_SLACK=\"\"@DEFAULT_RECIPIENT_SLACK=\"${SLACK_CHANNEL}\"@" /etc/netdata/health_alarm_notify.conf
 fi
 
+if [[ $ROCKETCHAT_WEBHOOK_URL ]]; then
+	sed -i -e "s@ROCKETCHAT_WEBHOOK_URL=\"\"@ROCKETCHAT_WEBHOOK_URL=\"${ROCKETCHAT_WEBHOOK_URL}\"@" /etc/netdata/health_alarm_notify.conf
+fi
+
+if [[ $ROCKET_CHANNEL ]]; then
+	sed -i -e "s@DEFAULT_RECIPIENT_ROCKETCHAT=\"\"@DEFAULT_RECIPIENT_ROCKETCHAT=\"${ROCKET_CHANNEL}\"@" /etc/netdata/health_alarm_notify.conf
+fi
+
+if [[ $FLOCK_WEBHOOK_URL ]]; then
+	sed -i -e "s@FLOCK_WEBHOOK_URL=\"\"@FLOCK_WEBHOOK_URL=\"${FLOCK_WEBHOOK_URL}\"@" /etc/netdata/health_alarm_notify.conf
+fi
+
 if [[ $DISCORD_WEBHOOK_URL ]]; then
 	sed -i -e "s@DISCORD_WEBHOOK_URL=\"\"@DISCORD_WEBHOOK_URL=\"${DISCORD_WEBHOOK_URL}\"@" /etc/netdata/health_alarm_notify.conf
 fi
