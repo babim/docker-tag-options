@@ -110,6 +110,7 @@ if [[ -d "/fakenet/" ]]; then
 	sleep 1
 fi
 
+[[ -d "/etc/netdata/override/" ]] && mkdir -p "/etc/netdata/override/"
 for f in /etc/netdata/override/*; do
   cp -a $f /etc/netdata/
 done
