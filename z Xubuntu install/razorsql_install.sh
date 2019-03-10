@@ -3,7 +3,7 @@ export RAZORSQL=${RAZORSQL:-7_4_10}
 #	wget http://media.matmagoc.com/razorsql_linux_x64.tar.gz
 #	tar -xzvpf razorsql${RAZORSQL}_linux_x64.tar.gz -C /opt && rm -f razorsql${RAZORSQL}_linux_x64.tar.gz
 	wget https://s3.amazonaws.com/downloads.razorsql.com/downloads/${RAZORSQL}/razorsql${RAZORSQL}_linux_x64.zip
-	unzip razorsql${RAZORSQL}_linux_x64.tar.gz -d /opt && rm -f razorsql${RAZORSQL}_linux_x64.zip
+	unzip razorsql${RAZORSQL}_linux_x64.zip -d /opt && rm -f razorsql${RAZORSQL}_linux_x64.zip
 
 # register
 	wget http://media.matmagoc.com/razorsqlreg.tar.gz && \

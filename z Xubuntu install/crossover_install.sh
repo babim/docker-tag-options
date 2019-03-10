@@ -8,8 +8,8 @@ export CROSSOVER=${CROSSOVER:-18.1.0-1}
 	libglapi-mesa:i386 libglu1-mesa:i386 libgmp10:i386 libgnutls30:i386 \
 	libgpg-error0:i386 libgssapi-krb5-2:i386 libhogweed4:i386 libidn11:i386 \
 	libk5crypto3:i386 libkeyutils1:i386 libkrb5-3:i386 libkrb5support0:i386 \
-	liblcms2-2:i386 libllvm3.8:i386 liblzma5:i386 libnettle6:i386 \
-	libp11-kit0:i386 libpciaccess0:i386 libpcre3:i386 libpng12-0:i386 \
+	liblcms2-2:i386 liblzma5:i386 libnettle6:i386 \
+	libp11-kit0:i386 libpciaccess0:i386 libpcre3:i386 \
 	libselinux1:i386 libstdc++6:i386 libsystemd0:i386 libtasn1-6:i386 \
 	libtinfo5:i386 libtxc-dxtn-s2tc0:i386 libudev1:i386 libx11-6:i386 \
 	libx11-xcb1:i386 libxau6:i386 libxcb-dri2-0:i386 libxcb-dri3-0:i386 \
@@ -18,7 +18,7 @@ export CROSSOVER=${CROSSOVER:-18.1.0-1}
 	libxfixes3:i386 libxi6:i386 libxrandr2:i386 libxrender1:i386 \
 	libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386 && \
 	cd /tmp && wget http://media.matmagoc.com/crossover_$CROSSOVER.deb && dpkg -i crossover*.deb && \
-	rm -rf /tmp/crossover*
+	apt-get install -f -y && rm -rf /tmp/crossover*
 	FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 	wget -O $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so
