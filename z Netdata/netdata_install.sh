@@ -43,8 +43,7 @@ installnetdata() {
 	# prepare data
 	if [[ -d /etc/netdata ]];then
 		mkdir -p /etc-start
-		mv /etc/netdata /etc-start/netdata
-		mkdir -p /etc/netdata
+		cp -R /etc/netdata /etc-start/
 	fi
 }
 # download docker entrypoint

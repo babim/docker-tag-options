@@ -2,10 +2,11 @@
 set -e
 
 # copy etc data
-	[[ ! -d "/etc/netdata/override/" ]] && mkdir -p "/etc/netdata/override/"
+	[[ ! -d "/etc/netdata/" ]] && mkdir -p "/etc/netdata/"
 	if [[ -z "`ls /etc/netdata`" ]]; then
 		cp -R /etc-start/netdata/* /etc/netdata
 	fi
+
 # fix permissions due to netdata running as root
 chown root:root /usr/share/netdata/web/ -R
 echo -n "" > /usr/share/netdata/web/version.txt
