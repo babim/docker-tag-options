@@ -46,13 +46,7 @@ if [[ -f /etc/debian_version ]]; then
 			# prepare etc start
 				wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 			# remove packages
-				apt-get purge -y wget curl && \
-				apt-get clean && \
-				apt-get autoclean && \
-				apt-get autoremove -y && \
-				rm -rf /build && \
-				rm -rf /tmp/* /var/tmp/* && \
-				rm -rf /var/lib/apt/lists/*	
+				wget --no-check-certificate -O - $DOWN_URL/mariadb_clean.sh | bash	
 			}
 			
 	if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]];then
