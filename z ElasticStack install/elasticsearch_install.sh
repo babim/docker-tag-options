@@ -76,7 +76,14 @@ if [[ -f /etc/alpine-release ]]; then
 		prepareconfig() {
 		FILETEMP=/usr/share/elasticsearch/config
 			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+		if [[ "$ES" = "1" ]]; then
+			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/1/elasticsearch.yml
+			FILETEMP=/usr/share/elasticsearch/config/logging.yml
+				[[ -f $FILETEMP ]] && rm -f $FILETEMP
+				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/1/logging.yml
+		elif [[ "$ES" = "2" ]]; then
 			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
 				[[ -f $FILETEMP ]] && rm -f $FILETEMP
 				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
