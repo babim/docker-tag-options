@@ -13,15 +13,23 @@ fi
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
-	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
-	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+	export OPENJDKV=${OPENJDKV:-8}
+	export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
+	export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache ca-certificates gnupg openssl
-	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec libzmq bash libc6-compat
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
+			echo "installing openjdk..."
+			apk add --no-cache openjdk${OPENJDKV}-jre
+		fi
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
+			echo "Can not install openjdk, please check and rebuild"
+			exit
+		fi
+			echo "Install depend packages..."
+		apk add --no-cache ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
 	# ensure elasticsearch user exists
 		adduser -DH -s /sbin/nologin elasticsearch
 	# install elasticsearch
