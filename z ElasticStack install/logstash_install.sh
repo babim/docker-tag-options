@@ -48,7 +48,9 @@ if [[ -f /etc/alpine-release ]]; then
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
 			chmod 755 $FILETEMP
 		# Supervisor
+		if [[ "$SUPERVISOR" = "true" ]] || [[ "$SUPERVISOR" = "yes" ]]; then
 			wget --no-check-certificate -O - $DOWN_URL/supervisor_logstash.sh | bash
+		fi
 		# prepare etc start
 			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}

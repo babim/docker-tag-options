@@ -46,24 +46,32 @@ if [[ -f /etc/alpine-release ]]; then
 	  && rm -rf /tmp/*
 	# download entrypoint files
 		downloadentrypoint() {
-			[[ ! -f /start.sh ]] || rm -f /start.sh
+		FILETEMP=start.sh
+			[[ ! -f /$FILETEMP ]] || rm -f /$FILETEMP
 			cd /
-		if [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.3" ]]; then
-			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
-		elif [[ "$ES" = "6" ]] && [[ "$ES_VERSION" = "6.4" ]]; then
-			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch6_start.sh
+		if [[ "$ES" = "6" ]]; then
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch6_$FILETEMP
+		elif [[ "$ES" = "6" ]]; then
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch6_$FILETEMP
 		elif [[ "$ES" = "1" ]]; then
-			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch1_start.sh
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch1_$FILETEMP
 		elif [[ "$ES" = "2" ]]; then
-			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch2_start.sh
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch2_$FILETEMP
 		else
-			wget -O /start.sh --no-check-certificate $DOWN_URL/elasticsearch5_start.sh
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch5_$FILETEMP
 		fi
-			chmod 755 /start.sh
+			chmod 755 /$FILETEMP
 		# Supervisor
+		if [[ "$SUPERVISOR" = "true" ]] || [[ "$SUPERVISOR" = "yes" ]]; then
 			wget --no-check-certificate -O - $DOWN_URL/supervisor_elasticsearch.sh | bash
+		fi
 		# prepare etc start
 			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+		# docker health check
+		FILETEMP=/usr/local/bin/docker-healthcheck
+			[[ ! -f /$FILETEMP ]] || rm -f /$FILETEMP
+			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_healthcheck/docker-healthcheck
+			chmod 755 /$FILETEMP
 		}
 		prepareconfig() {
 		FILETEMP=/usr/share/elasticsearch/config

@@ -68,7 +68,9 @@ if [[ -f /etc/alpine-release ]]; then
 		fi
 			chmod 755 /start.sh
 		# Supervisor
+		if [[ "$SUPERVISOR" = "true" ]] || [[ "$SUPERVISOR" = "yes" ]]; then
 			wget --no-check-certificate -O - $DOWN_URL/supervisor_kibana.sh | bash
+		fi
 		# prepare etc start
 			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 		}
