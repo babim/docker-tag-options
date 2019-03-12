@@ -40,11 +40,6 @@ if [[ -f /etc/alpine-release ]]; then
   	# ensure the default configuration is useful when using --link
 		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" /usr/share/kibana/config/kibana.yml
 		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" /usr/share/kibana/config/kibana.yml
-	# clean
-		rm -rf /var/cache/apk/*
-		rm -rf /tmp/*
-		[[ -f "/kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
-		[[ -f "kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 	elif [ "${KB_VERSION}" == "6.6.0" ] || [ "${KB_VERSION}" == "6.6.1" ] || [ "${KB_VERSION}" == "6.6.2" ] || [ "${KB_VERSION}" == "6.6.3" ] || [ "${KB_VERSION}" == "6.6.4" ]; then
 		echo "no need sed value"
 	else
@@ -66,7 +61,6 @@ if [[ -f /etc/alpine-release ]]; then
 		rm -rf /tmp/*
 		[[ -f "/kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
 		[[ -f "kibana-${KB_VERSION}-linux-${BIT}.tar.gz" ]]	&& /kibana-${KB_VERSION}-linux-${BIT}.tar.gz
-	fi
 	# download entrypoint files
 		downloadentrypoint() {
 			[[ ! -f /start.sh ]] || rm -f /start.sh
