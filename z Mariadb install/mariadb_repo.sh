@@ -29,29 +29,17 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 
 	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 		apt-get install -y lsb-release gnupg
-		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
-cat <<EOF >keystrokes
-1
-1
-4
-EOF
-		elif [[ "$MYSQL_MAJOR" == "5.7" ]];then
-cat <<EOF >keystrokes
-1
-2
-4
-EOF
-		elif [[ "$MYSQL_MAJOR" == "8.0" ]];then
-cat <<EOF >keystrokes
-1
-3
-4
-EOF
-		fi
 		FILETEMP=mysql-apt-config_0.8.12-1_all.deb
 			wget https://dev.mysql.com/get/$FILETEMP
-			dpkg -i $FILETEMP < keystrokes
-			rm -f $FILETEMP keystrokes
+			dpkg -i $FILETEMP && rm -f $FILETEMP keystrokes
+		export MYSQLDEFAULT=5.7
+		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
+			sed -i "s/${MYSQLDEFAULT}/5.6/" /etc/apt/sources.list.d/mysql.list
+		elif [[ "$MYSQL_MAJOR" == "5.7" ]];then
+			sed -i "s/${MYSQLDEFAULT}/5.7/" /etc/apt/sources.list.d/mysql.list
+		elif [[ "$MYSQL_MAJOR" == "8.0" ]];then
+			sed -i "s/${MYSQLDEFAULT}/8.0/" /etc/apt/sources.list.d/mysql.list
+		fi
 
 	# code add repo old
 	# 	add repo Mysql
