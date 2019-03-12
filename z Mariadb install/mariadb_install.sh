@@ -139,7 +139,7 @@ if [[ -f /etc/debian_version ]]; then
 
 		# finish
 		finish
-fi
+	fi
 else
     echo "Not support your OS"
     exit

@@ -27,7 +27,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
 		fi
 
-	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];thenMYSQL_MAJOR
+	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
 		apt-get install -y lsb-release gnupg
 		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
 cat <<EOF >keystrokes
@@ -54,19 +54,19 @@ EOF
 			rm -f $FILETEMP keystrokes
 
 	# code add repo old
-		# add repo Mysql
-		#set -ex; \
-		# gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
-		#	key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
-		#	export GNUPGHOME="$(mktemp -d)"; \
-		#	gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
-		#	gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
-		#	rm -rf "$GNUPGHOME"; \
-		#	apt-key list > /dev/null
-		# set version
-		#export MYSQL_MAJOR=5.5
-		#export MYSQL_VERSION=5.5.61
-		#echo "deb http://repo.mysql.com/apt/debian/ $OSDEB mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
+	# 	add repo Mysql
+	# 	set -ex; \
+	# 	gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
+	# 		key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
+	# 		export GNUPGHOME="$(mktemp -d)"; \
+	# 		gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	# 		gpg --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
+	# 		rm -rf "$GNUPGHOME"; \
+	# 		apt-key list > /dev/null
+	# 	set version
+	# 	export MYSQL_MAJOR=5.5
+	# 	export MYSQL_VERSION=5.5.61
+	# 	echo "deb http://repo.mysql.com/apt/debian/ $OSDEB mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 	else
 		echo "Not support your sql"
 	fi
