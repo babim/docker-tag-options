@@ -13,16 +13,24 @@ fi
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
-	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
-	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+	export OPENJDKV=${OPENJDKV:-8}
+	export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
+	export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
 	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 	# install depend
-		apk add --no-cache ca-certificates gnupg openssl
-	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec libzmq libc6-compat
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
+			echo "installing openjdk..."
+			apk add --no-cache openjdk${OPENJDKV}-jre
+		fi
+		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
+			echo "Can not install openjdk, please check and rebuild"
+			exit
+		fi
+			echo "Install depend packages..."
+		apk add --no-cache ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
 	# make libzmq.so
 		mkdir -p /usr/local/lib \
 		&& ln -s /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
@@ -36,10 +44,15 @@ if [[ -f /etc/alpine-release ]]; then
 		&& mv logstash-$LS_VERSION /usr/share/logstash \
 		&& rm -rf /tmp/*
 	# config setting
-		set -ex; \
-		if [ -f "$LS_SETTINGS_DIR/log4j2.properties" ]; then \
-		cp "$LS_SETTINGS_DIR/log4j2.properties" "$LS_SETTINGS_DIR/log4j2.properties.dist"; \
-		truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"; \
+		if [[ "$LOGSTASH" = "1" ]] || [[ "$LOGSTASH" = "2" ]]; then
+			if [ -f "$LS_SETTINGS_DIR/logstash.yml" ]; then
+				sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"
+			fi
+		else
+			if [ -f "$LS_SETTINGS_DIR/log4j2.properties" ]; then
+				cp "$LS_SETTINGS_DIR/log4j2.properties" "$LS_SETTINGS_DIR/log4j2.properties.dist"
+				truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"
+			fi
 		fi
 	# download entrypoint files
 		downloadentrypoint() {
