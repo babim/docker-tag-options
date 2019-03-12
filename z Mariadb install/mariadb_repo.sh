@@ -32,7 +32,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		FILETEMP=mysql-apt-config_0.8.12-1_all.deb
 			wget https://dev.mysql.com/get/$FILETEMP
 			dpkg -i $FILETEMP && rm -f $FILETEMP keystrokes
-		export MYSQLDEFAULT=5.7
+		export MYSQLDEFAULT=8.0
 		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
 			sed -i "s/${MYSQLDEFAULT}/5.6/" /etc/apt/sources.list.d/mysql.list
 		elif [[ "$MYSQL_MAJOR" == "5.7" ]];then
