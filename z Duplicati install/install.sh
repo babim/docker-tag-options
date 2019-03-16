@@ -28,7 +28,11 @@ if [[ -f /etc/debian_version ]]; then
 			libmono-system-servicemodel4.0a-cil libmono-system-servicemodel-discovery4.0-cil \
 			libmono-system-serviceprocess4.0-cil libmono-system-transactions4.0-cil \
 			libmono-system-web4.0-cil libmono-system-web-services4.0-cil libmono-microsoft-csharp4.0-cil \
-			libappindicator0.1-cil libappindicator3-0.1-cil
+			libappindicator3-0.1-cil
+		# libappindicator0.1-cil
+	# install missing depend
+		wget -O missing1.deb http://mirrors.kernel.org/ubuntu/pool/universe/liba/libappindicator/libappindicator0.1-cil_12.10.1+18.04.20180322.1-0ubuntu1_all.deb
+		dpkg -i missing1.deb && rm -f missing1.deb
 	# install duplicati
 		wget -O duplicati.deb https://updates.duplicati.com/beta/duplicati_${DUPLICATI_VER}_all.deb
 		dpkg -i duplicati.deb && apt-get install -f -y && rm -f duplicati.deb
