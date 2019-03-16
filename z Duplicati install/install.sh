@@ -28,7 +28,7 @@ if [[ -f /etc/debian_version ]]; then
 			libmono-system-servicemodel4.0a-cil libmono-system-servicemodel-discovery4.0-cil \
 			libmono-system-serviceprocess4.0-cil libmono-system-transactions4.0-cil \
 			libmono-system-web4.0-cil libmono-system-web-services4.0-cil libmono-microsoft-csharp4.0-cil \
-			libappindicator3-0.1-cil
+			libappindicator3-0.1-cil gtk-sharp2 libappindicator1 libglib2.0-cil libgtk2.0-cil
 		# libappindicator0.1-cil
 	# install missing depend
 		wget -O missing1.deb http://mirrors.kernel.org/ubuntu/pool/universe/liba/libappindicator/libappindicator0.1-cil_12.10.1+18.04.20180322.1-0ubuntu1_all.deb
