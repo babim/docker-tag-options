@@ -21,7 +21,14 @@ if [[ -f /etc/debian_version ]]; then
 		export D_LANG=en_US
 	apt-get update
 	# install depends
-		apt-get install -y --no-install-recommends expect libsqlite3-0 locales 
+		apt-get install -y --no-install-recommends expect libsqlite3-0 locales \
+			libmono-2.0-1 libmono-system-configuration-install4.0-cil libmono-system-data4.0-cil \
+			libmono-system-drawing4.0-cil libmono-system-net4.0-cil libmono-system-net-http4.0-cil \
+			libmono-system-net-http-webrequest4.0-cil libmono-system-runtime-serialization4.0-cil \
+			libmono-system-servicemodel4.0a-cil libmono-system-servicemodel-discovery4.0-cil \
+			libmono-system-serviceprocess4.0-cil libmono-system-transactions4.0-cil \
+			libmono-system-web4.0-cil libmono-system-web-services4.0-cil libmono-microsoft-csharp4.0-cil \
+			libappindicator0.1-cil libappindicator3-0.1-cil
 	# install duplicati
 		wget -O duplicati.deb https://updates.duplicati.com/beta/duplicati_${DUPLICATI_VER}_all.deb
 		dpkg -i duplicati.deb && apt-get install -f -y && rm -f duplicati.deb
