@@ -33,11 +33,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		chmod -R 700            "${SOFT_INSTALL}/logs"
 		chmod -R 700            "${SOFT_INSTALL}/temp"
 		chmod -R 700            "${SOFT_INSTALL}/work"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/work"
-		chown -R daemon:daemon  "${SOFT_INSTALL}/var"
+		chown -R daemon:daemon  "${SOFT_INSTALL}"
 	fi
 
 # check if the `server.xml` file has been changed since the creation of this

@@ -76,11 +76,7 @@ installatlassian() {
 		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"
 		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/temp"
 		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700            "${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/var"  ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/var"
+		[[ -d "${SOFT_INSTALL}" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
