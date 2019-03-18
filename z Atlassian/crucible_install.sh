@@ -82,6 +82,7 @@ installatlassian() {
 		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/work"
 		[[ -d "${SOFT_INSTALL}/var"  ]] && chown -R daemon:daemon  "${SOFT_INSTALL}/var"
 		[[ -d "${SOFT_INSTALL}" ]] 	&& chmod -R u=rwx,g=rwx,o=-rwx "${SOFT_INSTALL}"
+		[[ -d "${SOFT_INSTALL}" ]] 	&& chmod -R +x "${SOFT_INSTALL}/bin"
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
