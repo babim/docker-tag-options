@@ -54,22 +54,22 @@ installatlassian() {
 		mkdir -p ${SOFT_INSTALL}/apache-tomcat/conf/Catalina/localhost && \
 		echo "crowd.home=${SOFT_HOME}" > ${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes/crowd-init.properties
 	## update mysql connector
-	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
+	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
 		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/apache-tomcat/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
-	FILETEMP="${SOFT_INSTALL}/lib/postgresql-*.jar"
+	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/postgresql-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
 		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
-	FILETEMP="${SOFT_INSTALL}/lib/mssql-jdbc-*.jar"
+	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/mssql-jdbc-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
 		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
-	FILETEMP="${SOFT_INSTALL}/lib/ojdbc*.jar"
+	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/ojdbc*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/ojdbc${ORACLEV}.jar"
