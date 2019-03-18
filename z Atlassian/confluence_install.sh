@@ -48,25 +48,26 @@ installatlassian() {
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
-	FILETEMP="${SOFT_INSTALL}/WEB-INF/lib/mysql-connector-java-*.jar"
+	FILELIB="${SOFT_INSTALL}/${SOFT}/WEB-INF/lib"
+	FILETEMP="${FILELIB}/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
-		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
-	FILETEMP="${SOFT_INSTALL}/WEB-INF/lib/postgresql-*.jar"
+	FILETEMP="${FILELIB}/postgresql-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
-		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/postgresql-${POSTGRESQLV}.jar"
+		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
-	FILETEMP="${SOFT_INSTALL}/WEB-INF/lib/mssql-jdbc-*.jar"
+	FILETEMP="${FILELIB}/mssql-jdbc-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
-		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/mssql-jdbc-${MSSQLV}.jar"
+		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
-	FILETEMP="${SOFT_INSTALL}/WEB-INF/lib/ojdbc*.jar"
+	FILETEMP="${FILELIB}/ojdbc*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
-		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/${SOFT}/WEB-INF/lib/ojdbc${ORACLEV}.jar"
+		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${FILELIB}/ojdbc${ORACLEV}.jar"
 	## set permission path
 		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700            "${SOFT_INSTALL}/conf"
 		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"

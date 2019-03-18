@@ -54,25 +54,26 @@ installatlassian() {
 		mkdir -p ${SOFT_INSTALL}/apache-tomcat/conf/Catalina/localhost && \
 		echo "crowd.home=${SOFT_HOME}" > ${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes/crowd-init.properties
 	## update mysql connector
-	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/mysql-connector-java-*.jar"
+	FILELIB="${SOFT_INSTALL}/apache-tomcat/lib"
+	FILETEMP="${FILELIB}/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mysql-connector-java..."
-		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}/apache-tomcat/lib" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 	## update postgresql connector
-	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/postgresql-*.jar"
+	FILETEMP="${FILELIB}/postgresql-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update postgresql-connector-java..."
-		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/postgresql-${POSTGRESQLV}.jar"
+		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 	## update mssql-server connector
-	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/mssql-jdbc-*.jar"
+	FILETEMP="${FILELIB}/mssql-jdbc-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update mssql-jdbc..."
-		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/mssql-jdbc-${MSSQLV}.jar"
+		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 	## update oracle database connector
-	FILETEMP="${SOFT_INSTALL}/apache-tomcat/lib/ojdbc*.jar"
+	FILETEMP="${FILELIB}/ojdbc*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
 		echo "downloading and update oracle-ojdbc..."
-		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${SOFT_INSTALL}/apache-tomcat/lib/ojdbc${ORACLEV}.jar"
+		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${FILELIB}/ojdbc${ORACLEV}.jar"
 		# xmlstarlet
 		[[ -f "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh" ]]	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh"
 	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
