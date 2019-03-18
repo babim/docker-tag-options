@@ -48,6 +48,7 @@ installatlassian() {
 		echo "downloading and install atlassian..."
 		wget -O /tmp/crucible.zip https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.zip
 		unzip /tmp/crucible.zip -d /tmp
+		rm -rf ${SOFT_INSTALL}
 		mv /tmp/fecru-${SOFT_VERSION} ${SOFT_INSTALL}
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
@@ -108,7 +109,7 @@ if [[ -f /etc/alpine-release ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
+		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat unzip
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
