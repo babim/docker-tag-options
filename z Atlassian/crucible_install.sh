@@ -46,7 +46,8 @@ installatlassian() {
 		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p                "${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
-		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.zip" | unzip -d /tmp
+		mv /tmp/fecru-${SOFT_VERSION} ${SOFT_INSTALL}
 	## update mysql connector
 	FILETEMP="${SOFT_INSTALL}/lib/mysql-connector-java-*.jar"
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP
