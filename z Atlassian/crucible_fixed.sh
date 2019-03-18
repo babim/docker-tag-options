@@ -37,6 +37,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		chown -R daemon:daemon  "${SOFT_INSTALL}/logs"
 		chown -R daemon:daemon  "${SOFT_INSTALL}/temp"
 		chown -R daemon:daemon  "${SOFT_INSTALL}/work"
+		chown -R daemon:daemon  "${SOFT_INSTALL}/var"
 	fi
 
 # check if the `server.xml` file has been changed since the creation of this
