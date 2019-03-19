@@ -7,12 +7,12 @@
 
 # check permission root
 echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
+if [[ "x$(id -u)" != 'x0' ]]; then
 	echo 'Error: this script can only be executed by root'
 	exit 1
 fi
 MACHINE_TYPE=`uname -m`
-if [ ${MACHINE_TYPE} == 'x86_64' ]; then
+if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 	echo x64
 else
 	echo x86
@@ -30,20 +30,20 @@ setenvironment() {
 # set command install
 installmanageengine() {
 	echo "Download and install"
-	if [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
-		if [ ${FIXED} == 'true' ]; then
+	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+		if [[ ${FIXED} == 'true' ]]; then
 			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
 		else
 			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
 		fi
-	elif [ ${MACHINE_TYPE} != 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
-		if [ ${FIXED} == 'true' ]; then
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+		if [[ ${FIXED} == 'true' ]]; then
 			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin
 		else
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
 		fi
-	elif [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'enterprise' ]; then
-		if [ ${FIXED} == 'true' ]; then
+	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
+		if [[ ${FIXED} == 'true' ]]; then
 			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
 		else
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
