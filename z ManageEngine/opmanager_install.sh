@@ -20,7 +20,7 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-opmanager}
+		export SOFT=${SOFT:-OpManager}
 		#export SOFTSUB=${SOFTSUB:-core}
 		export SOFT_HOME=${SOFT:-/opt/ManageEngine/OpManager}	
 
@@ -70,8 +70,8 @@ admin@matmagoc.com
 1
 q
 1
-${SOFT_HOME}${SOFTSUB}
-${SOFT_HOME}${SOFTSUB}
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8060
 1
