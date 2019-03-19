@@ -1,4 +1,4 @@
-export UNINSTALL="wget curl"
+#export UNINSTALL="wget curl"
 
  	if [[ -f /etc/redhat-release ]]; then
 		[[ ! -z "${UNINSTALL}" ]] && yum remove -y $UNINSTALL || echo "not have apps need remove"

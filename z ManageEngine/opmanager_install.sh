@@ -29,6 +29,7 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
+	echo "Download and install"
 	if [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
 		if [ ${FIXED} == 'true' ]; then
 			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
@@ -51,6 +52,7 @@ installmanageengine() {
 		echo "Not support"
 		exit
 	fi
+	echo "Install"
 		chmod +x install.bin
 cat <<EOF > keystroke
 1
@@ -82,9 +84,10 @@ EOF
 		./install.bin -console < keystroke
 		rm -f install.bin keystroke
 	# prepare data start
-		mkdir /etc-start
-		mv ${SOFT_HOME}${SOFTSUB} /etc-start/${SOFTSUB}
+	echo "Prepare data"
+		mv ${SOFT_HOME}${SOFTSUB} /start/
 	# download docker entry
+	echo "Download entrypoint"
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
@@ -92,6 +95,7 @@ EOF
 }
 cleanmanageengine() {
 	# remove packages
+	echo "Remove packages"
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
 
