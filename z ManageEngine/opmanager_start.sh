@@ -14,7 +14,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	if [ -z "`ls ${SOFT_HOME}`" ]; then
 		if [ ! -d ${SOFT_HOME} ]; then mkdir -p ${SOFT_HOME}; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_HOME}
-
+	fi
 # Run
 cd ${SOFT_HOME}${SOFTSUB}/bin
 ./run.sh

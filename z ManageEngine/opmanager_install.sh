@@ -30,11 +30,23 @@ setenvironment() {
 # set command install
 installmanageengine() {
 	if [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
-		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
+		if [ ${FIXED} == 'true' ]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
+		else
+			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
+		fi
 	elif [ ${MACHINE_TYPE} != 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
+		if [ ${FIXED} == 'true' ]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin
+		else
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
+		fi
 	elif [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'enterprise' ]; then
+		if [ ${FIXED} == 'true' ]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+		else
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+		fi
 	else
 		echo "Not support"
 		exit
