@@ -11,7 +11,7 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
-	if [ -z "`ls ${SOFT_HOME}`" ] || [ ! -d ${SOFT_HOME} ]; then
+	if [ ! -z "`ls ${SOFT_HOME}`" ] || [ ! -d ${SOFT_HOME} ]; then
 		if [ ! -d ${SOFT_HOME} ]; then mkdir -p ${SOFT_HOME}; fi
 			cp -R /start/* ${SOFT_HOME}
 	fi
