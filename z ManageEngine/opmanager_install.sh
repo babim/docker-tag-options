@@ -13,9 +13,9 @@ if [ "x$(id -u)" != 'x0' ]; then
 fi
 MACHINE_TYPE=`uname -m`
 if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-	echo continue
+	echo x64
 else
-	echo 'Your CPU not support!'
+	echo x86
 fi
 
 # set environment
@@ -29,11 +29,11 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
-	if [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'essential'; then
+	if [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
-	elif [ ${MACHINE_TYPE} != 'x86_64' ] && [ ${EDITTION} == 'essential'; then
+	elif [ ${MACHINE_TYPE} != 'x86_64' ] && [ ${EDITTION} == 'essential' ]; then
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
-	elif [ ${MACHINE_TYPE} != 'x86_64' ] && [ ${EDITTION} == 'enterprise'; then
+	elif [ ${MACHINE_TYPE} == 'x86_64' ] && [ ${EDITTION} == 'enterprise' ]; then
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
 	else
 		echo "Not support"
