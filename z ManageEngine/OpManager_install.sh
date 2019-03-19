@@ -22,7 +22,8 @@ fi
 setenvironment() {
 		export SOFT=${SOFT:-OpManager}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}	
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
+		export EDITTION=${EDITTION:-essential}
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
@@ -86,6 +87,7 @@ EOF
 	# prepare data start
 	echo "Prepare data"
 		mv ${SOFT_HOME} /start/
+		mkdir -p ${SOFT_HOME}
 	# download docker entry
 	echo "Download entrypoint"
 		FILETEMP=/docker-entrypoint.sh
