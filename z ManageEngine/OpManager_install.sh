@@ -19,12 +19,12 @@ else
 fi
 
 createuser() {
-	UID=1000
-	UNAME=postgres
-	GID=1000
-	GNAME=postgres
-	addgroup -g $GID $GNAME \
-	 && adduser -SH -u $UID -G $GNAME -s /usr/sbin/nologin $UNAME
+	PUID=1000
+	PUNAME=postgres
+	PGID=1000
+	PGNAME=postgres
+	addgroup -g $PGID $PGNAME \
+	 && adduser -SH -u $PUID -G $PGNAME -s /usr/sbin/nologin $PUNAME
 }
 setenvironment() {
 		export SOFT=${SOFT:-OpManager}
