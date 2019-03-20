@@ -157,23 +157,25 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		apt-get update && apt-get install -y rsync
 	# install manage engine
-	setenvironment
-	installmanageengine
-	installapm
-	preparedata
-	downloadentry
-	cleanmanageengine
+		setenvironment
+		installmanageengine
+		installapm
+		preparedata
+		downloadentry
+	# clean
+		cleanmanageengine
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
 	# install depend
 		yum install -y rsync
 	# install manage engine
-	setenvironment
-	installmanageengine
-	installapm
-	preparedata
-	downloadentry
-	cleanmanageengine
+		setenvironment
+		installmanageengine
+		installapm
+		preparedata
+		downloadentry
+	# clean
+		cleanmanageengine
 # OS - other
 else
     echo "Not support your OS"
