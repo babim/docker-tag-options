@@ -32,31 +32,7 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
-	echo "Download and install"
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
-		else
-			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin
-		else
-		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
-		else
-		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
-		fi
-	else
-		echo "Not support please edit and rebuild"
-		exit 1
-	fi
-	echo "Install"
-		chmod +x install.bin
+opmanagerkeystroke() {
 cat <<EOF > keystroke
 1
 q
@@ -84,6 +60,67 @@ ${SOFT_HOME}
 1
 3
 EOF
+}
+opmanagerpluskeystroke() {
+cat <<EOF > keystroke
+1
+q
+1
+0
+1
+Admin
+admin@matmagoc.com
+0
+0
+184
+0
+0
+1
+q
+1
+${SOFT_HOME}
+${SOFT_HOME}
+1
+8060
+9996
+1
+1
+0
+1
+1
+3
+}
+	echo "Download and install"
+	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+		opmanagerkeystroke
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
+		else
+			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
+		fi
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+		opmanagerkeystroke
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin
+		else
+		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
+		fi
+	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
+		opmanagerkeystroke
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+		else
+			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+		fi
+	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'plus' ]]; then
+		opmanagerpluskeystroke
+		wget -O install.bin https://www.manageengine.com/it-operations-management/29809517/ManageEngine_OpManager_Plus_64bit.bin
+	else
+		echo "Not support please edit and rebuild"
+		exit 1
+	fi
+	echo "Install"
+		chmod +x install.bin
 		./install.bin -console < keystroke
 	# remove install files
 		rm -f install.bin keystroke
