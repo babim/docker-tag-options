@@ -86,7 +86,7 @@ EOF
 		rm -f install.bin keystroke
 }
 installapm() {
-	echo "Download and install"
+	echo "Download and install APM"
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
 			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin
