@@ -50,8 +50,8 @@ installmanageengine() {
 		wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
 		fi
 	else
-		echo "Not support"
-		exit
+		echo "Not support please edit and rebuild"
+		exit 1
 	fi
 	echo "Install"
 		chmod +x install.bin
@@ -101,7 +101,6 @@ installapm() {
 		fi
 	else
 		echo "Not support"
-		exit
 	fi
 	echo "Install"
 		chmod +x install.bin
