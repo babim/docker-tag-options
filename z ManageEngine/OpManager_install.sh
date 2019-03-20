@@ -26,6 +26,11 @@ setenvironment() {
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
+	# database user
+		export PUID=1000
+		export PUNAME=postgres
+		export PGID=1000
+		export PGNAME=postgres
 }
 preparedata() {
 	# prepare data start
@@ -54,10 +59,6 @@ echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
     echo "Not support your OS"
     exit
-	# PUID=1000
-	# PUNAME=postgres
-	# PGID=1000
-	# PGNAME=postgres
 	# addgroup -g $PGID $PGNAME \
 	#  && adduser -SH -u $PUID -G $PGNAME -s /usr/sbin/nologin $PUNAME
 # OS - ubuntu debian
@@ -65,7 +66,8 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		apt-get update && apt-get install -y rsync
 		setenvironment
-		useradd --system --uid 1000 -M --shell /usr/sbin/nologin postgres
+		groupadd -g $PGID $PGNAME && mkdir -p /home/postgres \
+		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M --shell /usr/sbin/nologin $PUNAME
 #		preparedata
 		downloadentry
 	# clean
@@ -75,7 +77,8 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install depend
 		yum install -y rsync
 		setenvironment
-		useradd --system --uid 1000 -M --shell /usr/sbin/nologin postgres
+		groupadd -g $PGID $PGNAME && mkdir -p /home/postgres \
+		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M $PUNAME
 #		preparedata
 		downloadentry
 	# clean
