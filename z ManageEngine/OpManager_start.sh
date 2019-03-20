@@ -7,6 +7,19 @@
 
 set -e
 
+# check permission root
+echo 'Check root'
+if [[ "x$(id -u)" != 'x0' ]]; then
+	echo 'Error: this script can only be executed by root'
+	exit 1
+fi
+MACHINE_TYPE=`uname -m`
+if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
+	echo x64
+else
+	echo x86
+fi
+
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-OpManager}
@@ -89,7 +102,8 @@ installapm() {
 			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin
 		fi
 	else
-		echo "Not support"
+		echo "Not support cant install APM Plugin"
+		exit 1
 	fi
 	echo "Install"
 		chmod +x install.bin
@@ -118,12 +132,12 @@ EOF
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
-	if [ -z "`ls ${SOFT_HOME}`" ]; then
+	if [[ -z "`ls ${SOFT_HOME}`" ]] || [[ ! -d "${SOFT_HOME}" ]]; then
 #		rsync -arvpz --numeric-ids /start/ ${SOFT_HOME}
 	# install manage engine
 		setenvironment
 		installmanageengine
-		installapm
+		if [[ ${APMINSTALL} == 'true' ]]; then installapm; fi
 	fi
 # Run
 cd ${SOFT_HOME}/bin
