@@ -84,11 +84,55 @@ ${SOFT_HOME}
 EOF
 		./install.bin -console < keystroke
 		rm -f install.bin keystroke
+}
+installapm() {
+	echo "Download and install"
+	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin
+		else
+			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn_64bit.bin
+		fi
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin
+		else
+			wget -O install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin
+		fi
+	else
+		echo "Not support"
+		exit
+	fi
+	echo "Install"
+		chmod +x install.bin
+cat <<EOF > keystroke
+1
+0
+1
+0
+1
+0
+1
+9090
+8443
+1
+/opt/ManageEngine/OpManager
+/opt/ManageEngine/OpManager
+1
+1
+3
+EOF
+		./install.bin -console < keystroke
+		rm -f install.bin keystroke
+}
+preparedata() {
 	# prepare data start
 	echo "Prepare data"
 		mkdir /start/
 		rsync -arvpz --numeric-ids ${SOFT_HOME}/ /start
 		rm -rf ${SOFT_HOME}/*
+}
+downloadentry() {
 	# download docker entry
 	echo "Download entrypoint"
 		FILETEMP=/docker-entrypoint.sh
@@ -115,6 +159,9 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install manage engine
 	setenvironment
 	installmanageengine
+	installapm
+	preparedata
+	downloadentry
 	cleanmanageengine
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
@@ -123,6 +170,9 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install manage engine
 	setenvironment
 	installmanageengine
+	installapm
+	preparedata
+	downloadentry
 	cleanmanageengine
 # OS - other
 else
