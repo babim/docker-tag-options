@@ -18,6 +18,15 @@ else
 	echo x86
 fi
 
+setenvironment() {
+		export SOFT=${SOFT:-OpManager}
+		#export SOFTSUB=${SOFTSUB:-core}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
+		export EDITTION=${EDITTION:-essential}
+
+	# set host download
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
+}
 preparedata() {
 	# prepare data start
 	echo "Prepare data"
@@ -49,6 +58,7 @@ if [[ -f /etc/alpine-release ]]; then
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		apt-get update && apt-get install -y rsync
+		setenvironment
 #		preparedata
 		downloadentry
 	# clean
@@ -57,6 +67,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 elif [[ -f /etc/redhat-release ]]; then
 	# install depend
 		yum install -y rsync
+		setenvironment
 #		preparedata
 		downloadentry
 	# clean
