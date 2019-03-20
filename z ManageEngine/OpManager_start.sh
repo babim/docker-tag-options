@@ -11,9 +11,8 @@ set -e
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
-	if [ ! -z "`ls ${SOFT_HOME}`" ]; then
-		cp -R /start/* ${SOFT_HOME}
-		chown -R postgres:postgres ${SOFT_HOME}/pgsql
+	if [ -z "`ls ${SOFT_HOME}`" ]; then
+		rsync -arvpz --numeric-ids /start/ ${SOFT_HOME}
 	fi
 # Run
 cd ${SOFT_HOME}/bin

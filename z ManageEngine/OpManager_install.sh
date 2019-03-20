@@ -86,8 +86,9 @@ EOF
 		rm -f install.bin keystroke
 	# prepare data start
 	echo "Prepare data"
-		mv ${SOFT_HOME} /start/
-		mkdir -p ${SOFT_HOME}
+		mkdir /start/
+		rsync -arvpz --numeric-ids ${SOFT_HOME}/ /start
+		rm -rf ${SOFT_HOME}/*
 	# download docker entry
 	echo "Download entrypoint"
 		FILETEMP=/docker-entrypoint.sh
@@ -109,11 +110,17 @@ if [[ -f /etc/alpine-release ]]; then
     exit
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+	# install depend
+		apt-get update && apt-get install -y rsync
+	# install manage engine
 	setenvironment
 	installmanageengine
 	cleanmanageengine
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
+	# install depend
+		yum install -y rsync
+	# install manage engine
 	setenvironment
 	installmanageengine
 	cleanmanageengine
