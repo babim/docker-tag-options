@@ -85,7 +85,12 @@ ${SOFT_HOME}
 3
 EOF
 		./install.bin -console < keystroke
+	# remove install files
 		rm -f install.bin keystroke
+	# fix reading serverparameters.conf
+	if [[ ! -f "${SOFT_HOME}/conf/OpManager/serverparameters.conf" ]]; then
+		cp ${SOFT_HOME}/ancillary/en/html/serverparameters.conf ${SOFT_HOME}/conf/OpManager/
+	fi
 }
 installapm() {
 	echo "Download and install APM"

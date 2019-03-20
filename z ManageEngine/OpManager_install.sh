@@ -18,6 +18,14 @@ else
 	echo x86
 fi
 
+createuser() {
+	UID=1000
+	UNAME=postgres
+	GID=1000
+	GNAME=postgres
+	addgroup -g $GID $GNAME \
+	 && adduser -SH -u $UID -G $GNAME -s /usr/sbin/nologin $UNAME
+}
 setenvironment() {
 		export SOFT=${SOFT:-OpManager}
 		#export SOFTSUB=${SOFTSUB:-core}
@@ -59,6 +67,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		apt-get update && apt-get install -y rsync
 		setenvironment
+		createuser
 #		preparedata
 		downloadentry
 	# clean
@@ -68,6 +77,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install depend
 		yum install -y rsync
 		setenvironment
+		createuser
 #		preparedata
 		downloadentry
 	# clean
