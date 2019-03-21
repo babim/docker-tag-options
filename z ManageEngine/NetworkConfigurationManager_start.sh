@@ -22,9 +22,9 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-NetFlow}
+		export SOFT=${SOFT:-NetworkConfigurationManager}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/NetFlow}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/NetworkConfigurationManager}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download
@@ -51,37 +51,29 @@ q
 1
 0
 1
-/opt/ManageEngine/NetFlow
-/opt/ManageEngine/NetFlow
+/opt/ManageEngine/NetworkConfigurationManager
+/opt/ManageEngine/NetworkConfigurationManager
 1
 8060
-9996
 1
 1
 3
 EOF
 }
 	echo "Download and install"
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_64bit.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetworkConfigurationManager_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin
+			wget -O install.bin https://www.manageengine.com/network-configuration-manager/58801372/ManageEngine_NetworkConfigurationManager_64bit.bin
 		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetworkConfigurationManager.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		opmanagerkeystroke
-		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin
-		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin
+			wget -O install.bin https://www.manageengine.com/network-configuration-manager/58801372/ManageEngine_NetworkConfigurationManager.bin
 		fi
 	else
 		echo "Not support please edit and rebuild"
