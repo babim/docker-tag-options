@@ -83,6 +83,20 @@ EOF
 		else
 			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin
 		fi
+	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
+		keystroke
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
+		else
+			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
+		fi
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
+		opmanagerkeystroke
+		if [[ ${FIXED} == 'true' ]]; then
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin
+		else
+			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free.bin
+		fi
 	else
 		echo "Not support please edit and rebuild"
 		exit 1

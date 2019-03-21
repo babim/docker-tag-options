@@ -33,6 +33,7 @@ setenvironment() {
 # set command install
 installmanageengine() {
 keystroke() {
+	if [[ ${EDITTION} == 'essential' ]]; then
 cat <<EOF > keystroke
 1
 q
@@ -59,6 +60,37 @@ q
 1
 3
 EOF
+	elif [[ ${EDITTION} == 'free' ]]; then
+cat <<EOF > keystroke
+1
+q
+1
+0
+1
+admin
+admin@matmagoc.com
+0
+0
+184
+0
+0
+1
+q
+1
+2
+0
+1
+/opt/ManageEngine/NetworkConfigurationManager
+/opt/ManageEngine/NetworkConfigurationManager
+1
+8060
+1
+1
+3
+EOF
+	else
+		echo "not support this edition"
+	fi
 }
 	echo "Download and install"
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
