@@ -19,9 +19,9 @@ else
 fi
 
 setenvironment() {
-		export SOFT=${SOFT:-NetworkConfigurationManager}
+		export SOFT=${SOFT:-AppManager}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/AppManager}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download

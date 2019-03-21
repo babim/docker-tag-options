@@ -19,7 +19,7 @@ else
 fi
 
 setenvironment() {
-		export SOFT=${SOFT:-NetworkConfigurationManager}
+		export SOFT=${SOFT:-FireWallAnalyzer}
 		#export SOFTSUB=${SOFTSUB:-core}
 		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
 		#export EDITTION=${EDITTION:-essential}

@@ -24,7 +24,7 @@ fi
 setenvironment() {
 		export SOFT=${SOFT:-NetFlow}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/NetFlow}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download
@@ -51,8 +51,8 @@ q
 1
 0
 1
-/opt/ManageEngine/NetFlow
-/opt/ManageEngine/NetFlow
+/opt/ManageEngine
+/opt/ManageEngine
 1
 8060
 9996

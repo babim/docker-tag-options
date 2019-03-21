@@ -22,9 +22,9 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-NetworkConfigurationManager}
+		export SOFT=${SOFT:-AppManager}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/AppManager}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download
@@ -35,77 +35,119 @@ installmanageengine() {
 keystroke() {
 	if [[ ${EDITTION} == 'essential' ]]; then
 cat <<EOF > keystroke
+0
 1
 q
 1
 0
+1
+1p
+0
+1
+0
+1
+0
+1
+9090
+8443
+1
+0
+1
+/opt/ManageEngine/AppManager
+/opt/ManageEngine/AppManager
 1
 admin
 admin@matmagoc.com
 0
 0
-184
+246
 0
 0
 1
-q
 1
-0
-1
-/opt/ManageEngine
-/opt/ManageEngine
-1
-8060
-1
-1
-3
 EOF
-	elif [[ ${EDITTION} == 'free' ]]; then
+	elif [[ ${EDITTION} == 'enterprise' ]]; then
 cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@matmagoc.com
-0
-0
-184
-0
 0
 1
 q
+1
+0
 1
 2
 0
 1
-/opt/ManageEngine/NetworkConfigurationManager
-/opt/ManageEngine/NetworkConfigurationManager
+0
 1
-8060
+0
 1
+9090
+8443
+1
+0
+1
+/opt/ManageEngine/AppManager
+/opt/ManageEngine/AppManager
+1
+admin
+admin@matmagoc.com
+0
+0
+246
+0
+0
+1
+1
+EOF
+	elif [[ ${EDITTION} == 'free' ]]; then
+cat <<EOF > keystroke
+0
+1
+q
+1
+0
 1
 3
+0
+1
+0
+1
+0
+1
+9090
+8443
+1
+0
+1
+/opt/ManageEngine/AppManager
+/opt/ManageEngine/AppManager
+1
+admin
+admin@matmagoc.com
+0
+0
+246
+0
+0
+1
+1
 EOF
-	else
-		echo "not support this edition"
 	fi
 }
 	echo "Download and install"
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetworkConfigurationManager_64bit.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_ApplicationsManager_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/network-configuration-manager/58801372/ManageEngine_NetworkConfigurationManager_64bit.bin
+			wget -O install.bin https://www.manageengine.com/products/applications_manager/54974026/ManageEngine_ApplicationsManager_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetworkConfigurationManager.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_ApplicationsManager.bin
 		else
-			wget -O install.bin https://www.manageengine.com/network-configuration-manager/58801372/ManageEngine_NetworkConfigurationManager.bin
+			wget -O install.bin https://www.manageengine.com/products/applications_manager/54974026/ManageEngine_ApplicationsManager.bin
 		fi
 	else
 		echo "Not support please edit and rebuild"
@@ -129,5 +171,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		installmanageengine
 	fi
 # Run
-cd ${SOFT_HOME}/bin
-./run.sh
+cd ${SOFT_HOME}
+./startApplicationsManager.sh
+sleep infinity
