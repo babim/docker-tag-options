@@ -113,7 +113,7 @@ EOF
 	fi
 	echo "Install"
 		chmod +x install.bin
-		./install.bin -i console < keystroke
+		./install.bin -console < keystroke
 	# remove install files
 		rm -f install.bin keystroke
 }
