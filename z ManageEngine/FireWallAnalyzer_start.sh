@@ -40,7 +40,7 @@ q
 0
 1
 admin
-admin@matmagoc.com
+admin@example.com
 0
 0
 184

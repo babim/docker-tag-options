@@ -49,7 +49,7 @@ cat <<EOF > keystroke
 y
 admin
 0
-admin@matmagoc.com
+admin@example.com
 0
 252
 1
