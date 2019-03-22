@@ -65,3 +65,4 @@ export CONFIGFILE=config.xml
 
 # Run
 gosu daemon "${SOFT_INSTALL}/bin/run.sh" -fg
+sleep infinity
