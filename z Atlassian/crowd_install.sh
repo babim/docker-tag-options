@@ -107,6 +107,11 @@ installatlassian() {
 	# remove packages
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
+preparedata() {
+	if [ "${VISIBLECODE}" = "true" ]; then
+		mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
+	fi
+}
 
 # install by OS
 echo 'Check OS'
