@@ -29,12 +29,13 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	## set permission path
 		[[ -d "${SOFT_HOME}" ]]		&&	chmod -R 700            "${SOFT_HOME}"
 		[[ -d "${SOFT_HOME}" ]]		&&	chown -R daemon:daemon  "${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}/log}" ]] && 	mkdir -p "${SOFT_INSTALL}/log}"
 		[[ -d "${SOFT_INSTALL}" ]]	&&	chmod -R 755		"${SOFT_INSTALL}"
 		[[ -d "${SOFT_INSTALL}/conf" ]]	&&	chmod -R 700            "${SOFT_INSTALL}/conf"
 		[[ -d "${SOFT_INSTALL}/logs" ]]	&&	chmod -R 700            "${SOFT_INSTALL}/logs"
 		[[ -d "${SOFT_INSTALL}/temp" ]]	&&	chmod -R 700            "${SOFT_INSTALL}/temp"
 		[[ -d "${SOFT_INSTALL}/work" ]]	&&	chmod -R 700            "${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/work" ]]	&&	chown -R daemon:daemon  "${SOFT_INSTALL}"
+		[[ -d "${SOFT_INSTALL}" ]]	&&	chown -R daemon:daemon  "${SOFT_INSTALL}"
 	fi
 
 # check if the `server.xml` file has been changed since the creation of this
