@@ -22,8 +22,8 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 # visible code
 	echo "check path and install"
-	if [ -z "`ls ${SOFT_INSTALL}`" ] || [ ! -d ${SOFT_INSTALL} ]; then
-		if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
+	if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
+	if [ -z "`ls ${SOFT_INSTALL}`" ]; then
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
 		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
 	## set permission path
@@ -65,4 +65,3 @@ export CONFIGFILE=config.xml
 
 # Run
 gosu daemon "${SOFT_INSTALL}/bin/run.sh" -fg
-sleep infinity
