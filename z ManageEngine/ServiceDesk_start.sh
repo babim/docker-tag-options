@@ -153,5 +153,10 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		installmanageengine
 	fi
 # Run
-cd ${SOFT_HOME}
+cd ${SOFT_HOME}/bin
 ./run.sh
+# if error
+	export DELAY=${DELAY:-300}
+		echo "run ${SOFT_HOME}/bin/changeDBServer.sh to other database server"
+		echo "If postgresql on local server start failed"
+		echo "change DELAY environment value to long time by -e DELAY"

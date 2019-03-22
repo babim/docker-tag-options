@@ -19,9 +19,9 @@ else
 fi
 
 setenvironment() {
-		export SOFT=${SOFT:-ServiceDeskPlus-MSP}
+		export SOFT=${SOFT:-SupportCenter}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/ServiceDeskPlus-MSP}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/SupportCenter}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download

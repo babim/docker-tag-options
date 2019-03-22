@@ -22,9 +22,9 @@ fi
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-ServiceDeskPlus-MSP}
+		export SOFT=${SOFT:-SupportCenter}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/ServiceDeskPlus-MSP}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/SupportCenter}
 		#export EDITTION=${EDITTION:-essential}
 
 	# set host download
@@ -35,87 +35,117 @@ installmanageengine() {
 keystroke() {
 	if [[ ${EDITTION} == 'enterprise' ]]; then
 cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@matmagoc.com
-0
-0
-184
-0
-0
-1
-1
-0
-1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
-1
-8080
-1
-1
-1
-3
-EOF
-	elif [[ ${EDITTION} == 'standard' ]]; then
-cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@matmagoc.com
-0
-0
-184
-0
-0
-1
 2
+1
+q
+1
 0
 1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
+1
+0
+1
+/opt/ManageEngine/SupportCenter
+/opt/ManageEngine/SupportCenter
 1
 8080
 1
+0
 1
+1
+admin
+admin@matmagoc.com
+0
+0
+246
+0
+0
 1
 3
 EOF
 	elif [[ ${EDITTION} == 'pro' ]]; then
 cat <<EOF > keystroke
+2
 1
 q
 1
 0
 1
+2
+0
 1
-q
+/opt/ManageEngine/SupportCenter
+/opt/ManageEngine/SupportCenter
+1
+8080
 1
 0
+1
 1
 admin
 admin@matmagoc.com
 0
 0
-184
+246
 0
+0
+1
+3
+EOF
+	elif [[ ${EDITTION} == 'standard' ]]; then
+cat <<EOF > keystroke
+2
+1
+q
+1
 0
 1
 3
 0
 1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
+/opt/ManageEngine/SupportCenter
+/opt/ManageEngine/SupportCenter
 1
 8080
 1
+0
 1
+1
+admin
+admin@matmagoc.com
+0
+0
+246
+0
+0
+1
+3
+EOF
+	elif [[ ${EDITTION} == 'free' ]]; then
+cat <<EOF > keystroke
+2
+1
+q
+1
+0
+1
+4
+0
+1
+/opt/ManageEngine/SupportCenter
+/opt/ManageEngine/SupportCenter
+1
+8080
+1
+0
+1
+1
+admin
+admin@matmagoc.com
+0
+0
+246
+0
+0
 1
 3
 EOF
@@ -125,16 +155,16 @@ EOF
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus_64bit.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_SupportCenter_Plus_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/service-desk/91677414/ManageEngine_ServiceDesk_Plus_64bit.bin
+			wget -O install.bin https://www.manageengine.com/products/support-center/64045241/ManageEngine_SupportCenter_Plus_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus.bin
+			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_SupportCenter_Plus.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/service-desk/91677414/ManageEngine_ServiceDesk_Plus.bin
+			wget -O install.bin https://www.manageengine.com/products/support-center/64045241/ManageEngine_SupportCenter_Plus.bin
 		fi
 	else
 		echo "Not support please edit and rebuild"
@@ -158,5 +188,10 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		installmanageengine
 	fi
 # Run
-cd ${SOFT_HOME}
+cd ${SOFT_HOME}/bin
 ./run.sh
+# if error
+	export DELAY=${DELAY:-300}
+		echo "run ${SOFT_HOME}/bin/changeDBServer.sh to other database server"
+		echo "If postgresql on local server start failed"
+		echo "change DELAY environment value to long time by -e DELAY"
