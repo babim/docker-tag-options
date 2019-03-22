@@ -95,8 +95,19 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		symlinkcreate
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    echo "Not support your OS"
-    exit
+	# set environment
+		setenvironment
+	# install dependencies for build, need EPEL repo
+	yum install -y autoconf automake curl gcc git libmnl-devel libuuid-devel lm_sensors make \
+			MySQL-python nc pkgconfig python python-psycopg2 PyYAML zlib-devel
+	# install netdata
+		installnetdata
+	# download docker entrypoint
+		downloadentry
+	# del dev tool
+		wget --no-check-certificate -O - $DOWN_URL/netdata_clean.sh | bash
+	# symlink access log and error log to stdout/stderr
+		symlinkcreate
 # OS - other
 else
     echo "Not support your OS"
