@@ -29,6 +29,7 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	## set permission path
 		chmod -R 700            "${SOFT_HOME}"
 		chown -R daemon:daemon  "${SOFT_HOME}"
+		chmod -R 755		"${SOFT_INSTALL}"
 		chmod -R 700            "${SOFT_INSTALL}/conf"
 		chmod -R 700            "${SOFT_INSTALL}/logs"
 		chmod -R 700            "${SOFT_INSTALL}/temp"
