@@ -75,7 +75,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
 	# install depend
-		yum install -y rsync
+		yum install -y rsync unzip
 		setenvironment
 		groupadd -g $PGID $PGNAME && mkdir -p /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M $PUNAME
