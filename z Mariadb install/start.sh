@@ -10,24 +10,27 @@ shopt -s nullglob
 
 # copy mysql config
 if [ -d "/etc/mysql" ] && [ -d "/etc-start/mysql" ]; then
-if [ -z "`ls /etc/mysql`" ]; then cp -R /etc-start/mysql/* /etc/mysql; fi
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/mysql
-    fi
+	if [ -z "`ls /etc/mysql`" ]; then cp -R /etc-start/mysql/* /etc/mysql; fi
+	if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+		echo "setup SYNOLOGY environment"
+		chmod -R 777 /etc/mysql
+	fi
 fi
 
 # copy config supervisor
 if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
-if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/supervisor
-    fi
+	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+	if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+		echo "setup SYNOLOGY environment"
+		chmod -R 777 /etc/supervisor
+	fi
 fi
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
+
+# fix permission data folder
+if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql; fi
 
 # if command starts with an option, prepend mysqld
 if [ "${1:0:1}" = '-' ]; then
