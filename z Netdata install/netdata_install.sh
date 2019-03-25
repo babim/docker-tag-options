@@ -15,7 +15,7 @@ fi
 # set environment
 setenvironment() {
 	# set host download
-		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Netdata"
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Netdata%20install"
 }
 # install symlink
 symlinkcreate() {
