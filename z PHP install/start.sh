@@ -69,8 +69,9 @@ if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
 		export auid=${auid:-33}
 		export agid=${agid:-$auid}
 		export auser=${auser:-www-data}
-		chown -R $auser:$auser /usr/local/lsws/autoupdate
-		chown -R $auser:$auser /usr/local/lsws/cachedata
+		export aguser=${aguser:-$auser}
+		chown -R $auser:$aguser /usr/local/lsws/autoupdate
+		chown -R $auser:$aguser /usr/local/lsws/cachedata
 	    fi
 	else
 		# copy just missing
@@ -95,11 +96,11 @@ if [ -z "`ls /etc/php`" ]; then
 	if [ -f "$VARIABLE/fpm/php-fpm.conf" ]; then
 	sed -i -E \
 		-e "/^user = .*/cuser = $auser" \
-		-e "/^group = .*/cgroup = $auser" \
+		-e "/^group = .*/cgroup = $aguser" \
 	$VARIABLE/fpm/php-fpm.conf
 	sed -i -E \
 		-e "/^user = .*/cuser = $auser" \
-		-e "/^group = .*/cgroup = $auser" \
+		-e "/^group = .*/cgroup = $aguser" \
 	$VARIABLE/fpm/pool.d/www.conf
 	fi
 	done
@@ -109,7 +110,7 @@ fi
 setapacheuser() {
 	#Set apache user
 	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
-	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$auser
+	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$aguser
 }
 setnginxuser() {
 #Set nginx user
@@ -118,7 +119,7 @@ if [ -z "`ls /etc/nginx`" ]; then
 	if [ -f "/etc/nginx/nginx.conf" ]; then
 	sed -i -E \
 		-e "/^user  .*/cuser  $auser" \
-		-e "/^group  .*/group  $auser" \
+		-e "/^group  .*/group  $aguser" \
 	/etc/nginx/nginx.conf
 	fi
 fi
@@ -242,20 +243,26 @@ auser=${auser:-www-data}
 	else
 		if id $auser >/dev/null 2>&1; then
 		        echo "user exists"
+			if [[ -f /etc/alpine-release ]]; then
 			# usermod alpine
-				#deluser $auser && delgroup $auser
-				#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
+				deluser $auser && delgroup $aguser
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
 			# usermod ubuntu/debian
 				usermod -u $auid $auser
-				groupmod -g $agid $auser
+				groupmod -g $agid $aguser
+			fi
 			setapacheuser
 			setphpuser
 			setnginxuser
 		else
+			if [[ -f /etc/alpine-release ]]; then
 			# create user alpine
-			#addgroup -g $agid $auser && adduser -D -H -G $auser -s /bin/false -u $auid $auser
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
 			# create user ubuntu/debian
-			groupadd -g $agid $auser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $auser $auser
+				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
+			fi
 			setapacheuser
 			setphpuser
 			setnginxuser

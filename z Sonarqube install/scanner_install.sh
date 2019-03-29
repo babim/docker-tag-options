@@ -15,8 +15,8 @@ fi
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-server}
-		export SOFTUSER=${SOFTUSER:-daemon}
-		export SOFTGROUP=${SOFTGROUP:-daemon}
+		export auser=${auser:-daemon}
+		export aguser=${aguser:-daemon}
 		export OPENJDKV=${OPENJDKV:-8}
 		export ORACLEV=8
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
@@ -38,19 +38,15 @@ installsonarqube() {
 		fi
 	## download version software
 		echo "downloading and install sonarqube..."
-	if [ "${COMMERCIAL}" = "true" ]; then
-		wget -O /tmp/${SOFT}.zip https://binaries.sonarsource.com/CommercialDistribution/sonarqube-${EDITTION}/sonarqube-${EDITTION}-${SONAR_VERSION}.zip
-	else
-		wget -O /tmp/${SOFT}.zip https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONAR_VERSION}.zip
-	fi
+		wget -O /tmp/${SOFT}.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-linux.zip
 	## and extract source software
 		unzip /tmp/${SOFT}.zip -d /tmp
 		rm -rf ${SONARQUBE_HOME} && rm -rf /tmp/${SOFT}.zip
-		mv /tmp/sonarqube-$SONAR_VERSION ${SONARQUBE_HOME}
+		mv /tmp/sonar-scanner-$SONAR_VERSION-linux ${SONARQUBE_HOME}
 	# Install sonarqube and helper tools and setup initial home
 	## directory structure.
 #		[[ -d "${SONARQUBE_HOME}" ]]		&& chmod -R 700				"${SONARQUBE_HOME}"
-		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${SOFTUSER}:${SOFTGROUP}	"${SONARQUBE_HOME}"
+		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${auser}:${aguser}		"${SONARQUBE_HOME}"
 }
 dockerentry() {
 	# download docker entry
@@ -80,12 +76,16 @@ if [[ -f /etc/alpine-release ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-#		apk add --no-cache curl
+		apk add --no-cache grep sed unzip bash nodejs nodejs-npm
 	# install gosu
 		installgosu
 	# Install sonarqube
 		installsonarqube
+	# ensure Sonar uses the provided Java for musl instead of a borked glibc one
+		sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' ${SONARQUBE_HOME}/bin/sonar-scanner
+	# download entrypoint
 		dockerentry
+	# clean
 		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -101,12 +101,14 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			exit
 		fi
 			echo "Install depend packages..."
-#		apt-get install --quiet --yes --no-install-recommends curl
+		apt-get install --quiet --yes --no-install-recommends nodejs build-essential
 	# install gosu
 		installgosu
 	# Install sonarqube
 		installsonarqube
+	# download entrypoint
 		dockerentry
+	# clean
 		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then

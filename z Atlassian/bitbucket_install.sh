@@ -16,8 +16,8 @@ fi
 setenvironment() {
 		export SOFT=${SOFT:-bitbucket}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFTUSER=${SOFTUSER:-daemon}
-		export SOFTGROUP=${SOFTGROUP:-daemon}	
+		export auser=${auser:-daemon}
+		export aguser=${aguser:-daemon}	
 		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
 		export MYSQLV=5.1.47
@@ -42,10 +42,10 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		[[ ! -d "${SOFT_HOME}" ]]		&& mkdir -p				"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700				"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chown -R ${SOFTUSER}:${SOFTGROUP}	"${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p				"${SOFT_INSTALL}"
+		[[ ! -d "${SOFT_HOME}" ]]		&& mkdir -p			"${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700			"${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&& chown -R ${auser}:${aguser}	"${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p			"${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/stash/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
@@ -71,14 +71,14 @@ installatlassian() {
 		echo "downloading and update oracle-ojdbc..."
 		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${FILELIB}/ojdbc${ORACLEV}.jar"
 	## set permission path
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700				"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700				"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700				"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700				"${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R ${SOFTUSER}:${SOFTGROUP}	"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R ${SOFTUSER}:${SOFTGROUP}	"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R ${SOFTUSER}:${SOFTGROUP}	"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R ${SOFTUSER}:${SOFTGROUP}	"${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700			"${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700			"${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700			"${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700			"${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/work"
 	if [[ -f /etc/alpine-release ]]; then
 		ln -s "/usr/lib/libtcnative-1.so"			"${SOFT_INSTALL}/lib/native/libtcnative-1.so"
 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -145,7 +145,6 @@ if [[ -f /etc/alpine-release ]]; then
 	# Install Atlassian
 		installatlassian
 		dockerentry
-		preparedata
 		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -170,7 +169,6 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# Install Atlassian
 		installatlassian
 		dockerentry
-		preparedata
 		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then

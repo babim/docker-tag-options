@@ -15,8 +15,8 @@ fi
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-server}
-		export SOFTUSER=${SOFTUSER:-daemon}
-		export SOFTGROUP=${SOFTGROUP:-daemon}
+		export auser=${auser:-daemon}
+		export aguser=${aguser:-daemon}
 		export OPENJDKV=${OPENJDKV:-8}
 		export ORACLEV=8
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
@@ -50,7 +50,7 @@ installsonarqube() {
 	# Install sonarqube and helper tools and setup initial home
 	## directory structure.
 #		[[ -d "${SONARQUBE_HOME}" ]]		&& chmod -R 700				"${SONARQUBE_HOME}"
-		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${SOFTUSER}:${SOFTGROUP}	"${SONARQUBE_HOME}"
+		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${auser}:${aguser}	"${SONARQUBE_HOME}"
 }
 dockerentry() {
 	# download docker entry
@@ -85,7 +85,9 @@ if [[ -f /etc/alpine-release ]]; then
 		installgosu
 	# Install sonarqube
 		installsonarqube
+	# download entrypoint
 		dockerentry
+	# clean
 		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -106,7 +108,9 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		installgosu
 	# Install sonarqube
 		installsonarqube
+	# download entrypoint
 		dockerentry
+	# clean
 		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
