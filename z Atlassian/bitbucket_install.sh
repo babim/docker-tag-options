@@ -95,6 +95,7 @@ installatlassian() {
 	# fix path start file
 		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
@@ -105,6 +106,8 @@ installatlassian() {
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
 		fi
 		chmod +x $FILETEMP
+}
+cleanpackage() {
 	# remove packages
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
@@ -138,6 +141,9 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
@@ -160,6 +166,9 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
     echo "Not support your OS"

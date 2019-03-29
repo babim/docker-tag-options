@@ -94,6 +94,7 @@ installatlassian() {
 		[[ -d "${SOFT_INSTALL}/apache-tomcat/work" ]]		&& chmod -R 700            "${SOFT_INSTALL}/apache-tomcat/work"
 		[[ -d "${SOFT_HOME}" ]]					&& chown -R daemon:daemon  "${SOFT_HOME}"
 		[[ -d "${SOFT_INSTALL}" ]]				&& chown -R daemon:daemon  "${SOFT_INSTALL}"
+dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
@@ -104,6 +105,8 @@ installatlassian() {
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
 		fi
 		chmod +x $FILETEMP
+}
+cleanpackage() {
 	# remove packages
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
@@ -137,6 +140,9 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
@@ -159,6 +165,9 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
     echo "Not support your OS"

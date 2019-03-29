@@ -48,7 +48,7 @@ installatlassian() {
 		echo "downloading and install atlassian..."
 		wget -O /tmp/crucible.zip https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.zip
 		unzip /tmp/crucible.zip -d /tmp
-		rm -rf ${SOFT_INSTALL}
+		rm -rf ${SOFT_INSTALL} && rm -rf /tmp/crucible.zip
 		mv /tmp/fecru-${SOFT_VERSION} ${SOFT_INSTALL}
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
@@ -76,7 +76,8 @@ installatlassian() {
 		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700            "${SOFT_INSTALL}/logs"
 		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700            "${SOFT_INSTALL}/temp"
 		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700            "${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}" ]] && chown -R daemon:daemon  "${SOFT_INSTALL}"
+		[[ -d "${SOFT_INSTALL}" ]]	&& chown -R daemon:daemon  "${SOFT_INSTALL}"
+dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
@@ -87,6 +88,8 @@ installatlassian() {
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
 		fi
 		chmod +x $FILETEMP
+}
+cleanpackage() {
 	# remove packages
 		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
@@ -120,6 +123,9 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
@@ -142,6 +148,9 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	fi
 	# Install Atlassian
 		installatlassian
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
     echo "Not support your OS"
