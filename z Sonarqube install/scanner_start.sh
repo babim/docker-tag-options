@@ -11,6 +11,63 @@ set -e
 		export auser=${auser:-daemon}
 		export aguser=${aguser:-daemon}
 		export agid=${agid:-$auid}
+		export aguser=${aguser:-daemon}
+		export SERVER=${SERVER:-sonarqube}
+		export SQLSERVER=${SQLSERVER:-sonarqube}
+		export SQLUSER=${SQLUSER:-sonar}
+		export SQLTYPE=${SQLTYPE:-h2}
+		export PROJECTKEY=${PROJECTKEY:-Test}
+		export PROJECTNAME=${PROJECTNAME:-Test}
+		export PROJECTVERSION=${PROJECTVERSION:-1}
+
+# cat config file
+if [ ! -f "${SONARQUBE_HOME}/conf/sonar-scanner.properties" ]; then 
+	cat <<EOF>> ${SONARQUBE_HOME}/conf/sonar-scanner.properties
+#Configure here general information about the environment, such as SonarQube DB details for example
+#No information about specific project should appear here
+
+#----- Default SonarQube server
+sonar.host.url=http://${SERVER}:${PORT}
+
+#----- Default source code encoding
+#sonar.sourceEncoding=UTF-8
+
+#----- Global database settings (not used for SonarQube 5.2+)
+#sonar.jdbc.username=sonar
+#sonar.jdbc.password=sonar
+
+#----- PostgreSQL
+#sonar.jdbc.url=jdbc:postgresql://localhost/sonar
+
+#----- MySQL
+#sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar?useUnicode=true&amp;characterEncoding=utf8
+
+#----- Oracle
+#sonar.jdbc.url=jdbc:oracle:thin:@localhost/XE
+
+#----- Microsoft SQLServer
+#sonar.jdbc.url=jdbc:jtds:sqlserver://localhost/sonar;SelectMethod=Cursor
+
+# H2 database from Docker Sonar container
+#sonar.jdbc.url=jdbc:h2:tcp://sonarqube/sonar
+#sonar.projectKey=MyProjectKey
+#sonar.projectName=My Project Name
+#sonar.projectVersion=1
+#sonar.projectBaseDir=/root/src
+#sonar.sources=./
+
+# Connect to database and sonarqube server
+sonar.jdbc.url=jdbc:${SQLTYPE}:tcp://${SQLSERVER}/${USER}
+sonar.projectKey=${PROJECTKEY}
+sonar.projectName=${PROJECTNAME}
+sonar.projectVersion=${PROJECTVERSION}
+sonar.projectBaseDir=/source
+sonar.sources=./
+
+# Exclude node_modules for JS/TS-based scanning
+sonar.exclusions=**/node_modules/**/*
+EOF
+fi
 
 # command group
 runscannerroot() {

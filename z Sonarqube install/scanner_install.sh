@@ -47,6 +47,9 @@ installsonarqube() {
 	## directory structure.
 #		[[ -d "${SONARQUBE_HOME}" ]]		&& chmod -R 700				"${SONARQUBE_HOME}"
 		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${auser}:${aguser}		"${SONARQUBE_HOME}"
+	## clear properties config file
+		FILETEMP=${SONARQUBE_HOME}/conf/sonar-scanner.properties
+		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 }
 dockerentry() {
 	# download docker entry
