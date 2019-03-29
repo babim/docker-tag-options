@@ -51,24 +51,22 @@ apply_backward_compatibility_fixes
 
 #enable public access
 if [[ $PUBLIC = 'true' ]]; then
+	echo "Change public access"
 	sed -i "s|;acl localnet src 10.0.0.0/8|acl localnet src 0.0.0.0/0|i" $SQUID_CONFIG_DIR/squid.conf
 elif [[ $PUBLIC = 'false' ]]; then
 	sed -i "s|;acl localnet src 0.0.0.0/0|acl localnet src 10.0.0.0/8|i" $SQUID_CONFIG_DIR/squid.conf
 else
-	echo "not change public access"
+	echo "Not change public access"
 fi
 
 # enable authentication
 if [[ $AUTH = 'true' ]]; then
 	sed -i 's@#\tauth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@' $SQUID_CONFIG_DIR/squid.conf
-	sed -i 's@#\tacl ncsa_users proxy_auth REQUIRED@acl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
-	sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
+	sed -i 's@#\tacl password proxy_auth REQUIRED@acl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
+	sed -i 's@^http_access allow localhost$@\0\nhttp_access allow password@' $SQUID_CONFIG_DIR/squid.conf
 # default behaviour is to launch squid
 	[[ -d "/usr/etc" ]] || mkdir -p /usr/etc
 	htpasswd -bc /usr/etc/passwd "${SQUID_USERNAME}" "${SQUID_PASSWORD}"
-	echo "Done"
-	echo "Squid Start"
-	exec squid${SQUID_VERSION} -f ${SQUID_CONFIG_DIR}/squid.conf -N $*
 fi
 
 # allow arguments to be passed to squid

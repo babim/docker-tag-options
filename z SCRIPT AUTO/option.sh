@@ -633,6 +633,8 @@ upgrade-create() {
         os-clean
     elif [ -f "/UPGRADE.check" ]; then
         echo done
+    elif [ -f "/UPGRADE.check" ] && [ "$UPGRADEOPTION" = "always" ]; then
+	os-upgrade
     fi
 }
 upgrade-del() {
@@ -677,7 +679,7 @@ upgrade-del() {
     if [ "$SYNOLOGYOPTION" = "false" ] && [ -f /SYNOLOGY.check ]; then synology-del; fi
 # upgrade
     # install
-    if [ "$UPGRADEOPTION" = "true" ] || [ "$UPGRADEOPTION" = "on" ]; then
+    if [ "$UPGRADEOPTION" = "true" ] || [ "$UPGRADEOPTION" = "on" ] || [ "$UPGRADEOPTION" = "always" ]; then
        echo "Upgrade OS"
        upgrade-create
     fi
