@@ -20,7 +20,7 @@ setenvironment() {
 		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
 		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
 	# set host download
-		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
+		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Sonarqube%20install"
 }
 # install gosu
 installgosu() {
