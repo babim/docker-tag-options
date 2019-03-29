@@ -61,9 +61,13 @@ fi
 
 # enable authentication
 if [[ $AUTH = 'true' ]]; then
-	sed -i 's@#\tauth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@' $SQUID_CONFIG_DIR/squid.conf
-	sed -i 's@#\tacl password proxy_auth REQUIRED@acl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
-	sed -i 's@^http_access allow localhost$@\0\nhttp_access allow password@' $SQUID_CONFIG_DIR/squid.conf
+	if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+		sed -i 's@#\tauth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
+		sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
+	elif [[ -f /etc/alpine-release ]]; then
+		sed -i 's@^http_access allow localhost@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
+	fi
+	
 # default behaviour is to launch squid
 	[[ -d "/usr/etc" ]] || mkdir -p /usr/etc
 	htpasswd -bc /usr/etc/passwd "${SQUID_USERNAME}" "${SQUID_PASSWORD}"
