@@ -693,6 +693,12 @@ upgrade-del() {
         echo "nameserver $GOOGLE" >> /etc/resolv.conf
         echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
     fi
+# set timezone
+	if [[ -f /etc/alpine-release ]]; then
+		[[ -d "/usr/share/zoneinfo" ]] || apk add --no-cache tzdata
+	fi
+		TZ=${TZ:-Asia/Ho_Chi_Minh}
+		ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ####################################################
 # QUIT

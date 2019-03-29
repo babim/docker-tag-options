@@ -8,17 +8,34 @@
 set -e
 
 # environment
-		export auser=${auser:-daemon}
-		export aguser=${aguser:-daemon}
-		export agid=${agid:-$auid}
-		export aguser=${aguser:-daemon}
-		export SERVER=${SERVER:-sonarqube}
-		export SQLSERVER=${SQLSERVER:-sonarqube}
-		export SQLUSER=${SQLUSER:-sonar}
-		export SQLTYPE=${SQLTYPE:-h2}
-		export PROJECTKEY=${PROJECTKEY:-Test}
-		export PROJECTNAME=${PROJECTNAME:-Test}
-		export PROJECTVERSION=${PROJECTVERSION:-1}
+	export auser=${auser:-daemon}
+	export aguser=${aguser:-daemon}
+	export agid=${agid:-$auid}
+	export SERVER=${SERVER:-sonarqube}
+	export SQLSERVER=${SQLSERVER:-sonarqube}
+	export SQLTYPE=${SQLTYPE:-"h2"}
+	export PROJECTKEY=${PROJECTKEY:-Test}
+	export PROJECTNAME=${PROJECTNAME:-Test}
+	export PROJECTVERSION=${PROJECTVERSION:-1}
+		if [ "${SQLSERVER}" = "mysql" ]; then
+			if [[ -z "${SQLOPTION1}" ]]; then export SQLOPTION1="//";fi
+			if [[ -z "${SQLOPTION2}" ]]; then export SQLOPTION2="?useUnicode=true&amp;characterEncoding=utf8";fi
+			if [[ -z "${SQLPORT}" ]]; then export SQLPORT=":3006";fi
+			if [[ -z "${SQLUSER}" ]]; then export SQLUSER="sonar";fi
+		elif [ "${SQLSERVER}" = "oracle" ]; then
+			if [[ -z "${SQLOPTION1}" ]]; then export SQLOPTION1="thin:@";fi
+			if [[ -z "${SQLOPTION2}" ]]; then export SQLOPTION2="/XE";fi
+		elif [ "${SQLSERVER}" = "sqlserver" ]; then
+			if [[ -z "${SQLOPTION1}" ]]; then export SQLOPTION1="//";fi
+			if [[ -z "${SQLOPTION2}" ]]; then export SQLOPTION2=";SelectMethod=Cursor";fi
+			if [[ -z "${SQLUSER}" ]]; then export SQLUSER="sonar";fi
+		elif [ "${SQLSERVER}" = "postgresql" ]; then
+			if [[ -z "${SQLOPTION1}" ]]; then export SQLOPTION1="//";fi
+			if [[ -z "${SQLUSER}" ]]; then export SQLUSER="sonar";fi
+		elif [ "${SQLSERVER}" = "h2" ]; then
+			if [[ -z "${SQLOPTION1}" ]]; then export SQLOPTION1="tcp://";fi
+			if [[ -z "${SQLUSER}" ]]; then export SQLUSER="sonar";fi
+		fi
 
 # cat config file
 if [ ! -f "${SONARQUBE_HOME}/conf/sonar-scanner.properties" ]; then 
@@ -50,14 +67,9 @@ sonar.host.url=http://${SERVER}:${PORT}
 
 # H2 database from Docker Sonar container
 #sonar.jdbc.url=jdbc:h2:tcp://sonarqube/sonar
-#sonar.projectKey=MyProjectKey
-#sonar.projectName=My Project Name
-#sonar.projectVersion=1
-#sonar.projectBaseDir=/root/src
-#sonar.sources=./
 
 # Connect to database and sonarqube server
-sonar.jdbc.url=jdbc:${SQLTYPE}:tcp://${SQLSERVER}/${USER}
+sonar.jdbc.url=jdbc:${SQLTYPE}:${SQLOPTION1}${SQLSERVER}${SQLPORT}/${SQLUSER}${SQLOPTION2}
 sonar.projectKey=${PROJECTKEY}
 sonar.projectName=${PROJECTNAME}
 sonar.projectVersion=${PROJECTVERSION}

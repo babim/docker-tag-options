@@ -10,28 +10,34 @@ copyright() {
 		echo "---" > /etc/motd
 		echo "Support by Duc Anh Babim. Contact: babim@matmagoc.com" >> /etc/motd
 		echo "---" >> /etc/motd
-		touch "/(C) Babim"
+		touch "/(C) AQ.jsc Viet Nam"
+}
+settimezone() {
+		TZ=${TZ:-Asia/Ho_Chi_Minh}
+		ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 }
 # create by OS
 	if [[ -f /etc/redhat-release ]]; then
 	## Copyright
 		copyright
-	## Set timezone
+	## Set UTF
 		export LC_ALL=en_US.UTF-8
-		export TZ=Asia/Ho_Chi_Minh
+	# Set timezone to VN
+		settimezone
 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	## Copyright
 		copyright
-	## Set timezone
+	## Set UTF
 		export TERM="xterm"
 		export LANG="C.UTF-8"
 		export LC_ALL="C.UTF-8"
-		export TZ=Asia/Ho_Chi_Minh
 		export DEBIAN_FRONTEND="noninteractive"
 		apt-get update && apt-get install -y locales nano		
 		dpkg-reconfigure locales
     		locale-gen en_US.UTF-8
     		update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+	# Set timezone to VN
+		settimezone
 	## clean
 		apt-get clean
     		apt-get autoclean
@@ -45,8 +51,9 @@ copyright() {
 		copyright
 	## Set timezone
 		apk add --no-cache tzdata
-		cp /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime
-		echo "Asia/Ho_Chi_Minh" >  /etc/timezone
+	# Set timezone to VN
+		settimezone
+	# clean timezone data
 		apk del tzdata
 	else
 	    exit
