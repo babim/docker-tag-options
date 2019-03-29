@@ -60,13 +60,18 @@ fi
 
 # enable authentication
 if [[ $AUTH = 'true' ]]; then
-	sed -i 's@#\tauth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
+	sed -i 's@#\tauth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd@' $SQUID_CONFIG_DIR/squid.conf
+	sed -i 's@#\tacl ncsa_users proxy_auth REQUIRED@acl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
 	sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
 # default behaviour is to launch squid
+	[[ -d "/usr/etc" ]] || mkdir -p /usr/etc
 	htpasswd -bc /usr/etc/passwd "${SQUID_USERNAME}" "${SQUID_PASSWORD}"
+	echo "Done"
+	echo "Squid Start"
+	exec squid${SQUID_VERSION} -f ${SQUID_CONFIG_DIR}/squid.conf -N $*
 fi
 
-# allow arguments to be passed to squid3
+# allow arguments to be passed to squid
 if [[ ${1:0:1} = '-' ]]; then
   EXTRA_ARGS="$@"
   set --
