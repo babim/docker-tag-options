@@ -1,16 +1,21 @@
 #!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
 
 # copy config supervisor
 if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
-if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
 fi
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 if [ -d "/etc-start/nginx" ];then
-# copy config nginx
-if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
+	# copy config nginx
+	if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
 fi
 
 #Check if we are asked to process old logs

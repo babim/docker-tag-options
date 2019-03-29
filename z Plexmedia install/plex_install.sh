@@ -24,10 +24,15 @@ prepareconfig() {
 			[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP $DOWN_URL/config/$FILETEMP
 		}
+cleanpackage() {
+	# remove packages
+		wget -O - $DOWN_URL/${SOFT}_clean.sh | bash
+}
 
 # set environment
-DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
-DEBIAN_FRONTEND=noninteractive
+export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
+export DEBIAN_FRONTEND=noninteractive
+export SOFT=plex
 
 echo 'Check OS'
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
@@ -61,11 +66,10 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		mkdir /config \
 		&& chown plex:plex /config
 
-	# Clean
-		apt-get clean \
-		&& rm -rf /var/lib/apt/lists/*
 	# preconfig
 		prepareconfig
+	# Clean
+		cleanpackage
 
 elif [[ -f /etc/alpine-release ]]; then
 	# Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
@@ -118,11 +122,10 @@ elif [[ -f /etc/alpine-release ]]; then
 	 && mv usr/sbin/start_pms $DESTDIR/ \
 	 && mv usr/lib/plexmediaserver $DESTDIR/plex-media-server
 
-	# Clean
-	 apk del --no-cache xz binutils \
-	 && rm -rf /tmp/*
 	# preconfig
 		prepareconfig
+	# Clean
+		cleanpackage
 
 else
     echo "Not support your OS"

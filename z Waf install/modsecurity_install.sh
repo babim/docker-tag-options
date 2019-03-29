@@ -10,12 +10,18 @@ if [ "x$(id -u)" != 'x0' ]; then
     echo 'Error: this script can only be executed by root'
     exit 1
 fi
+
+cleanpackage() {
+	# remove packages
+		wget -O - $DOWN_URL/${SOFT}_clean.sh | bash
+}
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 	# set environment
 	DEBIAN_FRONTEND=noninteractive
 	NGINX_VERSION=${NGINX_VERSION:-"1.15.3"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Waf%20install"
+	export SOFT=modsecurity
 	
 	# update and install dependencies
 	apt-get update
@@ -126,13 +132,7 @@ if [[ -f /etc/debian_version ]]; then
 	# prepare etc start
 	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
 	# clean os
-		apt-get purge -y wget curl && \
-		apt-get clean && \
-  		apt-get autoclean && \
-  		apt-get autoremove -y && \
-   		rm -rf /build && \
-   		rm -rf /tmp/* /var/tmp/* && \
-   		rm -rf /var/lib/apt/lists/*
+		cleanpackage
 
 else
     echo "Not support your OS"
