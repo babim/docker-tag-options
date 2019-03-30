@@ -26,7 +26,7 @@ dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_fixed.sh
+			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
 }
 cleanpackage() {
