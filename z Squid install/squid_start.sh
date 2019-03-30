@@ -48,6 +48,24 @@ create_log_dir
 create_cache_dir
 apply_backward_compatibility_fixes
 
+# enable authentication
+if [[ $AUTH = 'true' ]]; then
+	echo "enable authentication"
+		export PUBLIC=
+		sed -i 's/#acl localnet src/##acl localnet src/g' $SQUID_CONFIG_DIR/squid.conf
+		sed -i 's/#http_access allow localnet/##http_access allow localnet/g' $SQUID_CONFIG_DIR/squid.conf
+	if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+		sed -i 's@#\tauth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
+		sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
+	#elif [[ -f /etc/alpine-release ]]; then
+	else
+		sed -i 's@^http_access allow localhost$@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
+	fi
+# default behaviour is to launch squid
+	[[ -d "/usr/etc" ]] || mkdir -p /usr/etc
+	htpasswd -bc /usr/etc/passwd "${SQUID_USERNAME}" "${SQUID_PASSWORD}"
+fi
+
 #enable public access
 if [[ $PUBLIC = 'true' ]]; then
 	echo "Change public access"
@@ -57,22 +75,6 @@ elif [[ $PUBLIC = 'false' ]]; then
 	sed -i "s|;acl localnet src 0.0.0.0/0|acl localnet src 10.0.0.0/8|i" $SQUID_CONFIG_DIR/squid.conf
 else
 	echo "Not change public access"
-fi
-
-# enable authentication
-if [[ $AUTH = 'true' ]]; then
-	echo "enable authentication"
-		sed -i 's/#acl localnet src/##acl localnet src/g' $SQUID_CONFIG_DIR/squid.conf
-		sed -i 's/#http_access allow localnet/##http_access allow localnet/g' $SQUID_CONFIG_DIR/squid.conf
-	if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		sed -i 's@#\tauth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
-		sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
-	elif [[ -f /etc/alpine-release ]]; then
-		sed -i 's@^http_access allow localhost$@auth_param basic program /usr/lib/squid/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
-	fi
-# default behaviour is to launch squid
-	[[ -d "/usr/etc" ]] || mkdir -p /usr/etc
-	htpasswd -bc /usr/etc/passwd "${SQUID_USERNAME}" "${SQUID_PASSWORD}"
 fi
 
 # allow arguments to be passed to squid
