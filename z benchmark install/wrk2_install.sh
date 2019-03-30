@@ -19,7 +19,7 @@ fi
 
 installsoft() {
 		cd / && git clone https://github.com/giltene/${SOFT}.git ${SOFT}
-		cd ${SOFT} && make && cp ${SOFT} /usr/local/bin
+		cd ${SOFT} && make && mv wrk ${SOFT} && cp ${SOFT} /usr/local/bin
 		rm -rf /${SOFT}
 }
 dockerentry() {
@@ -39,7 +39,7 @@ echo 'Check OS'
 # OS - alpine linux
 if [[ -f /etc/alpine-release ]]; then
 	# install depend
-		apk add --no-cache alpine-sdk openssl-dev git
+		apk add --no-cache alpine-sdk openssl-dev libgcc git
 	# install
 		installsoft		
 	# done
