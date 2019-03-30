@@ -75,8 +75,14 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		cleanpackage
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    echo "Not support your OS"
-    exit
+    	# set environment
+		setenvironment
+	#export SQUID_VERSION=3
+	# install depend
+		yum install -y squid${SQUID_VERSION} httpd
+		dockerentry
+		preparedata
+		cleanpackage
 # OS - other
 else
     echo "Not support your OS"
