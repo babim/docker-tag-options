@@ -42,7 +42,7 @@ if [[ -f /etc/alpine-release ]]; then
 		#apk add --no-cache alpine-sdk libgcc openssl-dev git linux-headers
 		apk add --no-cache ${SOFT}
 	# install
-		installsoft		
+	#	installsoft		
 	# done
 		dockerentry
 		cleanpackage
