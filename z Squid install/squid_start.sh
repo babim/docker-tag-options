@@ -70,7 +70,7 @@ fi
 if [[ $PUBLIC = 'true' ]] || [[ $PUBLIC = 'on' ]]; then
 	echo "Change public access"
 	sed -i "s|;acl localnet src 10.0.0.0/8|acl localnet src 0.0.0.0/0|i" $SQUID_CONFIG_DIR/squid.conf
-elif [[ $PUBLIC = 'false' ]]; then
+elif [[ $PUBLIC = 'false' ]] || [[ $PUBLIC = 'off' ]]; then
 	echo "Disable public access"
 	sed -i "s|;acl localnet src 0.0.0.0/0|acl localnet src 10.0.0.0/8|i" $SQUID_CONFIG_DIR/squid.conf
 else
