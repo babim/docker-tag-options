@@ -49,11 +49,11 @@ create_cache_dir
 apply_backward_compatibility_fixes
 
 # enable authentication
-if [[ $AUTH = 'true' ]]; then
+if [[ $AUTH = 'true' ]] || [[ $AUTH = 'on' ]]; then
 	echo "enable authentication"
 		export PUBLIC=
-		sed -i 's/#acl localnet src/##acl localnet src/g' $SQUID_CONFIG_DIR/squid.conf
-		sed -i 's/#http_access allow localnet/##http_access allow localnet/g' $SQUID_CONFIG_DIR/squid.conf
+		sed -i '/acl localnet/ s/^#*/#/' $SQUID_CONFIG_DIR/squid.conf
+		sed -i '/http_access allow localnet/ s/^#*/#/' $SQUID_CONFIG_DIR/squid.conf
 	if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		sed -i 's@#\tauth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd@auth_param basic program /usr/lib/squid3/basic_ncsa_auth /usr/etc/passwd\nacl ncsa_users proxy_auth REQUIRED@' $SQUID_CONFIG_DIR/squid.conf
 		sed -i 's@^http_access allow localhost$@\0\nhttp_access allow ncsa_users@' $SQUID_CONFIG_DIR/squid.conf
@@ -67,7 +67,7 @@ if [[ $AUTH = 'true' ]]; then
 fi
 
 #enable public access
-if [[ $PUBLIC = 'true' ]]; then
+if [[ $PUBLIC = 'true' ]] || [[ $PUBLIC = 'on' ]]; then
 	echo "Change public access"
 	sed -i "s|;acl localnet src 10.0.0.0/8|acl localnet src 0.0.0.0/0|i" $SQUID_CONFIG_DIR/squid.conf
 elif [[ $PUBLIC = 'false' ]]; then
