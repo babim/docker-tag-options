@@ -22,7 +22,7 @@ export UNINSTALL="wget git"
 		rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
  	elif [[ -f /etc/alpine-release ]]; then
 		[[ ! -z "${UNINSTALL}" ]] && apk del --purge $UNINSTALL alpine-sdk || echo "not have apps need remove"
-		apk add --no-cache libssl1.0
+	#	apk add --no-cache libssl1.0
  	else
  	    echo "not support"
  	fi
