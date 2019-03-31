@@ -19,6 +19,10 @@ RUN apk add --no-cache wget bash && cd / && wget --no-check-certificate https://
 ```
 # option with entrypoint
 `if [ -f "/option.sh" ]; then /option.sh; fi`
+```
+Set timezone
+TZ=Asia/Ho_Chi_Minh
+```
 
 ## Environment ssh, cron option
 

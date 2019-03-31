@@ -47,6 +47,7 @@ if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then
     export SYNOLOGYOPTION=${SYNOLOGY:-true}
     export UPGRADEOPTION=${UPGRADE:-true}
     export DNSOPTION=${DNS:-true}
+    export TZ=${TZ:-Asia/Ho_Chi_Minh}
 fi
 
 ####################################################
