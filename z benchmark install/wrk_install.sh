@@ -18,9 +18,9 @@ fi
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20benchmark%20install"
 
 installsoft() {
-		cd / && git clone https://github.com/wg/${SOFT}.git ${SOFT}
-		cd ${SOFT} && make && cp ${SOFT} /usr/local/bin
-		rm -rf /${SOFT}
+		cd / && git clone https://github.com/wg/${SOFT}.git ${SOFT} && \
+		cd ${SOFT} && make && cp ${SOFT} /usr/local/bin && \
+		cd / && rm -rf /${SOFT}
 }
 dockerentry() {
 	# download docker entry
