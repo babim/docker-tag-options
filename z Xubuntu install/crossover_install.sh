@@ -17,7 +17,7 @@ export CROSSOVER=${CROSSOVER:-18.5.0-1}
 	libxcursor1:i386 libxdamage1:i386 libxdmcp6:i386 libxext6:i386 \
 	libxfixes3:i386 libxi6:i386 libxrandr2:i386 libxrender1:i386 \
 	libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386 && \
-	cd /tmp && wget http://media.matmagoc.com/crossover_$CROSSOVER.deb && dpkg -i crossover*.deb && \
+	cd /tmp && wget http://media.matmagoc.com/crossover_${CROSSOVER}.deb && dpkg -i crossover_${CROSSOVER}.deb && \
 	apt-get install -f -y && rm -rf /tmp/crossover*
 	FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
 	[[ -f $FILETEMP ]] && rm -f $FILETEMP

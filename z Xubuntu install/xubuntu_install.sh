@@ -34,8 +34,8 @@ if [[ -f /etc/lsb-release ]]; then
 	apt-get update
 	# install GUI
 		apt-get install xubuntu-desktop --no-install-recommends -y --force-yes
-	# install app
-		apt-get install -y --force-yes nano mousepad xfce4-taskmanager firefox flashplugin-installer enrampa ristretto catfish thunar
+	# install app 
+		apt-get install -y --force-yes nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer enrampa ristretto catfish thunar
     
 # install admin app
 	if [[ "$ADMINAPP" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
