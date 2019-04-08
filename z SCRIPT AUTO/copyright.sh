@@ -8,7 +8,7 @@
 copyright() {
 		rm -f /etc/motd
 		echo "---" > /etc/motd
-		echo "Support by Duc Anh Babim. Contact: babim@matmagoc.com" >> /etc/motd
+		echo "Support by AQ Viet Nam. Contact: info@matmagoc.com" >> /etc/motd
 		echo "---" >> /etc/motd
 		touch "/(C) AQ.jsc Viet Nam"
 }
@@ -45,12 +45,11 @@ settimezone() {
 		rm -rf /build
 		rm -rf /tmp/* /var/tmp/*
 		rm -rf /var/lib/apt/lists/*
-		rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
 	elif [[ -f /etc/alpine-release ]]; then
 	## Copyright
 		copyright
 	## Set timezone
-		apk add --no-cache tzdata
+		apk add --no-cache tzdata nano
 	# Set timezone to VN
 		settimezone
 	# clean timezone data
