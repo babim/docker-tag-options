@@ -5,15 +5,11 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-# check permission root
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
-    exit 1
-fi
-
 # source from bash library
 source <(curl -s https://example.com/script.sh)
+
+# need root to run
+	require_root
 
 # set environment
 setenvironment() {
@@ -21,21 +17,15 @@ setenvironment() {
 		#export SOFTSUB=${SOFTSUB:-core}
 		export auser=${auser:-daemon}
 		export aguser=${aguser:-daemon}
-		export OPENJDKV=${OPENJDKV:-8}
 		export POSTGRESQLV=42.2.5
 		export MYSQLV=5.1.47
 		export MSSQLV=7.2.1.jre8
 		export ORACLEV=8
-		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
-		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
 # install gosu
-installgosu() {
-	echo "Install gosu package..."
-	wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
-}
+	install_gosu
 # set command install
 installatlassian() {
 	## Check version
@@ -45,10 +35,10 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		[[ ! -d "${SOFT_HOME}" ]]		&& mkdir -p                	"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700            	"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chown -R ${auser}:${aguser}	"${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p                	"${SOFT_INSTALL}"
+		create_folder                		"${SOFT_HOME}"
+		set_filefolder_mod 700            	"${SOFT_HOME}"
+		set_filefolder_owner ${auser}:${aguser}	"${SOFT_HOME}"
+		create_folder                		"${SOFT_INSTALL}"
 	## download and extract source software
 		echo "downloading and install atlassian..."
 		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner

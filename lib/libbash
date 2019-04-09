@@ -349,6 +349,16 @@ function    is_root_say()
     {
         [ $(id -u) -eq 0 ] && say "You are logged in as root." || say_warning "You are not logged in as root."
     }
+function    require_root()
+    {
+        # check permission root
+        say "Check root"
+            if [ "x$(id -u)" != 'x0' ]; then
+                echo 'Error: this script can only be executed by root'
+                exit 1
+            fi
+        say "You are logged in as root."
+    }
 ##################################################################
 # Purpose: Return true $user exits in /etc/passwd
 # Arguments: $1 (username) -> Username to check in /etc/passwd
