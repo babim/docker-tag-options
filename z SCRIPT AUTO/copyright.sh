@@ -24,7 +24,9 @@ settimezone() {
 		export LC_ALL=en_US.UTF-8
 	# Set timezone to VN
 		settimezone
-	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+	## clean
+		yum clean all
+	elif [[ -f /etc/lsb-release || -f /etc/debian_version ]]; then
 	## Copyright
 		copyright
 	## Set UTF
