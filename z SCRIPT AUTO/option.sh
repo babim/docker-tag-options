@@ -38,6 +38,14 @@ export DNSOPTION=${DNS:-false}
 export CLOUDFLARE=1.1.1.1
 export GOOGLE=8.8.8.8
 
+	for f in SSHOPTION CRONOPTION NFSOPTION SYNOLOGYOPTION DNSOPTION FULLOPTION; do
+		case "${f}" in
+			[yY] | yes | YES | Yes | true | True | ON | on | TRUE ) export ${f}=true      ;;
+			[nN] | no  | NO  | No | false | False | OFF | off | FALSE  ) export $f=false       ;;
+			* ) say "cant check value"	;;
+		esac
+	done
+
 DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20SCRIPT%20AUTO"
 # environment set true all
 if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then

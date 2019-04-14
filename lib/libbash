@@ -16,11 +16,80 @@
 # # This is causing it to fail
 # set -o pipefail
 
+# USE FOR BASH SCRIPT NEED LOAD THIS LIBRARY
+# ###################################
+#     ####### Set download tool #######
+#     ####### and load library ########
+# # check has package
+# function    machine_has() {
+#         hash "$1" > /dev/null 2>&1
+#         return $?; }
+# # $download_save /winrar.zip http://media.matmagoc.com/winrar.zip
+# function    download_with_curl() {
+#         FILETEMP="$1"
+#         [[ -f $FILETEMP ]] && rm -f $FILETEMP
+#             echo "downloading and update..."
+#             curl -Ls "$2" -o "$FILETEMP"; }
+# function    download_with_wget() {
+#         FILETEMP="$1"
+#         [[ -f $FILETEMP ]] && rm -f $FILETEMP
+#             echo "downloading and update..."
+#             wget -O $FILETEMP --no-check-certificate "$2"; }
+# # Check and set download tool
+# say_warning "Check and set download tool..."
+# if machine_has "curl"; then
+#     export download_tool="curl -Ls"
+#     export DOWNLOAD_TOOL="curl"
+#     export download_save=download_with_curl
+#     source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+#     echo "use curl"
+# elif machine_has "wget"; then
+#     export download_tool="wget"
+#     export DOWNLOAD_TOOL="wget"
+#     export download_save=download_with_wget
+#     source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+#     echo "use wget"
+# else
+#     echo "without download tool"
+#     sleep 3
+#     exit 1
+# fi
+# ###################################
+
+# set commandline interface for debian
+function    debian_cmd_interface()
+    {
+        export DEBIAN_FRONTEND=noninteractive
+    }
+
 # set variables
     memory=$(grep 'MemTotal' /proc/meminfo |tr ' ' '\n' |grep [0-9])
     declare -r TRUE=0
     declare -r FALSE=1
     declare -r PASSWD_FILE=/etc/passwd
+
+#    Clear - clear the terminal screen
+function    Clear()
+    {
+        # SYNOPSIS
+        #    Clear
+        #
+        # DESCRIPTION
+        #    This function will clear the terminal screen using
+        #    either the clear command or the tput command.  If
+        #    neither of these commands are available, 40 blank
+        #    lines will be printed to clear the screen.
+        #
+        { clear;       } 2>/dev/null  ||
+        { tput clear;  } 2>/dev/null  ||
+        for i in 1 2 3 4 5 6 7 8 9 10 \
+                1 2 3 4 5 6 7 8 9 20 \
+                1 2 3 4 5 6 7 8 9 30 \
+                1 2 3 4 5 6 7 8 9 40
+        do
+            echo
+        done
+    }
 
 
     ####### Set Color echo #######
@@ -41,18 +110,68 @@ exec 3>&1
         # see if it supports colors
         ncolors=$(tput colors)
         if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
-            bold="$(tput bold       || echo)"
-            normal="$(tput sgr0     || echo)"
-            black="$(tput setaf 0   || echo)"
-            red="$(tput setaf 1     || echo)"
-            green="$(tput setaf 2   || echo)"
-            yellow="$(tput setaf 3  || echo)"
-            blue="$(tput setaf 4    || echo)"
-            magenta="$(tput setaf 5 || echo)"
-            cyan="$(tput setaf 6    || echo)"
-            white="$(tput setaf 7   || echo)"
+            bold="$(tput bold           || echo)"
+            normal="$(tput sgr0         || echo)"
+            black="$(tput setaf 0       || echo)"
+            red="$(tput setaf 1         || echo)"
+            green="$(tput setaf 2       || echo)"
+            yellow="$(tput setaf 3      || echo)"
+            blue="$(tput setaf 4        || echo)"
+            magenta="$(tput setaf 5     || echo)"
+            cyan="$(tput setaf 6        || echo)"
+
+            tan="$(tput setaf 3         || echo)"
+            purple="$(tput setaf 171    || echo)"
+            underline="$(tput sgr 0 1   || echo)"
+
+            reset="$(tput sgr0          || echo)"
         fi
     fi
+
+#
+# Headers and  Logging
+#
+# A sample script
+# e_header "I am a sample script"
+# e_success "I am a success message"
+# e_error "I am an error message"
+# e_warning "I am a warning message"
+# e_underline "I am underlined text"
+# e_bold "I am bold text"
+# e_note "I am a note"
+
+function    e_header()
+    {
+        printf "\n${bold}${purple}==========  %s  ==========${reset}\n" "$@" 
+    }
+function    e_arrow()
+    {
+        printf "➜ $@\n"
+    }
+function    e_success()
+    {
+        printf "${green}✔ %s${reset}\n" "$@"
+    }
+function    e_error()
+    {
+        printf "${red}✖ %s${reset}\n" "$@"
+    }
+function    e_warning()
+    {
+        printf "${tan}➜ %s${reset}\n" "$@"
+    }
+function    e_underline()
+    {
+        printf "${underline}${bold}%s${reset}\n" "$@"
+    }
+function    e_bold()
+    {
+        printf "${bold}%s${reset}\n" "$@"
+    }
+function    e_note()
+    {
+        printf "${underline}${bold}${blue}Note:${reset}  ${blue}%s${reset}\n" "$@"
+    }
 
 ####### Echo Warning #######
 function    say_warning()
@@ -63,7 +182,7 @@ function    say_warning()
 ####### Echo Error #######
 function    say_err()
     {
-        printf "%b\n" "${red:-} Error: $@${normal:-}" >&2
+        printf "%b\n" "${red:-} ✖Error: $@${normal:-}" >&2
     }
 
 ####### Echo Normal #######
@@ -81,6 +200,66 @@ function    say_verbose()
         fi
     }
 
+####### machine has (check packages bin run) #######
+# example: if machine_has "curl"; then .....
+function    machine_has()
+    {
+        eval $invocation
+
+        hash "$1" > /dev/null 2>&1
+        return $?
+    }
+# check has value
+function    has_value()
+    {
+        [[ -n $1 ]] && return $TRUE || return $FALSE
+    }
+function    has_empty()
+    {
+        [[ -z $1 ]] && return $TRUE || return $FALSE
+    }
+
+
+    ####### Set download tool #######
+    #################################
+
+####### Download file #######
+# download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
+function    download_with_curl()
+    {
+        FILE_TEMP="$1"
+        [[ -f $FILE_TEMP ]] && rm -f $FILE_TEMP
+            say "Downloading ..."
+            curl -Ls "$2" -o "$FILE_TEMP"
+    }
+# download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
+function    download_with_wget()
+    {
+        FILE_TEMP="$1"
+        [[ -f $FILE_TEMP ]] && rm -f $FILE_TEMP
+            say "Downloading ..."
+            wget -O $FILE_TEMP --no-check-certificate "$2"
+    }
+function    download_option()
+    {
+        say_warning "Check and set download tool..."
+        if machine_has "curl"; then
+            export download_tool="curl -Ls"
+            export DOWNLOAD_TOOL="curl"
+            export download_save=download_with_curl
+            say "use curl"
+        elif machine_has "wget"; then
+            export download_tool="wget"
+            export DOWNLOAD_TOOL="wget"
+            export download_save=download_with_wget
+            say "use wget"
+        else
+            say_err "without download tool"
+            sleep 3
+            exit $FALSE
+        fi
+    }
+
 
     ####### Change path #######
     ###########################
@@ -93,13 +272,19 @@ function    to_lowercase()
         echo "$@" | tr '[:upper:]' '[:lower:]'
         return $TRUE
     }
-
 function    to_uppercase()
     {
         #eval $invocation
 
         echo "$@" | tr '[:lower:]' '[:upper:]'
         return $TRUE
+    }
+## @fn trim()
+## @ingroup string
+## @brief Removes whitespace from both ends of a string.
+function    trim()
+    {
+        echo "${1}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
     }
 
 # args:
@@ -149,37 +334,10 @@ function    combine_paths()
     ####### Check and run from URL #######
     ######################################
 
-####### machine has (check packages bin run) #######
-function    machine_has()
-    {
-        eval $invocation
-
-        hash "$1" > /dev/null 2>&1
-        return $?
-    }
-
 ####### Run from URL #######
 function    run_url()
     {
         bash <(curl -s $1)
-    }
-
-####### Download file #######
-# download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
-function    download_with_curl()
-    {
-        FILETEMP="$1"
-        [[ -f $FILETEMP ]] && rm -f $FILETEMP
-            echo "downloading and update..."
-            curl -Ls "$2" -o "$FILETEMP"
-    }
-# download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
-function    download_with_wget()
-    {
-        FILETEMP="$1"
-        [[ -f $FILETEMP ]] && rm -f $FILETEMP
-            echo "downloading and update..."
-            wget -O $FILETEMP --no-check-certificate "$2"
     }
 
 
@@ -231,10 +389,10 @@ function    check_debian_need_update()
         [[ ! -z /var/lib/apt/lists/ ]] && return $TRUE || return $FALSE
     }
 
-    # release name
-    [[ -f /etc/debian_version ]]    && release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
-    # codename
-    [[ -f /etc/os-release ]]        && codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
+# release name
+[[ -f /etc/debian_version ]]    && release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
+# codename
+[[ -f /etc/os-release ]]        && codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
 
 
     ####### Get architecture #######
@@ -355,7 +513,7 @@ function    require_root()
         say "Check root"
             if [ "x$(id -u)" != 'x0' ]; then
                 echo 'Error: this script can only be executed by root'
-                exit 1
+                exit $FALSE
             fi
         say "You are logged in as root."
     }
@@ -369,13 +527,67 @@ function    require_root()
 function    is_user() 
     {
         local u="$1"
-        grep -q "^${u}" $PASSWD_FILE && return $TRUE || return $FALSE
+        grep -q "^${u}" $PASSWD_FILE    && return $TRUE                     || return $FALSE
     }
 function    is_user_say() 
     {
         for isuser in "${@}"; do
-            is_user ${isuser} && say "Account ${isuser} found." || say_warning "Account ${isuser} not found."
+            is_user ${isuser}           && say "Account ${isuser} found."   || say_warning "Account ${isuser} not found."
         done
+    }
+
+
+    ####### Time Feature ###########
+    ################################
+
+## @fn now()
+## @ingroup time
+## @brief Displays the current timestamp.
+## @return Current timestamp.
+function    now()
+    {
+        date +%s
+    }
+
+## @fn elapsed()
+## @ingroup time
+## @brief Displays the time elapsed between the 'start' and 'stop'
+## parameters.
+## @param start Start timestamp.
+## @param stop Stop timestamp.
+## @return Time elapsed between the 'start' and 'stop' parameters.
+function    elapsed()
+    {
+        START="$1"
+        STOP="$2"
+
+        ELAPSED=$(( STOP - START ))
+        echo "Your elapsed time ${ELAPSED} seconds"
+    }
+
+## @fn start_watch()
+## @ingroup time
+## @brief Starts the watch.
+function    start_watch()
+    {
+        __START_WATCH=$(now)
+    }
+
+## @fn stop_watch()
+## @ingroup time
+## @brief Stops the watch and displays the time elapsed.
+## @retval 0 if succeed.
+## @retval 1 if the watch has not been started.
+## @return Time elapsed since the watch has been started.
+function    stop_watch()
+    {
+        if [[ -n "$__START_WATCH" ]]; then
+            STOP_WATCH=$(now)
+            elapsed "$__START_WATCH" "$STOP_WATCH"
+            return $TRUE
+        else
+            return $FALSE
+        fi
     }
 
 
@@ -415,6 +627,55 @@ function    copy_files_or_dirs_from_list()
             fi
         done
     }
+#    dircopy - copy the contents of a directory
+function    dircopy()
+    {
+        #
+        # SYNOPSIS
+        #    dircopy directory1 directory2
+        #
+        # DESCRIPTION
+        #    This command will copy the contents of one directory
+        #    to another.  The destination directory and any
+        #    subdirectories will be created as needed.
+        #
+        # RETURN VALUE
+        #    0    Successful completion
+        #    1    Usage error
+        #
+        ############################################################
+        CMDNAME=`basename $0`
+        CURDIR=`pwd`                  # Current directory
+        TARGET=                       # Destination directory
+
+        if [ $# -ne 2 ]; then
+            echo "Usage: $CMDNAME directory1 directory2" 1>&2
+            return $FALSE
+        fi
+
+        if [ ! -d "$1" ]; then
+            echo "$1 is not a directory." 1>&2
+            return $FALSE
+        fi
+
+        if [ -f "$2" ]; then
+            echo "$2 is not a directory." 1>&2
+            return $FALSE
+        fi
+
+        if [ ! -d "$2" ]; then
+            mkdir -p "$2"
+        fi
+
+        cd "$2"
+        TARGET=`pwd`
+        cd $CURDIR
+
+        cd "$1"
+        find . -depth -print          |
+            cpio -pdmu $TARGET 2>&1  |
+            grep -iv "blocks"
+    }
 
 # Defning return code check function
 function    die()
@@ -423,7 +684,7 @@ function    die()
             echo "Error: $2"
             exit $1
         fi
-    }
+    } >&2 # function writes to stderr
 
 # calculator
 function    calc()
@@ -450,7 +711,7 @@ function    count_line()
     {
         if [ $# -lt 1 ]; then
             echo "Usage: $0 file ..."
-            exit 1
+            return $FALSE
         fi
 
         echo "$0 counts the lines of code" 
@@ -505,7 +766,7 @@ function    print_date()
     }
 
 ####### Check file and folder #######
-function    check_file_block_special()
+function    check_file_block()
     {
         [[ -b $1 ]] && return $TRUE || return $FALSE
 
@@ -588,11 +849,14 @@ function    create_folder()
             else
                 say "Creating ${folder}.."
                 mkdir -p "${folder}"
-                check_folder ${folder}      && say "${folder} created" || return $FALSE
+                check_folder ${folder}      && say "${folder} created" || say_err "Cant create ${folder}" ; return $FALSE
             fi
         done
         return $TRUE
     }
+alias make_folder=create_folder
+alias make_folders=create_folder
+alias create_folders=create_folder
 # create file
 function    create_file()
     {
@@ -602,34 +866,528 @@ function    create_file()
             else
                 say "Creating ${file}.."
                 touch "${file}"
-                check_file ${file}          && say "${file} created" || return $FALSE
+                check_file ${file}          && say "${file} created" || say_err "Cant create ${file}" ; return $FALSE
             fi
         done
         return $TRUE
     }
+alias make_file=create_file
+alias make_files=create_file
+alias create_files=create_file
+
+# remove folder
+function    remove_folder()
+    {
+        for folder in "${@}"; do
+            if check_folder ${folder}; then
+                say "Removing ${folder}.."
+                rm -rf "${folder}"
+                check_folder ${folder}      && say_err "Cant remove this ${folder}"; return $FALSE || say "${folder} removed"
+            else
+                say_warning "${folder} not exists"
+            fi
+        done
+        return $TRUE
+    }
+alias del_folder=remove_folder
+alias delele_folder=remove_folder
+alias del_folders=remove_folder
+alias delele_folders=remove_folder
+alias remove_folders=remove_folder
+# remove file
+function    remove_file()
+    {
+        for file in "${@}"; do
+            if check_file ${file}; then
+                say "Removing ${file}.."
+                rm -f "${file}"
+                check_file ${file}      && say_err "Cant remove this ${file}"; return $FALSE || say "${file} removed"
+            else
+                say_warning "${file} not exists"
+            fi
+        done
+        return $TRUE
+    }
+alias del_file=remove_file
+alias delele_file=remove_file
+alias del_files=remove_file
+alias delele_files=remove_file
+alias remove_files=remove_file
+# remove file and folder
+function    remove_filefolder()
+    {
+        for file in "${@}"; do
+            if check_file ${file}; then
+                say "Removing ${file}.."
+                rm -rf "${file}"
+                check_file ${file}      && say_err "Cant remove this ${file}"; return $FALSE || say "${file} removed"
+            else
+                say_warning "${file} not exists"
+            fi
+        done
+        return $TRUE
+    }
+alias del_filefolder=remove_filefolder
+alias delele_filefolder=remove_filefolder
+alias del_filefolders=remove_filefolder
+alias delele_filefolders=remove_filefolder
+alias remove_filefolders=remove_filefolder
+alias del_filesfolders=remove_filefolder
+alias delele_filesfolders=remove_filefolder
+alias remove_filesfolders=remove_filefolder
 
 # set filefolder owner
 function    set_filefolder_owner()
     {
-        check_filefolder $2                 && chown -R $1 $2 || say "Cant set owner"
+        check_filefolder $2                 && chown -R $1 $2 || say_err "Cant set owner"; return $FALSE
         return $TRUE
     }
 # set filefolder mod
 function    set_filefolder_mod()
     {
-        check_filefolder $2                 && chmod -R $1 $2 || say "Cant set mod"
+        check_filefolder $2                 && chmod -R $1 $2 || say_err "Cant set mod"; return $FALSE
+        return $TRUE
+    }
+
+#    DirCmp - compare the files in two directories
+function    dircmp()
+    {
+        # SYNOPSIS
+        #    DirCmp [-v] [dir1] dir2
+        #
+        # DESCRIPTION
+        #    This command compares the files in two directories and
+        #    lists the files that are not the same.  There will be
+        #    three separate lists for: 
+        #
+        #    1. Files not in the first directory, but in the second
+        #    2. Files not in the second directory, but in the first
+        #    3. Files in both directories, but not the same
+        #
+        #    -v   Verbose option.  This option prints the lines that
+        #         are different rather than just the name of the
+        #         file when the file is in both directories, but the
+        #         files are not the same.
+        #
+        # RETURN VALUE
+        #    0    The directories are the same
+        #    1    Usage error or abnormal termination
+        #    2    The directories are not the same
+        #
+        ############################################################
+            CMDNAME=`basename $0`
+            USAGE="Usage: $CMDNAME [-v] [dir1] dir2"
+
+            CURDIR=`pwd`                  # Current directory
+            DIR1=                         # Source directory
+            DIR2=                         # Target directory
+            DIR1_FILES=/tmp/files1.$$     # Files in dir1
+            DIR2_FILES=/tmp/files2.$$     # Files in dir2
+            ALL_FILES=/tmp/allfiles.$$    # Files in dir1 or dir2
+            COMMON_FILES=/tmp/comfiles.$$ # Files in dir1 and dir2
+            TMP=/tmp/tmp.$$               # Temporary file
+            FOUND=FALSE                   # Differences found?
+            FIRST=
+            VERBOSE=FALSE
+
+        # trap 'rm -f /tmp/*.$$; exit 1' 1 2 3 15
+
+        #
+        # Parse the command options.
+        #
+        while :
+        do
+            case $1 in
+                -v)  VERBOSE=TRUE
+                    shift
+                    ;;
+                --)  shift
+                    break
+                    ;;
+                -*)  echo "$USAGE" 1>&2
+                    return $FALSE
+                    ;;
+                *)   break
+                    ;;
+            esac
+        done
+
+        #
+        # Get command line arguments.
+        #
+        if [ $# -eq 1 ]; then
+            DIR1="."
+            DIR2="$1"
+        elif [ $# -eq 2 ]; then
+            DIR1="$1"
+            DIR2="$2"
+        else
+            echo "$USAGE" 1>&2
+            return $FALSE
+        fi
+
+        #
+        # Check the directories.
+        #
+        if [ ! -d $DIR1 ]; then
+            say_err "$DIR1 is not a directory." 1>&2
+            return 2
+        fi
+
+        if [ ! -d $DIR2 ]; then
+            say_err "$DIR2 is not a directory." 1>&2
+            return 2
+        fi
+
+        #
+        # Find the files to compare.
+        #
+        cd $DIR1
+        find . \( -type f -o -type l \) -print | sort >$DIR1_FILES
+        cd $CURDIR
+
+        cd $DIR2
+        find . \( -type f -o -type l \) -print | sort >$DIR2_FILES
+        cd $CURDIR
+
+        #
+        # Build a list of all files.
+        #
+        cat $DIR1_FILES $DIR2_FILES | sort | uniq    >$ALL_FILES
+        cat $DIR1_FILES $DIR2_FILES | sort | uniq -d >$COMMON_FILES
+
+        #
+        # Print the files that are in dir2, but not in dir1.
+        #
+        cat $DIR1_FILES $ALL_FILES | sort | uniq -u >$TMP
+        if [ -s $TMP ]; then
+            FOUND=TRUE
+            say ""
+            say_warning "Files missing from $DIR1:"
+            for f in `cat $TMP`
+            do
+                f=`expr $f : '..\(.*\)'`
+                say "	$f"
+            done
+        fi
+
+        #
+        # Print the files that are in dir1, but not in dir2.
+        #
+        cat $DIR2_FILES $ALL_FILES | sort | uniq -u >$TMP
+        if [ -s $TMP ]; then
+            FOUND=TRUE
+            say ""
+            say_warning "Files missing from $DIR2:"
+            for f in `cat $TMP`
+            do
+                f=`expr $f : '..\(.*\)'`
+                echo "	$f"
+            done
+        fi
+
+        #
+        # Print the files that are in dir1 and dir2, but are not
+        # the same.
+        #
+        FIRST=TRUE
+        for f in `cat $COMMON_FILES`
+        do
+            cmp -s $DIR1/$f $DIR2/$f
+            if [ $? -ne 0 ]; then
+                FOUND=TRUE
+                f=`expr $f : '..\(.*\)'`
+                if [ "$FIRST" = "TRUE" ]; then
+                    FIRST=FALSE
+                    say ""
+                    say_warning "Files that are not the same:"
+                fi
+
+                if [ "$VERBOSE" = "TRUE" ]; then
+                    say ""
+                    say "File: $f"
+                    diff $DIR1/$f $DIR2/$f
+                else
+                    echo "	$f"
+                fi
+            fi
+        done
+
+        rm -f /tmp/*.$$
+        if [ $FOUND = TRUE ]; then
+            return 2
+        else
+            say "The directories are the same."
+            return $TRUE
+        fi
+    }
+alias DirCmp=dircmp
+
+#    findfile - recursively search for a file
+function    findfile()
+    {
+        # SYNOPSIS
+        #    findfile file [directory ...]
+        #
+        # DESCRIPTION
+        #    This command searches the directories and their
+        #    subdirectories for the file.  If no directories are
+        #    listed on the command line, the current directory is
+        #    searched.  If the file is found, the path name of the
+        #    file is printed.
+        #
+        #    If the file name contains wildcard characters, it must
+        #    be quoted so that the wildcard characters can be
+        #    processed inside this shell script rather than being
+        #    expanded into file names on the command line.
+        #
+        # RETURN VALUE
+        #    0    Successful completion
+        #    1    Usage error
+        #
+        ############################################################
+        CMDNAME=`basename $0`
+        if [ $# -eq 0 ]; then
+            echo "Usage: $CMDNAME file [directory ...]" 1>&2
+            return $FALSE
+        fi
+
+        NAME=$1
+        shift
+
+        find "${@:-.}" -name "$NAME" -print
+    }
+alias find_file=findfile
+alias find_folder=findfile
+alias search_file=findfile
+alias search_folder=findfile
+
+
+# Group: String
+# ----------------------------------------------------#
+
+## @fn str_replace()
+## @ingroup string
+## @brief Replaces some text in a string.
+## @param origin Content to be matched.
+## @param destination New content that replaces the matched content.
+## @param data Data to operate on.
+## @return The new string after having replaced the matched
+## content with the new one.
+function    str_replace() 
+    {
+        local ORIG="$1"
+        local DEST="$2"
+        local DATA="$3"
+
+        echo "${DATA//$ORIG/$DEST}"
+    }
+
+## @fn str_replace_in_file()
+## @ingroup string
+## @brief Replaces some text in a file.
+## @param origin Content to be matched.
+## @param destination New content that replaces the matched content.
+## @param file File to operate on.
+## @retval 0 if the original content has been replaced.
+## @retval 1 if an error occurred.
+function    str_replace_in_file()
+    {
+        [[ $# -lt 3 ]] && return $FALSE
+
+        local ORIG="$1"
+        local DEST="$2"
+
+        for FILE in "${@:3:$#}"; do
+            check_file "$FILE" || return $FALSE
+
+            printf ",s/$ORIG/$DEST/g\nw\nQ" | ed -s "$FILE" > /dev/null 2>&1 || return "$?"
+        done
+
+        return $TRUE
+    }
+
+#    findstr - recursively search for a string
+function    findstr()
+    {
+        # SYNOPSIS
+        #    findstr [-iv] string [filename]
+        #
+        # DESCRIPTION
+        #    This command searches the files in the current
+        #    directory and its subdirectories for the string.  The
+        #    name of each file that contains the string is listed.
+        #
+        #    The string may be a simple string or it may be any
+        #    regular expression accepted by the grep command.  If
+        #    the string contains whitespace or any other
+        #    metacharacter, it must be quoted.
+        #
+        #    The search can be restricted to files with a particular
+        #    name by specifying the file name parameter.  This
+        #    parameter may contain wildcard characters to restrict
+        #    the search to file names that match a pattern, but the
+        #    file name must be quoted so that the wildcard
+        #    characters can be processed inside this command file
+        #    rather than being expanded into file names on the
+        #    command line.
+        #
+        #    -i   Ignore the case of the string.
+        #
+        #    -v   Verbose; list the lines that contain the string.
+        #         Without this option, only the names of the files
+        #         containing the string will be printed.
+        #
+        # RETURN VALUE
+        #    0    Successful completion
+        #    1    Usage error
+        #
+        ############################################################
+        CMDNAME=`basename $0`
+        USAGE="Usage: $CMDNAME [-iv] string [filename]"
+        STRING=                  # String to search for
+        FILENAME=                # Name of the files to check
+        I=                       # Option for grep; Ignore case
+        L=-l                     # Option for grep; List names only
+
+        #
+        # Parse command options.
+        #
+        if [ "$OPTIND" = 1 ]; then
+            while getopts iv OPT
+            do
+                case $OPT in
+                    i)   I=-i      # Ignore case
+                            ;;
+                    v)   L=        # Verbose
+                            ;;
+                    \?)  echo "$USAGE" 1>&2
+                            return $FALSE
+                            ;;
+                esac
+            done
+            shift `expr $OPTIND - 1`
+        else
+            USAGE="Usage: $CMDNAME [-i][-v] string [filename]"
+            while :
+            do
+                case $1 in
+                    -i)  I=-i      # Ignore case
+                            shift
+                            ;;
+                    -v)  L=        # Verbose
+                            shift
+                            ;;
+                    --)  shift
+                            break
+                            ;;
+                    -*)  echo "$USAGE" 1>&2
+                            return $FALSE
+                            ;;
+                    *)   break
+                            ;;
+                esac
+            done
+        fi
+
+        #
+        # Make sure the number of parameters is reasonable.
+        #
+        if [ $# -lt 1 -o $# -gt 2 ]; then
+            echo "$USAGE" 1>&2
+            return $FALSE
+        fi
+
+        STRING=$1
+        FILENAME=${2:-"*"}
+
+        find . \( -type f -o -type l \) -name "$FILENAME" -print |
+            xargs -e grep $I $L -- "$STRING" /dev/null
+
+        return $TRUE
+    }
+alias findstring=findstr
+alias find_string=findstr
+alias search_string=findstr
+
+# Check file newer
+function    is_newer()
+    {
+        #
+        # NAME
+        #    is_newer - compare the dates of two files
+        #
+        # SYNOPSIS
+        #    is_newer file1 file2
+        #
+        # DESCRIPTION
+        #    This function will return true (0) if file1 has
+        #    been modified more recently that file2; otherwise,
+        #    it will return false (1).
+        #    
+        if [ $# -ne 2 ]; then
+            echo "Usage: is_newer file1 file2" 1>&2
+            return $FALSE
+        fi
+
+        if [ ! -e $1 -o ! -e $2 ]; then
+            return $FALSE       # No
+        fi
+
+        if [ -n "`find $1 -newer $2 -print`" ]; then
+            say "File/Folder $1 newer $2"
+            return $TRUE       # Yes
+        else
+            say "File/Folder $2 newer $1"
+            return $FALSE      # No
+        fi
+    }
+
+function    hex2decimal()
+    {
+        NUM=`echo $1    | tr '[a-f]' '[A-F]'`
+        echo 16i $NUM p | dc
+    }
+
+# check numeric
+function    is_numeric() 
+    {
+        #
+        # NAME
+        #    IsNumeric - determine if a string is numeric
+        #
+        # SYNOPSIS
+        #    IsNumeric string
+        #
+        # DESCRIPTION
+        #    This function will return true (0) if the string
+        #    contains all numeric characters; otherwise, it
+        #    will return false (1).
+        #    
+        if [ $# -ne 1 ]; then
+            say_warning "This $1 is not numeric"
+            return $FALSE
+        fi
+
+        expr "$1" + 1 >/dev/null 2>&1
+        if [ $? -ge 2 ]; then
+            say_warning "This $1 is not numeric"
+            return $FALSE
+        fi
+
+        say "This $1 is numeric"
         return $TRUE
     }
 
 # check process
 function    check_process()
     {
-        grep -x $1 >/dev/null               && return $TRUE || return $FALSE
+        grep -x $1 >/dev/null               && return $TRUE         || return $FALSE
     }
 function    check_process_say()
     {
         for process in "${@}"; do
-            grep -x $process >/dev/null     && say "Process found" || say_warning "Process not found"
+            grep -x $process >/dev/null     && say "Process found"  || say_warning "Process not found"
         done
         return $TRUE
     }
@@ -641,7 +1399,7 @@ function    check_process_say()
 # check and install epel
 function    check_epel()
     {
-        [[ -f /etc/yum.repos.d/epel.repo ]] && return $TRUE || return $FALSE
+        [[ -f /etc/yum.repos.d/epel.repo ]] && return $TRUE         || return $FALSE
     }
 function    check_epel_say()
     {
@@ -662,7 +1420,7 @@ function    install_epel()
                 say_err "Your OS not support"
                 return $FALSE
             fi
-        check_epel          && say "EREL REPO installed" || say_err "EREL REPO not found"
+        check_epel          && say "EREL REPO installed"            || say_err "EREL REPO not found"
         check_epel          && return $TRUE || return $FALSE
     else
         say "EPEL Repo installed"
@@ -677,8 +1435,8 @@ function    remove_epel()
         else
             say "EPEL Repo installed"
             yum remove epel* -y
-            check_epel          && say "EREL REPO removed" || say_err "EREL REPO found and cant removed"
-            check_epel          && return $TRUE || return $FALSE
+            check_epel          && say "EREL REPO removed"          || say_err "EREL REPO found and cant removed"
+            check_epel          && return $TRUE                     || return $FALSE
         fi
     }
 
@@ -693,19 +1451,17 @@ function    install_gosu()
     else
         osname=$(get_osname)
             if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
-                FILETEMP=/usr/local/bin/gosu
+                FILE_TEMP=/usr/local/bin/gosu
             elif [[ $osname == "rhel"* ]]; then
-                FILETEMP=/usr/bin/gosu
+                FILE_TEMP=/usr/bin/gosu
             else
                 say_err "OS not support."
                 return $FALSE
             fi
-
-        curl -Ls "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)" -o ${FILETEMP}
-        [[ ! -f ${FILETEMP} ]]  && return $FALSE
-        chmod +x ${FILETEMP}    && gosu nobody true
-        say "GOSU installed."
-        return $TRUE
+        $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
+        [[ ! -f ${FILE_TEMP} ]]     && say_err "GOSU cant install."; return $FALSE
+        chmod +x ${FILE_TEMP}       && gosu nobody true
+        say "GOSU installed."       && return $TRUE
     fi
     }
 
@@ -715,12 +1471,12 @@ function    install_package()
         for software in ${@}; do
             osname=$(get_osname)
             say "install ${software}.."
-                if [[ $osname == "ubuntu"* || $osname == "debian"*; then
+                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     check_debian_need_update && apt-get update || say "no need update repo"
                     apt-get install -y --no-install-recommends ${software}
                 elif [[ $osname == "rhel"* ]]; then
                     yum install -y ${software}
-                elif || $osname == "alpine"* ]]; then
+                elif [[ $osname == "alpine"* ]]; then
                     apk add --no-cache install ${software}
                 else
                     say_err "OS not support."
@@ -729,6 +1485,8 @@ function    install_package()
             return $TRUE
         done
     }
+alias install_packages=install_package
+
 # install package run bin
 function    install_package_run()
     {
@@ -736,36 +1494,34 @@ function    install_package_run()
             if ! machine_has ${software}; then
                 osname=$(get_osname)
                 say "install ${software}.."
-                    if [[ $osname == "ubuntu"* || $osname == "debian"*; then
+                    if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                         check_debian_need_update && apt-get update || say "no need update repo"
                         apt-get install -y --no-install-recommends ${software}
                     elif [[ $osname == "rhel"* ]]; then
                         yum install -y ${software}
-                    elif || $osname == "alpine"* ]]; then
+                    elif [[ $osname == "alpine"* ]]; then
                         apk add --no-cache install ${software}
                     else
                         say_err "OS not support."
                         return $FALSE
                     fi
             fi
-
             machine_has ${software}          && say "${software} installed." || say_err "${software} not install."
             machine_has ${software}          && return $TRUE || return $FALSE
         done
     }
+alias install_packages_run=install_package_run
 
 # install curl
 function    install_curl()
     {
-        software=curl
-        install_package_run
+        install_package_run curl
     }
 
 # install wget
 function    install_wget()
     {
-        software=wget
-        install_package_run
+        install_package_run wget
     }
 
 # install openjdk java jre
@@ -777,20 +1533,302 @@ function    install_java_jre()
         if ! check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre; then
         osname=$(get_osname)
             say "install java.."
-                if [[ $osname == "ubuntu"* || $osname == "debian"*; then
+                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     software=openjdk-${OPENJDKV}-jre
                     check_debian_need_update && apt-get update || say "no need update repo"
                     apt-get install -y --no-install-recommends ${software}
                 elif [[ $osname == "rhel"* ]]; then
                     software=java-1.${OPENJDKV}.0-openjdk.${arch}
                     yum install -y ${software}
-                elif || $osname == "alpine"* ]]; then
+                elif [[ $osname == "alpine"* ]]; then
                     software=openjdk${OPENJDKV}-jre
                     apk add --no-cache install ${software}
                 else
                     say_err "OS not support."
                     return $FALSE
                 fi
-            return $TRUE
+            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cant install java jre"; return $FALSE
         fi
+    }
+
+
+    ####### Function Remove ########
+    ################################
+
+# Clean cache OS
+function    clean_os()
+    {
+ 	if [[ -f /etc/redhat-release ]]; then
+        yum clean all
+        echo "Clean OS done"
+ 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+        apt-get autoremove -y
+        apt-get autoclean
+        apt-get clean
+        rm -rf /build
+        rm -rf /tmp/* /var/tmp/*
+        rm -rf /var/lib/apt/lists/*
+        rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
+        echo "Clean OS done"
+ 	elif [[ -f /etc/alpine-release ]]; then
+        echo "Clean OS done"
+ 	else
+        echo "not support"
+        return $FALSE
+ 	fi
+    return $TRUE
+    }
+
+# Clean packages
+function    clean_package()
+    {
+ 	if [[ -f /etc/redhat-release ]]; then
+        [[ ! -z "${UNINSTALL}" ]] && yum remove -y $UNINSTALL $UNINSTALLAPP     || echo "not have apps need remove"
+ 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+        [[ ! -z "${UNINSTALL}" ]] && apt-get purge -y $UNINSTALL $UNINSTALLAPP  || echo "not have apps need remove"
+ 	elif [[ -f /etc/alpine-release ]]; then
+        [[ ! -z "${UNINSTALL}" ]] && apk del --purge $UNINSTALL $UNINSTALLAPP   || echo "not have apps need remove"
+ 	else
+        echo "not support"
+        return $FALSE
+ 	fi
+    return $TRUE
+    }
+alias clean_packages=clean_package
+
+# remove package
+function    remove_package()
+    {
+        for software in ${@}; do
+            osname=$(get_osname)
+            say "remove ${software}.."
+                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                    apt-get purge -y ${software}
+                elif [[ $osname == "rhel"* ]]; then
+                    yum remove -y ${software}
+                elif [[ $osname == "alpine"* ]]; then
+                    apk del --purge ${software}
+                else
+                    say_err "OS not support."
+                    return $FALSE
+                fi
+            return $TRUE
+        done
+    }
+alias remove_packages=remove_package
+alias del_package=remove_package
+alias del_packages=remove_package
+alias delete_package=remove_package
+alias delete_packages=remove_package
+
+# remove package run bin
+function   remove_package_run()
+    {
+        for software in ${@}; do
+            if ! machine_has ${software}; then
+                osname=$(get_osname)
+                say "remove ${software}.."
+                    if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                        apt-get purge -y ${software}
+                    elif [[ $osname == "rhel"* ]]; then
+                        yum remove -y ${software}
+                    elif [[ $osname == "alpine"* ]]; then
+                        apk del --purge ${software}
+                    else
+                        say_err "OS not support."
+                        return $FALSE
+                    fi
+            fi
+            machine_has ${software}          && say "${software} cant remove."  || say "${software} removed."
+            machine_has ${software}          && return $FALSE                   || return $TRUE
+        done
+    }
+alias remove_packages_run=remove_package_run
+alias del_package_run=remove_package_run
+alias del_packages_run=remove_package_run
+alias delete_package_run=remove_package_run
+alias delete_packages_run=remove_package_run
+
+
+# Group: Network
+# ----------------------------------------------------#
+
+## @fn is_ipv4()
+## @ingroup network
+## @brief Tests an IPv4 address.
+## @param address Address to test.
+## @retval 0 if the address is an IPv4.
+## @retval 1 in others cases.
+function    is_ipv4()
+    {
+        local -r regex='^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+
+        [[ $1 =~ $regex ]]
+        return $?
+    }
+
+## @fn is_fqdn()
+## @ingroup network
+## @brief Tests a FQDN.
+## @param fqdn FQDN to test.
+## @retval 0 if the FQDN is valid.
+## @retval 1 in others cases.
+function    is_fqdn()
+    {
+        echo "$1" | grep -Pq '(?=^.{4,255}$)(^((?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}\.?$)'
+
+        return $?
+    }
+
+## @fn is_ipv4_netmask()
+## @ingroup network
+## @brief Tests if an IPv4 decimal netmask is valid.
+## @param netmask IPv4 decimal netmask to test.
+## @retval 0 if the IPv4 decimal netmask is valid.
+## @retval 1 in others cases.
+function    is_ipv4_netmask()
+    {
+        is_ipv4 "$1" || return $FALSE
+
+        IFS='.' read -r ipb[1] ipb[2] ipb[3] ipb[4] <<< "$1"
+
+        local -r list_msb='0 128 192 224 240 248 252 254'
+
+        for i in {1,2,3,4}; do
+            if [[ $rest_to_zero ]]; then
+                [[ ${ipb[i]} -eq 0 ]] || return $FALSE
+            else
+                if [[ $list_msb =~ (^|[[:space:]])${ipb[i]}($|[[:space:]]) ]]; then
+                    local -r rest_to_zero=1
+                elif [[ ${ipb[i]} -eq 255 ]]; then
+                    continue
+                else
+                    return $FALSE
+                fi
+            fi
+        done
+
+        return $TRUE
+    }
+
+## @fn is_ipv4_cidr()
+## @ingroup network
+## @brief Tests an IPv4 CIDR netmask.
+## @param netmask CIDR netmask to test.
+## @retval 0 if the IPv4 CIDR netmask is valid.
+## @retval 1 in others cases.
+function    is_ipv4_cidr()
+    {
+        local -r regex='^[[:digit:]]{1,2}$'
+
+        [[ $1 =~ $regex ]]      || return $FALSE
+        [ "$1" -gt 32 ]         || [ "$1" -lt 0 ] && return $FALSE
+
+        return $TRUE
+    }
+
+## @fn is_ipv4_subnet()
+## @ingroup network
+## @brief Tests an IPv4 subnet.
+## @param subnet Subnet to test with /CIDR.
+## @retval 0 if the IPv4 subnet is valid.
+## @retval 1 in others cases.
+function    is_ipv4_subnet()
+    {
+        IFS='/' read -r tip tmask <<< "$1"
+
+        is_ipv4_cidr "$tmask"   || return $FALSE
+        is_ipv4 "$tip"          || return $FALSE
+
+        return $TRUE
+    }
+
+## @fn get_ipv4_network()
+## @ingroup network
+## @brief Computes the network address of an IPv4 subnet.
+## @param address IPv4 address.
+## @param netmask IPv4 netmask.
+## @retval 0 if the input parameters are valid.
+## @retval 1 in others cases.
+## @return Network address.
+function    get_ipv4_network()
+    {
+        is_ipv4 "$1"            || return $FALSE
+        is_ipv4_netmask "$2"    || return $FALSE
+
+        IFS='.' read -r ipb1 ipb2 ipb3 ipb4 <<< "$1"
+        IFS='.' read -r mb1 mb2 mb3 mb4 <<< "$2"
+
+        echo "$((ipb1 & mb1)).$((ipb2 & mb2)).$((ipb3 & mb3)).$((ipb4 & mb4))"
+    }
+
+## @fn get_ipv4_broadcast()
+## @ingroup network
+## @brief Computes the broadcast address of an IPv4 subnet.
+## @param address IPv4 address.
+## @param netmask IPv4 netmask.
+## @retval 0 if the input parameters are valid.
+## @retval 1 in others cases.
+## @return Broadcast address.
+function    get_ipv4_broadcast()
+    {
+        is_ipv4 "$1"            || return $FALSE
+        is_ipv4_netmask "$2"    || return $FALSE
+
+        IFS='.' read -r ipb1 ipb2 ipb3 ipb4 <<< "$1"
+        IFS='.' read -r mb1 mb2 mb3 mb4 <<< "$2"
+
+        nmb1=$((mb1 ^ 255))
+        nmb2=$((mb2 ^ 255))
+        nmb3=$((mb3 ^ 255))
+        nmb4=$((mb4 ^ 255))
+
+        echo "$((ipb1 | nmb1)).$((ipb2 | nmb2)).$((ipb3 | nmb3)).$((ipb4 | nmb4))"
+    }
+
+## @fn mask2cidr()
+## @ingroup network
+## @brief Converts IPv4 decimal netmask notation into CIDR.
+## @param netmask Decimal netmask to convert.
+## @retval 0 if the input parameters are valid.
+## @retval 1 in others cases.
+## @return CIDR notation of the given decimal netmask.
+function    mask2cidr()
+    {
+        is_ipv4_netmask "$1"    || return $FALSE
+
+        local x=${1##*255.}
+        set -- 0^^^128^192^224^240^248^252^254^ $(( (${#1} - ${#x})*2 )) "${x%%.*}"
+        x=${1%%$3*}
+        echo $(( $2 + (${#x}/4) ))
+    }
+
+## @fn cidr2mask()
+## @ingroup network
+## @brief Converts CIDR notation into IPv4 decimal netmask.
+## @param netmask CIDR to convert.
+## @retval 0 if the input parameters are valid.
+## @retval 1 in others cases.
+## @return Decimal notation of the given CIDR.
+function    cidr2mask()
+    {
+        is_ipv4_cidr "$1"       || return $FALSE
+
+        local i mask=""
+        local full_octets=$(($1/8))
+        local partial_octet=$(($1%8))
+
+        for ((i=0;i<4;i+=1)); do
+            if [ $i -lt $full_octets ]; then
+                mask+=255
+            elif [ $i -eq $full_octets ]; then
+                mask+=$((256 - 2**(8-partial_octet)))
+            else
+                mask+=0
+            fi
+
+            test $i -lt 3 && mask+=.
+        done
+
+        echo $mask
     }

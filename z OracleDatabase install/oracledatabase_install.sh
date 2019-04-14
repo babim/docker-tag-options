@@ -59,6 +59,7 @@ if [ -f /etc/redhat-release ]; then
 		wget -O $ORACLE_BASE/$RUN_FILE --no-check-certificate $DOWN_URL/config/$RUN_FILE
 		wget -O $ORACLE_BASE/$START_FILE --no-check-certificate $DOWN_URL/config/$START_FILE
 		wget -O $ORACLE_BASE/$CREATE_DB_FILE --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
+		wget -O $ORACLE_BASE/$CHECK_DB_FILE --no-check-certificate $DOWN_URL/config/$CHECK_DB_FILE
 		wget -O $ORACLE_BASE/$CONFIG_RSP --no-check-certificate $DOWN_URL/template/$CONFIG_RSP-$VERSION
 		wget -O $ORACLE_BASE/$PWD_FILE --no-check-certificate $DOWN_URL/config/$PWD_FILE
 		wget -O $ORACLE_BASE/$USER_SCRIPTS_FILE --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
