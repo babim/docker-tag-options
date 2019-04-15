@@ -31,7 +31,7 @@ function    download_with_wget() {
             echo "downloading and update..."
             wget -O $FILETEMP --no-check-certificate "$2"; }
 # Check and set download tool
-say_warning "Check and set download tool..."
+echo "Check and set download tool..."
 if machine_has "curl"; then
     export download_tool="curl -Ls"
     export DOWNLOAD_TOOL="curl"
