@@ -36,13 +36,13 @@ if machine_has "curl"; then
     export download_tool="curl -Ls"
     export DOWNLOAD_TOOL="curl"
     export download_save=download_with_curl
-    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+    . <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
     echo "use curl"
 elif machine_has "wget"; then
     export download_tool="wget"
     export DOWNLOAD_TOOL="wget"
     export download_save=download_with_wget
-    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+    . <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
     echo "use wget"
 else
     echo "without download tool"
