@@ -5,6 +5,14 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
     ####### Set download tool #######
     ####### and load library ########
 # check has package
@@ -28,13 +36,13 @@ if machine_has "curl"; then
     export download_tool="curl -Ls"
     export DOWNLOAD_TOOL="curl"
     export download_save=download_with_curl
-    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+    curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash | bash
     echo "use curl"
 elif machine_has "wget"; then
     export download_tool="wget"
     export DOWNLOAD_TOOL="wget"
     export download_save=download_with_wget
-    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+    wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash | bash
     echo "use wget"
 else
     echo "without download tool"
