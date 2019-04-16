@@ -1319,7 +1319,7 @@ function    findstr()
         #
         # Make sure the number of parameters is reasonable.
         #
-        if [[ $# -lt 1 -o $# -gt 2 ]]; then
+        if [ $# -lt 1 -o $# -gt 2 ]; then
             echo "$USAGE" 1>&2
             return $FALSE
         fi
@@ -1356,7 +1356,7 @@ function    is_newer()
             return $FALSE
         fi
 
-        if [[ ! -e $1 -o ! -e $2 ]]; then
+        if [ ! -e $1 -o ! -e $2 ]; then
             return $FALSE       # No
         fi
 
