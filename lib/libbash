@@ -781,7 +781,7 @@ function    check_dir()
         [[ -d $1 ]] && return $TRUE || return $FALSE
     }
 alias check_folder=check_dir
-export -f check_folder
+export -f check_dir
 
 function    check_filefolder()
     {
