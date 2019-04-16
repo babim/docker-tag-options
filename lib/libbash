@@ -130,10 +130,10 @@ exec 3>&1
 
 # Setup some colors to use. These need to work in fairly limited shells, like the Ubuntu Docker container where there are only 8 colors.
 # See if stdout is a terminal
-    if [ -t 1 ] && command -v tput > /dev/null; then
+    if [[ -t 1 ]] && command -v tput > /dev/null; then
         # see if it supports colors
         ncolors=$(tput colors)
-        if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
+        if [[ -n "$ncolors" ]] && [[ $ncolors -ge 8 ]]; then
             bold="$(tput bold           || echo)"
             normal="$(tput sgr0         || echo)"
             black="$(tput setaf 0       || echo)"
@@ -219,7 +219,7 @@ function    say()
 ####### Echo verbose #######
 function    say_verbose()
     {
-        if [ "$verbose" = true ]; then
+        if [[ "$verbose" = true ]]; then
             say "$1"
         fi
     }
@@ -341,7 +341,7 @@ function    combine_paths()
         eval $invocation
 
         # TODO: Consider making it work with any number of paths. For now:
-        if [ ! -z "${3:-}" ]; then
+        if [[ ! -z "${3:-}" ]]; then
             say_err "combine_paths: Function takes two parameters."
             return $FALSE
         fi
@@ -374,18 +374,18 @@ function    get_osname()
     eval $invocation
 
     local uname=$(uname)
-    if [ "$uname" = "Darwin" ]; then
+    if [[ "$uname" = "Darwin" ]]; then
         echo "osx"
         return $TRUE
-    elif [ "$uname" = "FreeBSD" ]; then
+    elif [[ "$uname" = "FreeBSD" ]]; then
         echo "freebsd"
         return $TRUE        
-    elif [ "$uname" = "Linux" ]; then
-        if [ -e /etc/os-release ] && [ ! -e /etc/redhat-release ]; then
+    elif [[ "$uname" = "Linux" ]]; then
+        if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]]; then
             . /etc/os-release
             echo "$ID.$VERSION_ID"
             return $TRUE
-        elif [ -e /etc/redhat-release ]; then
+        elif [[ -e /etc/redhat-release ]]; then
             local redhatRelease=$(</etc/redhat-release)
             if [[ $redhatRelease == "CentOS release 6."*    || $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
                 echo "rhel.6"
@@ -525,17 +525,17 @@ function    add_a_user()
 ##################################################################
 function    is_root() 
     {
-        [ $(id -u) -eq 0 ] && return $TRUE || return $FALSE
+        [[ $(id -u) -eq 0 ]] && return $TRUE || return $FALSE
     }
 function    is_root_say() 
     {
-        [ $(id -u) -eq 0 ] && say "You are logged in as root." || say_warning "You are not logged in as root."
+        [[ $(id -u) -eq 0 ]] && say "You are logged in as root." || say_warning "You are not logged in as root."
     }
 function    require_root()
     {
         # check permission root
         say "Check root"
-            if [ "x$(id -u)" != 'x0' ]; then
+            if [[ "x$(id -u)" != 'x0' ]]; then
                 echo 'Error: this script can only be executed by root'
                 exit $FALSE
             fi
@@ -622,7 +622,7 @@ function    stop_watch()
 function    gen_passwd () 
     { 
         local l=$1;
-        [ "$l" == "" ] && l=16;
+        [[ "$l" == "" ]] && l=16;
         tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${l} | xargs
     }
 
@@ -640,12 +640,12 @@ function    copy_files_or_dirs_from_list()
         local root_path="$(remove_trailing_slash "$1")"
         local out_path="$(remove_trailing_slash "$2")"
         local override="$3"
-        local override_switch=$(if [ "$override" = false ]; then printf -- "-n"; fi)
+        local override_switch=$(if [[ "$override" = false ]]; then printf -- "-n"; fi)
         
         cat | uniq | while read -r file_path; do
             local path="$(remove_beginning_slash "${file_path#$root_path}")"
             local target="$out_path/$path"
-            if [ "$override" = true ] || (! ([ -d "$target" ] || [ -e "$target" ])); then
+            if [[ "$override" = true ]] || (! ([ -d "$target" ]] || [[ -e "$target" ])); then
                 mkdir -p "$out_path/$(dirname "$path")"
                 cp -R $override_switch "$root_path/$path" "$target"
             fi
@@ -672,22 +672,22 @@ function    dircopy()
         CURDIR=`pwd`                  # Current directory
         TARGET=                       # Destination directory
 
-        if [ $# -ne 2 ]; then
+        if [[ $# -ne 2 ]]; then
             echo "Usage: $CMDNAME directory1 directory2" 1>&2
             return $FALSE
         fi
 
-        if [ ! -d "$1" ]; then
+        if [[ ! -d "$1" ]]; then
             echo "$1 is not a directory." 1>&2
             return $FALSE
         fi
 
-        if [ -f "$2" ]; then
+        if [[ -f "$2" ]]; then
             echo "$2 is not a directory." 1>&2
             return $FALSE
         fi
 
-        if [ ! -d "$2" ]; then
+        if [[ ! -d "$2" ]]; then
             mkdir -p "$2"
         fi
 
@@ -733,7 +733,7 @@ function    read_line()
 # count line
 function    count_line()
     {
-        if [ $# -lt 1 ]; then
+        if [[ $# -lt 1 ]]; then
             echo "Usage: $0 file ..."
             return $FALSE
         fi
@@ -744,7 +744,7 @@ function    count_line()
             s=0
 
         for f in $*; do
-            if [ -O $f ] # checks whether file owner is running the script
+            if [[ -O $f ]] # checks whether file owner is running the script
         then 
             l=`wc -l $f | sed 's/^\([0-9]*\).*$/\1/'`
             echo "$f: $l"
@@ -774,9 +774,9 @@ function    loading()
 # check Greater Lesser
 function    check_greater()
     {
-        if [ $1 -gt $2 ]; then
+        if [[ $1 -gt $2 ]]; then
             echo "$1 > $2"
-        elif [ $1 -lt $2 ]; then
+        elif [[ $1 -lt $2 ]]; then
             echo "$1 < $2"
         fi
         return $TRUE
@@ -1041,10 +1041,10 @@ function    dircmp()
         #
         # Get command line arguments.
         #
-        if [ $# -eq 1 ]; then
+        if [[ $# -eq 1 ]]; then
             DIR1="."
             DIR2="$1"
-        elif [ $# -eq 2 ]; then
+        elif [[ $# -eq 2 ]]; then
             DIR1="$1"
             DIR2="$2"
         else
@@ -1055,12 +1055,12 @@ function    dircmp()
         #
         # Check the directories.
         #
-        if [ ! -d $DIR1 ]; then
+        if [[ ! -d $DIR1 ]]; then
             say_err "$DIR1 is not a directory." 1>&2
             return 2
         fi
 
-        if [ ! -d $DIR2 ]; then
+        if [[ ! -d $DIR2 ]]; then
             say_err "$DIR2 is not a directory." 1>&2
             return 2
         fi
@@ -1086,7 +1086,7 @@ function    dircmp()
         # Print the files that are in dir2, but not in dir1.
         #
         cat $DIR1_FILES $ALL_FILES | sort | uniq -u >$TMP
-        if [ -s $TMP ]; then
+        if [[ -s $TMP ]]; then
             FOUND=TRUE
             say ""
             say_warning "Files missing from $DIR1:"
@@ -1101,7 +1101,7 @@ function    dircmp()
         # Print the files that are in dir1, but not in dir2.
         #
         cat $DIR2_FILES $ALL_FILES | sort | uniq -u >$TMP
-        if [ -s $TMP ]; then
+        if [[ -s $TMP ]]; then
             FOUND=TRUE
             say ""
             say_warning "Files missing from $DIR2:"
@@ -1120,16 +1120,16 @@ function    dircmp()
         for f in `cat $COMMON_FILES`
         do
             cmp -s $DIR1/$f $DIR2/$f
-            if [ $? -ne 0 ]; then
+            if [[ $? -ne 0 ]]; then
                 FOUND=TRUE
                 f=`expr $f : '..\(.*\)'`
-                if [ "$FIRST" = "TRUE" ]; then
+                if [[ "$FIRST" = "TRUE" ]]; then
                     FIRST=FALSE
                     say ""
                     say_warning "Files that are not the same:"
                 fi
 
-                if [ "$VERBOSE" = "TRUE" ]; then
+                if [[ "$VERBOSE" = "TRUE" ]]; then
                     say ""
                     say "File: $f"
                     diff $DIR1/$f $DIR2/$f
@@ -1140,7 +1140,7 @@ function    dircmp()
         done
 
         rm -f /tmp/*.$$
-        if [ $FOUND = TRUE ]; then
+        if [[ $FOUND = TRUE ]]; then
             return 2
         else
             say "The directories are the same."
@@ -1173,7 +1173,7 @@ function    findfile()
         #
         ############################################################
         CMDNAME=`basename $0`
-        if [ $# -eq 0 ]; then
+        if [[ $# -eq 0 ]]; then
             echo "Usage: $CMDNAME file [directory ...]" 1>&2
             return $FALSE
         fi
@@ -1279,7 +1279,7 @@ function    findstr()
         #
         # Parse command options.
         #
-        if [ "$OPTIND" = 1 ]; then
+        if [[ "$OPTIND" = 1 ]]; then
             while getopts iv OPT
             do
                 case $OPT in
@@ -1319,7 +1319,7 @@ function    findstr()
         #
         # Make sure the number of parameters is reasonable.
         #
-        if [ $# -lt 1 -o $# -gt 2 ]; then
+        if [[ $# -lt 1 -o $# -gt 2 ]]; then
             echo "$USAGE" 1>&2
             return $FALSE
         fi
@@ -1351,16 +1351,16 @@ function    is_newer()
         #    been modified more recently that file2; otherwise,
         #    it will return false (1).
         #    
-        if [ $# -ne 2 ]; then
+        if [[ $# -ne 2 ]]; then
             echo "Usage: is_newer file1 file2" 1>&2
             return $FALSE
         fi
 
-        if [ ! -e $1 -o ! -e $2 ]; then
+        if [[ ! -e $1 -o ! -e $2 ]]; then
             return $FALSE       # No
         fi
 
-        if [ -n "`find $1 -newer $2 -print`" ]; then
+        if [[ -n "`find $1 -newer $2 -print`" ]]; then
             say "File/Folder $1 newer $2"
             return $TRUE       # Yes
         else
@@ -1390,13 +1390,13 @@ function    is_numeric()
         #    contains all numeric characters; otherwise, it
         #    will return false (1).
         #    
-        if [ $# -ne 1 ]; then
+        if [[ $# -ne 1 ]]; then
             say_warning "This $1 is not numeric"
             return $FALSE
         fi
 
         expr "$1" + 1 >/dev/null 2>&1
-        if [ $? -ge 2 ]; then
+        if [[ $? -ge 2 ]]; then
             say_warning "This $1 is not numeric"
             return $FALSE
         fi
@@ -1748,7 +1748,7 @@ function    is_ipv4_cidr()
         local -r regex='^[[:digit:]]{1,2}$'
 
         [[ $1 =~ $regex ]]      || return $FALSE
-        [ "$1" -gt 32 ]         || [ "$1" -lt 0 ] && return $FALSE
+        [[ "$1" -gt 32 ]]         || [[ "$1" -lt 0 ]] && return $FALSE
 
         return $TRUE
     }
@@ -1845,9 +1845,9 @@ function    cidr2mask()
         local partial_octet=$(($1%8))
 
         for ((i=0;i<4;i+=1)); do
-            if [ $i -lt $full_octets ]; then
+            if [[ $i -lt $full_octets ]]; then
                 mask+=255
-            elif [ $i -eq $full_octets ]; then
+            elif [[ $i -eq $full_octets ]]; then
                 mask+=$((256 - 2**(8-partial_octet)))
             else
                 mask+=0
