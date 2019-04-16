@@ -1502,7 +1502,6 @@ function    install_package()
                     return $FALSE
                 fi
             return $TRUE
-        done
     }
 
 # install multi package
