@@ -133,7 +133,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package curl xmlstarlet ttf-dejavu libc6-compat git openssh
+		install_package "xmlstarlet ttf-dejavu libc6-compat git openssh"
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
@@ -154,7 +154,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package curl ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
+		install_package "ttf-dejavu libtcnative-1 xmlstarlet git openssh-client"
 	# visible code
 	if [ "${VISIBLECODE}" = "true" ]; then
 		# install gosu
