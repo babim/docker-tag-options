@@ -135,7 +135,7 @@ if [[ -f /etc/alpine-release ]]; then
 			echo "Install depend packages..."
 		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
+	if [[ "${VISIBLECODE}" = "true" ]]; then
 		# install gosu
 		install_gosu
 	fi
@@ -156,7 +156,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			echo "Install depend packages..."
 		install_package ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
 	# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
+	if [[ "${VISIBLECODE}" = "true" ]]; then
 		# install gosu
 		install_gosu
 	fi
