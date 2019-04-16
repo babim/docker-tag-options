@@ -1500,7 +1500,7 @@ function    install_package()
                 elif [[ $osname == "rhel"* ]]; then
                     yum install -y ${software}
                 elif [[ $osname == "alpine"* ]]; then
-                    apk add --no-cache install ${software}
+                    apk add --no-cache ${software}
                 else
                     say_err "Cannot install ${software}. OS not support."
                     return $FALSE
@@ -1521,7 +1521,7 @@ function    install_packages()
                 elif [[ $osname == "rhel"* ]]; then
                     yum install -y ${software}
                 elif [[ $osname == "alpine"* ]]; then
-                    apk add --no-cache install ${software}
+                    apk add --no-cache ${software}
                 else
                     say_err "Cannot install ${software}. OS not support."
                     return $FALSE
@@ -1544,7 +1544,7 @@ function    install_package_run()
                     elif [[ $osname == "rhel"* ]]; then
                         yum install -y ${software}
                     elif [[ $osname == "alpine"* ]]; then
-                        apk add --no-cache install ${software}
+                        apk add --no-cache ${software}
                     else
                         say_err "Cannot install ${software}. OS not support."
                         return $FALSE
@@ -1587,7 +1587,7 @@ function    install_java_jre()
                     yum install -y ${software}
                 elif [[ $osname == "alpine"* ]]; then
                     software=openjdk${OPENJDKV}-jre
-                    apk add --no-cache install ${software}
+                    apk add --no-cache ${software}
                 else
                     say_err "Cannot install ${software}. OS not support."
                     return $FALSE
