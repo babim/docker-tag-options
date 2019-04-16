@@ -137,7 +137,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# visible code
 	if [[ "${VISIBLECODE}" == "true" ]]; then
 		# install gosu
-		install_gosu
+		#install_gosu
 	fi
 	# Install Atlassian
 		installatlassian
