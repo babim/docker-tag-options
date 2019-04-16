@@ -1468,7 +1468,6 @@ function    install_gosu()
     # install gosu on your OS linux
     if machine_has gosu; then
         say "GOSU installed."
-        return $TRUE
     else
         # osname=$(get_osname)
         get_osname
@@ -1483,78 +1482,67 @@ function    install_gosu()
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
         [[ ! -f ${FILE_TEMP} ]]     && say_err "GOSU cant install."; return $FALSE
         chmod +x ${FILE_TEMP}       && gosu nobody true
-        say "GOSU installed."       && return $TRUE
+        say "GOSU installed."
     fi
+        return $TRUE
     }
 
+# command install. Core command for install packages
+function    command_install()
+    {
+        # osname=$(get_osname)
+        get_osname
+        say "install ${software}.."
+            if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                check_debian_need_update && apt-get update || say "no need update repo"
+                apt-get install -y --no-install-recommends ${software}
+            elif [[ $osname == "rhel"* ]]; then
+                yum install -y ${software}
+            elif [[ $osname == "alpine"* ]]; then
+                apk add --no-cache ${software}
+            else
+                say_err "Cannot install ${software}. OS not support."
+                return $FALSE
+            fi
+        return $TRUE
+    }
 # install package
 function    install_package()
     {
-            # osname=$(get_osname)
-            get_osname
-            export software=${@}
-            say "install ${software}.."
-                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                    check_debian_need_update && apt-get update || say "no need update repo"
-                    apt-get install -y --no-install-recommends ${software}
-                elif [[ $osname == "rhel"* ]]; then
-                    yum install -y ${software}
-                elif [[ $osname == "alpine"* ]]; then
-                    apk add --no-cache ${software}
-                else
-                    say_err "Cannot install ${software}. OS not support."
-                    return $FALSE
-                fi
-            return $TRUE
+        software=${@}
+            command_install
     }
 
 # install multi package
 function    install_packages()
     {
         for software in ${@}; do
-            # osname=$(get_osname)
-            get_osname
-            say "install ${software}.."
-                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                    check_debian_need_update && apt-get update || say "no need update repo"
-                    apt-get install -y --no-install-recommends ${software}
-                elif [[ $osname == "rhel"* ]]; then
-                    yum install -y ${software}
-                elif [[ $osname == "alpine"* ]]; then
-                    apk add --no-cache ${software}
-                else
-                    say_err "Cannot install ${software}. OS not support."
-                    return $FALSE
-                fi
-            return $TRUE
+           command_install
         done
     }
 
-# install package run bin
+# install package have run bin
 function    install_package_run()
+    {
+        software=${1}
+            if ! machine_has ${software}; then
+                command_install
+            fi
+        machine_has ${software}          && say "${software} installed." || say_err "${software} not install."
+        machine_has ${software}          && return $TRUE || return $FALSE
+    }
+
+# install multi packages have run bin
+function    install_packages_run()
     {
         for software in ${@}; do
             if ! machine_has ${software}; then
-                # osname=$(get_osname)
-                get_osname
-                say "install ${software}.."
-                    if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                        check_debian_need_update && apt-get update || say "no need update repo"
-                        apt-get install -y --no-install-recommends ${software}
-                    elif [[ $osname == "rhel"* ]]; then
-                        yum install -y ${software}
-                    elif [[ $osname == "alpine"* ]]; then
-                        apk add --no-cache ${software}
-                    else
-                        say_err "Cannot install ${software}. OS not support."
-                        return $FALSE
-                    fi
+                command_install
             fi
             machine_has ${software}          && say "${software} installed." || say_err "${software} not install."
             machine_has ${software}          && return $TRUE || return $FALSE
         done
     }
-alias install_packages_run=install_package_run
 
 # install curl
 function    install_curl()
@@ -1577,21 +1565,17 @@ function    install_java_jre()
         if ! check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre; then
         # osname=$(get_osname)
         get_osname
-            say "install java.."
                 if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     software=openjdk-${OPENJDKV}-jre
-                    check_debian_need_update && apt-get update || say "no need update repo"
-                    apt-get install -y --no-install-recommends ${software}
                 elif [[ $osname == "rhel"* ]]; then
                     software=java-1.${OPENJDKV}.0-openjdk.${arch}
-                    yum install -y ${software}
                 elif [[ $osname == "alpine"* ]]; then
                     software=openjdk${OPENJDKV}-jre
-                    apk add --no-cache ${software}
                 else
                     say_err "Cannot install ${software}. OS not support."
                     return $FALSE
                 fi
+            command_install
             check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cant install java jre"; return $FALSE
         fi
     }
@@ -1624,77 +1608,87 @@ function    clean_os()
     return $TRUE
     }
 
-# Clean packages
-function    clean_package()
+# command remove, core command for remove packages
+function    command_remove()
     {
- 	if [[ -f /etc/redhat-release ]]; then
-        [[ ! -z "${UNINSTALL}" ]] && yum remove -y $UNINSTALL $UNINSTALLAPP     || echo "not have apps need remove"
- 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-        [[ ! -z "${UNINSTALL}" ]] && apt-get purge -y $UNINSTALL $UNINSTALLAPP  || echo "not have apps need remove"
- 	elif [[ -f /etc/alpine-release ]]; then
-        [[ ! -z "${UNINSTALL}" ]] && apk del --purge $UNINSTALL $UNINSTALLAPP   || echo "not have apps need remove"
- 	else
-        echo "not support"
-        return $FALSE
- 	fi
-    return $TRUE
+        # osname=$(get_osname)
+        get_osname
+        say "remove ${software}.."
+            if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                apt-get purge -y ${software}
+            elif [[ $osname == "rhel"* ]]; then
+                yum remove -y ${software}
+            elif [[ $osname == "alpine"* ]]; then
+                apk del --purge ${software}
+            else
+                say_err "Cannot remove ${software}. OS not support."
+                return $FALSE
+            fi
+        return $TRUE
     }
-alias clean_packages=clean_package
 
 # remove package
 function    remove_package()
     {
+        software=${@}
+            command_remove
+    }
+
+# remove packages
+function    remove_packages()
+    {
         for software in ${@}; do
-            # osname=$(get_osname)
-            get_osname
-            say "remove ${software}.."
-                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                    apt-get purge -y ${software}
-                elif [[ $osname == "rhel"* ]]; then
-                    yum remove -y ${software}
-                elif [[ $osname == "alpine"* ]]; then
-                    apk del --purge ${software}
-                else
-                    say_err "Cannot remove ${software}. OS not support."
-                    return $FALSE
-                fi
-            return $TRUE
+            command_remove
         done
     }
-alias remove_packages=remove_package
+
+alias remove_packages=remove_packages
 alias del_package=remove_package
-alias del_packages=remove_package
+alias del_packages=remove_packages
 alias delete_package=remove_package
-alias delete_packages=remove_package
+alias delete_packages=remove_packages
 
 # remove package run bin
 function   remove_package_run()
     {
+        software=${1}
+            if ! machine_has ${software}; then
+                command_remove
+            fi
+            machine_has ${software}          && say "${software} cant remove."  || say "${software} removed."
+            machine_has ${software}          && return $FALSE                   || return $TRUE
+    }
+
+# remove package run bin
+function   remove_packages_run()
+    {
         for software in ${@}; do
             if ! machine_has ${software}; then
-                # osname=$(get_osname)
-                get_osname
-                say "remove ${software}.."
-                    if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                        apt-get purge -y ${software}
-                    elif [[ $osname == "rhel"* ]]; then
-                        yum remove -y ${software}
-                    elif [[ $osname == "alpine"* ]]; then
-                        apk del --purge ${software}
-                    else
-                        say_err "Cannot remove ${software}. OS not support."
-                        return $FALSE
-                    fi
+                command_remove
             fi
             machine_has ${software}          && say "${software} cant remove."  || say "${software} removed."
             machine_has ${software}          && return $FALSE                   || return $TRUE
         done
     }
-alias remove_packages_run=remove_package_run
+
+alias remove_packages_run=remove_packages_run
 alias del_package_run=remove_package_run
-alias del_packages_run=remove_package_run
+alias del_packages_run=remove_packages_run
 alias delete_package_run=remove_package_run
-alias delete_packages_run=remove_package_run
+alias delete_packages_run=remove_packages_run
+
+# Clean packages
+function    clean_package()
+    {
+        if [[ -z "${UNINSTALL}" ]]; then
+            say "not have apps need remove"
+        else
+            software="${UNINSTALL} ${UNINSTALLAPP} ${@}"
+                command_remove
+        fi
+    return $TRUE
+    }
+alias clean_packages=clean_package
 
 
 # Group: Network
