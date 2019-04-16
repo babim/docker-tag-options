@@ -450,7 +450,7 @@ function    dpkgArch()
                     [[ ! -f /usr/bin/dpkg ]]        && apk add --no-cache dpkg
                     check_dpkg
                 else
-                    say_err "Your OS not support"
+                    say_err "Cannot install dpkg to check Arch. Your OS not support"
                     return $FALSE
                 fi
         fi
@@ -1432,7 +1432,7 @@ function    install_epel()
             elif [[ $osname == "rhel.5" ]]; then 
                 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-5.noarch.rpm
             else
-                say_err "Your OS not support"
+                say_err "Cannot install EPEL. Your OS not support"
                 return $FALSE
             fi
         check_epel          && say "EREL REPO installed"            || say_err "EREL REPO not found"
@@ -1470,7 +1470,7 @@ function    install_gosu()
             elif [[ $osname == "rhel"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
             else
-                say_err "OS not support."
+                say_err "Cannot install Gosu. OS not support."
                 return $FALSE
             fi
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
@@ -1494,7 +1494,7 @@ function    install_package()
                 elif [[ $osname == "alpine"* ]]; then
                     apk add --no-cache install ${software}
                 else
-                    say_err "OS not support."
+                    say_err "Cannot install ${software}. OS not support."
                     return $FALSE
                 fi
             return $TRUE
@@ -1517,7 +1517,7 @@ function    install_package_run()
                     elif [[ $osname == "alpine"* ]]; then
                         apk add --no-cache install ${software}
                     else
-                        say_err "OS not support."
+                        say_err "Cannot install ${software}. OS not support."
                         return $FALSE
                     fi
             fi
@@ -1559,7 +1559,7 @@ function    install_java_jre()
                     software=openjdk${OPENJDKV}-jre
                     apk add --no-cache install ${software}
                 else
-                    say_err "OS not support."
+                    say_err "Cannot install ${software}. OS not support."
                     return $FALSE
                 fi
             check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cant install java jre"; return $FALSE
@@ -1624,7 +1624,7 @@ function    remove_package()
                 elif [[ $osname == "alpine"* ]]; then
                     apk del --purge ${software}
                 else
-                    say_err "OS not support."
+                    say_err "Cannot remove ${software}. OS not support."
                     return $FALSE
                 fi
             return $TRUE
@@ -1650,7 +1650,7 @@ function   remove_package_run()
                     elif [[ $osname == "alpine"* ]]; then
                         apk del --purge ${software}
                     else
-                        say_err "OS not support."
+                        say_err "Cannot remove ${software}. OS not support."
                         return $FALSE
                     fi
             fi
