@@ -432,7 +432,7 @@ function    check_dpkg()
 function    dpkgArch()
     {
         if [[ ! -f /usr/bin/dpkg ]]; then
-            osname=$(get_osname)
+            export osname=$(get_osname)
                 # redhat
                 if [[ $osname == "rhel"* ]]; then 
                     [[ ! -f /usr/bin/dpkg ]]        && yum install -y dpkg
@@ -1424,7 +1424,7 @@ function    install_epel()
     {
     if ! check_epel; then
         say "EPEL Repo not found"
-        osname=$(get_osname)
+        export osname=$(get_osname)
             if [[ $osname == "rhel.6" ]]; then 
                 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
             elif [[ $osname == "rhel.7" ]]; then 
@@ -1464,7 +1464,7 @@ function    install_gosu()
         say "GOSU installed."
         return $TRUE
     else
-        osname=$(get_osname)
+        export osname=$(get_osname)
             if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu
             elif [[ $osname == "rhel"* ]]; then
@@ -1484,7 +1484,7 @@ function    install_gosu()
 function    install_package()
     {
         for software in ${@}; do
-            osname=$(get_osname)
+            export osname=$(get_osname)
             say "install ${software}.."
                 if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     check_debian_need_update && apt-get update || say "no need update repo"
@@ -1507,7 +1507,7 @@ function    install_package_run()
     {
         for software in ${@}; do
             if ! machine_has ${software}; then
-                osname=$(get_osname)
+                export osname=$(get_osname)
                 say "install ${software}.."
                     if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                         check_debian_need_update && apt-get update || say "no need update repo"
@@ -1546,7 +1546,7 @@ function    install_java_jre()
     export  JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
 	export  PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
         if ! check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre; then
-        osname=$(get_osname)
+        export osname=$(get_osname)
             say "install java.."
                 if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     software=openjdk-${OPENJDKV}-jre
@@ -1615,7 +1615,7 @@ alias clean_packages=clean_package
 function    remove_package()
     {
         for software in ${@}; do
-            osname=$(get_osname)
+            export osname=$(get_osname)
             say "remove ${software}.."
                 if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                     apt-get purge -y ${software}
@@ -1641,7 +1641,7 @@ function   remove_package_run()
     {
         for software in ${@}; do
             if ! machine_has ${software}; then
-                osname=$(get_osname)
+                export osname=$(get_osname)
                 say "remove ${software}.."
                     if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                         apt-get purge -y ${software}
