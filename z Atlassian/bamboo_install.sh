@@ -135,10 +135,8 @@ if [[ -f /etc/alpine-release ]]; then
 			echo "Install depend packages..."
 		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
-	if [[ "${VISIBLECODE}" == "true" ]]; then
-		# install gosu
-		#install_gosu
-	fi
+	[[ "${VISIBLECODE}" == "true" ]] && install_gosu
+
 	# Install Atlassian
 		installatlassian
 		dockerentry
