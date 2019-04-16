@@ -376,17 +376,21 @@ function    get_osname()
         if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]]; then
             . /etc/os-release
             echo "$ID.$VERSION_ID"
+            export osname="$ID.$VERSION_ID"
             return $TRUE
         elif [[ -e /etc/redhat-release ]]; then
             local redhatRelease=$(</etc/redhat-release)
             if [[ $redhatRelease == "CentOS release 6."*    || $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
                 echo "rhel.6"
+                export osname="rhel.6"
                 return $TRUE
             elif [[ $redhatRelease == "CentOS release 7."*  || $redhatRelease == "Red Hat Enterprise Linux Server release 7."* ]]; then
                 echo "rhel.7"
+                export osname="rhel.7"
                 return $TRUE
             elif [[ $redhatRelease == "CentOS release 5."*  || $redhatRelease == "Red Hat Enterprise Linux Server release 5."* ]]; then
                 echo "rhel.5"
+                export osname="rhel.5"
                 return $TRUE
             fi
 
@@ -1483,6 +1487,27 @@ function    install_gosu()
 # install package
 function    install_package()
     {
+            export osname=$(get_osname)
+            export software=${@}
+            say "install ${software}.."
+                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                    check_debian_need_update && apt-get update || say "no need update repo"
+                    apt-get install -y --no-install-recommends ${software}
+                elif [[ $osname == "rhel"* ]]; then
+                    yum install -y ${software}
+                elif [[ $osname == "alpine"* ]]; then
+                    apk add --no-cache install ${software}
+                else
+                    say_err "Cannot install ${software}. OS not support."
+                    return $FALSE
+                fi
+            return $TRUE
+        done
+    }
+
+# install multi package
+function    install_packages()
+    {
         for software in ${@}; do
             export osname=$(get_osname)
             say "install ${software}.."
@@ -1500,7 +1525,6 @@ function    install_package()
             return $TRUE
         done
     }
-alias install_packages=install_package
 
 # install package run bin
 function    install_package_run()
