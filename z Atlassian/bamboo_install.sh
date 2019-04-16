@@ -133,9 +133,9 @@ if [[ -f /etc/alpine-release ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		#install_package xmlstarlet ttf-dejavu libc6-compat git openssh
+		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
-	[[ "${VISIBLECODE}" == "true" ]] && install_gosu
+	#[[ "${VISIBLECODE}" == "true" ]] && install_gosu
 
 	# Install Atlassian
 		installatlassian
