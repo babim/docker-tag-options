@@ -69,7 +69,7 @@ function export_all()
         export -f check_file_block check_file_special_character check_dir check_filefolder check_file_owned_groupid \
                     check_file_groupid check_file_sticky check_file_symlink check_file_owned_userid check_file_read \
                     check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run create_folder \
-                    crstr_replaceeate_file remove_folder remove_file remove_filefolder set_filefolder_owner set_filefolder_mod \
+                    create_file remove_folder remove_file remove_filefolder set_filefolder_owner set_filefolder_mod \
                     dircmp findfile  str_replace_in_file findstr is_newer hex2decimal is_numeric check_process check_process_say
     # Function Install
         export -f check_epel check_epel_say install_epel remove_epel install_gosu install_package install_package_run \
