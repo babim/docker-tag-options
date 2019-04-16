@@ -13,43 +13,26 @@ set -u
 # This is causing it to fail
 set -o pipefail
 
+#####################################
     ####### Set download tool #######
     ####### and load library ########
 # check has package
 function    machine_has() {
         hash "$1" > /dev/null 2>&1
         return $?; }
-# $download_save /winrar.zip http://media.matmagoc.com/winrar.zip
-function    download_with_curl() {
-        FILETEMP="$1"
-        [[ -f $FILETEMP ]] && rm -f $FILETEMP
-            echo "downloading and update..."
-            curl -Ls "$2" -o "$FILETEMP"; }
-function    download_with_wget() {
-        FILETEMP="$1"
-        [[ -f $FILETEMP ]] && rm -f $FILETEMP
-            echo "downloading and update..."
-            wget -O $FILETEMP --no-check-certificate "$2"; }
 # Check and set download tool
 echo "Check and set download tool..."
 if machine_has "curl"; then
-    export download_tool="curl -Ls"
-    export DOWNLOAD_TOOL="curl"
-    export download_save=download_with_curl
-    . <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-    echo "use curl"
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
 elif machine_has "wget"; then
-    export download_tool="wget"
-    export DOWNLOAD_TOOL="wget"
-    export download_save=download_with_wget
-    . <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-    echo "use wget"
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
 else
     echo "without download tool"
     sleep 3
     exit 1
 fi
-###################################
+download_option
+#####################################
 
 # need root to run
 	require_root

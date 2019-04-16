@@ -18,44 +18,67 @@
 # set -o pipefail
 
 # USE FOR BASH SCRIPT NEED LOAD THIS LIBRARY
-# ###################################
+# #####################################
 #     ####### Set download tool #######
 #     ####### and load library ########
 # # check has package
 # function    machine_has() {
 #         hash "$1" > /dev/null 2>&1
 #         return $?; }
-# # $download_save /winrar.zip http://media.matmagoc.com/winrar.zip
-# function    download_with_curl() {
-#         FILETEMP="$1"
-#         [[ -f $FILETEMP ]] && rm -f $FILETEMP
-#             echo "downloading and update..."
-#             curl -Ls "$2" -o "$FILETEMP"; }
-# function    download_with_wget() {
-#         FILETEMP="$1"
-#         [[ -f $FILETEMP ]] && rm -f $FILETEMP
-#             echo "downloading and update..."
-#             wget -O $FILETEMP --no-check-certificate "$2"; }
 # # Check and set download tool
 # echo "Check and set download tool..."
 # if machine_has "curl"; then
-#     export download_tool="curl -Ls"
-#     export DOWNLOAD_TOOL="curl"
-#     export download_save=download_with_curl
 #     source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-#     echo "use curl"
 # elif machine_has "wget"; then
-#     export download_tool="wget"
-#     export DOWNLOAD_TOOL="wget"
-#     export download_save=download_with_wget
 #     source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-#     echo "use wget"
 # else
 #     echo "without download tool"
 #     sleep 3
 #     exit 1
 # fi
-# ###################################
+# download_option
+# #####################################
+
+# Content
+function export_all()
+    {
+    # set start
+        export -f debian_cmd_interface Clear
+    # set text color
+        export -f e_header e_arrow e_success e_error e_warning e_underline e_bold e_note say_warning say_err say say_verbose
+    # check has value
+        export -f machine_has has_value has_empty
+    # download tool
+        export -f download_with_curl download_with_wget download_option
+    # change path
+        export -f to_lowercase to_uppercase trim remove_trailing_slash remove_beginning_slash combine_paths
+    # run from url
+        export -f run_url
+    # get os name
+        export -f get_osname check_debian_need_update
+    # Get architecture
+        export -f check_dpkg dpkgArch get_machine_architecture
+    # User check, add, del
+        export -f add_a_user is_root is_root_say require_root is_user is_user_say
+    # Time Feature
+        export -f now elapsed start_watch stop_watch
+    # Function Feature
+        export -f gen_passwd reload_nginx copy_files_or_dirs_from_list dircopy die calc read_line count_line \
+                    loading check_greater print_date
+    # Check file and folder
+        export -f check_file_block check_file_special_character check_dir check_filefolder check_file_owned_groupid \
+                    check_file_groupid check_file_sticky check_file_symlink check_file_owned_userid check_file_read \
+                    check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run create_folder \
+                    crstr_replaceeate_file remove_folder remove_file remove_filefolder set_filefolder_owner set_filefolder_mod \
+                    dircmp findfile  str_replace_in_file findstr is_newer hex2decimal is_numeric check_process check_process_say
+    # Function Install
+        export -f check_epel check_epel_say install_epel remove_epel install_gosu install_package install_package_run \
+                    install_curl install_wget install_java_jre
+    # Function Remove
+        export -f clean_os clean_package remove_package remove_package_run
+    # Group: Network
+        export -f is_ipv4 is_fqdn is_ipv4_netmask is_ipv4_cidr is_ipv4_subnet get_ipv4_network get_ipv4_broadcast mask2cidr cidr2mask
+    }
 
 # set commandline interface for debian
 function    debian_cmd_interface()
@@ -64,10 +87,10 @@ function    debian_cmd_interface()
     }
 
 # set variables
-    memory=$(grep 'MemTotal' /proc/meminfo |tr ' ' '\n' |grep [0-9])
-    declare -r TRUE=0
-    declare -r FALSE=1
-    declare -r PASSWD_FILE=/etc/passwd
+    export memory=$(grep 'MemTotal' /proc/meminfo |tr ' ' '\n' |grep [0-9])
+    declare -r export TRUE=0
+    declare -r export FALSE=1
+    declare -r export PASSWD_FILE=/etc/passwd
 
 #    Clear - clear the terminal screen
 function    Clear()
@@ -97,7 +120,7 @@ function    Clear()
     ##############################
 
 # Use in the the functions: eval $invocation
-invocation='say_verbose "Calling: ${yellow:-}${FUNCNAME[0]} ${green:-}$*${normal:-}"'
+export invocation='say_verbose "Calling: ${yellow:-}${FUNCNAME[0]} ${green:-}$*${normal:-}"'
 
 # standard output may be used as a return value in the functions
 # we need a way to write text on the screen in the functions so that
@@ -391,16 +414,16 @@ function    check_debian_need_update()
     }
 
 # release name
-[[ -f /etc/debian_version ]]    && release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
+[[ -f /etc/debian_version ]]    && export release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
 # codename
-[[ -f /etc/os-release ]]        && codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
+[[ -f /etc/os-release ]]        && export codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
 
 
     ####### Get architecture #######
     ################################
 
 # simple machine architecture
-    arch=$(uname -i)
+    export arch=$(uname -i)
 
 # dpkg architecture
 function    check_dpkg()
@@ -1835,3 +1858,9 @@ function    cidr2mask()
 
         echo $mask
     }
+
+
+    ####### Ending ########
+    #######################
+        export_all
+    #######################
