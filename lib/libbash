@@ -45,7 +45,7 @@ function export_all()
     # set start
         export -f debian_cmd_interface Clear
     # set text color
-        export -f e_header e_arrow e_success e_error e_warning e_underline e_bold e_note say_warning say_err say say_verbose
+        export -f e_header e_arrow e_success e_error e_warning e_underline e_bold e_note say_warning say_err say
     # check has value
         export -f machine_has has_value has_empty
     # download tool
@@ -216,13 +216,13 @@ function    say()
         printf "%b\n" "${cyan:-} ${normal:-} $@"
     }
 
-####### Echo verbose #######
-function    say_verbose()
-    {
-        if [[ "$verbose" = true ]]; then
-            say "$1"
-        fi
-    }
+# ####### Echo verbose #######
+# function    say_verbose()
+#     {
+#         if [[ "$verbose" = true ]]; then
+#             say "$1"
+#         fi
+#     }
 
 ####### machine has (check packages bin run) #######
 # example: if machine_has "curl"; then .....
