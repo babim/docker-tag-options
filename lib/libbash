@@ -66,7 +66,7 @@ function export_all()
         export -f gen_passwd reload_nginx copy_files_or_dirs_from_list dircopy die calc read_line count_line \
                     loading check_greater print_date
     # Check file and folder
-        export -f check_file_block check_file_special_character check_dir check_filefolder check_file_owned_groupid \
+        export -f check_file_block check_file_special_character check_folder check_filefolder check_file_owned_groupid \
                     check_file_groupid check_file_sticky check_file_symlink check_file_owned_userid check_file_read \
                     check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run create_folder \
                     create_file remove_folder remove_file remove_filefolder set_filefolder_owner set_filefolder_mod \
@@ -120,7 +120,7 @@ function    Clear()
     ##############################
 
 # Use in the the functions: eval $invocation
-export invocation='say_verbose "Calling: ${yellow:-}${FUNCNAME[0]} ${green:-}$*${normal:-}"'
+export invocation='say "Calling: ${yellow:-}${FUNCNAME[0]} ${green:-}$*${normal:-}"'
 
 # standard output may be used as a return value in the functions
 # we need a way to write text on the screen in the functions so that
@@ -215,14 +215,6 @@ function    say()
         # which may be used as return value
         printf "%b\n" "${cyan:-} ${normal:-} $@"
     }
-
-# ####### Echo verbose #######
-# function    say_verbose()
-#     {
-#         if [[ "$verbose" = true ]]; then
-#             say "$1"
-#         fi
-#     }
 
 ####### machine has (check packages bin run) #######
 # example: if machine_has "curl"; then .....
@@ -348,8 +340,8 @@ function    combine_paths()
 
         local root_path="$(remove_trailing_slash "$1")"
         local child_path="$(remove_beginning_slash "${2:-}")"
-        say_verbose "combine_paths: root_path=$root_path"
-        say_verbose "combine_paths: child_path=$child_path"
+        say "combine_paths: root_path=$root_path"
+        say "combine_paths: child_path=$child_path"
         echo "$root_path/$child_path"
         return $TRUE
     }
@@ -398,7 +390,7 @@ function    get_osname()
                 return $TRUE
             fi
 
-            say_verbose "Linux specific platform name and version could not be detected: UName = $uname"
+            say "Linux specific platform name and version could not be detected: UName = $uname"
             return $FALSE
         fi
 
@@ -799,13 +791,10 @@ function    check_file_special_character()
     {
         [[ -c $1 ]] && return $TRUE || return $FALSE
     }
-function    check_dir()
+function    check_folder()
     {
         [[ -d $1 ]] && return $TRUE || return $FALSE
     }
-alias check_folder=check_dir
-export -f check_dir
-
 function    check_filefolder()
     {
         [[ -e $1 ]] && return $TRUE || return $FALSE
