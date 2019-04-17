@@ -807,7 +807,7 @@ function    check_filefolder()
 function    check_filefolder_say()
     {
         for filefolder in "${@}"; do
-            check_filefolder ${filefolder} && say "File/Folder ${filefolder} exists." || say_warning "File/Folder ${filefolder} does not exists."
+            check_filefolder ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
     }
@@ -1011,7 +1011,7 @@ alias delele_filesfolders=remove_filesfolders
 # core command set mod
 function    core_command_set_object()
     {
-        $command_check_object ${2}                 && $command_set_object ${1} ${2} || say_err "Cannot set ${command_set_object_say}"; return $FALSE
+        $command_check_object ${object_user}                 && $command_set_object ${object_user} ${object_set} || say_err "Cannot set ${command_set_object_say}"; return $FALSE
         return $TRUE
     }
 
@@ -1021,6 +1021,8 @@ function    set_file_owner()
         command_check_object=check_file
         command_set_object="chown"
         command_set_object_say=owner
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1030,6 +1032,8 @@ function    set_folder_owner()
         command_check_object=check_folder
         command_set_object="chown -R"
         command_set_object_say=owner
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1039,6 +1043,8 @@ function    set_filefolder_owner()
         command_check_object=check_filefolder
         command_set_object="chown -R"
         command_set_object_say=owner
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1048,6 +1054,8 @@ function    set_file_mod()
         command_check_object=check_file
         command_set_object="chmod"
         command_set_object_say=mod
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1057,6 +1065,8 @@ function    set_folder_mod()
         command_check_object=check_folder
         command_set_object="chmod -R"
         command_set_object_say=mod
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1066,6 +1076,8 @@ function    set_filefolder_mod()
         command_check_object=check_filefolder
         command_set_object="chmod -R"
         command_set_object_say=mod
+        object_user=${1}
+        object_set=${2}
             core_command_set_object
     }
 
@@ -1455,10 +1467,10 @@ function    is_newer()
         fi
 
         if [[ -n "`find ${1} -newer ${2} -print`" ]]; then
-            say "File/Folder ${1} newer ${2}"
+            say "File or Folder: ${1} newer ${2}"
             return $TRUE       # Yes
         else
-            say "File/Folder ${2} newer ${1}"
+            say "File or Folder: ${2} newer ${1}"
             return $FALSE      # No
         fi
     }
