@@ -92,10 +92,10 @@ installatlassian() {
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"
-		set_filefolder_mod 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"
-		set_filefolder_mod 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
-		set_filefolder_mod 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
-		set_filefolder_mod 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
 		check_file "${SOFT_INSTALL}/bin/setenv.sh"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
 		# xmlstarlet
 	if check_file "${SOFT_INSTALL}/conf/server.xml"; then
