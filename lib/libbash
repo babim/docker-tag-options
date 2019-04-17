@@ -1246,7 +1246,7 @@ function    core_command_set_object()
 # set file owner
 function    set_file_owner()
     {
-        command_check_object=check_file
+        command_check_object=check_files
         command_set_object="chown"
         command_set_object_say=owner
         object_mode=${1}
@@ -1257,7 +1257,7 @@ function    set_file_owner()
 # set folder owner
 function    set_folder_owner()
     {
-        command_check_object=check_folder
+        command_check_object=check_folders
         command_set_object="chown -R"
         command_set_object_say=owner
         object_mode=${1}
@@ -1268,7 +1268,7 @@ function    set_folder_owner()
 # set filefolder owner
 function    set_filefolder_owner()
     {
-        command_check_object=check_filefolder
+        command_check_object=check_filefolders
         command_set_object="chown -R"
         command_set_object_say=owner
         object_mode=${1}
@@ -1279,7 +1279,7 @@ function    set_filefolder_owner()
 # set file mod
 function    set_file_mod()
     {
-        command_check_object=check_file
+        command_check_object=check_files
         command_set_object="chmod"
         command_set_object_say=mod
         object_mode=${1}
@@ -1290,7 +1290,7 @@ function    set_file_mod()
 # set folder mod
 function    set_folder_mod()
     {
-        command_check_object=check_folder
+        command_check_object=check_folders
         command_set_object="chmod -R"
         command_set_object_say=mod
         object_mode=${1}
@@ -1301,7 +1301,7 @@ function    set_folder_mod()
 # set filefolder mod
 function    set_filefolder_mod()
     {
-        command_check_object=check_filefolder
+        command_check_object=check_filefolders
         command_set_object="chmod -R"
         command_set_object_say=mod
         object_mode=${1}

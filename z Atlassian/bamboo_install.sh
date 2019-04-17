@@ -65,24 +65,28 @@ installatlassian() {
 		create_folder                			"${SOFT_INSTALL}"
 	## download and extract source software
 		say "downloading and install atlassian..."
-		$download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		has_empty "${SOFT_INSTALL}" && $download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
 	remove_file "${FILELIB}/mysql-connector-java-*.jar"
 		say "downloading and update mysql-connector-java..."
-		$download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say "${FILETEMP} exist"
 	## update postgresql connector
 	remove_file "${FILELIB}/postgresql-*.jar"
 		say "downloading and update postgresql-connector-java..."
-		$download_save "${FILELIB}/postgresql-${POSTGRESQLV}.jar" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"
+	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say "${FILETEMP} exist"
 	## update mssql-server connector
 	remove_file "${FILELIB}/mssql-jdbc-*.jar"
 		say "downloading and update mssql-jdbc..."
-		$download_save "${FILELIB}/mssql-jdbc-${MSSQLV}.jar" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"
+	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say "${FILETEMP} exist"
 	## update oracle database connector
 	remove_file "${FILELIB}/ojdbc*.jar"
 		say "downloading and update oracle-ojdbc..."
-		$download_save "${FILELIB}/ojdbc${ORACLEV}.jar" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
+	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say "${FILETEMP} exist"
 	## set permission path
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
