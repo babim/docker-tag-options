@@ -1539,8 +1539,8 @@ function    install_gosu()
         return $TRUE
     }
 
-# command install. Core command for install packages
-function    command_install()
+# core command install. Core command for install packages
+function    core_command_install()
     {
         # osname=$(get_osname)
         get_osname
@@ -1556,20 +1556,20 @@ function    command_install()
                 say_err "Cannot install ${software}. OS not support."
                 return $FALSE
             fi
-        return $TRUE
+        # return $TRUE
     }
 # install package
 function    install_package()
     {
         software=${@}
-            command_install
+            core_command_install
     }
 
 # install multi package
 function    install_packages()
     {
         for software in ${@}; do
-           command_install
+           core_command_install
         done
     }
 
@@ -1578,7 +1578,7 @@ function    install_package_run()
     {
         software=${1}
             if ! machine_has ${software}; then
-                command_install
+                core_command_install
             fi
         machine_has ${software}          && say "${software} installed." || say_err "${software} not install."
         machine_has ${software}          && return $TRUE || return $FALSE
@@ -1589,7 +1589,7 @@ function    install_packages_run()
     {
         for software in ${@}; do
             if ! machine_has ${software}; then
-                command_install
+                core_command_install
             fi
             machine_has ${software}          && say "${software} installed." || say_err "${software} not install."
             machine_has ${software}          && return $TRUE || return $FALSE
@@ -1627,7 +1627,7 @@ function    install_java_jre()
                     say_err "Cannot install ${software}. OS not support."
                     return $FALSE
                 fi
-            command_install
+            core_command_install
             check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cant install java jre"; return $FALSE
         fi
     }
