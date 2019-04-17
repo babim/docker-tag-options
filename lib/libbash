@@ -806,10 +806,10 @@ function    check_filefolder()
     }
 function    check_filefolder_say()
     {
-    for filefolder in "${@}"; do
-        check_filefolder ${filefolder} && say "File/Folder ${filefolder} exists." || say_warning "File/Folder ${filefolder} does not exists."
-    done
-        return $TRUE
+        for filefolder in "${@}"; do
+            check_filefolder ${filefolder} && say "File/Folder ${filefolder} exists." || say_warning "File/Folder ${filefolder} does not exists."
+        done
+            return $TRUE
     }
 function    check_file()
     {
@@ -860,102 +860,153 @@ function    check_file_run()
         [[ -x $1 ]] && return $TRUE || return $FALSE
     }
 
+# core command create object
+function    core_command_create_object()
+    {
+        if ${command_check_object} ${object_create}; then
+            say_warning "${object_create} exists"
+        else
+            say "Creating ${object_create}.."
+            ${command_create_object} "${object_create}"
+            ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cant create ${object_create}" ; return $FALSE
+        fi
+        return $TRUE
+    }
+
 # create dir
 function    create_folder()
     {
-        for folder in "${@}"; do
-            if check_folder ${folder}; then
-                say_warning "${folder} exists"
-            else
-                say "Creating ${folder}.."
-                mkdir -p "${folder}"
-                check_folder ${folder}      && say "${folder} created" || say_err "Cant create ${folder}" ; return $FALSE
-            fi
-        done
-        return $TRUE
+        object_create="${@}"
+        command_check_object=check_folder
+        command_create_object="mkdir -p"
+            core_command_create_object
     }
+
+# create multi dir
+function    create_folder()
+    {
+        command_check_object=check_folder
+        command_create_object="mkdir -p"
+        for object_create in "${@}"; do
+            core_command_create_object
+        done
+    }
+
+alias create_dir=create_folder
+alias create_dirs=create_folders
+alias make_dir=create_folder
+alias make_dirs=create_folders
 alias make_folder=create_folder
-alias make_folders=create_folder
-alias create_folders=create_folder
+alias make_folders=create_folders
 
 # create file
 function    create_file()
     {
-        for file in "${@}"; do
-            if check_file ${file}; then
-                say_warning "${file} exists"
-            else
-                say "Creating ${file}.."
-                touch "${file}"
-                check_file ${file}          && say "${file} created" || say_err "Cant create ${file}" ; return $FALSE
-            fi
+        object_create="${@}"
+        command_check_object=check_file
+        command_create_object="touch"
+            core_command_create_object
+    }
+
+# create multi file
+function    create_files()
+    {
+        command_check_object=check_file
+        command_create_object="touch"
+        for object_create in "${@}"; do
+            core_command_create_object
         done
+    }
+
+alias make_file=create_file
+alias make_files=create_files
+
+# core command remove object
+function    core_command_remove_object()
+    {
+        if ${command_check_object} ${object_remove}; then
+            say "Removing ${object_remove}.."
+            rm -rf "${object_remove}"
+            ${command_check_object} ${object_remove}      && say_err "Cant remove this ${object_remove}"; return $FALSE || say "${object_remove} removed"
+        else
+            say_warning "${object_remove} not exists"
+        fi
         return $TRUE
     }
-alias make_file=create_file
-alias make_files=create_file
-alias create_files=create_file
 
 # remove folder
 function    remove_folder()
     {
-        for folder in "${@}"; do
-            if check_folder ${folder}; then
-                say "Removing ${folder}.."
-                rm -rf "${folder}"
-                check_folder ${folder}      && say_err "Cant remove this ${folder}"; return $FALSE || say "${folder} removed"
-            else
-                say_warning "${folder} not exists"
-            fi
-        done
-        return $TRUE
+        object_remove="${@}"
+        command_check_object=check_folder
+            core_command_remove_object
     }
+
+# remove multi folder
+function    remove_folders()
+    {
+        command_check_object=check_folder
+        for object_remove in "${@}"; do
+            core_command_remove_object
+        done
+    }
+
+alias del_dir=remove_folder
+alias del_dirs=remove_folders
+alias delete_dir=remove_folder
+alias delete_dirs=remove_folders
+alias remove_dir=remove_folder
+alias remove_dirs=remove_folders
 alias del_folder=remove_folder
 alias delele_folder=remove_folder
-alias del_folders=remove_folder
-alias delele_folders=remove_folder
-alias remove_folders=remove_folder
+alias del_folders=remove_folders
+alias delele_folders=remove_folders
+
 # remove file
 function    remove_file()
     {
-        for file in "${@}"; do
-            if check_file ${file}; then
-                say "Removing ${file}.."
-                rm -f "${file}"
-                check_file ${file}      && say_err "Cant remove this ${file}"; return $FALSE || say "${file} removed"
-            else
-                say_warning "${file} not exists"
-            fi
-        done
-        return $TRUE
+        object_remove="${@}"
+        command_check_object=check_file
+            core_command_remove_object
     }
+
+# remove multi file
+function    remove_files()
+    {
+        command_check_object=check_file
+        for object_remove in "${@}"; do
+            core_command_remove_object
+        done
+    }
+
 alias del_file=remove_file
 alias delele_file=remove_file
-alias del_files=remove_file
-alias delele_files=remove_file
-alias remove_files=remove_file
+alias del_files=remove_files
+alias delele_files=remove_files
+
 # remove file and folder
 function    remove_filefolder()
     {
-        for file in "${@}"; do
-            if check_file ${file}; then
-                say "Removing ${file}.."
-                rm -rf "${file}"
-                check_file ${file}      && say_err "Cant remove this ${file}"; return $FALSE || say "${file} removed"
-            else
-                say_warning "${file} not exists"
-            fi
-        done
-        return $TRUE
+        object_remove="${@}"
+        command_check_object=check_filefolder
+            core_command_remove_object
     }
+# remove multi file and folder
+function    remove_filefolders()
+    {
+        command_check_object=check_filefolder
+        for object_remove in "${@}"; do
+            core_command_remove_object
+        done
+    }
+
 alias del_filefolder=remove_filefolder
 alias delele_filefolder=remove_filefolder
-alias del_filefolders=remove_filefolder
-alias delele_filefolders=remove_filefolder
-alias remove_filefolders=remove_filefolder
-alias del_filesfolders=remove_filefolder
-alias delele_filesfolders=remove_filefolder
-alias remove_filesfolders=remove_filefolder
+alias del_filefolders=remove_filefolders
+alias delele_filefolders=remove_filefolders
+alias remove_filefolders=remove_filefolders
+alias del_filesfolders=remove_filefolders
+alias delele_filesfolders=remove_filesfolders
 
 # set filefolder owner
 function    set_filefolder_owner()
