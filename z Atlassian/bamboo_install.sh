@@ -59,9 +59,9 @@ installatlassian() {
 		fi
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
-		create_folder                			"${SOFT_HOME}" && \
-		set_filefolder_mod	700            		"${SOFT_HOME}" && \
-		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}" && \
+		create_folder                			"${SOFT_HOME}"
+		set_filefolder_mod	700            		"${SOFT_HOME}"
+		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
 		create_folder                			"${SOFT_INSTALL}"
 	## download and extract source software
 		say "downloading and install atlassian..."
@@ -135,7 +135,7 @@ if [[ -f /etc/alpine-release ]]; then
 			echo "Install depend packages..."
 		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
 	# visible code
-	#[[ "${VISIBLECODE}" == "true" ]] && install_gosu
+	[[ "${VISIBLECODE}" == "true" ]] && install_gosu
 
 	# Install Atlassian
 		installatlassian
