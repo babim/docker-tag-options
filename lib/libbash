@@ -868,9 +868,9 @@ function    core_command_create_object()
         else
             say "Creating ${object_create}.."
             ${command_create_object} "${object_create}"
-            ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cant create ${object_create}" ; return $FALSE
+            # ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cant create ${object_create}" ; return $FALSE
         fi
-        # return $TRUE
+        return $TRUE
     }
 
 # create dir
