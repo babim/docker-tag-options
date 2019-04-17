@@ -870,7 +870,7 @@ function    core_command_create_object()
             ${command_create_object} "${object_create}"
             ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cant create ${object_create}" ; return $FALSE
         fi
-        return $TRUE
+        # return $TRUE
     }
 
 # create dir
@@ -883,7 +883,7 @@ function    create_folder()
     }
 
 # create multi dir
-function    create_folder()
+function    create_folders()
     {
         command_check_object=check_folder
         command_create_object="mkdir -p"
@@ -1556,7 +1556,7 @@ function    core_command_install()
                 say_err "Cannot install ${software}. OS not support."
                 return $FALSE
             fi
-        # return $TRUE
+        return $TRUE
     }
 # install package
 function    install_package()
