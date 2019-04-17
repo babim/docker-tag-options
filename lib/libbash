@@ -1008,17 +1008,65 @@ alias remove_filefolders=remove_filefolders
 alias del_filesfolders=remove_filefolders
 alias delele_filesfolders=remove_filesfolders
 
+# core command set mod
+function    core_command_set_object()
+    {
+        $command_check_object ${2}                 && $command_set_object ${1} ${2} || say_err "Cannot set ${command_set_object_say}"; return $FALSE
+        return $TRUE
+    }
+
+# set file owner
+function    set_file_owner()
+    {
+        command_check_object=check_file
+        command_set_object="chown"
+        command_set_object_say=owner
+            core_command_set_object
+    }
+
+# set folder owner
+function    set_folder_owner()
+    {
+        command_check_object=check_folder
+        command_set_object="chown -R"
+        command_set_object_say=owner
+            core_command_set_object
+    }
+
 # set filefolder owner
 function    set_filefolder_owner()
     {
-        check_filefolder ${2}                 && chown -R ${1} ${2} || say_err "Cannot set owner"; return $FALSE
-        return $TRUE
+        command_check_object=check_filefolder
+        command_set_object="chown -R"
+        command_set_object_say=owner
+            core_command_set_object
     }
+
+# set file mod
+function    set_file_mod()
+    {
+        command_check_object=check_file
+        command_set_object="chmod"
+        command_set_object_say=mod
+            core_command_set_object
+    }
+
+# set folder mod
+function    set_folder_mod()
+    {
+        command_check_object=check_folder
+        command_set_object="chmod -R"
+        command_set_object_say=mod
+            core_command_set_object
+    }
+
 # set filefolder mod
 function    set_filefolder_mod()
     {
-        check_filefolder ${2}                 && chmod -R ${1} ${2} || say_err "Cannot set mod"; return $FALSE
-        return $TRUE
+        command_check_object=check_filefolder
+        command_set_object="chmod -R"
+        command_set_object_say=mod
+            core_command_set_object
     }
 
 #    DirCmp - compare the files in two directories
