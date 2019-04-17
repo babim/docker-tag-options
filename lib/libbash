@@ -216,6 +216,7 @@ function    say()
         printf "%b\n" "${cyan:-} ${normal:-} $@"
     }
 
+
 ####### machine has (check packages bin run) #######
 # example: if machine_has "curl"; then .....
 function    machine_has()
@@ -225,6 +226,7 @@ function    machine_has()
         hash "${1}" > /dev/null 2>&1
         return $?
     }
+
 # check has value
 function    has_value()
     {
@@ -787,77 +789,293 @@ function    print_date()
     }
 
 ####### Check file and folder #######
+# check_file_block
 function    check_file_block()
     {
         [[ -b ${1} ]] && return $TRUE || return $FALSE
-
     }
+function    check_files_block()
+    {
+        for filefolder in "${@}"; do
+            check_file_block ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_block_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_block ${filefolder} && say "File or Folder: ${filefolder} is block." || say_warning "File or Folder: ${filefolder} does not block."
+        done
+            return $TRUE
+    }
+# check_file_special_character
 function    check_file_special_character()
     {
         [[ -c ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_special_character()
+    {
+        for filefolder in "${@}"; do
+            check_file_special_character ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_special_character_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_special_character ${filefolder} && say "File or Folder: ${filefolder} is special character." || say_warning "File or Folder: ${filefolder} does not special character."
+        done
+            return $TRUE
+    }
+# check_folder
 function    check_folder()
     {
         [[ -d ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_folders()
+    {
+        for filefolder in "${@}"; do
+            check_folder ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_folders_say()
+    {
+        for filefolder in "${@}"; do
+            check_folder ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
+        done
+            return $TRUE
+    }
+# check_filefolder
 function    check_filefolder()
     {
         [[ -e ${1} ]] && return $TRUE || return $FALSE
     }
-function    check_filefolder_say()
+function    check_filefolders()
+    {
+        for filefolder in "${@}"; do
+            check_filefolder ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_filefolders_say()
     {
         for filefolder in "${@}"; do
             check_filefolder ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
     }
+# check_file
 function    check_file()
     {
         [[ -f ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files()
+    {
+        for filefolder in "${@}"; do
+            check_file ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_say()
+    {
+        for filefolder in "${@}"; do
+            check_file ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
+        done
+            return $TRUE
+    }
+# check_file_owned_groupid
 function    check_file_owned_groupid()
     {
         [[ -G ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_owned_groupid()
+    {
+        for filefolder in "${@}"; do
+            check_file_owned_groupid ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_owned_groupid_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_owned_groupid ${filefolder} && say "File or Folder: ${filefolder} have owned_groupid." || say_warning "File or Folder: ${filefolder} does not have owned_groupid."
+        done
+            return $TRUE
+    }
+# check_file_groupid
 function    check_file_groupid()
     {
         [[ -g ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_groupid()
+    {
+        for filefolder in "${@}"; do
+            check_file_groupid ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_groupid_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_groupid ${filefolder} && say "File or Folder: ${filefolder} have groupid." || say_warning "File or Folder: ${filefolder} does not have groupid."
+        done
+            return $TRUE
+    }
+# check_file_sticky
 function    check_file_sticky()
     {
         [[ -k ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_sticky()
+    {
+        for filefolder in "${@}"; do
+            check_file_sticky ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_sticky_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_sticky ${filefolder} && say "File or Folder: ${filefolder} is sticky." || say_warning "File or Folder: ${filefolder} does not sticky."
+        done
+            return $TRUE
+    }
+# check_file_symlink
 function    check_file_symlink()
     {
         [[ -L ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_symlink()
+    {
+        for filefolder in "${@}"; do
+            check_file_symlink ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_symlink_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_symlink ${filefolder} && say "File or Folder: ${filefolder} is symlink." || say_warning "File or Folder: ${filefolder} does not symlink."
+        done
+            return $TRUE
+    }
+# check_file_owned_userid
 function    check_file_owned_userid()
     {
         [[ -O ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_owned_userid()
+    {
+        for filefolder in "${@}"; do
+            check_file_owned_userid ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_owned_userid_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_owned_userid ${filefolder} && say "File or Folder: ${filefolder} have owned_userid." || say_warning "File or Folder: ${filefolder} does not have owned_userid."
+        done
+            return $TRUE
+    }
+# check_file_read
 function    check_file_read()
     {
         [[ -r ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_read()
+    {
+        for filefolder in "${@}"; do
+            check_file_read ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_read_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_read ${filefolder} && say "File or Folder: ${filefolder} can read." || say_warning "File or Folder: ${filefolder} cannot read."
+        done
+            return $TRUE
+    }
+# check_file_socket
 function    check_file_socket()
     {
         [[ -S ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_socket()
+    {
+        for filefolder in "${@}"; do
+            check_file_socket ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_socket_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_socket ${filefolder} && say "File or Folder: ${filefolder} is socket." || say_warning "File or Folder: ${filefolder} does not socket."
+        done
+            return $TRUE
+    }
+# check_file_nonzero
 function    check_file_nonzero()
     {
         [[ -s ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_nonzero()
+    {
+        for filefolder in "${@}"; do
+            check_file_nonzero ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_nonzero_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_nonzero ${filefolder} && say "File or Folder: ${filefolder} nonzero." || say_warning "File or Folder: ${filefolder} does not nonzero."
+        done
+            return $TRUE
+    }
+# check_file_userid
 function    check_file_userid()
     {
         [[ -u ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_userid()
+    {
+        for filefolder in "${@}"; do
+            check_file_userid ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_userid_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_userid ${filefolder} && say "File or Folder: ${filefolder} have userid." || say_warning "File or Folder: ${filefolder} does not exists."
+        done
+            return $TRUE
+    }
+# check_file_write
 function    check_file_write()
     {
         [[ -w ${1} ]] && return $TRUE || return $FALSE
     }
+function    check_files_write()
+    {
+        for filefolder in "${@}"; do
+            check_file_write ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_write_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_write ${filefolder} && say "File or Folder: ${filefolder} can write." || say_warning "File or Folder: ${filefolder} cannot write."
+        done
+            return $TRUE
+    }
+# check_file_run
 function    check_file_run()
     {
         [[ -x ${1} ]] && return $TRUE || return $FALSE
+    }
+function    check_files_run()
+    {
+        for filefolder in "${@}"; do
+            check_file_run ${filefolder} && return $TRUE || return $FALSE
+        done
+    }
+function    check_files_run_say()
+    {
+        for filefolder in "${@}"; do
+            check_file_run ${filefolder} && say "File or Folder: ${filefolder} can run." || say_warning "File or Folder: ${filefolder} cannot run."
+        done
+            return $TRUE
     }
 
 # core command create object
@@ -868,7 +1086,7 @@ function    core_command_create_object()
         else
             say "Creating ${object_create}.."
             ${command_create_object} ${object_create}
-            ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cannot create ${object_create}" ; return $FALSE
+            ${command_check_object} ${object_create}      && say "${object_create} created" || return $FALSE
         fi
         return $TRUE
     }
@@ -927,7 +1145,7 @@ function    core_command_remove_object()
         if ${command_check_object} ${object_remove}; then
             say "Removing ${object_remove}.."
             rm -rf ${object_remove}
-            ${command_check_object} ${object_remove}      && say_err "Cannot remove this ${object_remove}"; return $FALSE || say "${object_remove} removed"
+            ${command_check_object} ${object_remove}      && return $FALSE || say "${object_remove} removed"
         else
             say_warning "${object_remove} not exists"
         fi
@@ -1011,7 +1229,7 @@ alias delele_filesfolders=remove_filesfolders
 # core command set mod
 function    core_command_set_object()
     {
-        $command_check_object ${object_set}                 && $command_set_object ${object_mode} ${object_set} || say_err "Cannot set ${command_set_object_say}"; return $FALSE
+        $command_check_object ${object_set}                 && $command_set_object ${object_mode} ${object_set} || return $FALSE
         return $TRUE
     }
 
@@ -1022,7 +1240,7 @@ function    set_file_owner()
         command_set_object="chown"
         command_set_object_say=owner
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1033,7 +1251,7 @@ function    set_folder_owner()
         command_set_object="chown -R"
         command_set_object_say=owner
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1044,7 +1262,7 @@ function    set_filefolder_owner()
         command_set_object="chown -R"
         command_set_object_say=owner
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1055,7 +1273,7 @@ function    set_file_mod()
         command_set_object="chmod"
         command_set_object_say=mod
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1066,7 +1284,7 @@ function    set_folder_mod()
         command_set_object="chmod -R"
         command_set_object_say=mod
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1077,7 +1295,7 @@ function    set_filefolder_mod()
         command_set_object="chmod -R"
         command_set_object_say=mod
         object_mode=${1}
-        object_set="${@:-.}"
+        object_set="${@:2}"
             core_command_set_object
     }
 
@@ -1514,12 +1732,12 @@ function    is_numeric()
 # check process
 function    check_process()
     {
-        grep -x ${1} >/dev/null               && return $TRUE         || return $FALSE
+        grep -x ${1} >/dev/null                && return $TRUE         || return $FALSE
     }
 function    check_process_say()
     {
         for process in "${@}"; do
-            grep -x $process >/dev/null     && say "Process found"  || say_warning "Process not found"
+            grep -x $process >/dev/null        && say "Process found"  || say_warning "Process not found"
         done
         return $TRUE
     }
@@ -1531,11 +1749,11 @@ function    check_process_say()
 # check and install epel
 function    check_epel()
     {
-        [[ -f /etc/yum.repos.d/epel.repo ]] && return $TRUE         || return $FALSE
+        [[ -f /etc/yum.repos.d/epel.repo ]]     && return $TRUE         || return $FALSE
     }
 function    check_epel_say()
     {
-        [[ -f /etc/yum.repos.d/epel.repo ]] && say "EREL REPO installed" || say_warning "EREL REPO not found"
+        [[ -f /etc/yum.repos.d/epel.repo ]]     && say "EREL REPO installed" || say_warning "EREL REPO not found"
     }
 function    install_epel()
     {
@@ -1592,7 +1810,7 @@ function    install_gosu()
                 return $FALSE
             fi
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
-        [[ ! -f ${FILE_TEMP} ]]     && say_err "GOSU Cannot install."; return $FALSE
+        [[ ! -f ${FILE_TEMP} ]]     && return $FALSE
         chmod +x ${FILE_TEMP}       && gosu nobody true
         say "GOSU installed."
     fi
@@ -1688,7 +1906,7 @@ function    install_java_jre()
                     return $FALSE
                 fi
             core_command_install
-            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cannot install java jre"; return $FALSE
+            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || return $FALSE
         fi
     }
 

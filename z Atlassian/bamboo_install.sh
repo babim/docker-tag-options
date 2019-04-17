@@ -60,9 +60,9 @@ installatlassian() {
 	# Install Atlassian JIRA and helper tools and setup initial home
 	## directory structure.
 		create_folder                			"${SOFT_HOME}"
-		#set_filefolder_mod	700            		"${SOFT_HOME}"
-		#set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
-		#create_folder                			"${SOFT_INSTALL}"
+		set_filefolder_mod	700            		"${SOFT_HOME}"
+		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
+		create_folder                			"${SOFT_INSTALL}"
 	## download and extract source software
 		say "downloading and install atlassian..."
 		$download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
