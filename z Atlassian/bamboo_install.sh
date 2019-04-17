@@ -67,7 +67,7 @@ installatlassian() {
 		say "downloading and install atlassian..."
 		$download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 	## update mysql connector
-	export FILELIB="${SOFT_INSTALL}/lib"
+	FILELIB="${SOFT_INSTALL}/lib"
 	remove_file "${FILELIB}/mysql-connector-java-*.jar"
 		say "downloading and update mysql-connector-java..."
 		$download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"

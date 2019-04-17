@@ -867,8 +867,8 @@ function    core_command_create_object()
             say_warning "${object_create} exists"
         else
             say "Creating ${object_create}.."
-            ${command_create_object} "${object_create}"
-            ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cant create ${object_create}" ; return $FALSE
+            ${command_create_object} ${object_create}
+            ${command_check_object} ${object_create}      && say "${object_create} created" || say_err "Cannot create ${object_create}" ; return $FALSE
         fi
         return $TRUE
     }
@@ -926,8 +926,8 @@ function    core_command_remove_object()
     {
         if ${command_check_object} ${object_remove}; then
             say "Removing ${object_remove}.."
-            rm -rf "${object_remove}"
-            ${command_check_object} ${object_remove}      && say_err "Cant remove this ${object_remove}"; return $FALSE || say "${object_remove} removed"
+            rm -rf ${object_remove}
+            ${command_check_object} ${object_remove}      && say_err "Cannot remove this ${object_remove}"; return $FALSE || say "${object_remove} removed"
         else
             say_warning "${object_remove} not exists"
         fi
@@ -1011,13 +1011,13 @@ alias delele_filesfolders=remove_filesfolders
 # set filefolder owner
 function    set_filefolder_owner()
     {
-        check_filefolder ${2}                 && chown -R ${1} ${2} || say_err "Cant set owner"; return $FALSE
+        check_filefolder ${2}                 && chown -R ${1} ${2} || say_err "Cannot set owner"; return $FALSE
         return $TRUE
     }
 # set filefolder mod
 function    set_filefolder_mod()
     {
-        check_filefolder ${2}                 && chmod -R ${1} ${2} || say_err "Cant set mod"; return $FALSE
+        check_filefolder ${2}                 && chmod -R ${1} ${2} || say_err "Cannot set mod"; return $FALSE
         return $TRUE
     }
 
@@ -1508,7 +1508,7 @@ function    remove_epel()
         else
             say "EPEL Repo installed"
             yum remove epel* -y
-            check_epel          && say "EREL REPO removed"          || say_err "EREL REPO found and cant removed"
+            check_epel          && say "EREL REPO removed"          || say_err "EREL REPO found and Cannot removed"
             check_epel          && return $TRUE                     || return $FALSE
         fi
     }
@@ -1532,7 +1532,7 @@ function    install_gosu()
                 return $FALSE
             fi
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
-        [[ ! -f ${FILE_TEMP} ]]     && say_err "GOSU cant install."; return $FALSE
+        [[ ! -f ${FILE_TEMP} ]]     && say_err "GOSU Cannot install."; return $FALSE
         chmod +x ${FILE_TEMP}       && gosu nobody true
         say "GOSU installed."
     fi
@@ -1628,7 +1628,7 @@ function    install_java_jre()
                     return $FALSE
                 fi
             core_command_install
-            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cant install java jre"; return $FALSE
+            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $TRUE || say_err "Cannot install java jre"; return $FALSE
         fi
     }
 
@@ -1707,7 +1707,7 @@ function   remove_package_run()
             if ! machine_has ${software}; then
                 command_remove
             fi
-            machine_has ${software}          && say "${software} cant remove."  || say "${software} removed."
+            machine_has ${software}          && say "${software} Cannot remove."  || say "${software} removed."
             machine_has ${software}          && return $FALSE                   || return $TRUE
     }
 
@@ -1718,7 +1718,7 @@ function   remove_packages_run()
             if ! machine_has ${software}; then
                 command_remove
             fi
-            machine_has ${software}          && say "${software} cant remove."  || say "${software} removed."
+            machine_has ${software}          && say "${software} Cannot remove."  || say "${software} removed."
             machine_has ${software}          && return $FALSE                   || return $TRUE
         done
     }
