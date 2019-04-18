@@ -68,7 +68,7 @@ installatlassian() {
 
 	## download and extract source software
 		say "downloading and install atlassian..."
-		has_empty "${SOFT_INSTALL}" && $download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		check_folder_empty "${SOFT_INSTALL}" && $download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
@@ -132,7 +132,7 @@ dockerentry() {
 preparedata() {
 	say "Prepare for fixed version"
 	install_gosu
-	mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
+	create_folder /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
 }
 
 # install by OS
