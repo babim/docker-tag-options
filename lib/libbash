@@ -79,7 +79,7 @@ function export_all()
                     check_files_sticky check_files_sticky_say check_files_symlink check_files_symlink_say check_files_owned_userid \
                     check_files_owned_userid_say check_files_read check_files_read_say check_files_socket check_files_socket_say \
                     check_files_nonzero check_files_nonzero_say check_files_userid check_files_userid_say check_files_write \
-                    check_files_write_say check_files_run check_files_run_say \
+                    check_files_write_say check_files_run check_files_run_say check_folder_empty check_folders_empty check_folders_empty_say \
                     \
                     create_folders create_files create_folder create_file \
                     \
@@ -953,7 +953,6 @@ function    check_folders_empty_say()
         done
             return $TRUE
     }
-
 # check_filefolder
 function    check_filefolder()
     {
