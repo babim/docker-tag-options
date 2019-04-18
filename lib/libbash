@@ -262,7 +262,7 @@ function    check_value_true()
             say "value - $object_check - is true"
             return $TRUE
         else
-            say_warning "Maybe value - $object_check - is false"
+            has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
             return $FALSE
         fi
     }
@@ -273,7 +273,7 @@ function    check_value_trues()
             if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
                 say "value - $object_check - is true"
             else
-                say_warning "Maybe value - $object_check - is false"
+                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
                 return $FALSE
             fi
         done
@@ -286,7 +286,7 @@ function    check_value_trues_say()
             if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
                 say "value - $object_check - is true"
             else
-                say_warning "Maybe value - $object_check - is false"
+                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
             fi
         done
     }
@@ -308,7 +308,7 @@ function    check_value_falses()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value - $object_check - is false"
+                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
             else
                 say_warning "Maybe value - $object_check - is true"
                 return $FALSE
@@ -321,7 +321,7 @@ function    check_value_falses_say()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value - $object_check - is false"
+                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
             else
                 say_warning "Maybe value - $object_check - is true"
             fi
