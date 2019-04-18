@@ -259,10 +259,10 @@ function    check_value_true()
     {
         object_check=$(to_lowercase ${1})
         if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-            say "value is true"
+            say "value - $object_check - is true"
             return $TRUE
         else
-            say_warning "Maybe value is false"
+            say_warning "Maybe value - $object_check - is false"
             return $FALSE
         fi
     }
@@ -271,9 +271,9 @@ function    check_value_trues()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value is true"
+                say "value - $object_check - is true"
             else
-                say_warning "Maybe value is false"
+                say_warning "Maybe value - $object_check - is false"
                 return $FALSE
             fi
         done
@@ -284,9 +284,9 @@ function    check_value_trues_say()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value is true"
+                say "value - $object_check - is true"
             else
-                say_warning "Maybe value is false"
+                say_warning "Maybe value - $object_check - is false"
             fi
         done
     }
@@ -296,10 +296,10 @@ function    check_value_false()
     {
         object_check=$(to_lowercase ${1})
         if [[ $object_check == "false" || $object_check == "n" || $object_check == "no" || $object_check == "off" ]]; then
-            say "value is false"
+            say "value - $object_check - is false"
             return $TRUE
         else
-            say_warning "Maybe value is true"
+            say_warning "Maybe value - $object_check - is true"
             return $FALSE
         fi
     }
@@ -308,9 +308,9 @@ function    check_value_falses()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value is false"
+                say "value - $object_check - is false"
             else
-                say_warning "Maybe value is true"
+                say_warning "Maybe value - $object_check - is true"
                 return $FALSE
             fi
         done
@@ -321,9 +321,9 @@ function    check_value_falses_say()
         for object_check in ${@}; do
             object_check=$(to_lowercase ${object_check})
             if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value is false"
+                say "value - $object_check - is false"
             else
-                say_warning "Maybe value is true"
+                say_warning "Maybe value - $object_check - is true"
             fi
         done
     }

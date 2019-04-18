@@ -93,7 +93,7 @@ installatlassian() {
 					"${SOFT_INSTALL}/conf/server.xml"
 	fi
 		# xmlstarlet end
-		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
+		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0" "${SOFT_INSTALL}/conf/server.xml"
 	# fix path start file
 		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"

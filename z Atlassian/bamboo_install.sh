@@ -114,7 +114,7 @@ installatlassian() {
 		check_file "${FILETEMP}"	&& xmlstarlet ed --inplace --delete "Server/Service/Engine/Host/@xmlValidation" --delete "Server/Service/Engine/Host/@xmlNamespaceAware" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 
 	# xmlstarlet end
-		check_file "${FILETEMP}"				&& touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"				&& touch -d "@0" "${SOFT_INSTALL}/conf/server.xml" || say_warning "${FILETEMP} does not exist"
 
 	# fix path start file
 		check_file "${SOFT_INSTALL}/bin/start_${SOFT}.sh"	&& mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
