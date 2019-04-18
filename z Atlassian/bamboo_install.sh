@@ -72,25 +72,25 @@ installatlassian() {
 
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
-	remove_file "${FILELIB}/mysql-connector-java-*.jar"
+	remove_file ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say_warning "${FILETEMP} exist"
 
 	## update postgresql connector
-	remove_file "${FILELIB}/postgresql-*.jar"
+	remove_file ${FILELIB}/postgresql-*.jar
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say_warning "${FILETEMP} exist"
 
 	## update mssql-server connector
-	remove_file "${FILELIB}/mssql-jdbc-*.jar"
+	remove_file ${FILELIB}/mssql-jdbc-*.jar
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say_warning "${FILETEMP} exist"
 
 	## update oracle database connector
-	remove_file "${FILELIB}/ojdbc*.jar"
+	remove_file ${FILELIB}/ojdbc*.jar
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say_warning "${FILETEMP} exist"
