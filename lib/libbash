@@ -66,26 +66,31 @@ function export_all()
         export -f gen_passwd reload_nginx copy_files_or_dirs_from_list dircopy die calc read_line count_line \
                     loading check_greater print_date
     # Check file and folder
-        export -f check_file_block check_file_special_character check_folder check_filefolder check_file_owned_groupid \
+        export -f dircmp findfile  str_replace_in_file findstr is_newer hex2decimal is_numeric check_process check_process_say \
+                    \
+                    check_file_block check_file_special_character check_folder check_filefolder check_file_owned_groupid \
                     check_file_groupid check_file_sticky check_file_symlink check_file_owned_userid check_file_read \
-                    check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run create_folder \
-                    create_file remove_folder remove_file remove_filefolder set_filefolder_owner set_filefolder_mod \
-                    dircmp findfile  str_replace_in_file findstr is_newer hex2decimal is_numeric check_process check_process_say \
+                    check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run \
                     check_files_block check_files_block_say check_files_special_character check_files_special_character_say \
                     check_folders check_folders_say check_filefolders check_filefolders_say check_files check_files_say \
                     check_files_owned_groupid check_files_owned_groupid_say check_files_groupid check_files_groupid_say \
                     check_files_sticky check_files_sticky_say check_files_symlink check_files_symlink_say check_files_owned_userid \
                     check_files_owned_userid_say check_files_read check_files_read_say check_files_socket check_files_socket_say \
                     check_files_nonzero check_files_nonzero_say check_files_userid check_files_userid_say check_files_write \
-                    check_files_write_say check_files_run check_files_run_say create_folders create_files remove_folders \
-                    remove_files remove_filefolders set_file_owner set_folder_owner set_filefolder_owner set_file_mod \
-                    set_folder_mod set_filefolder_mod core_command_create_object core_command_install core_command_create_object \
-                    core_command_remove_object core_command_set_object 
+                    check_files_write_say check_files_run check_files_run_say \
+                    \
+                    create_folders create_files create_folder create_file \
+                    \
+                    remove_folders remove_files remove_filefolders \
+                    \
+                    set_file_owner set_folder_owner set_filefolder_owner set_file_mod set_folder_mod set_filefolder_owner set_filefolder_mod \
+                    \
+                    core_command_install core_command_create_object core_command_remove_object core_command_set_object 
     # Function Install
         export -f check_epel check_epel_say install_epel remove_epel install_gosu install_package install_package_run \
-                    install_curl install_wget install_java_jre
+                    install_packages install_packages_run install_curl install_wget install_java_jre
     # Function Remove
-        export -f clean_os clean_package remove_package remove_package_run
+        export -f clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run
     # Group: Network
         export -f is_ipv4 is_fqdn is_ipv4_netmask is_ipv4_cidr is_ipv4_subnet get_ipv4_network get_ipv4_broadcast mask2cidr cidr2mask
     }
@@ -813,7 +818,7 @@ function    check_files_block()
 function    check_files_block_say()
     {
         for filefolder in "${@}"; do
-            check_file_block ${filefolder} && say "File or Folder: ${filefolder} is block." || say_warning "File or Folder: ${filefolder} does not block."
+            check_file_block ${filefolder} && say "File: ${filefolder} is block." || say_warning "File or Folder: ${filefolder} does not block."
         done
             return $TRUE
     }
@@ -831,7 +836,7 @@ function    check_files_special_character()
 function    check_files_special_character_say()
     {
         for filefolder in "${@}"; do
-            check_file_special_character ${filefolder} && say "File or Folder: ${filefolder} is special character." || say_warning "File or Folder: ${filefolder} does not special character."
+            check_file_special_character ${filefolder} && say "File: ${filefolder} is special character." || say_warning "File or Folder: ${filefolder} does not special character."
         done
             return $TRUE
     }
@@ -849,7 +854,7 @@ function    check_folders()
 function    check_folders_say()
     {
         for filefolder in "${@}"; do
-            check_folder ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
+            check_folder ${filefolder} && say "Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
     }
@@ -885,7 +890,7 @@ function    check_files()
 function    check_files_say()
     {
         for filefolder in "${@}"; do
-            check_file ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
+            check_file ${filefolder} && say "File: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
     }
@@ -903,7 +908,7 @@ function    check_files_owned_groupid()
 function    check_files_owned_groupid_say()
     {
         for filefolder in "${@}"; do
-            check_file_owned_groupid ${filefolder} && say "File or Folder: ${filefolder} have owned_groupid." || say_warning "File or Folder: ${filefolder} does not have owned_groupid."
+            check_file_owned_groupid ${filefolder} && say "File: ${filefolder} have owned_groupid." || say_warning "File or Folder: ${filefolder} does not have owned_groupid."
         done
             return $TRUE
     }
@@ -921,7 +926,7 @@ function    check_files_groupid()
 function    check_files_groupid_say()
     {
         for filefolder in "${@}"; do
-            check_file_groupid ${filefolder} && say "File or Folder: ${filefolder} have groupid." || say_warning "File or Folder: ${filefolder} does not have groupid."
+            check_file_groupid ${filefolder} && say "File: ${filefolder} have groupid." || say_warning "File or Folder: ${filefolder} does not have groupid."
         done
             return $TRUE
     }
@@ -939,7 +944,7 @@ function    check_files_sticky()
 function    check_files_sticky_say()
     {
         for filefolder in "${@}"; do
-            check_file_sticky ${filefolder} && say "File or Folder: ${filefolder} is sticky." || say_warning "File or Folder: ${filefolder} does not sticky."
+            check_file_sticky ${filefolder} && say "File: ${filefolder} is sticky." || say_warning "File or Folder: ${filefolder} does not sticky."
         done
             return $TRUE
     }
@@ -957,7 +962,7 @@ function    check_files_symlink()
 function    check_files_symlink_say()
     {
         for filefolder in "${@}"; do
-            check_file_symlink ${filefolder} && say "File or Folder: ${filefolder} is symlink." || say_warning "File or Folder: ${filefolder} does not symlink."
+            check_file_symlink ${filefolder} && say "File: ${filefolder} is symlink." || say_warning "File or Folder: ${filefolder} does not symlink."
         done
             return $TRUE
     }
@@ -975,7 +980,7 @@ function    check_files_owned_userid()
 function    check_files_owned_userid_say()
     {
         for filefolder in "${@}"; do
-            check_file_owned_userid ${filefolder} && say "File or Folder: ${filefolder} have owned_userid." || say_warning "File or Folder: ${filefolder} does not have owned_userid."
+            check_file_owned_userid ${filefolder} && say "File: ${filefolder} have owned_userid." || say_warning "File or Folder: ${filefolder} does not have owned_userid."
         done
             return $TRUE
     }
@@ -993,7 +998,7 @@ function    check_files_read()
 function    check_files_read_say()
     {
         for filefolder in "${@}"; do
-            check_file_read ${filefolder} && say "File or Folder: ${filefolder} can read." || say_warning "File or Folder: ${filefolder} cannot read."
+            check_file_read ${filefolder} && say "File: ${filefolder} can read." || say_warning "File or Folder: ${filefolder} cannot read."
         done
             return $TRUE
     }
@@ -1011,7 +1016,7 @@ function    check_files_socket()
 function    check_files_socket_say()
     {
         for filefolder in "${@}"; do
-            check_file_socket ${filefolder} && say "File or Folder: ${filefolder} is socket." || say_warning "File or Folder: ${filefolder} does not socket."
+            check_file_socket ${filefolder} && say "File: ${filefolder} is socket." || say_warning "File or Folder: ${filefolder} does not socket."
         done
             return $TRUE
     }
@@ -1029,7 +1034,7 @@ function    check_files_nonzero()
 function    check_files_nonzero_say()
     {
         for filefolder in "${@}"; do
-            check_file_nonzero ${filefolder} && say "File or Folder: ${filefolder} nonzero." || say_warning "File or Folder: ${filefolder} does not nonzero."
+            check_file_nonzero ${filefolder} && say "File: ${filefolder} nonzero." || say_warning "File or Folder: ${filefolder} does not nonzero."
         done
             return $TRUE
     }
@@ -1047,7 +1052,7 @@ function    check_files_userid()
 function    check_files_userid_say()
     {
         for filefolder in "${@}"; do
-            check_file_userid ${filefolder} && say "File or Folder: ${filefolder} have userid." || say_warning "File or Folder: ${filefolder} does not exists."
+            check_file_userid ${filefolder} && say "File: ${filefolder} have userid." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
     }
@@ -1065,7 +1070,7 @@ function    check_files_write()
 function    check_files_write_say()
     {
         for filefolder in "${@}"; do
-            check_file_write ${filefolder} && say "File or Folder: ${filefolder} can write." || say_warning "File or Folder: ${filefolder} cannot write."
+            check_file_write ${filefolder} && say "File: ${filefolder} can write." || say_warning "File or Folder: ${filefolder} cannot write."
         done
             return $TRUE
     }
@@ -1083,7 +1088,7 @@ function    check_files_run()
 function    check_files_run_say()
     {
         for filefolder in "${@}"; do
-            check_file_run ${filefolder} && say "File or Folder: ${filefolder} can run." || say_warning "File or Folder: ${filefolder} cannot run."
+            check_file_run ${filefolder} && say "File: ${filefolder} can run." || say_warning "File or Folder: ${filefolder} cannot run."
         done
             return $TRUE
     }
@@ -1228,11 +1233,11 @@ function    remove_filefolders()
         done
     }
 
+alias remove_filefolders=remove_filefolders
 alias del_filefolder=remove_filefolder
 alias delele_filefolder=remove_filefolder
 alias del_filefolders=remove_filefolders
 alias delele_filefolders=remove_filefolders
-alias remove_filefolders=remove_filefolders
 alias del_filesfolders=remove_filefolders
 alias delele_filesfolders=remove_filesfolders
 

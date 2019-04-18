@@ -71,22 +71,22 @@ installatlassian() {
 	remove_file "${FILELIB}/mysql-connector-java-*.jar"
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say "${FILETEMP} exist"
+		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say_warning "${FILETEMP} exist"
 	## update postgresql connector
 	remove_file "${FILELIB}/postgresql-*.jar"
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say "${FILETEMP} exist"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say_warning "${FILETEMP} exist"
 	## update mssql-server connector
 	remove_file "${FILELIB}/mssql-jdbc-*.jar"
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say "${FILETEMP} exist"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say_warning "${FILETEMP} exist"
 	## update oracle database connector
 	remove_file "${FILELIB}/ojdbc*.jar"
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say "${FILETEMP} exist"
+		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say_warning "${FILETEMP} exist"
 	## set permission path
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
@@ -96,16 +96,22 @@ installatlassian() {
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
-		check_file "${SOFT_INSTALL}/bin/setenv.sh"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${SOFT_INSTALL}/bin/setenv.sh"
+	FILETEMP="${SOFT_INSTALL}/bin/setenv.sh"
+		say "sed ${FILETEMP}..."	
+		check_file "${FILETEMP}"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 		# xmlstarlet
-	if check_file "${SOFT_INSTALL}/conf/server.xml"; then
-		xmlstarlet		ed --inplace \
-		  --delete		"Server/Service/Engine/Host/@xmlValidation" \
-		  --delete		"Server/Service/Engine/Host/@xmlNamespaceAware" \
-					"${SOFT_INSTALL}/conf/server.xml"
-	fi
+	FILETEMP="${SOFT_INSTALL}/conf/server.xml"
+		if check_file "${FILETEMP}"; then
+			say "xmlstarlet ${FILETEMP}..."
+			xmlstarlet		ed --inplace \
+			  --delete		"Server/Service/Engine/Host/@xmlValidation" \
+			  --delete		"Server/Service/Engine/Host/@xmlNamespaceAware" \
+						"${FILETEMP}"
+		else
+			say_warning "${FILETEMP} does not exist"
+		fi
 		# xmlstarlet end
-		check_file "${SOFT_INSTALL}/conf/server.xml"		&& touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml"
+		check_file "${FILETEMP}"				&& touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml" || say_warning "${FILETEMP} does not exist"
 	# fix path start file
 		check_file "${SOFT_INSTALL}/bin/start_${SOFT}.sh"	&& mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 		check_file "${SOFT_INSTALL}/start_${SOFT}.sh"		&& mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
