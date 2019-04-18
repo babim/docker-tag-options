@@ -130,7 +130,9 @@ dockerentry() {
 		chmod +x $FILETEMP
 }
 preparedata() {
-	check_value_true "${VISIBLECODE}" && mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
+	say "Prepare for fixed version"
+	install_gosu
+	mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
 }
 
 # install by OS
@@ -143,12 +145,11 @@ if [[ -f /etc/alpine-release ]]; then
 		install_java_jre
 			echo "Install depend packages..."
 		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
-	# visible code
-	check_value_true "${VISIBLECODE}" && install_gosu
-
 	# Install Atlassian
 		installatlassian
 		dockerentry
+	# visible code
+		check_value_true "${VISIBLECODE}" && preparedata
 	# clean
 		remove_package $DOWNLOAD_TOOL
 		clean_os
@@ -162,12 +163,11 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		install_java_jre
 			echo "Install depend packages..."
 		install_package ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
-	# visible code
-	check_value_true "${VISIBLECODE}" && install_gosu
-
 	# Install Atlassian
 		installatlassian
 		dockerentry
+	# visible code
+		check_value_true "${VISIBLECODE}" && preparedata
 	# clean
 		remove_package $DOWNLOAD_TOOL
 		clean_os
