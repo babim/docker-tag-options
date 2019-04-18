@@ -57,36 +57,44 @@ installatlassian() {
 			say "Can not install without version. Please check and rebuild"
 			exit $FALSE
 		fi
+
 	# Install Atlassian JIRA and helper tools and setup initial home
+
 	## directory structure.
 		create_folder                			"${SOFT_HOME}"
 		set_filefolder_mod	700            		"${SOFT_HOME}"
 		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
 		create_folder                			"${SOFT_INSTALL}"
+
 	## download and extract source software
 		say "downloading and install atlassian..."
 		has_empty "${SOFT_INSTALL}" && $download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
 	remove_file "${FILELIB}/mysql-connector-java-*.jar"
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say_warning "${FILETEMP} exist"
+
 	## update postgresql connector
 	remove_file "${FILELIB}/postgresql-*.jar"
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say_warning "${FILETEMP} exist"
+
 	## update mssql-server connector
 	remove_file "${FILELIB}/mssql-jdbc-*.jar"
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say_warning "${FILETEMP} exist"
+
 	## update oracle database connector
 	remove_file "${FILELIB}/ojdbc*.jar"
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
 		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say_warning "${FILETEMP} exist"
+
 	## set permission path
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
@@ -99,19 +107,15 @@ installatlassian() {
 	FILETEMP="${SOFT_INSTALL}/bin/setenv.sh"
 		say "sed ${FILETEMP}..."	
 		check_file "${FILETEMP}"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
-		# xmlstarlet
+
+	# xmlstarlet
 	FILETEMP="${SOFT_INSTALL}/conf/server.xml"
-		if check_file "${FILETEMP}"; then
-			say "xmlstarlet ${FILETEMP}..."
-			xmlstarlet		ed --inplace \
-			  --delete		"Server/Service/Engine/Host/@xmlValidation" \
-			  --delete		"Server/Service/Engine/Host/@xmlNamespaceAware" \
-						"${FILETEMP}"
-		else
-			say_warning "${FILETEMP} does not exist"
-		fi
-		# xmlstarlet end
+		say "xmlstarlet ${FILETEMP}..."
+		check_file "${FILETEMP}"	&& xmlstarlet ed --inplace --delete "Server/Service/Engine/Host/@xmlValidation" --delete "Server/Service/Engine/Host/@xmlNamespaceAware" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
+
+	# xmlstarlet end
 		check_file "${FILETEMP}"				&& touch -d "@0"	"${SOFT_INSTALL}/conf/server.xml" || say_warning "${FILETEMP} does not exist"
+
 	# fix path start file
 		check_file "${SOFT_INSTALL}/bin/start_${SOFT}.sh"	&& mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 		check_file "${SOFT_INSTALL}/start_${SOFT}.sh"		&& mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
@@ -120,18 +124,13 @@ dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		remove_file $FILETEMP
-		# visible code
-		if [ "${VISIBLECODE}" = "true" ]; then
-			$download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh
-		else
-			$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
-		fi
+
+	# visible code
+		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
 }
 preparedata() {
-	if [[ "${VISIBLECODE}" == "true" ]]; then
-		mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
-	fi
+	check_value_true "${VISIBLECODE}" && mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
 }
 
 # install by OS
@@ -164,7 +163,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			echo "Install depend packages..."
 		install_package ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
 	# visible code
-	[[ "${VISIBLECODE}" == "true" ]] && install_gosu
+	check_value_true "${VISIBLECODE}" && install_gosu
 
 	# Install Atlassian
 		installatlassian
