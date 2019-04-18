@@ -1293,7 +1293,7 @@ alias delele_folders=remove_folders
 # remove file
 function    remove_file()
     {
-        object_remove="${@}"
+        object_remove=${@}
         command_check_object=check_file
             core_command_remove_object
     }
@@ -1302,7 +1302,7 @@ function    remove_file()
 function    remove_files()
     {
         command_check_object=check_file
-        for object_remove in "${@}"; do
+        for object_remove in ${@}; do
             core_command_remove_object
         done
     }
@@ -1315,7 +1315,7 @@ alias delele_files=remove_files
 # remove file and folder
 function    remove_filefolder()
     {
-        object_remove="${@}"
+        object_remove=${@}
         command_check_object=check_filefolder
             core_command_remove_object
     }
@@ -1323,7 +1323,7 @@ function    remove_filefolder()
 function    remove_filefolders()
     {
         command_check_object=check_filefolder
-        for object_remove in "${@}"; do
+        for object_remove in ${@}; do
             core_command_remove_object
         done
     }
