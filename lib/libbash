@@ -80,10 +80,11 @@ function export_all()
                     check_files_owned_userid_say check_files_read check_files_read_say check_files_socket check_files_socket_say \
                     check_files_nonzero check_files_nonzero_say check_files_userid check_files_userid_say check_files_write \
                     check_files_write_say check_files_run check_files_run_say check_folder_empty check_folders_empty check_folders_empty_say \
-                    \
+                    set_files_owner set_folders_owner set_filefolders_owner set_files_mod set_folders_mod set_filefolders_mod \
+		    \
                     create_folders create_files create_folder create_file \
                     \
-                    remove_folders remove_files remove_filefolders \
+                    remov e_folders remove_files remove_filefolders \
                     \
                     set_file_owner set_folder_owner set_filefolder_owner set_file_mod set_folder_mod set_filefolder_owner set_filefolder_mod \
                     \
@@ -937,7 +938,7 @@ function    check_folders_say()
 # check folder empty
 function    check_folder_empty()
     {
-        [[ ! -d ${1} ]] && return $TRUE || return $FALSE
+        [[ -d ${1} ]] || return $FALSE
         [[ -z "`ls ${1}`" ]] && return $TRUE || return $FALSE
     }
 function    check_folders_empty()
@@ -1293,7 +1294,7 @@ alias delele_folders=remove_folders
 # remove file
 function    remove_file()
     {
-        object_remove=${@}
+        object_remove="${@}"
         command_check_object=check_file
             core_command_remove_object
     }
@@ -1312,14 +1313,13 @@ alias delele_file=remove_file
 alias del_files=remove_files
 alias delele_files=remove_files
 
-# remove file and folder
+# remove file and folder. Can use this command to remove abc*
 function    remove_filefolder()
     {
-        object_remove=${@}
-        command_check_object=check_filefolder
-            core_command_remove_object
+        say "Removing ${@}..."
+        rm -rf ${@}
     }
-# remove multi file and folder
+# remove multi file and folder.Cannot use this command to remove abc*
 function    remove_filefolders()
     {
         command_check_object=check_filefolder
@@ -1346,6 +1346,17 @@ function    core_command_set_object()
 # set file owner
 function    set_file_owner()
     {
+        command_check_object=check_file
+        command_set_object="chown"
+        command_set_object_say=owner
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+
+# set multi file owner
+function    set_files_owner()
+    {
         command_check_object=check_files
         command_set_object="chown"
         command_set_object_say=owner
@@ -1353,9 +1364,18 @@ function    set_file_owner()
         object_set="${@:2}"
             core_command_set_object
     }
-
 # set folder owner
 function    set_folder_owner()
+    {
+        command_check_object=check_folder
+        command_set_object="chown -R"
+        command_set_object_say=owner
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+# set multi folder owner
+function    set_folders_owner()
     {
         command_check_object=check_folders
         command_set_object="chown -R"
@@ -1368,6 +1388,16 @@ function    set_folder_owner()
 # set filefolder owner
 function    set_filefolder_owner()
     {
+        command_check_object=check_filefolder
+        command_set_object="chown -R"
+        command_set_object_say=owner
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+# set multi filefolder owner
+function    set_filefolders_owner()
+    {
         command_check_object=check_filefolders
         command_set_object="chown -R"
         command_set_object_say=owner
@@ -1378,6 +1408,16 @@ function    set_filefolder_owner()
 
 # set file mod
 function    set_file_mod()
+    {
+        command_check_object=check_file
+        command_set_object="chmod"
+        command_set_object_say=mod
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+# set multi file mod
+function    set_files_mod()
     {
         command_check_object=check_files
         command_set_object="chmod"
@@ -1390,6 +1430,16 @@ function    set_file_mod()
 # set folder mod
 function    set_folder_mod()
     {
+        command_check_object=check_folder
+        command_set_object="chmod -R"
+        command_set_object_say=mod
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+# set folder mod
+function    set_folders_mod()
+    {
         command_check_object=check_folders
         command_set_object="chmod -R"
         command_set_object_say=mod
@@ -1400,6 +1450,16 @@ function    set_folder_mod()
 
 # set filefolder mod
 function    set_filefolder_mod()
+    {
+        command_check_object=check_filefolder
+        command_set_object="chmod -R"
+        command_set_object_say=mod
+        object_mode=${1}
+        object_set="${2}"
+            core_command_set_object
+    }
+# set multi filefolder mod
+function    set_filefolders_mod()
     {
         command_check_object=check_filefolders
         command_set_object="chmod -R"
@@ -1949,7 +2009,7 @@ function    core_command_install()
 # install package
 function    install_package()
     {
-        software=${@}
+        software="${@}"
             core_command_install
     }
 
@@ -2071,7 +2131,7 @@ function    command_remove()
 # remove package
 function    remove_package()
     {
-        software=${@}
+        software="${@}"
             command_remove
     }
 
