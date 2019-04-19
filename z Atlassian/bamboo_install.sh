@@ -47,6 +47,7 @@ setenvironment() {
 		export MYSQLV=5.1.47
 		export MSSQLV=7.2.1.jre8
 		export ORACLEV=8
+		export VISIBLECODE=${VISIBLECODE:-false}
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
@@ -81,19 +82,19 @@ installatlassian() {
 	remove_filefolder ${FILELIB}/postgresql-*.jar
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
-		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"	&& say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"
 
 	## update mssql-server connector
 	remove_filefolder ${FILELIB}/mssql-jdbc-*.jar
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
-		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"			&& say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"
 
 	## update oracle database connector
 	remove_filefolder ${FILELIB}/ojdbc*.jar
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
-		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"				&& say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 	## set permission path
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
