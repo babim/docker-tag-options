@@ -69,18 +69,14 @@ installatlassian() {
 
 	## download and extract source software
 		say "downloading and install atlassian..."
-		check_folder_empty "${SOFT_INSTALL}" && $download_tool "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+		check_folder_empty "${SOFT_INSTALL}" && curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 
 	## update mysql connector
 	FILELIB="${SOFT_INSTALL}/lib"
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-		if check_file "${FILETEMP}"; then
-			say_warning "${FILETEMP} exist"
-		else
-			$download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-		fi
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 
 	## update postgresql connector
 	remove_filefolder ${FILELIB}/postgresql-*.jar
@@ -158,7 +154,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package xmlstarlet ttf-dejavu libc6-compat git openssh
+		install_package curl xmlstarlet ttf-dejavu libc6-compat git openssh
 	# Install Atlassian
 		installatlassian
 		dockerentry
@@ -176,7 +172,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
+		install_package curl ttf-dejavu libtcnative-1 xmlstarlet git openssh-client
 	# Install Atlassian
 		installatlassian
 		dockerentry
