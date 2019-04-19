@@ -84,7 +84,7 @@ function export_all()
 		    \
                     create_folders create_files create_folder create_file \
                     \
-                    remov e_folders remove_files remove_filefolders \
+                    remove_folders remove_files remove_filefolders \
                     \
                     set_file_owner set_folder_owner set_filefolder_owner set_file_mod set_folder_mod set_filefolder_owner set_filefolder_mod \
                     \
