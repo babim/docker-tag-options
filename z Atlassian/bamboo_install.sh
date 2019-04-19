@@ -76,7 +76,11 @@ installatlassian() {
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-		check_file "${FILETEMP}" || $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" && say_warning "${FILETEMP} exist"
+		if check_file "${FILETEMP}"; then
+			say_warning "${FILETEMP} exist"
+		else
+			$download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		fi
 
 	## update postgresql connector
 	remove_filefolder ${FILELIB}/postgresql-*.jar

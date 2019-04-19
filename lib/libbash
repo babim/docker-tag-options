@@ -2104,9 +2104,10 @@ function    install_java_jre()
 # Clean cache OS
 function    clean_os()
     {
+        say "Cleaning OS cache.."
  	if [[ -f /etc/redhat-release ]]; then
         yum clean all
-        echo "Clean OS done"
+        say "Clean OS done"
  	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
         apt-get autoremove -y
         apt-get autoclean
@@ -2115,11 +2116,11 @@ function    clean_os()
         rm -rf /tmp/* /var/tmp/*
         rm -rf /var/lib/apt/lists/*
         rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
-        echo "Clean OS done"
+        say "Clean OS done"
  	elif [[ -f /etc/alpine-release ]]; then
-        echo "Clean OS done"
+        say "Clean OS done"
  	else
-        echo "not support"
+        say_err "Not support"
         return $FALSE
  	fi
     return $TRUE
