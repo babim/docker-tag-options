@@ -75,25 +75,25 @@ installatlassian() {
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-		check_file "${FILETEMP}" && $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" || say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" || $download_tool "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar" && say_warning "${FILETEMP} exist"
 
 	## update postgresql connector
 	remove_filefolder ${FILELIB}/postgresql-*.jar
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" || say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"	&& say_warning "${FILETEMP} exist"
 
 	## update mssql-server connector
 	remove_filefolder ${FILELIB}/mssql-jdbc-*.jar
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" || say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"			&& say_warning "${FILETEMP} exist"
 
 	## update oracle database connector
 	remove_filefolder ${FILELIB}/ojdbc*.jar
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
-		check_file "${FILETEMP}" && $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" || say_warning "${FILETEMP} exist"
+		check_file "${FILETEMP}" || $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"				&& say_warning "${FILETEMP} exist"
 
 	## set permission path
 		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
@@ -126,12 +126,14 @@ installatlassian() {
 		say "checking ${FILETEMP}..."
 		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"
 		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+
+		say " - Install done - "
 }
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
 		remove_file $FILETEMP
-
+		say "download entrypoint.."
 	# visible code
 		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
