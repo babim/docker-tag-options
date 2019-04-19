@@ -104,6 +104,7 @@ installatlassian() {
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
 		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
+
 	FILETEMP="${SOFT_INSTALL}/bin/setenv.sh"
 		say "sed ${FILETEMP}..."	
 		check_file "${FILETEMP}"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
@@ -119,12 +120,12 @@ installatlassian() {
 	# fix path start file
 	FILETEMP="${SOFT_INSTALL}/bin/start_${SOFT}.sh"
 		say "checking ${FILETEMP}..."
-		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
-		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 	FILETEMP="${SOFT_INSTALL}/start_${SOFT}.sh"
 		say "checking ${FILETEMP}..."
-		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
-		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
 }
 dockerentry() {
 	# download docker entry
@@ -138,7 +139,7 @@ dockerentry() {
 preparedata() {
 	say "Prepare for fixed version"
 	install_gosu
-	create_folder /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
+	create_folder /etc-start		&& mv ${SOFT_INSTALL} /etc-start/${SOFT}
 }
 
 # install by OS
