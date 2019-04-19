@@ -88,7 +88,7 @@ function export_all()
                     \
                     set_file_owner set_folder_owner set_filefolder_owner set_file_mod set_folder_mod set_filefolder_owner set_filefolder_mod \
                     \
-                    core_command_install core_command_create_object core_command_remove_object core_command_set_object 
+                    core_command_check_value core_command_install core_command_create_object core_command_remove_object core_command_set_object 
     # Function Install
         export -f check_epel check_epel_say install_epel remove_epel install_gosu install_package install_package_run \
                     install_packages install_packages_run install_curl install_wget install_java_jre
@@ -248,84 +248,80 @@ function    machine_has()
 # check has value
 function    has_value()
     {
-        [[ -n ${1} ]] && return $TRUE || return $FALSE
+        [[ -n ${1} ]]       && return $TRUE         || return $FALSE
     }
 function    has_empty()
     {
-        [[ -z ${1} ]] && return $TRUE || return $FALSE
+        [[ -z ${1} ]]       && return $TRUE         || return $FALSE
     }
 
-# check value true
-function    check_value_true()
+# core command check value
+function    core_command_check_value()
     {
-        object_check=$(to_lowercase ${1})
-        if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
+        object_check=$(to_lowercase ${object_check})
+        say "checking value of ${object_check}.."
+        if [[ $object_check == "true"       || $object_check == "y" || $object_check == "yes"   || $object_check == "on" ]]; then
             say "value - $object_check - is true"
-            return $TRUE
+            return ${object_check_mode_true}
+        elif [[ $object_check == "false"    || $object_check == "n" || $object_check == "no"    || $object_check == "off" ]]; then
+            say "value - $object_check - is false"
+            return ${object_check_mode_false}
         else
-            has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
+            has_value $object_check && say_warning "value - $object_check - is unknow" || say_warning "Value no set and current empty"
             return $FALSE
         fi
     }
+# check value true
+function    check_value_true()
+    {
+        object_check_mode_true=0
+        object_check_mode_false=1
+        object_check=${1}
+            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
+    }
+# check multi value true
 function    check_value_trues()
     {
+        object_check_mode_true=0
+        object_check_mode_false=1
         for object_check in ${@}; do
-            object_check=$(to_lowercase ${object_check})
-            if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value - $object_check - is true"
-            else
-                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
-                return $FALSE
-            fi
+            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
         done
-        return $TRUE
     }
+# check multi value true just say not return
 function    check_value_trues_say()
     {
+        object_check_mode_true=0
+        object_check_mode_false=1
         for object_check in ${@}; do
-            object_check=$(to_lowercase ${object_check})
-            if [[ $object_check == "true" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                say "value - $object_check - is true"
-            else
-                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
-            fi
+            core_command_check_value ${object_check}
         done
     }
 
 # check value false
 function    check_value_false()
     {
-        object_check=$(to_lowercase ${1})
-        if [[ $object_check == "false" || $object_check == "n" || $object_check == "no" || $object_check == "off" ]]; then
-            say "value - $object_check - is false"
-            return $TRUE
-        else
-            has_value $object_check && say_warning "Maybe value - $object_check - is true" || say_warning "Value no set and current empty"
-            return $FALSE
-        fi
+        object_check_mode_true=1
+        object_check_mode_false=0
+        object_check=${1}
+            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
     }
+# check multi value false
 function    check_value_falses()
     {
+        object_check_mode_true=1
+        object_check_mode_false=0
         for object_check in ${@}; do
-            object_check=$(to_lowercase ${object_check})
-            if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
-            else
-                has_value $object_check && say_warning "Maybe value - $object_check - is true" || say_warning "Value no set and current empty"
-                return $FALSE
-            fi
+            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
         done
-        return $TRUE
     }
+# check multi value false just say not return
 function    check_value_falses_say()
     {
+        object_check_mode_true=1
+        object_check_mode_false=0
         for object_check in ${@}; do
-            object_check=$(to_lowercase ${object_check})
-            if [[ $object_check == "false" || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
-                has_value $object_check && say_warning "Maybe value - $object_check - is false" || say_warning "Value no set and current empty"
-            else
-                has_value $object_check && say_warning "Maybe value - $object_check - is true" || say_warning "Value no set and current empty"
-            fi
+            core_command_check_value ${object_check}
         done
     }
 
@@ -2173,8 +2169,8 @@ function   remove_package_run()
             if ! machine_has ${software}; then
                 command_remove
             fi
-            machine_has ${software}          && say "${software} Cannot remove."  || say "${software} removed."
-            machine_has ${software}          && return $FALSE                   || return $TRUE
+            machine_has ${software}          && say "${software} Cannot remove."    || say "${software} removed."
+            machine_has ${software}          && return $FALSE                       || return $TRUE
     }
 
 # remove package run bin
@@ -2184,8 +2180,8 @@ function   remove_packages_run()
             if ! machine_has ${software}; then
                 command_remove
             fi
-            machine_has ${software}          && say "${software} Cannot remove."  || say "${software} removed."
-            machine_has ${software}          && return $FALSE                   || return $TRUE
+            machine_has ${software}          && say "${software} Cannot remove."    || say "${software} removed."
+            machine_has ${software}          && return $FALSE                       || return $TRUE
         done
     }
 
@@ -2280,7 +2276,7 @@ function    is_ipv4_cidr()
     {
         local -r regex='^[[:digit:]]{1,2}$'
 
-        [[ ${1} =~ $regex ]]      || return $FALSE
+        [[ ${1} =~ $regex ]]        || return $FALSE
         [[ "${1}" -gt 32 ]]         || [[ "${1}" -lt 0 ]] && return $FALSE
 
         return $TRUE
@@ -2296,8 +2292,8 @@ function    is_ipv4_subnet()
     {
         IFS='/' read -r tip tmask <<< "${1}"
 
-        is_ipv4_cidr "$tmask"   || return $FALSE
-        is_ipv4 "$tip"          || return $FALSE
+        is_ipv4_cidr "$tmask"       || return $FALSE
+        is_ipv4 "$tip"              || return $FALSE
 
         return $TRUE
     }
@@ -2312,8 +2308,8 @@ function    is_ipv4_subnet()
 ## @return Network address.
 function    get_ipv4_network()
     {
-        is_ipv4 "${1}"            || return $FALSE
-        is_ipv4_netmask "${2}"    || return $FALSE
+        is_ipv4 "${1}"              || return $FALSE
+        is_ipv4_netmask "${2}"      || return $FALSE
 
         IFS='.' read -r ipb1 ipb2 ipb3 ipb4 <<< "${1}"
         IFS='.' read -r mb1 mb2 mb3 mb4 <<< "${2}"
@@ -2331,8 +2327,8 @@ function    get_ipv4_network()
 ## @return Broadcast address.
 function    get_ipv4_broadcast()
     {
-        is_ipv4 "${1}"            || return $FALSE
-        is_ipv4_netmask "${2}"    || return $FALSE
+        is_ipv4 "${1}"              || return $FALSE
+        is_ipv4_netmask "${2}"      || return $FALSE
 
         IFS='.' read -r ipb1 ipb2 ipb3 ipb4 <<< "${1}"
         IFS='.' read -r mb1 mb2 mb3 mb4 <<< "${2}"
@@ -2354,7 +2350,7 @@ function    get_ipv4_broadcast()
 ## @return CIDR notation of the given decimal netmask.
 function    mask2cidr()
     {
-        is_ipv4_netmask "${1}"    || return $FALSE
+        is_ipv4_netmask "${1}"      || return $FALSE
 
         local x=${1##*255.}
         set -- 0^^^128^192^224^240^248^252^254^ $(( (${#1} - ${#x})*2 )) "${x%%.*}"
@@ -2371,7 +2367,7 @@ function    mask2cidr()
 ## @return Decimal notation of the given CIDR.
 function    cidr2mask()
     {
-        is_ipv4_cidr "${1}"       || return $FALSE
+        is_ipv4_cidr "${1}"         || return $FALSE
 
         local i mask=""
         local full_octets=$((${1}/8))
