@@ -81,7 +81,7 @@ function export_all()
                     check_files_nonzero check_files_nonzero_say check_files_userid check_files_userid_say check_files_write \
                     check_files_write_say check_files_run check_files_run_say check_folder_empty check_folders_empty check_folders_empty_say \
                     set_files_owner set_folders_owner set_filefolders_owner set_files_mod set_folders_mod set_filefolders_mod \
-		    \
+		            \
                     create_folders create_files create_folder create_file \
                     \
                     remove_folders remove_files remove_filefolders \
@@ -889,12 +889,14 @@ function    check_file_block()
 function    check_files_block()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_block ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_block_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_block ${filefolder} && say "File: ${filefolder} is block." || say_warning "File: ${filefolder} does not block."
         done
             return $TRUE
@@ -907,12 +909,14 @@ function    check_file_special_character()
 function    check_files_special_character()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_special_character ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_special_character_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_special_character ${filefolder} && say "File: ${filefolder} is special character." || say_warning "File: ${filefolder} does not special character."
         done
             return $TRUE
@@ -925,12 +929,14 @@ function    check_folder()
 function    check_folders()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_folder ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_folders_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_folder ${filefolder} && say "Folder: ${filefolder} exists." || say_warning "Folder: ${filefolder} does not exists."
         done
             return $TRUE
@@ -944,12 +950,14 @@ function    check_folder_empty()
 function    check_folders_empty()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_folder_empty ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_folders_empty_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_folder_empty ${filefolder} && say "Folder: ${filefolder} empty." || say_warning "Folder: ${filefolder} does not empty."
         done
             return $TRUE
@@ -962,12 +970,14 @@ function    check_filefolder()
 function    check_filefolders()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_filefolder ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_filefolders_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_filefolder ${filefolder} && say "File or Folder: ${filefolder} exists." || say_warning "File or Folder: ${filefolder} does not exists."
         done
             return $TRUE
@@ -980,12 +990,14 @@ function    check_file()
 function    check_files()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file ${filefolder} && say "File: ${filefolder} exists." || say_warning "File: ${filefolder} does not exists."
         done
             return $TRUE
@@ -998,12 +1010,14 @@ function    check_file_owned_groupid()
 function    check_files_owned_groupid()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_owned_groupid ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_owned_groupid_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_owned_groupid ${filefolder} && say "File: ${filefolder} have owned_groupid." || say_warning "File: ${filefolder} does not have owned_groupid."
         done
             return $TRUE
@@ -1016,12 +1030,14 @@ function    check_file_groupid()
 function    check_files_groupid()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_groupid ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_groupid_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_groupid ${filefolder} && say "File: ${filefolder} have groupid." || say_warning "File: ${filefolder} does not have groupid."
         done
             return $TRUE
@@ -1034,12 +1050,14 @@ function    check_file_sticky()
 function    check_files_sticky()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_sticky ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_sticky_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_sticky ${filefolder} && say "File: ${filefolder} is sticky." || say_warning "File: ${filefolder} does not sticky."
         done
             return $TRUE
@@ -1052,12 +1070,14 @@ function    check_file_symlink()
 function    check_files_symlink()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_symlink ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_symlink_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_symlink ${filefolder} && say "File: ${filefolder} is symlink." || say_warning "File: ${filefolder} does not symlink."
         done
             return $TRUE
@@ -1070,12 +1090,14 @@ function    check_file_owned_userid()
 function    check_files_owned_userid()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_owned_userid ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_owned_userid_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_owned_userid ${filefolder} && say "File: ${filefolder} have owned_userid." || say_warning "File: ${filefolder} does not have owned_userid."
         done
             return $TRUE
@@ -1088,12 +1110,14 @@ function    check_file_read()
 function    check_files_read()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_read ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_read_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_read ${filefolder} && say "File: ${filefolder} can read." || say_warning "File: ${filefolder} cannot read."
         done
             return $TRUE
@@ -1106,12 +1130,14 @@ function    check_file_socket()
 function    check_files_socket()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_socket ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_socket_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_socket ${filefolder} && say "File: ${filefolder} is socket." || say_warning "File: ${filefolder} does not socket."
         done
             return $TRUE
@@ -1124,12 +1150,14 @@ function    check_file_nonzero()
 function    check_files_nonzero()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_nonzero ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_nonzero_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_nonzero ${filefolder} && say "File: ${filefolder} nonzero." || say_warning "File: ${filefolder} does not nonzero."
         done
             return $TRUE
@@ -1142,12 +1170,14 @@ function    check_file_userid()
 function    check_files_userid()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_userid ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_userid_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_userid ${filefolder} && say "File: ${filefolder} have userid." || say_warning "File: ${filefolder} does not exists."
         done
             return $TRUE
@@ -1160,12 +1190,14 @@ function    check_file_write()
 function    check_files_write()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_write ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_write_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_write ${filefolder} && say "File: ${filefolder} can write." || say_warning "File: ${filefolder} cannot write."
         done
             return $TRUE
@@ -1178,12 +1210,14 @@ function    check_file_run()
 function    check_files_run()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_run ${filefolder} && return $TRUE || return $FALSE
         done
     }
 function    check_files_run_say()
     {
         for filefolder in "${@}"; do
+            say "Checking ${filefolder}.."
             check_file_run ${filefolder} && say "File: ${filefolder} can run." || say_warning "File: ${filefolder} cannot run."
         done
             return $TRUE

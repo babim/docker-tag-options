@@ -59,12 +59,12 @@ installatlassian() {
 		fi
 
 	# Install Atlassian JIRA and helper tools and setup initial home
+		say " - Begin install - "
 
 	## directory structure.
-		create_folder                			"${SOFT_HOME}"
+		create_folders                			"${SOFT_HOME}" "${SOFT_INSTALL}"
 		set_filefolder_mod	700            		"${SOFT_HOME}"
 		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
-		create_folder                			"${SOFT_INSTALL}"
 
 	## download and extract source software
 		say "downloading and install atlassian..."
@@ -114,11 +114,17 @@ installatlassian() {
 		check_file "${FILETEMP}"	&& xmlstarlet ed --inplace --delete "Server/Service/Engine/Host/@xmlValidation" --delete "Server/Service/Engine/Host/@xmlNamespaceAware" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 
 	# xmlstarlet end
-		check_file "${FILETEMP}"				&& touch -d "@0" "${SOFT_INSTALL}/conf/server.xml" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"	&& touch -d "@0" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 
 	# fix path start file
-		check_file "${SOFT_INSTALL}/bin/start_${SOFT}.sh"	&& mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
-		check_file "${SOFT_INSTALL}/start_${SOFT}.sh"		&& mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+	FILETEMP="${SOFT_INSTALL}/bin/start_${SOFT}.sh"
+		say "checking ${FILETEMP}..."
+		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
+	FILETEMP="${SOFT_INSTALL}/start_${SOFT}.sh"
+		say "checking ${FILETEMP}..."
+		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh" || say_warning "${FILETEMP} does not exist"
 }
 dockerentry() {
 	# download docker entry
