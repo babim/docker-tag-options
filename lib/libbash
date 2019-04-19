@@ -266,8 +266,11 @@ function    core_command_check_value()
         elif [[ $object_check == "false"    || $object_check == "n" || $object_check == "no"    || $object_check == "off" ]]; then
             say "value - $object_check - is false"
             return ${object_check_mode_false}
+        elif [[ -z ${object_check} ]]; then
+            say_warning "Value no set and current empty"
+            return $FALSE
         else
-            has_value $object_check && say_warning "value - $object_check - is unknow" || say_warning "Value no set and current empty"
+            say_warning "value - $object_check - is unknow"
             return $FALSE
         fi
     }
@@ -335,7 +338,7 @@ function    download_with_curl()
     {
         FILE_TEMP="${1}"
         [[ -f $FILE_TEMP ]] && rm -f $FILE_TEMP
-            say "Downloading ..."
+            echo "Downloading ..."
             curl -Ls "${2}" -o "$FILE_TEMP"
     }
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
