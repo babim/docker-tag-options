@@ -48,6 +48,7 @@ setenvironment() {
 		export MSSQLV=7.2.1.jre8
 		export ORACLEV=8
 		export VISIBLECODE=${VISIBLECODE:-false}
+		env_openjdk_jre
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
@@ -71,26 +72,28 @@ installatlassian() {
 		say "downloading and install atlassian..."
 		check_folder_empty "${SOFT_INSTALL}" && curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
 
-	## update mysql connector
-	FILELIB="${SOFT_INSTALL}/lib"
+	## update database connector
+		FILELIB="${SOFT_INSTALL}/lib"
+
+	### update mysql connector
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 
-	## update postgresql connector
+	### update postgresql connector
 	remove_filefolder ${FILELIB}/postgresql-*.jar
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"
 
-	## update mssql-server connector
+	### update mssql-server connector
 	remove_filefolder ${FILELIB}/mssql-jdbc-*.jar
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"
 
-	## update oracle database connector
+	### update oracle database connector
 	remove_filefolder ${FILELIB}/ojdbc*.jar
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
@@ -139,11 +142,6 @@ dockerentry() {
 		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
 }
-preparedata() {
-	say "Prepare for fixed version"
-	install_gosu
-	create_folder /etc-start		&& mv ${SOFT_INSTALL} /etc-start/${SOFT}
-}
 
 # install by OS
 echo 'Check OS'
@@ -159,7 +157,7 @@ if [[ -f /etc/alpine-release ]]; then
 		installatlassian
 		dockerentry
 	# visible code
-		check_value_true "${VISIBLECODE}" && preparedata
+		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
 		remove_package $DOWNLOAD_TOOL
 		clean_os
@@ -177,16 +175,16 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		installatlassian
 		dockerentry
 	# visible code
-		check_value_true "${VISIBLECODE}" && preparedata
+		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
-		remove_package $DOWNLOAD_TOOL
+		remove_download_tool
 		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 # OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

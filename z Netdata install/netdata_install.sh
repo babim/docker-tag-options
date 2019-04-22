@@ -5,23 +5,50 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-# check permission root
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
 
 # set environment
 setenvironment() {
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Netdata%20install"
+	# set uninstall app
+		export UNINSTALL="libmnl-dev gcc make git autoconf automake ${DOWNLOAD_TOOL}"
 }
 # install symlink
 symlinkcreate() {
-	ln -sf /dev/stdout /var/log/netdata/access.log
-	ln -sf /dev/stdout /var/log/netdata/debug.log
-	ln -sf /dev/stderr /var/log/netdata/error.log
+	create_symlink /dev/stdout /var/log/netdata/access.log
+	create_symlink /dev/stdout /var/log/netdata/debug.log
+	create_symlink /dev/stderr /var/log/netdata/error.log
 }
 # install netdata
 installnetdata() {
@@ -39,20 +66,20 @@ installnetdata() {
 	./netdata-installer.sh --dont-wait --dont-start-it
 	# remove git
 	cd /
-	rm -rf /netdata.git
+	remove_filefolder /netdata.git
 	# prepare data
-	if [[ -d /etc/netdata ]];then
-		mkdir -p /etc-start
-		cp -R /etc/netdata /etc-start/
+	if check_folder /etc/netdata;then
+		create_folder /etc-start
+		dircopy /etc/netdata /etc-start/
 	fi
 }
 # download docker entrypoint
 downloadentry() {
 	# download docker entry
 	FILETEMP=/docker-entrypoint.sh
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/netdata_start.sh
-		chmod +x $FILETEMP
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/netdata_start.sh
+		set_file_mod +x $FILETEMP
 }
 # install by OS
 echo 'Check OS'
@@ -61,14 +88,15 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-	apk add --no-cache alpine-sdk bash curl zlib-dev util-linux-dev libmnl-dev gcc make git autoconf automake pkgconfig python logrotate
-	apk add --no-cache nodejs ssmtp
+	install_package alpine-sdk bash curl zlib-dev util-linux-dev libmnl-dev gcc make git autoconf automake pkgconfig python logrotate
+	install_package nodejs ssmtp
 	# install netdata
 		installnetdata
 	# download docker entrypoint
 		downloadentry
 	# del dev tool
-		wget --no-check-certificate -O - $DOWN_URL/netdata_clean.sh | bash
+		clean_package
+		clean_os
 	# symlink access log and error log to stdout/stderr
 		symlinkcreate
 # OS - ubuntu debian
@@ -76,15 +104,14 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 	# Set frontend debian
-		export DEBIAN_FRONTEND=noninteractive
+		debian_cmd_interface
 	# some mirrors have issues, i skipped httpredir in favor of an eu mirror
 	echo "deb http://ftp.nl.debian.org/debian/ stretch main" > /etc/apt/sources.list
 	echo "deb http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
 	# install dependencies for build
-	apt-get -qq update
-	apt-get -y install zlib1g-dev uuid-dev libmnl-dev gcc make curl git autoconf autogen automake pkg-config netcat-openbsd jq
-	apt-get -y install autoconf-archive lm-sensors nodejs python python-mysqldb python-yaml
-	apt-get -y install msmtp msmtp-mta apcupsd fping
+	install_package zlib1g-dev uuid-dev libmnl-dev gcc make curl git autoconf autogen automake pkg-config netcat-openbsd jq
+	install_package autoconf-archive lm-sensors nodejs python python-mysqldb python-yaml
+	install_package msmtp msmtp-mta apcupsd fping
 	# install netdata
 		installnetdata
 	# download docker entrypoint
@@ -105,11 +132,13 @@ elif [[ -f /etc/redhat-release ]]; then
 	# download docker entrypoint
 		downloadentry
 	# del dev tool
-		wget --no-check-certificate -O - $DOWN_URL/netdata_clean.sh | bash
+		clean_package
+		clean_os
 	# symlink access log and error log to stdout/stderr
 		symlinkcreate
+
 # OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

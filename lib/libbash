@@ -5,6 +5,19 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+# this script checks to see if bash is running and if the version is >= 3.3
+if [[ "${#BASH_VERSINFO[@]}" -eq 0 ||
+        ${BASH_VERSINFO[0]}  -lt 3 ||
+      ( ${BASH_VERSINFO[0]}  -eq 3 && ${BASH_VERSINFO[1]} -lt 3 ) ]]
+then
+  echo 1>&2 "This script can only run with bash version >= 3.3"
+  if [[ -n "$BASH_VERSION" ]]; then
+    echo 1>&2 "This is bash $BASH_VERSION"
+  else
+    echo 1>&2 "This is not bash!"
+  fi
+  exit 75           # EPROGMISMATCH
+fi
 
     ####### START #######
     #####################
@@ -17,7 +30,8 @@
 # # This is causing it to fail
 # set -o pipefail
 
-# USE FOR BASH SCRIPT NEED LOAD THIS LIBRARY
+    ####### USE FOR BASH SCRIPT NEED LOAD THIS LIBRARY #######
+    ##########################################################
 # #####################################
 #     ####### Set download tool #######
 #     ####### and load library ########
@@ -39,7 +53,8 @@
 # download_option
 # #####################################
 
-# Content
+    ####### Content #######
+    #######################
 function export_all()
     {
     # set start
@@ -48,8 +63,11 @@ function export_all()
         export -f e_header e_arrow e_success e_error e_warning e_underline e_bold e_note say_warning say_err say
     # check has value
         export -f machine_has has_value has_empty \
+                    has_equal has_not_equal has_equal_less has_equal_greater has_less has_greater \
                     check_value_true check_value_trues check_value_trues_say \
                     check_value_false check_value_falses check_value_falses_say
+    # processing text
+        export -f arg_input url_encode url_decode html_encode html_decode
     # download tool
         export -f download_with_curl download_with_wget download_option
     # change path
@@ -80,20 +98,39 @@ function export_all()
                     check_files_owned_userid_say check_files_read check_files_read_say check_files_socket check_files_socket_say \
                     check_files_nonzero check_files_nonzero_say check_files_userid check_files_userid_say check_files_write \
                     check_files_write_say check_files_run check_files_run_say check_folder_empty check_folders_empty check_folders_empty_say \
-                    set_files_owner set_folders_owner set_filefolders_owner set_files_mod set_folders_mod set_filefolders_mod \
+                    \
+		            core_command_check_value core_command_create_object core_command_remove_object core_command_set_object \
+                    \
+		            create_folders create_files create_folder create_file create_symlink \
 		            \
-                    create_folders create_files create_folder create_file \
+                    remove_folders remove_files remove_filefolders remove_symlink remove_symlinks \
                     \
-                    remove_folders remove_files remove_filefolders \
+                    set_files_owner set_folders_owner set_filefolders_owner set_file_owner set_folder_owner set_filefolder_owner \
                     \
-                    set_file_owner set_folder_owner set_filefolder_owner set_file_mod set_folder_mod set_filefolder_owner set_filefolder_mod \
+                    set_filefolders_mod set_folders_mod set_files_mod set_file_mod set_folder_mod set_filefolder_mod \
                     \
-                    core_command_check_value core_command_install core_command_create_object core_command_remove_object core_command_set_object 
+                    rsync_folder rsync_os rsync_folder_from_ssh rsync_os_from_ssh rsync_folder_to_ssh rsync_os_to_ssh \
+		            \
+		            tar_folder tar_file tar_filefolder tar_folder_ssh tar_file_ssh tar_filefolder_ssh \
+                    tar_extract tar_extract_ssh unzip_extract unzip_extract_ssh
+		            \
+                    scp_folder scp_to_ssh scp_from_ssh tar_copy_compress_ssh tar_copy_ssh
     # Function Install
-        export -f check_epel check_epel_say install_epel remove_epel install_gosu install_package install_package_run \
-                    install_packages install_packages_run install_curl install_wget install_java_jre
+        export -f update_os core_command_install check_epel check_epel_say \
+                    install_package install_package_run install_packages install_packages_run \
+		            \
+		            core_command_debian_repo debian_add_repo debian_add_repos debian_add_repo_key debian_add_repo_keys \
+		            debian_list_repo_key debian_remove_repo_key debian_remove_repo_keys
+                    \
+		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
+                    install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
+                    install_php_composer
     # Function Remove
-        export -f clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run
+        export -f core_command_remove clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run \
+                    \
+	                remove_epel debian_remove_repo debian_remove_repos remove_desktop_minimal remove_java_jre remove_gosu remove_sudo \
+                    remove_js-yaml remove_supervisor remove_tar remove_rsync remove_unzip remove_dmidecode remove_download_tool \
+                    remove_php_composer
     # Group: Network
         export -f is_ipv4 is_fqdn is_ipv4_netmask is_ipv4_cidr is_ipv4_subnet get_ipv4_network get_ipv4_broadcast mask2cidr cidr2mask
     }
@@ -109,6 +146,9 @@ function    debian_cmd_interface()
     declare -r export TRUE=0
     declare -r export FALSE=1
     declare -r export PASSWD_FILE=/etc/passwd
+    declare -r export date_day=$(date +%d%m%Y)
+    declare -r export date_time=$(date +%Y%m%dT%H%M)
+    declare -r export date_timezone=$(date +%Y%m%dT%H%MZ%z)
 
 #    Clear - clear the terminal screen
 function    Clear()
@@ -234,6 +274,81 @@ function    say()
         printf "%b\n" "${cyan:-} ${normal:-} $@"
     }
 
+####### utilities for processing text #######
+####### echo with pause if not have content #######
+# arg_input abc => echo abc
+# arg_input => type content to input: _
+arg_input() {
+  local arg
+  if [[ $# -eq 0 || -z "$1" ]]; then
+    local func="type content to input"
+    local -a args
+    while (( ${#args[*]} == 0 )) ; do
+      read -p "${func}? " args
+    done
+    arg="${args[0]}"
+  else
+    arg="$1"
+  fi
+  echo "$arg"
+}
+
+# url_encode [STRING] -- encode STRING for URLs
+# url_encode          -- encode STDIN for URLs
+
+# Note: must convert % first, otherwise the other entities will
+# get double-converted.
+
+url_encode() {
+  arg_input "$@" |
+  sed -Ee "\
+           s/\%/%25/g  ;
+           s/ /%20/g   ; s/\\\$/%24/g ;	s/\>/%3E/g  ;\
+           s/#/%23/g   ;              ; s/\[/%5B/g  ;\
+           s/'/%27/g   ; s/\&/%26/g   ; s/\]/%5D/g  ;\
+           s/,/%2C/g   ; s/\(/%28/g   ; s/\^/%5E/g  ;\
+           s/-/%2D/g   ; s/\)/%29/g   ; s/\`/%60/g  ;\
+           s/=/%3D/g   ; s/\*/%2A/g   ; s/\{/%7B/g  ;\
+           s/[\]/%5C/g ; s/\+/%2B/g   ; s/\|/%7C/g  ;\
+           s/\!/%21/g  ; s/\//%2F/g   ; s/\}/%7D/g  ;\
+           s/\"/%22/g  ; s/\</%3C/g   ; s/\~/%7E/g"
+}
+
+# url_decode STRING -- decode STRING for urls
+# url_decode        -- decode STDIN for urls
+
+url_decode() {
+  arg_input "$@" |
+  sed -e "\
+           s/%20/ /g  ;  s/%29/)/g   ;   s/%5B/[/g    ;\
+           s/%21/\!/g ;  s/%2A/*/g   ;   s/%5C/\\\\/g ;\
+           s/%22/\"/g ;  s/%2B/+/g   ;   s/%5D/]/g    ;\
+           s/%23/\#/g ;  s/%2C/,/g   ;   s/%5E/^/g    ;\
+           s/%24/\$/g ;  s/%2D/-/g   ;   s/%60/\`/g   ;\
+           s/%25/%/g  ;  s/%2F/\//g  ;   s/%7B/{/g    ;\
+           s/%26/\&/g ;  s/%3C/</g   ;   s/%7C/|/g    ;\
+           s/%27/'/g  ;  s/%3D/=/g   ;   s/%7D/}/g    ;\
+           s/%28/(/g  ;  s/%3E/>/g   ;   s/%7E/~/g"
+}
+
+# html_encode STRING -- encode STRING for HTML presentation
+# html_encode        -- encode STDIN  for HTML presentation
+#
+# converts '&' => &amp;  '>' => &gt;  '<' => &lt;
+
+html_encode() {
+  arg_input "$@" |
+  sed -e "s/\&/\&amp;/g ; s/[<]/\&lt;/g  ; s/[>]/\&gt;/g"
+}
+
+# html_decode STRING  -- decode STRING from HTML presentation
+# html_decode         -- decode STDIN from HTML presentation
+
+html_decode() {
+  arg_input "$@" |
+  sed -Ee "s/\&lt;/</g ; s/\&gt;/>/g ; s/\&amp;/\&/g"
+}
+####### end utilities for processing text #######
 
 ####### machine has (check packages bin run) #######
 # example: if machine_has "curl"; then .....
@@ -245,20 +360,180 @@ function    machine_has()
         return $?
     }
 
+####### Check Value #######
+# String Comparisons
+# +------------------+-----------------------------------------------+
+# |   Conditions     |                    Description                |
+# +------------------+-----------------------------------------------+
+# | Str1 = Str2      | True if the strings are equal                 |                            
+# | Str1 != Str2     | True if the strings are not equal             |
+# | -n Str1          | True if the string is not null                | 
+# | -z Str1          | True if the string is null                    |                             
+# +------------------+-----------------------------------------------+
+
+# Numeric Comparisons
+# +------------------+-----------------------------------------------+
+# |   Conditions     |                    Description                |
+# +------------------+-----------------------------------------------+
+# | expr1 -eq expr2  | True if the expressions are equal             |
+# | expr1 -ne expr2  | True if the expressions are not equal         |
+# | expr1 -gt expr2  | True if expr1 is greater than expr2           |
+# | expr1 -ge expr2  | True if expr1 is greater than equal to expr2  |
+# | expr1 -lt expr2  | True if expr1 is less than expr2              | 
+# | expr1 -le expr2  | True if expr1 is less than or equal to expr2  |
+# | !expr1           | Negates the result of the expression          |            
+# +------------------+-----------------------------------------------+
+
+# Arithmetic Comparisons
+# -lt	<
+# -gt	>
+# -le	<=
+# -ge	>=
+# -eq	==
+# -ne	!=
+
+# String Comparisons
+# =	equal
+# !=	not equal
+# <	less then
+# >	greater then
+# -n s1	string s1 is not empty
+# -z s1	string s1 is empty
+
 # check has value
 function    has_value()
     {
-        [[ -n ${1} ]]       && return $TRUE         || return $FALSE
+        [[ -n ${1} ]]           && return $TRUE         || return $FALSE
     }
+alias check_has_value=has_value
+
+# check has empty
 function    has_empty()
     {
-        [[ -z ${1} ]]       && return $TRUE         || return $FALSE
+        [[ -z ${1} ]]           && return $TRUE         || return $FALSE
+    }
+alias check_empty=has_empty
+alias check_has_empty=has_empty
+
+# check has equal
+# example: has_equal 2 2
+function    has_equal()
+    {
+        [[ ${1} == ${2} ]]      && return $TRUE         || return $FALSE
+    }
+alias check_
+
+# check has not equal
+# example: has_equal 2 2
+function    has_not_equal()
+    {
+        [[ ${1} != ${2} ]]      && return $TRUE         || return $FALSE
+    }
+alias check_has_not_equal=has_not_equal
+
+# check has equal less
+# example: has_equal_less 2 2
+function    has_equal_less()
+    {
+        [[ ${1} <= ${2} ]]      && return $TRUE         || return $FALSE
+    }
+alias check_has_equal_less=has_equal_less
+
+# check has equal greater
+# example: has_equal_greater 2 2
+function    has_equal_greater()
+    {
+        [[ ${1} >= ${2} ]]      && return $TRUE         || return $FALSE
+    }
+alias check_has_equal_greater=has_equal_greater
+
+# check has less
+# example: has_less 2 2
+function    has_less()
+    {
+        [[ ${1} < ${2} ]]       && return $TRUE         || return $FALSE
+    }
+alias check_has_less=has_less
+
+# check has greater
+# example: has_greater 2 2
+function    has_greater()
+    {
+        [[ ${1} > ${2} ]]       && return $TRUE         || return $FALSE
+    }
+alias has_great=has_greater
+alias check_has_great=has_greater
+alias check_has_greater=has_greater
+
+####### End check Value #######
+
+# Check file newer
+function    is_newer()
+    {
+        #
+        # NAME
+        #    is_newer - compare the dates of two files
+        #
+        # SYNOPSIS
+        #    is_newer file1 file2
+        #
+        # DESCRIPTION
+        #    This function will return true (0) if file1 has
+        #    been modified more recently that file2; otherwise,
+        #    it will return false (1).
+        #    
+        if [[ $# -ne 2 ]]; then
+            echo "Usage: is_newer file1 file2" 1>&2
+            return $FALSE
+        fi
+
+        if [ ! -e ${1} -o ! -e ${2} ]; then
+            return $FALSE       # No
+        fi
+
+        if [[ -n "`find ${1} -newer ${2} -print`" ]]; then
+            say "File or Folder: ${1} newer ${2}"
+            return $TRUE       # Yes
+        else
+            say "File or Folder: ${2} newer ${1}"
+            return $FALSE      # No
+        fi
     }
 
-# core command check value
+# check numeric
+function    is_numeric() 
+    {
+        #
+        # NAME
+        #    IsNumeric - determine if a string is numeric
+        #
+        # SYNOPSIS
+        #    IsNumeric string
+        #
+        # DESCRIPTION
+        #    This function will return true (0) if the string
+        #    contains all numeric characters; otherwise, it
+        #    will return false (1).
+        #    
+        if [[ $# -ne 1 ]]; then
+            say_warning "This ${1} is not numeric"
+            return $FALSE
+        fi
+
+        expr "${1}" + 1 >/dev/null 2>&1
+        if [[ $? -ge 2 ]]; then
+            say_warning "This ${1} is not numeric"
+            return $FALSE
+        fi
+
+        say "This ${1} is numeric"
+        return $TRUE
+    }
+
+# core command check value true/false
 function    core_command_check_value()
     {
-        object_check=$(to_lowercase ${object_check})
+        object_check=$(echo ${object_check} | tr 'A-Z' 'a-z')
         say "checking value of ${object_check}.."
         if [[ $object_check == "true"       || $object_check == "y" || $object_check == "yes"   || $object_check == "on" ]]; then
             say "value - $object_check - is true"
@@ -353,7 +628,9 @@ function    download_option()
     {
         say_warning "Check and set download tool..."
         if machine_has "curl"; then
+            # download_tool for command download. use like this $download_tool
             export download_tool="curl -Ls"
+            # DOWNLOAD_TOOL use when remove download tool package
             export DOWNLOAD_TOOL="curl"
             export download_save=download_with_curl
             say "use curl"
@@ -446,9 +723,19 @@ function    combine_paths()
 ####### Run from URL #######
 function    run_url()
     {
-        bash <(curl -s ${1})
+        if machine_has "curl"; then
+            # bash <(curl -s ${1})
+            curl -s ${1} | bash
+        elif machine_has "wget"; then
+            wget --no-check-certificate -qO - ${1} | bash
+        else
+            say_err "without download tool"
+            sleep 3
+            exit $FALSE
+        fi
     }
 
+alias run_bash_url=run_url
 
     ####### Get Linux distribution #######
     ######################################
@@ -464,7 +751,7 @@ function    get_osname()
         return $TRUE
     elif [[ "$uname" = "FreeBSD" ]]; then
         echo "freebsd"
-        return $TRUE        
+        return $TRUE
     elif [[ "$uname" = "Linux" ]]; then
         if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]]; then
             . /etc/os-release
@@ -513,6 +800,7 @@ function    check_debian_need_update()
 
 # simple machine architecture
     export arch=$(uname -i)
+    # export arch=$(uname -m)
 
 # dpkg architecture
 function    check_dpkg()
@@ -546,6 +834,10 @@ function    dpkgArch()
                 # alpine
                 elif [[ $osname == "alpine"* ]]; then
                     [[ ! -f /usr/bin/dpkg ]]        && apk add --no-cache dpkg
+                    check_dpkg
+                # opensuse
+                elif [[ $osname == "opensuse"* ]]; then
+                    [[ ! -f /usr/bin/dpkg ]]        && zypper install -n dpkg
                     check_dpkg
                 else
                     say_err "Cannot install dpkg to check Arch. Your OS not support"
@@ -601,6 +893,17 @@ function    add_a_user()
         # Having shifted twice, the rest is now comments ...
         COMMENTS=$@
         echo "Adding user $USER ..."
+         get_osname
+            if [[ $osname == "rhel"* ]]; then 
+                useradd -c "$COMMENTS" $USER
+            elif [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then 
+                useradd -c "$COMMENTS" $USER
+            elif [[ $osname == "alpine"* ]]; then 
+                adduser -c "$COMMENTS" $USER
+            else
+                say_err "Your OS not support"
+                return $FALSE
+            fi
         echo useradd -c "$COMMENTS" $USER
         echo passwd $USER $PASSWORD
         echo "Added user $USER ($COMMENTS) with pass $PASSWORD"
@@ -741,6 +1044,7 @@ function    copy_files_or_dirs_from_list()
             fi
         done
     }
+    
 #    dircopy - copy the contents of a directory
 function    dircopy()
     {
@@ -1226,7 +1530,6 @@ function    create_folder()
         command_create_object="mkdir -p"
             core_command_create_object
     }
-
 # create multi dir
 function    create_folders()
     {
@@ -1252,7 +1555,6 @@ function    create_file()
         command_create_object="touch"
             core_command_create_object
     }
-
 # create multi file
 function    create_files()
     {
@@ -1265,6 +1567,17 @@ function    create_files()
 
 alias make_file=create_file
 alias make_files=create_files
+
+# create file. use like this: create_symlink /source /destination
+function    create_symlink()
+    {
+        object_create="${1} ${2}"
+        command_check_object=check_filefolders
+        command_create_object="ln -sf"
+            core_command_create_object
+    }
+
+alias make_symlink=create_symlink
 
 # core command remove object
 function    core_command_remove_object()
@@ -1286,7 +1599,6 @@ function    remove_folder()
         command_check_object=check_folder
             core_command_remove_object
     }
-
 # remove multi folder
 function    remove_folders()
     {
@@ -1314,7 +1626,6 @@ function    remove_file()
         command_check_object=check_file
             core_command_remove_object
     }
-
 # remove multi file
 function    remove_files()
     {
@@ -1328,6 +1639,22 @@ alias del_file=remove_file
 alias delele_file=remove_file
 alias del_files=remove_files
 alias delele_files=remove_files
+
+# remove file symlink
+function    remove_symlink()
+    {
+        object_remove="${@}"
+        command_check_object=check_file_symlink
+            core_command_remove_object
+    }
+# remove multi file symlink
+function    remove_symlinks()
+    {
+        command_check_object=check_file_symlink
+        for object_remove in ${@}; do
+            core_command_remove_object
+        done
+    }
 
 # remove file and folder. Can use this command to remove abc*
 function    remove_filefolder()
@@ -1355,8 +1682,8 @@ alias delele_filesfolders=remove_filesfolders
 # core command set mod
 function    core_command_set_object()
     {
-        $command_check_object ${object_set}                 && $command_set_object ${object_mode} ${object_set} || return $FALSE
-        say "set mode to ${object_set} "                    && return $TRUE
+        $command_check_object ${object_set}               && $command_set_object ${object_mode} ${object_set} || return $FALSE
+        say "set mode to ${object_set} "                  && return $TRUE
     }
 
 # set file owner
@@ -1483,6 +1810,306 @@ function    set_filefolders_mod()
         object_mode=${1}
         object_set="${@:2}"
             core_command_set_object
+    }
+
+# rsync folder
+# example backup from /media/server to /backup/server
+# command: rsync_folder /media/server /backup/server
+function    rsync_folder()
+    {
+        say "Checking folder.."
+        check_folder ${1}                                                   || return $FALSE
+        check_folder ${2}                                                   || return $FALSE
+        say "Begin rsync.."
+        machine_has rsync                                                   || return $FALSE
+        rsync -arvpz --delete --numeric-ids ${1} ${2}
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# rsync os root
+# example backup from / to /backup/server
+# command: rsync_os / /backup/server
+function   rsync_os()
+    {
+        say "Checking folder.."
+        check_folder ${1}                                                   || return $FALSE
+        check_folder ${2}                                                   || return $FALSE
+        say "Begin rsync.."
+        machine_has rsync                                                   || return $FALSE
+        rsync -arvpz --delete --numeric-ids --exclude dev --exclude proc --exclude tmp --exclude media ${1} ${2}
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# rsync folder from ssh
+# use example - rsync from 192.168.0.100/ to /backup_server
+# command for folder normal: rsync_folder_from_ssh root@192.168.0.100 22 /opt/app /backup_server
+# command for os root: rsync_os_from_ssh root@192.168.0.100 22 / /backup_server
+function    rsync_folder_from_ssh()
+    {
+        say "Checking folder.."
+        check_folder ${4}                                                   || return $FALSE
+        say "Begin rsync.."
+        is_numeric ${2}                                                     || return $FALSE
+        machine_has rsync                                                   || return $FALSE
+        rsync -arvpz --delete --numeric-ids -e 'ssh -p ${2}' "${1}:${3}" ${4}
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# rsync os root folder from ssh
+function    rsync_os_from_ssh()
+    {
+        say "Checking folder.."
+        check_folder ${4}                                                   || return $FALSE
+        say "Begin rsync.."
+        is_numeric ${2}                                                     || return $FALSE
+        machine_has rsync                                                   || return $FALSE
+        rsync -arvpz --delete --numeric-ids --exclude dev --exclude proc --exclude tmp --exclude media -e 'ssh -p ${2}' "${1}:${3}" ${4}
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# rsync folder to ssh
+# use example - rsync from /backup_server to 192.168.0.100/
+# command for folder normal: rsync_folder_from_ssh /backup_server root@192.168.0.100 22 /opt/app
+# command for os root: rsync_os_from_ssh /backup_server root@192.168.0.100 22 / 
+function    rsync_folder_to_ssh()
+    {
+        say "Checking folder.."
+        check_folder ${1}                                                   || return $FALSE
+        say "Begin rsync.."
+        is_numeric ${2}                                                     || return $FALSE
+        machine_has ssh                                                     || return $FALSE
+        machine_has rsync                                                   || return $FALSE
+        rsync -arvpz --delete --numeric-ids -e "ssh -p ${3}" ${1} "${2}:${4}"
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# rsync os root folder to ssh
+function    rsync_os_to_ssh()
+    {
+        say "Checking folder.."
+        check_folder ${1}                                                   || return $FALSE
+        say "Begin rsync.."
+        is_numeric ${2}                                                     || return $FALSE
+        machine_has rsync                                                   || return $FALSE
+        machine_has ssh                                                     || return $FALSE
+        rsync -arvpz --delete --numeric-ids  -e "ssh -p ${3}" ${1} "${2}:${4}"
+        say "Rsync completed"
+        return $TRUE
+    }
+
+# tar folder
+# example use: tar folder /abc to /backup.tar.gz
+# command: tar_folder /backup.tar.gz /abc
+# $1 is destination tar file, $2 folder need tar, $3 is extra option
+function    tar_folder()
+    {
+        say "Checking folder.."
+        check_folder ${2}                                                   || return $FALSE
+        check_file ${1}                                                     && return $FALSE
+        say "Begin tar compress.."
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        say "Tar completed"
+        return $TRUE
+    }
+# tar file
+function    tar_file()
+    {
+        say "Checking file.."
+        check_file ${2}                                                     || return $FALSE
+        check_file ${1}                                                     && return $FALSE
+        say "Begin tar compress.."
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        say "Tar completed"
+        return $TRUE
+    }
+# tar file folder
+function    tar_filefolder()
+    {
+        say "Checking file folder.."
+        check_filefolder ${2}                                               || return $FALSE
+        check_filefolder ${1}                                               && return $FALSE
+        say "Begin tar compress.."
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        say "Tar completed"
+        return $TRUE
+    }
+
+# tar folder over ssh
+# example backup /abc to backupserver with path /backup/abc.tar.gz
+# use: tar_folder_ssh /abc root@backupserver /backup/abc.tar.gz
+#
+function    tar_folder_ssh()
+    {
+        say "Begin Tar compress, checking folder.."
+        check_folder ${1}                                                   || return $FALSE
+        say "Begin tar compress.."
+        machine_has tar                                                     || return $FALSE
+        machine_has ssh                                                     || return $FALSE
+        tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
+        say "Tar completed"
+        return $TRUE
+    }
+# tar file over ssh
+function    tar_file_ssh()
+    {
+        say "Checking file.."
+        check_file ${1}                                                     || return $FALSE
+        say "Begin tar compress.."
+        machine_has tar                                                     || return $FALSE
+        machine_has ssh                                                     || return $FALSE
+        tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
+        say "Tar completed"
+        return $TRUE
+    }
+# tar file folder over ssh
+function    tar_filefolder_ssh()
+    {
+        say "Checking file folder.."
+        check_filefolder ${1}                                               || return $FALSE
+        say "Begin tar compress.."
+        machine_has tar                                                     || return $FALSE
+        machine_has ssh                                                     || return $FALSE
+        tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
+        say "Tar completed"
+        return $TRUE
+    }
+
+# tar extract
+# example extract to /abc from /backup/abc.tar.gz
+# use: tar_extract /backup/abc.tar.gz /abc
+# $1 is source tar file, $2 folder destination, $3 is extra option
+function    tar_extract()
+    {
+        say "Checking file folder.."
+        check_file ${1}                                                         || return $FALSE
+        say "Begin tar extracting.."
+        check_empty ${2}    && ${2}=.
+        machine_has tar     && tar -xvpzf ${1} -C ${2} --numeric-owner ${@:3}   || return $FALSE
+        say "Tar completed"
+        return $TRUE
+    }
+
+alias tar_x=tar_extract
+
+# tar extract over ssh
+# example extract to /abc from backupserver with path /backup/abc.tar.gz
+# use: tar_extract_ssh root@backupserver /backup/abc.tar.gz /abc
+#
+function    tar_extract_ssh()
+    {
+        say "Begin tar extracting.."
+        machine_has ssh             || return $FALSE
+        ssh ${1} "cat > ${2}"       | tar -xvpzf - ${3}
+        say "Tar completed"
+        return $TRUE
+    }
+
+alias tar_extract_from_ssh=tar_extract_ssh
+alias tar_x_from_ssh=tar_extract_ssh
+alias tar_x_ssh=tar_extract_ssh
+
+# unzip extract
+# example extract to /abc from /backup/abc.zip
+# use: unzip_extract /backup/abc.zip /abc
+# $1 is source zip file, $2 folder destination, $3 is extra option
+function    unzip_extract()
+    {
+        say "Checking file folder.."
+        check_file ${1}                                                         || return $FALSE
+        say "Begin unzip extracting.."
+        check_empty ${2}        && ${2}=.
+        machine_has unzip       && unzip - ${1} -d ${2} ${@:3}                  || return $FALSE
+        say "Unzip completed"
+        return $TRUE
+    }
+
+alias unzip_x=unzip_extract
+
+# unzip extract over ssh
+# example extract to /abc from backupserver with path /backup/abc.zip
+#
+# use: unzip_extract_ssh root@backupserver /backup/abc.zip /abc
+#
+function    unzip_extract_ssh()
+    {
+        say "Begin unzip extracting.."
+        machine_has ssh             || return $FALSE
+        ssh ${1} "cat > ${2}"       | unzip - ${3}
+        say "Unzip completed"
+        return $TRUE
+    }
+
+alias unzip_extract_from_ssh=unzip_extract_ssh
+alias unzip_x_from_ssh=unzip_extract_ssh
+alias unzip_x_ssh=unzip_extract_ssh
+
+# scp folder
+# example copy from /abc to 192.168.0.12:/home/abc
+# scp_folder root@192.168.0.12:/home/abc /abc
+function    scp_folder()
+    {
+        say "Begin scp copying.."
+        machine_has scp             || return $FALSE
+        scp -pr ${1} ${2}
+        say "scp completed"
+        return $TRUE
+    }
+
+# scp to ssh
+# example copy from /abc to 192.168.0.12:/home/abc
+# scp_to_ssh /abc root@192.168.0.12 /home/abc
+function    scp_to_ssh()
+    {
+        say "Begin scp copying.."
+        machine_has scp             || return $FALSE
+        scp -pr ${1} ${2}:${3}
+        say "scp completed"
+        return $TRUE
+    }
+
+# scp from ssh
+# example copy from /abc to 192.168.0.12:/home/abc
+# scp_from_ssh root@192.168.0.12 /home/abc /abc
+function    scp_from_ssh()
+    {
+        say "Begin scp copying.."
+        machine_has scp             || return $FALSE
+        scp -pr ${1}:${2} ${3}
+        say "scp completed"
+        return $TRUE
+    }
+
+# tar copy compress ssh
+# copy over ssh use tar with compress package, maybe use more cpu
+#
+# example copy from /abc from backupserver to /home/abc
+#
+# use: tar_copy_compress_ssh root@backupserver /abc /home/abc
+#
+function    tar_copy_compress_ssh()
+    {
+        machine_has tar             || return $FALSE
+        machine_has ssh             || return $FALSE
+        ssh ${1} "tar czf - ${2}"   | tar xvzf - -C ${3}
+    }
+
+# tar copy ssh
+# copy over ssh use tar without compress package, maybe faster
+#
+# example copy from /abc from backupserver to /home/abc
+#
+# use: tar_copy_ssh root@backupserver /abc /home/abc
+#
+function    tar_copy_ssh()
+    {
+        machine_has tar             || return $FALSE
+        machine_has ssh             || return $FALSE
+        ssh ${1} "tar c - ${2}"     | tar xvf - -C ${3}
     }
 
 #    DirCmp - compare the files in two directories
@@ -1657,6 +2284,7 @@ function    dircmp()
             return $TRUE
         fi
     }
+
 alias DirCmp=dircmp
 
 #    findfile - recursively search for a file
@@ -1693,6 +2321,7 @@ function    findfile()
 
         find "${@:-.}" -name "$NAME" -print
     }
+
 alias find_file=findfile
 alias find_folder=findfile
 alias search_file=findfile
@@ -1846,73 +2475,10 @@ alias findstring=findstr
 alias find_string=findstr
 alias search_string=findstr
 
-# Check file newer
-function    is_newer()
-    {
-        #
-        # NAME
-        #    is_newer - compare the dates of two files
-        #
-        # SYNOPSIS
-        #    is_newer file1 file2
-        #
-        # DESCRIPTION
-        #    This function will return true (0) if file1 has
-        #    been modified more recently that file2; otherwise,
-        #    it will return false (1).
-        #    
-        if [[ $# -ne 2 ]]; then
-            echo "Usage: is_newer file1 file2" 1>&2
-            return $FALSE
-        fi
-
-        if [ ! -e ${1} -o ! -e ${2} ]; then
-            return $FALSE       # No
-        fi
-
-        if [[ -n "`find ${1} -newer ${2} -print`" ]]; then
-            say "File or Folder: ${1} newer ${2}"
-            return $TRUE       # Yes
-        else
-            say "File or Folder: ${2} newer ${1}"
-            return $FALSE      # No
-        fi
-    }
-
 function    hex2decimal()
     {
         NUM=`echo ${1}    | tr '[a-f]' '[A-F]'`
         echo 16i $NUM p | dc
-    }
-
-# check numeric
-function    is_numeric() 
-    {
-        #
-        # NAME
-        #    IsNumeric - determine if a string is numeric
-        #
-        # SYNOPSIS
-        #    IsNumeric string
-        #
-        # DESCRIPTION
-        #    This function will return true (0) if the string
-        #    contains all numeric characters; otherwise, it
-        #    will return false (1).
-        #    
-        if [[ $# -ne 1 ]]; then
-            say_warning "This ${1} is not numeric"
-            return $FALSE
-        fi
-
-        expr "${1}" + 1 >/dev/null 2>&1
-        if [[ $? -ge 2 ]]; then
-            say_warning "This ${1} is not numeric"
-            return $FALSE
-        fi
-
-        say "This ${1} is numeric"
-        return $TRUE
     }
 
 # check process
@@ -1932,27 +2498,29 @@ function    check_process_say()
     ####### Function Install #######
     ################################
 
-# check and install epel
+# check epel
 function    check_epel()
     {
-        [[ -f /etc/yum.repos.d/epel.repo ]]     && return $TRUE         || return $FALSE
+        [[ -f /etc/yum.repos.d/epel.repo ]]     && return $TRUE                 || return $FALSE
     }
 function    check_epel_say()
     {
-        [[ -f /etc/yum.repos.d/epel.repo ]]     && say "EREL REPO installed" || say_warning "EREL REPO not found"
+        [[ -f /etc/yum.repos.d/epel.repo ]]     && say "EREL REPO installed"    || say_warning "EREL REPO not found"
     }
+# install epel repo
 function    install_epel()
     {
     if ! check_epel; then
         say "EPEL Repo not found"
         # osname=$(get_osname)
         get_osname
+        is_root && sudo_command="" || sudo_command="sudo "
             if [[ $osname == "rhel.6" ]]; then 
-                yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+                ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
             elif [[ $osname == "rhel.7" ]]; then 
-                yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+                ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
             elif [[ $osname == "rhel.5" ]]; then 
-                yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-5.noarch.rpm
+                ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-5.noarch.rpm
             else
                 say_err "Cannot install EPEL. Your OS not support"
                 return $FALSE
@@ -1964,44 +2532,45 @@ function    install_epel()
         return $TRUE
     fi
     }
+# remove epel repo
 function    remove_epel()
     {
+        is_root && sudo_command="" || sudo_command="sudo "
         if ! check_epel; then
             say "EPEL Repo not found"
             return $TRUE
         else
             say "EPEL Repo installed"
-            yum remove epel* -y
+            ${sudo_command}yum remove epel* -y
             check_epel          && say "EREL REPO removed"          || say_err "EREL REPO found and Cannot removed"
             check_epel          && return $TRUE                     || return $FALSE
         fi
     }
 
-# Gosu
-function    install_gosu()
+# update_os
+function    update_os()
     {
-    GOSU_VERSION=1.11
-    # install gosu on your OS linux
-    if machine_has gosu; then
-        say "GOSU installed."
-    else
         # osname=$(get_osname)
         get_osname
-            if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
-                FILE_TEMP=/usr/local/bin/gosu
+        say "install ${software}.."
+        is_root && sudo_command="" || sudo_command="sudo "
+            if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
+                ${sudo_command}apt-get dist-upgrade -y
             elif [[ $osname == "rhel"* ]]; then
-                FILE_TEMP=/usr/bin/gosu
+                ${sudo_command}yum update -y
+            elif [[ $osname == "alpine"* ]]; then
+                ${sudo_command}apk --no-cache upgrade
+            elif [[ $osname == "opensuse"* ]]; then
+                ${sudo_command}zypper -n update
             else
-                say_err "Cannot install Gosu. OS not support."
+                say_err "Cannot Upgrade. OS not support."
                 return $FALSE
             fi
-        $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
-        [[ ! -f ${FILE_TEMP} ]]         && return $FALSE
-        chmod +x ${FILE_TEMP}           && gosu nobody true
-        say "GOSU installed."
-    fi
         return $TRUE
     }
+
+alias upgrade_os=update_os
 
 # core command install. Core command for install packages
 function    core_command_install()
@@ -2009,23 +2578,40 @@ function    core_command_install()
         # osname=$(get_osname)
         get_osname
         say "install ${software}.."
+        is_root && sudo_command="" || sudo_command="sudo "
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                check_debian_need_update && apt-get update || say "no need update repo"
-                apt-get install -y --no-install-recommends ${software}
+                ${sudo_command}check_debian_need_update && ${sudo_command}apt-get update        || say "no need update repo"
+                if [[ $software == *".deb" ]]; then
+                    ${sudo_command}dpkg -i ${software}  && say "install ${software} completed"  || ${sudo_command}apt-get install -f -y
+                elif [[ $software == *".rpm" ]]; then
+                    say "This package for redhat/centos, cannot install on this server"         && return $FALSE
+                else
+                    ${sudo_command}apt-get install -y --no-install-recommends ${software}
+                fi
             elif [[ $osname == "rhel"* ]]; then
-                yum install -y ${software}
+                if [[ $software == *".rpm" ]]; then
+                    ${sudo_command}rpm -ivh ${software} && say "install ${software} completed"  || say "Cannot install ${software}"
+                elif [[ $software == *".deb" ]]; then
+                    say "This package for ubuntu/debian, cannot install on this server"         && return $FALSE
+                else
+                    ${sudo_command}yum install -y ${software}
+                fi
             elif [[ $osname == "alpine"* ]]; then
-                apk add --no-cache ${software}
+                ${sudo_command}apk add --no-cache ${software}
+            elif [[ $osname == "opensuse"* ]]; then
+                ${sudo_command}zypper install -n ${software}
             else
                 say_err "Cannot install ${software}. OS not support."
                 return $FALSE
             fi
         return $TRUE
     }
+
 # install package
+# example install tar: install_package tar
 function    install_package()
     {
-        software="${@}"
+        software=${@}
             core_command_install
     }
 
@@ -2033,7 +2619,7 @@ function    install_package()
 function    install_packages()
     {
         for software in ${@}; do
-           core_command_install
+            core_command_install
         done
     }
 
@@ -2060,6 +2646,175 @@ function    install_packages_run()
         done
     }
 
+# core command repo ubuntu-debian
+function    core_command_debian_repo()
+    {
+        # osname=$(get_osname)
+        get_osname
+        say "add/delete repo ${software}.."
+        is_root && sudo_command="" || sudo_command="sudo "
+        command_extra=${command_extra:-""}
+        software=${software:-""}
+            if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                machine_has ${command_repo} || ${sudo_command}install_package software-properties-common
+                ${sudo_command}${command_repo}${command_extra}${software}
+            elif [[ $osname == "rhel"* ]]; then
+                say "You using Redhat/Centos and cannot use"
+                return $FALSE
+            elif [[ $osname == "alpine"* ]]; then
+                say "You using Alpine linux and cannot use"
+                return $FALSE
+            elif [[ $osname == "opensuse"* ]]; then
+                say "You using Opensuse/Suse and cannot use"
+                return $FALSE
+            else
+                say_err "OS not support."
+                return $FALSE
+            fi
+        return $TRUE
+    }
+
+# add repo key
+function    debian_add_repo_key()
+    {
+        software=" ${1}"
+        command_repo="apt-key"
+        server_key=keyserver.ubuntu.com
+        command_extra=" adv --keyserver ${server_key} --recv-keys"
+            if [[ $software == "http"* ]]; then
+                machine_has curl && curl -s ${software} | apt-key add - || wget --quiet -O - ${software} | apt-key add -
+            else
+                core_command_debian_repo
+            fi
+    }
+
+alias debian_add_repokey=debian_add_repo_key
+
+# add multi repo keys
+function    debian_add_repo_keys()
+    {
+        for software in " ${@}"; do
+            command_repo="apt-key"
+            server_key=${server_key:-keyserver.ubuntu.com}
+            command_extra=" adv --keyserver ${server_key} --recv-keys"
+                if [[ $software == "http"* ]]; then
+                    machine_has curl && curl -s ${software} | apt-key add - || wget --quiet -O - ${software} | apt-key add -
+                else
+                    core_command_debian_repo
+                fi
+        done
+    }
+
+alias debian_add_repokeys=debian_add_repo_keys
+
+# add repo key
+function    debian_list_repo_key()
+    {
+        command_repo="apt-key"
+        command_extra=" list"
+            core_command_debian_repo
+    }
+
+alias debian_list_repokey=debian_list_repo_key
+alias debian_ls_repokey=debian_list_repo_key
+
+# remove repo key
+function    debian_remove_repo_key()
+    {
+        software=" ${1}"
+        command_repo="apt-key"
+        command_extra=" del"
+            core_command_debian_repo
+    }
+
+alias debian_del_repo_key=debian_remove_repo_key
+alias debian_delete_repo_key=debian_remove_repo_key
+alias debian_remove_repokey=debian_remove_repo_key
+alias debian_del_repokey=debian_remove_repo_key
+alias debian_delete_repokey=debian_remove_repo_key
+
+# remove multi repo keys
+function    debian_remove_repo_keys()
+    {
+        for software in " ${@}"; do
+            command_repo="apt-key"
+            command_extra=" del"
+                core_command_debian_repo
+        done
+    }
+
+alias debian_del_repo_keys=debian_remove_repo_keys
+alias debian_delete_repo_keys=debian_remove_repo_keys
+alias debian_remove_repokeys=debian_remove_repo_keys
+alias debian_del_repokeys=debian_remove_repo_keys
+alias debian_delete_repokeys=debian_remove_repo_keys
+
+# add repo
+function    debian_add_repo()
+    {
+        software=" ${1}"
+        command_repo="add-apt-repository"
+        command_extra=" -y ppa:"
+            core_command_debian_repo
+    }
+
+# add multi repo
+function    debian_add_repos()
+    {
+        for software in " ${@}"; do
+            command_repo="add-apt-repository"
+                core_command_debian_repo
+        done
+    }
+
+# remove repo
+function    debian_remove_repo()
+    {
+        software=" ${1}"
+        command_repo="add-apt-repository --remove"
+            core_command_debian_repo
+    }
+
+# remove multi repo
+function    debian_remove_repos()
+    {
+        for software in " ${@}"; do
+            command_repo="add-apt-repository --remove"
+                core_command_debian_repo
+        done
+    }
+
+# install desktop minimal
+function    install_desktop_minimal()
+    {
+        # osname=$(get_osname)
+        get_osname
+        say "install ${software}.."
+        is_root && sudo_command="" || sudo_command="sudo "
+            if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
+                ${sudo_command}apt-get install -y --no-install-recommends xubuntu-desktop
+                ${sudo_command}apt-get install -y --no-install-recommends xinit xterm firefox
+            elif [[ $osname == "rhel.6"* ]]; then
+                install_epel
+                ${sudo_command}yum -y groupinstall "Desktop" "Desktop Platform" "X Window System" "Fonts"
+                ${sudo_command}yum -y install xinit xterm firefox
+            elif [[ $osname == "rhel.7"* ]]; then
+                install_epel
+                ${sudo_command}yum -y groupinstall xfce "X Window system"
+                ${sudo_command}yum -y install xinit xterm firefox
+            elif [[ $osname == "alpine"* ]]; then
+                ${sudo_command}apk add --no-cache xfce4 xf86-input xf86-input-mouse xf86-input-keyboard kbd firefox
+            elif [[ $osname == "opensuse"* ]]; then
+                ${sudo_command}zypper -n install patterns-openSUSE-xfce
+                ${sudo_command}zypper -n install xinit xterm firefox
+            else
+                say_err "Cannot install Desktop. OS not support."
+                return $FALSE
+            fi
+        return $TRUE
+    }
+
 # install curl
 function    install_curl()
     {
@@ -2072,12 +2827,18 @@ function    install_wget()
         install_package_run wget
     }
 
+# export environment java
+function    env_openjdk_jre()
+    {
+        export  JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
+	    export  PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+    }
+
 # install openjdk java jre
 function    install_java_jre()
     {
-            OPENJDKV=${OPENJDKV:-8}
-    export  JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
-	export  PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+        OPENJDKV=${OPENJDKV:-8}
+        env_openjdk_jre
         if ! check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre; then
         # osname=$(get_osname)
         get_osname
@@ -2097,6 +2858,86 @@ function    install_java_jre()
         return $TRUE
     }
 
+# install Gosu
+function    install_gosu()
+    {
+    GOSU_VERSION=1.11
+    # install gosu on your OS linux
+    if machine_has gosu; then
+        say "GOSU installed."
+    else
+        # osname=$(get_osname)
+        get_osname
+            if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
+                FILE_TEMP=/usr/local/bin/gosu
+            elif [[ $osname == "rhel"* || $osname == "opensuse"* ]]; then
+                FILE_TEMP=/usr/bin/gosu
+            else
+                say_err "Cannot install Gosu. OS not support."
+                return $FALSE
+            fi
+        $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
+        [[ ! -f ${FILE_TEMP} ]]         && return $FALSE
+        chmod +x ${FILE_TEMP}           && gosu nobody true
+        say "GOSU installed."
+    fi
+        return $TRUE
+    }
+
+# install sudo
+function    install_sudo()
+    {
+       install_package_run sudo
+    }
+
+# install js-yaml
+function    install_js-yaml()
+    {
+       JSYAML_VERSION=3.10.0
+       is_root && sudo_command="" || sudo_command="sudo "
+       ${sudo_command}${download_save} /js-yaml.js "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js"
+    }
+
+# install supervisor
+function    install_supervisor()
+    {
+       install_package supervisor
+    }
+
+# install tar
+function    install_tar()
+    {
+       install_package_run tar
+    }
+
+# install rsync
+function    install_rsync()
+    {
+       install_package_run rsync
+    }
+
+# install unzip
+function    install_unzip()
+    {
+       install_package_run unzip
+    }
+
+# install dmidecode
+function    install_dmidecode()
+    {
+       install_package_run dmidecode
+    }
+
+# install php composer
+function    install_php_composer()
+    {
+       say "install php composer.."   
+       machine_has php                                                              || return $FALSE
+       machine_has $download_tool                                                   || return $FALSE
+       machine_has composer             && say "php composer installed before!"     || $download_tool https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+       return $TRUE
+    }
+
 
     ####### Function Remove ########
     ################################
@@ -2105,19 +2946,24 @@ function    install_java_jre()
 function    clean_os()
     {
         say "Cleaning OS cache.."
- 	if [[ -f /etc/redhat-release ]]; then
-        yum clean all
+        is_root && sudo_command="" || sudo_command="sudo "
+    get_osname
+ 	if [[ -f /etc/redhat-release ]] || [[ $osname == "rhel"* ]]; then
+        ${sudo_command}yum clean all
         say "Clean OS done"
- 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-        apt-get autoremove -y
-        apt-get autoclean
-        apt-get clean
-        rm -rf /build
-        rm -rf /tmp/* /var/tmp/*
-        rm -rf /var/lib/apt/lists/*
-        rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
+ 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]] || [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+        ${sudo_command}apt-get autoremove -y
+        ${sudo_command}apt-get autoclean
+        ${sudo_command}apt-get clean
+        ${sudo_command}rm -rf /build
+        ${sudo_command}rm -rf /tmp/* /var/tmp/*
+        ${sudo_command}rm -rf /var/lib/apt/lists/*
+        ${sudo_command}rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
         say "Clean OS done"
- 	elif [[ -f /etc/alpine-release ]]; then
+ 	elif [[ -f /etc/alpine-release ]] || [[ $osname == "alpine"* ]]; then
+        say "Clean OS done"
+    elif [[ $osname == "opensuse"* ]]; then
+        ${sudo_command}zypper clean
         say "Clean OS done"
  	else
         say_err "Not support"
@@ -2127,17 +2973,21 @@ function    clean_os()
     }
 
 # command remove, core command for remove packages
-function    command_remove()
+function    core_command_remove()
     {
         # osname=$(get_osname)
         get_osname
         say "remove ${software}.."
+        is_root && sudo_command="" || sudo_command="sudo "
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                apt-get purge -y ${software}
+                ${sudo_command}apt-get purge -y ${software}
+                ${sudo_command}apt-get autoremove -y
             elif [[ $osname == "rhel"* ]]; then
-                yum remove -y ${software}
+                ${sudo_command}yum remove -y ${software}
             elif [[ $osname == "alpine"* ]]; then
-                apk del --purge ${software}
+                ${sudo_command}apk del --purge ${software}
+            elif [[ $osname == "opensuse"* ]]; then
+                ${sudo_command}zypper remove -n ${software}
             else
                 say_err "Cannot remove ${software}. OS not support."
                 return $FALSE
@@ -2148,15 +2998,15 @@ function    command_remove()
 # remove package
 function    remove_package()
     {
-        software="${@}"
-            command_remove
+        software=${@}
+            core_command_remove
     }
 
 # remove packages
 function    remove_packages()
     {
         for software in ${@}; do
-            command_remove
+            core_command_remove
         done
     }
 
@@ -2170,8 +3020,8 @@ alias delete_packages=remove_packages
 function   remove_package_run()
     {
         software=${1}
-            if ! machine_has ${software}; then
-                command_remove
+            if machine_has ${software}; then
+                core_command_remove
             fi
             machine_has ${software}          && say "${software} Cannot remove."    || say "${software} removed."
             machine_has ${software}          && return $FALSE                       || return $TRUE
@@ -2181,8 +3031,8 @@ function   remove_package_run()
 function   remove_packages_run()
     {
         for software in ${@}; do
-            if ! machine_has ${software}; then
-                command_remove
+            if machine_has ${software}; then
+                core_command_remove
             fi
             machine_has ${software}          && say "${software} Cannot remove."    || say "${software} removed."
             machine_has ${software}          && return $FALSE                       || return $TRUE
@@ -2198,15 +3048,180 @@ alias delete_packages_run=remove_packages_run
 # Clean packages
 function    clean_package()
     {
-        if [[ -z "${UNINSTALL}" ]]; then
-            say "not have apps need remove"
-        else
+        if has_value "${UNINSTALL}" || has_value "${UNINSTALLAPP}" || has_value "${@}"; then
             software="${UNINSTALL} ${UNINSTALLAPP} ${@}"
-                command_remove
+            core_command_remove
+        else
+            say "not have apps need remove"            
         fi
     return $TRUE
     }
+
 alias clean_packages=clean_package
+
+# remove desktop minimal
+function    remove_desktop_minimal()
+    {
+        # osname=$(get_osname)
+        get_osname
+        say "install ${software}.."
+        is_root && sudo_command=""      || sudo_command="sudo "
+            if  [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                ${sudo_command}apt-get purge -y xubuntu-desktop
+                ${sudo_command}apt-get purge -y xinit xterm firefox
+            elif [[ $osname == "rhel.6"* ]];    then
+                ${sudo_command}yum -y groupremove "Desktop" "Desktop Platform" "X Window System" "Fonts"
+                ${sudo_command}yum -y remove xinit
+            elif [[ $osname == "rhel.7"* ]];    then
+                ${sudo_command}yum -y groupremove xfce "X Window system"
+                ${sudo_command}yum -y remove xinit xterm firefox
+            elif [[ $osname == "alpine"* ]];    then
+                ${sudo_command}apk del --purge xfce4 xf86-input xf86-input-mouse xf86-input-keyboard kbd firefox
+            elif [[ $osname == "opensuse"* ]];  then
+                ${sudo_command}zypper -n remove patterns-openSUSE-xfce
+                ${sudo_command}zypper -n remove xinit xterm firefox
+            else
+                say_err "Cannot install Desktop. OS not support."
+                return $FALSE
+            fi
+        return $TRUE
+    }
+
+# remove openjdk java jre
+function    remove_java_jre()
+    {
+        OPENJDKV=${OPENJDKV:-8}
+        env_openjdk_jre
+        if check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre; then
+        # osname=$(get_osname)
+        get_osname
+                if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+                    software=openjdk-${OPENJDKV}-jre
+                elif [[ $osname == "rhel"* ]]; then
+                    software=java-1.${OPENJDKV}.0-openjdk.${arch}
+                elif [[ $osname == "alpine"* ]]; then
+                    software=openjdk${OPENJDKV}-jre
+                else
+                    say_err "Cannot remove ${software}. OS not support."
+                    return $FALSE
+                fi
+            core_command_remove
+            check_folder /usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre && return $FALSE || say "Install ${software} completed!"
+        fi
+        return $TRUE
+    }
+
+alias delete_java_jre=remove_java_jre
+alias del_java_jre=remove_java_jre
+
+# remove Gosu
+function    remove_gosu()
+    {
+    # install gosu on your OS linux
+    if machine_has gosu; then
+        say "GOSU installed."
+    else
+        # osname=$(get_osname)
+        get_osname
+            if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
+                FILE_TEMP=/usr/local/bin/gosu
+            elif [[ $osname == "rhel"* ]]; then
+                FILE_TEMP=/usr/bin/gosu
+            else
+                say_err "Cannot remove Gosu. OS not support."
+                return $FALSE
+            fi
+        remove_file ${FILE_TEMP}
+        [[ -f ${FILE_TEMP} ]]           && return $FALSE
+        say "GOSU removed."
+    fi
+        return $TRUE
+    }
+
+alias delete_gosu=remove_gosu
+alias del_gosu=remove_gosu
+
+# remove sudo
+function    remove_sudo()
+    {
+       remove_package_run sudo
+    }
+
+# remove js-yaml
+function    remove_js-yaml()
+    {
+       remove_file /js-yaml.js
+    }
+
+alias delete_js-yaml=remove_js-yaml
+alias del_js-yaml=remove_js-yaml
+
+# remove supervisor
+function    remove_supervisor()
+    {
+       remove_package supervisor
+    }
+
+alias delete_supervisor=remove_supervisor
+alias del_supervisor=remove_supervisor
+
+# remove tar
+function    remove_tar()
+    {
+       remove_package_run tar
+    }
+
+alias delete_tar=remove_tar
+alias del_tar=remove_tar
+
+# remove rsync
+function    remove_rsync()
+    {
+       remove_package_run rsync
+    }
+
+alias delete_rsync=remove_rsync
+alias del_rsync=remove_rsync
+
+# remove unzip
+function    remove_unzip()
+    {
+       remove_package_run unzip
+    }
+
+alias delete_unzip=remove_unzip
+alias del_unzip=remove_unzip
+
+# remove dmidecode
+function    remove_dmidecode()
+    {
+       remove_package_run dmidecode
+    }
+
+alias delete_dmidecode=remove_dmidecode
+alias del_dmidecode=remove_dmidecode
+
+# remove download tool
+function    remove_download_tool()
+    {
+       remove_package_run $DOWNLOAD_TOOL
+    }
+
+alias delete_download_tool=remove_download_tool
+alias del_download_tool=remove_download_tool
+alias delete_downloadtool=remove_download_tool
+alias del_downloadtool=remove_download_tool
+alias remove_downloadtool=remove_download_tool
+
+# remove php composer
+function    remove_php_composer()
+    {
+        # remove composer
+        remove_package_run composer
+        # remove config, cache files
+        remove_filefolders ~/.cache/composer ~/.local/share/composer ~/.config/composer
+        remove_filefolder /root/.cache/composer /root/.local/share/composer /root/.config/composer
+    }
 
 
 # Group: Network

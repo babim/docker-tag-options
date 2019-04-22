@@ -13,12 +13,9 @@ if [[ "x$(id -u)" != 'x0' ]]; then
 	echo 'Error: this script can only be executed by root'
 	exit 1
 fi
+# set MACHINE_TYPE
 MACHINE_TYPE=`uname -m`
-if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
-	echo x64
-else
-	echo x86
-fi
+[[ ${MACHINE_TYPE} == 'x86_64' ]] && echo "Your server is x86_64 system" || echo "Your server is x86 system"
 
 # set environment
 setenvironment() {
@@ -26,6 +23,7 @@ setenvironment() {
 		#export SOFTSUB=${SOFTSUB:-core}
 		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/ServiceDeskPlus-MSP}
 		#export EDITTION=${EDITTION:-essential}
+		export FIXED=${FIXED:-false}
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"

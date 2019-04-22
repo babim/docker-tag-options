@@ -5,12 +5,37 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-# check permission root
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
 
 # set environment
 setenvironment() {
@@ -23,103 +48,108 @@ setenvironment() {
 		export MYSQLV=5.1.47
 		export MSSQLV=7.2.1.jre8
 		export ORACLEV=8
-		export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
-		export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+		export VISIBLECODE=${VISIBLECODE:-false}
+		env_openjdk_jre
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
-}
-# install gosu
-installgosu() {
-	echo "Install gosu package..."
-	wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
 }
 # set command install
 installatlassian() {
 	## Check version
-		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
-			echo "Can not install without version. Please check and rebuild"
-			exit
+		if has_empty "${SOFT_VERSION}" || has_empty "${SOFT_HOME}" || has_empty "${SOFT_INSTALL}"; then
+			say "Can not install without version. Please check and rebuild"
+			exit $FALSE
 		fi
+
 	# Install Atlassian JIRA and helper tools and setup initial home
+		say " - Begin install - "
+
 	## directory structure.
-		[[ ! -d "${SOFT_HOME}" ]]		&& mkdir -p			"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chmod -R 700			"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&& chown -R ${auser}:${aguser}	"${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}" ]]		&& mkdir -p			"${SOFT_INSTALL}"
+		create_folders                			"${SOFT_HOME}" "${SOFT_INSTALL}"
+		set_filefolder_mod	700            		"${SOFT_HOME}"
+		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
+
 	## download and extract source software
-		echo "downloading and install atlassian..."
-		curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
-	## update mysql connector
-	FILELIB="${SOFT_INSTALL}/${SOFT}/WEB-INF/lib"
-	FILETEMP="${FILELIB}/mysql-connector-java-*.jar"
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		echo "downloading and update mysql-connector-java..."
-		curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
-	## update postgresql connector
-	FILETEMP="${FILELIB}/postgresql-*.jar"
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		echo "downloading and update postgresql-connector-java..."
-		curl -Ls "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar" -o "${FILELIB}/postgresql-${POSTGRESQLV}.jar"
-	## update mssql-server connector
-	FILETEMP="${FILELIB}/mssql-jdbc-*.jar"
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		echo "downloading and update mssql-jdbc..."
-		curl -Ls "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar" -o "${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
-	## update oracle database connector
-	FILETEMP="${FILELIB}/ojdbc*.jar"
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		echo "downloading and update oracle-ojdbc..."
-		curl -Ls "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar" -o "${FILELIB}/ojdbc${ORACLEV}.jar"
+		say "downloading and install atlassian..."
+		check_folder_empty "${SOFT_INSTALL}" && curl -Ls "https://www.atlassian.com/software/${SOFT}/downloads/binary/atlassian-${SOFT}-${SOFT_VERSION}.tar.gz" | tar -xz --directory "${SOFT_INSTALL}" --strip-components=1 --no-same-owner
+	
+	## update database connector
+		FILELIB="${SOFT_INSTALL}/lib"
+
+	### update mysql connector
+	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
+		say "downloading and update mysql-connector-java..."
+	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
+
+	### update postgresql connector
+	remove_filefolder ${FILELIB}/postgresql-*.jar
+		say "downloading and update postgresql-connector-java..."
+	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"
+
+	### update mssql-server connector
+	remove_filefolder ${FILELIB}/mssql-jdbc-*.jar
+		say "downloading and update mssql-jdbc..."
+	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"
+
+	### update oracle database connector
+	remove_filefolder ${FILELIB}/ojdbc*.jar
+		say "downloading and update oracle-ojdbc..."
+	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
+		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
+
 	## set permission path
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chmod -R 700			"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chmod -R 700			"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chmod -R 700			"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chmod -R 700			"${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}/conf" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]] && chown -R ${auser}:${aguser}	"${SOFT_INSTALL}/work"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
+		set_filefolder_owner	${auser}:${aguser}	"${JAVA_CACERTS}"
 		echo -e                 "\n${SOFT}.home=${SOFT_HOME}" >> "${SOFT_INSTALL}/${SOFT}/WEB-INF/classes/${SOFT}-init.properties"
-		# xmlstarlet
-	if [[ -f ${SOFT_INSTALL}/conf/server.xml ]]; then
-    		xmlstarlet		ed --inplace \
-        	  --delete		"Server/@debug" \
-		  --delete		"Server/Service/Connector/@debug" \
-		  --delete		"Server/Service/Connector/@useURIValidationHack" \
-		  --delete		"Server/Service/Connector/@minProcessors" \
-		  --delete		"Server/Service/Connector/@maxProcessors" \
-		  --delete		"Server/Service/Engine/@debug" \
-		  --delete		"Server/Service/Engine/Host/@debug" \
-		  --delete		"Server/Service/Engine/Host/Context/@debug" \
-					"${SOFT_INSTALL}/conf/server.xml"
+		
+	# xmlstarlet
+	FILETEMP="${SOFT_INSTALL}/conf/server.xml"
+		say "xmlstarlet ${FILETEMP}..."
+		check_file "${FILETEMP}" && xmlstarlet ed --inplace \
+        	  			--delete	"Server/@debug" \
+		  			--delete	"Server/Service/Connector/@debug" \
+		  			--delete	"Server/Service/Connector/@useURIValidationHack" \
+		  			--delete	"Server/Service/Connector/@minProcessors" \
+		  			--delete	"Server/Service/Connector/@maxProcessors" \
+		  			--delete	"Server/Service/Engine/@debug" \
+					--delete	"Server/Service/Engine/Host/@debug" \
+		  			--delete	"Server/Service/Engine/Host/Context/@debug" \
+					"${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 	fi
-		# xmlstarlet end
-		[[ -f "${SOFT_INSTALL}/conf/server.xml" ]] && touch -d "@0"           "${SOFT_INSTALL}/conf/server.xml"
-		chown daemon:daemon	"${JAVA_CACERTS}"
+
+	# xmlstarlet end
+		check_file "${FILETEMP}"	&& touch -d "@0" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
+
 	# fix path start file
-		[[ -f "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/bin/start_${SOFT}.sh" "${SOFT_INSTALL}/bin/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
-		[[ -f "${SOFT_INSTALL}/start_${SOFT}.sh" ]] && mv "${SOFT_INSTALL}/start_${SOFT}.sh" "${SOFT_INSTALL}/start-${SOFT}.sh" && chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+	FILETEMP="${SOFT_INSTALL}/bin/start_${SOFT}.sh"
+		say "checking ${FILETEMP}..."
+		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+	FILETEMP="${SOFT_INSTALL}/start_${SOFT}.sh"
+		say "checking ${FILETEMP}..."
+		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+
+		say " - Install done - "
 }
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		# visible code
-		if [ "${VISIBLECODE}" = "true" ]; then
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_fixed.sh
-		else
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
-		fi
+		remove_file $FILETEMP
+		say "download entrypoint.."
+	# visible code
+		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
-}
-cleanpackage() {
-	# remove packages
-		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
-}
-preparedata() {
-	if [ "${VISIBLECODE}" = "true" ]; then
-		mkdir -p /etc-start && mv ${SOFT_INSTALL} /etc-start/${SOFT}
-	fi
 }
 
 # install by OS
@@ -129,55 +159,41 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "installing openjdk..."
-			apk add --no-cache openjdk${OPENJDKV}-jre
-		fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk${OPENJDKV}, please check and rebuild"
-			exit
-		fi
+		install_java_jre
 			echo "Install depend packages..."
-		apk add --no-cache curl xmlstarlet ttf-dejavu libc6-compat
-	# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
-		# install gosu
-		installgosu
-	fi
+		install_package curl xmlstarlet ttf-dejavu libc6-compat
 	# Install Atlassian
 		installatlassian
 		dockerentry
-		cleanpackage
+	# visible code
+		check_value_true "${VISIBLECODE}" && install_gosu
+	# clean
+		remove_package $DOWNLOAD_TOOL
+		clean_os
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 	# Set frontend debian
-		export DEBIAN_FRONTEND=noninteractive
+		debian_cmd_interface
 	# install depend
-		apt-get update
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apt-get install --quiet --yes openjdk-${OPENJDKV}-jre; fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk, please check and rebuild"
-			exit
-		fi
+		install_java_jre
 			echo "Install depend packages..."
-		apt-get install --quiet --yes --no-install-recommends curl ttf-dejavu libtcnative-1 xmlstarlet
-	# visible code
-	if [ "${VISIBLECODE}" = "true" ]; then
-		# install gosu
-		installgosu
-	fi
+		install_package curl ttf-dejavu libtcnative-1 xmlstarlet
 	# Install Atlassian
 		installatlassian
 		dockerentry
-		cleanpackage
+	# visible code
+		check_value_true "${VISIBLECODE}" && install_gosu
+	# clean
+		remove_package $DOWNLOAD_TOOL
+		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 # OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

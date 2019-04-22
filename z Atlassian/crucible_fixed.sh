@@ -8,7 +8,7 @@
 set -e
 
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+[[ -f "/option.sh" ]] && /option.sh
 
 # set environment
 		export SOFT=${SOFT:-crucible}
@@ -16,11 +16,6 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		export auser=${auser:-daemon}
 		export aguser=${aguser:-daemon}
 	echo "check version"
-	## Check version
-		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
-			echo "Can not run. Please check and rebuild"
-			exit
-		fi
 
 # visible code
 	echo "check path and install"
@@ -29,15 +24,15 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
 		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
 	## set permission path
-		[[ -d "${SOFT_HOME}" ]]		&&	chmod -R 700			"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]		&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}/log}" ]] && 	mkdir -p			"${SOFT_INSTALL}/log}"
-		[[ -d "${SOFT_INSTALL}" ]]	&&	chmod -R 755			"${SOFT_INSTALL}"
-		[[ -d "${SOFT_INSTALL}/conf" ]]	&&	chmod -R 700			"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]]	&&	chmod -R 700			"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]]	&&	chmod -R 700			"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]]	&&	chmod -R 700			"${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}" ]]	&&	chown -R ${auser}:${aguser}	"${SOFT_INSTALL}"
+		[[ -d "${SOFT_HOME}" ]]			&&	chmod -R 700			"${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]]			&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
+		[[ ! -d "${SOFT_INSTALL}/log}" ]] 	&& 	mkdir -p			"${SOFT_INSTALL}/log}"
+		[[ -d "${SOFT_INSTALL}" ]]		&&	chmod -R 755			"${SOFT_INSTALL}"
+		[[ -d "${SOFT_INSTALL}/conf" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/conf"
+		[[ -d "${SOFT_INSTALL}/logs" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/logs"
+		[[ -d "${SOFT_INSTALL}/temp" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/temp"
+		[[ -d "${SOFT_INSTALL}/work" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/work"
+		[[ -d "${SOFT_INSTALL}" ]]		&&	chown -R ${auser}:${aguser}	"${SOFT_INSTALL}"
 	fi
 
 # check if the `server.xml` file has been changed since the creation of this

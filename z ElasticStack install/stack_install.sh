@@ -5,23 +5,50 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
-echo 'Check OS'
-if [[ -f /etc/alpine-release ]]; then
-	# set environment
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# set environment
+setenvironment() {
+	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
+	export OPENJDKV=${OPENJDKV:-8}
+	env_openjdk_jre
 	STACK_NEW=${STACK_NEW:-"true"}
-	if [[ "$STACK_NEW" == "true" ]]; then
+	if check_value_true "$STACK_NEW"; then
 		ES_VERSION=$STACK
 		LS_VERSION=$STACK
 		KB_VERSION=$STACK
 	fi
-	export JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
-	export PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-	BIT=${BIT:-"x86_64"}
+	BIT=${BIT:-"$(uname -i)"}
 	ES_DOWNLOAD_URL=${ES_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	LS_DOWNLOAD_URL=${LS_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	KB_DOWNLOAD_URL=${KB_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
@@ -30,33 +57,110 @@ if [[ -f /etc/alpine-release ]]; then
 	KB_TARBAL=${KB_TARBAL:-"${KB_DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/etc/logstash"}
 	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+}
+# download config files
+downloadentrypoint() {
+	FILETEMP=/elastic-entrypoint.sh
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+	FILETEMP=/logstash-entrypoint.sh
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+	FILETEMP=/kibana-entrypoint.sh
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+	FILETEMP=/nginx-entrypoint.sh
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+	chmod 755 /*.sh
+}
+# Supervisor
+supervisorconfig() {
+	run_url $DOWN_URL/supervisor_stack.sh
+}
+# prepare etc start
+preparefinal() {
+	run_url $DOWN_URL/prepare_final.sh
+}
+prepareconfig() {
+# elasticsearch
+	create_folder /usr/share/elasticsearch/config
+	create_folder /etc/logrotate.d/elasticsearch
+	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
+	FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/log4j2.properties
+	FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
+# logstash
+	create_folder /etc/logstash/conf.d
+	create_folder /opt/logstash/patterns
+	create_folder /etc/logstash
+	FILETEMP=/etc/logstash/conf.d/02-beats-input.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
+	FILETEMP=/etc/logstash/conf.d/10-syslog-filter.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/10-syslog-filter.conf
+	FILETEMP=/etc/logstash/conf.d/11-nginx-filter.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/11-nginx-filter.conf
+	FILETEMP=/etc/logstash/conf.d/30-elasticsearch-output.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/30-elasticsearch-output.conf
+	FILETEMP=/opt/logstash/patterns/nginx
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/patterns/nginx
+	FILETEMP=/etc/logstash/logstash.yml
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
+# nginx
+	create_folder /etc/nginx/conf.d
+	FILETEMP=/etc/nginx/nginx.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
+	FILETEMP=/etc/nginx/conf.d/kibana.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/kibana.conf
+	FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
+}
 
+# install by OS
+echo 'Check OS'
+if [[ -f /etc/alpine-release ]]; then
+	# set environment
+		setenvironment
 	# install depend
-		apk add --no-cache nodejs nginx apache2-utils openssl ca-certificates gnupg openssl
-	# Install Oracle Java
-		apk add --no-cache openjdk8-jre tini su-exec libzmq libc6-compat
+		install_java_jre
+			echo "Install depend packages..."
+		install_package nodejs nginx apache2-utils openssl ca-certificates gnupg openssl tini su-exec libzmq libc6-compat
 	# make libzmq.so
-		mkdir -p /usr/local/lib \
-		&& ln -s /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
+		create_folder /usr/local/lib \
+		&& create_symlink /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
 	# ensure elstack user exists
 		adduser -DH -s /sbin/nologin elstack
 	# install elstack
 		set -x \
 		  && cd /tmp \
-		  && echo "Download Elastic Stack ======================================================" \
-		  && echo "Download Elasticsearch..." \
-		  && wget --no-check-certificate -O elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL" \
+		  && say "Download Elastic Stack ======================================================" \
+		  && say "Download Elasticsearch..." \
+		  && $download_save elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL" \
 		  && tar -xzf elasticsearch-$ES_VERSION.tar.gz \
 		  && mv elasticsearch-$ES_VERSION /usr/share/elasticsearch \
-		  && echo "Download Logstash..." \
-		  && wget --no-check-certificate -O logstash-$LS_VERSION.tar.gz "$LS_TARBAL" \
+		  && say "Download Logstash..." \
+		  && $download_save logstash-$LS_VERSION.tar.gz "$LS_TARBAL" \
 		  && tar -xzf logstash-$LS_VERSION.tar.gz \
 		  && mv logstash-$LS_VERSION /usr/share/logstash \
-		  && echo "Download Kibana..." \
-		  && wget --no-check-certificate -O kibana-$KB_VERSION.tar.gz "$KB_TARBAL" \
+		  && say "Download Kibana..." \
+		  && $download_save kibana-$KB_VERSION.tar.gz "$KB_TARBAL" \
 		  && tar -xzf kibana-$KB_VERSION.tar.gz \
 		  && mv kibana-$KB_VERSION-linux-x86_64 /usr/share/kibana \
-		  && echo "Configure [Elasticsearch] ===================================================" \
+		  && say "Configure [Elasticsearch] ===================================================" \
 		  && for path in \
 		  	/usr/share/elasticsearch/data \
 		  	/usr/share/elasticsearch/logs \
@@ -65,13 +169,13 @@ if [[ -f /etc/alpine-release ]]; then
 		  	/usr/share/elasticsearch/plugins \
 			/usr/share/elasticsearch/tmp \
 		  ; do \
-		  mkdir -p "$path"; \
+		  create_folder "$path"; \
 		  done \
-		  && echo "Configure [Logstash] ========================================================" \
-		  && if [ -f "$LS_SETTINGS_DIR/logstash.yml" ]; then \
+		  && say "Configure [Logstash] ========================================================" \
+		  && if check_file "$LS_SETTINGS_DIR/logstash.yml"; then \
 		  		sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"; \
 		  	fi \
-		  && echo "Configure [Kibana] =========================================================="
+		  && say "Configure [Kibana] =========================================================="
 		  # the default "server.host" is "localhost" in 5+
 		  sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
 		  && grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml
@@ -80,102 +184,26 @@ if [[ -f /etc/alpine-release ]]; then
 		  && apline_node='NODE="/usr/bin/node"' \
 		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana-plugin \
 		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana \
-		  && rm -rf /usr/share/kibana/node \
-		  && echo "Make Ngins SSL directory..." \
-		  && mkdir -p /etc/nginx/ssl \
-		  && chown -R elstack:elstack /usr/share/elasticsearch \
-		  && chown -R elstack:elstack /usr/share/logstash \
-		  && chown -R elstack:elstack /usr/share/kibana \
-		  && echo "Clean Up..." \
-		  && rm -rf /tmp/*
-
-	# download config files
-		downloadentrypoint() {
-			FILETEMP=/elastic-entrypoint.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
-			FILETEMP=/logstash-entrypoint.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
-			FILETEMP=/kibana-entrypoint.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
-			FILETEMP=/nginx-entrypoint.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
-			chmod 755 /*.sh
-		}
-	# Supervisor
-		supervisorconfig() {
-			wget --no-check-certificate -O - $DOWN_URL/supervisor_stack.sh | bash
-		}
-	# prepare etc start
-		preparefinal() {
-			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-		}
-		prepareconfig() {
-		# elasticsearch
-			FILETEMP=/usr/share/elasticsearch/config
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/logrotate.d/elasticsearch
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
-			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/log4j2.properties
-			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
-		# logstash
-			FILETEMP=/etc/logstash/conf.d
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/opt/logstash/patterns
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/logstash
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/logstash/conf.d/02-beats-input.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
-			FILETEMP=/etc/logstash/conf.d/10-syslog-filter.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/10-syslog-filter.conf
-			FILETEMP=/etc/logstash/conf.d/11-nginx-filter.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/11-nginx-filter.conf
-			FILETEMP=/etc/logstash/conf.d/30-elasticsearch-output.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/30-elasticsearch-output.conf
-			FILETEMP=/opt/logstash/patterns/nginx
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/patterns/nginx
-			FILETEMP=/etc/logstash/logstash.yml
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
-		# nginx
-			FILETEMP=/etc/nginx/conf.d
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-			FILETEMP=/etc/nginx/nginx.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
-			FILETEMP=/etc/nginx/conf.d/kibana.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/kibana.conf
-			FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
-		}
+		  && remove_folder /usr/share/kibana/node \
+		  && say "Make Ngins SSL directory..." \
+		  && create_folder /etc/nginx/ssl \
+		  && set_filefolder_owner elstack:elstack /usr/share/elasticsearch \
+		  && set_filefolder_owner elstack:elstack /usr/share/logstash \
+		  && set_filefolder_owner elstack:elstack /usr/share/kibana \
+		  && say "Clean Up..." \
+		  && remove_filefolder /tmp/*
 
 		prepareconfig
 		downloadentrypoint
 		supervisorconfig
 		preparefinal
 
-	# remove packages
-		wget --no-check-certificate -O - $DOWN_URL/stack_clean.sh | bash
+	# clean
+		clean_package
+		clean_os
 	
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

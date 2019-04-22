@@ -5,99 +5,131 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
-echo 'Check OS'
-if [[ -f /etc/lsb-release ]]; then
-	export DEBIAN_FRONTEND=noninteractive
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# set environment
+setenvironment() {
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	MODSECURITY=${MODSECURITY:-false}
 	PAGESPEED=${PAGESPEED:-false}
-	# add repo apache
-		add-apt-repository ppa:ondrej/apache2 -y
+	PHP_VERSION=${PHP_VERSION:-false}
+}
 
+# install by OS
+echo 'Check OS'
+if [[ -f /etc/lsb-release ]]; then
+	# set environment
+		setenvironment
+		debian_cmd_interface
+
+	# add repo apache
+		debian_add_repo ppa:ondrej/apache2
 	# install apache
-		apt-get update && apt-get install apache2 -y --force-yes
+		install_package apache2
 	# enable apache mod
-	  	[[ ! -d /etc/apache2 ]] || a2enmod rewrite headers http2 ssl
+	  	check_folder /etc/apache2 && a2enmod rewrite headers http2 ssl || say "Not have apache on this server"
 
 	# default config with mod rewrite
 	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
-	if [[ "$CONFIGMODREWRITE" = "true" ]]; then
+	if check_value_true "$CONFIGMODREWRITE"; then
 		# config default site
 		FILETEMP=/etc/apache2/sites-available
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+			create_folder $FILETEMP
 		FILETEMP=/etc/apache2/sites-available/000-default.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/000-default.conf
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/apache_config/000-default.conf
 		FILETEMP=/etc/apache2/sites-available/default-ssl.conf
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/apache_config/default-ssl.conf
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/apache_config/default-ssl.conf
 		# config ssl default
 		FILETEMP=/etc/apache2/certs
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+			create_folder $FILETEMP
 		FILETEMP=/etc/apache2/certs/example-cert.pem
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/example-cert.pem
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/ssl/example-cert.pem
 		FILETEMP=/etc/apache2/certs/example-key.pem
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/example-key.pem
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/ssl/example-key.pem
 		FILETEMP=/etc/apache2/certs/ca-cert.pem
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/ssl/ca-cert.pem
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/ssl/ca-cert.pem
 	fi
 
 	# install modsecurity
-	if [[ "$MODSECURITY" = "true" ]]; then
-		if [ -z "`ls /etc/apache2`" ]; then
-			apt-get install -y --force-yes libapache2-mod-security2
+	if check_value_true "$MODSECURITY"; then
+		if check_folder_empty /etc/apache2; then
+			install_package libapache2-mod-security2
 			a2enmod security2
 		else
-			echo "Not have Apache2 on this Server"
+			say "Not have Apache2 on this Server"
 		fi
-		touch /MODSECUROTY.check
+		create_file /MODSECUROTY.check
 	fi
 	# install pagespeed
-	if [[ "$PAGESPEED" = "true" ]]; then
-		if [ -z "`ls /etc/apache2`" ]; then
-			wget https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_amd64.deb
-			dpkg -i mod-pagespeed-stable_current_amd64.deb
-			rm -f mod-pagespeed-stable_current_amd64.deb
+	if check_value_true "$PAGESPEED"; then
+		if check_folder_empty /etc/apache2; then
+		FILETEMP=mod-pagespeed-stable_current_amd64.deb
+			$download_save $FILETEMP https://dl-ssl.google.com/dl/linux/direct/$FILETEMP
+			install_package $FILETEMP
+			remove_file $FILETEMP
 		else
-			echo "Not have Apache2 on this Server"
+			say "Not have Apache2 on this Server"
 		fi
-	   	touch /PAGESPEED.check
+	   	create_file /PAGESPEED.check
 	fi
 
 	# install php
-	if [[ ! -z "${PHP_VERSION}" ]]; then
-		wget --no-check-certificate -O - $DOWN_URL/php_install.sh | bash
+	if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
+		run_url $DOWN_URL/php_install.sh
 	fi
 
 	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor.sh | bash
+		run_url $DOWN_URL/supervisor.sh
 
 	# download entrypoint
 		FILETEMP=/start.sh
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/start.sh && \
-		chmod 755 $FILETEMP
+			remove_file $FILETEMP
+			$download_save $FILETEMP $DOWN_URL/start.sh
+			set_filefolder_mod 755 $FILETEMP
 	# prepare etc start
-		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+		run_url $DOWN_URL/prepare_final.sh
 
-	# clean os
-	apt-get purge -y wget curl && \
-	apt-get clean && \
-	apt-get autoclean && \
-	apt-get autoremove -y && \
-	rm -rf /build && \
-	rm -rf /tmp/* /var/tmp/* && \
-	rm -rf /var/lib/apt/lists/*
+	# clean
+		remove_download_tool
+		clean_os
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

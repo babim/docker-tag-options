@@ -5,6 +5,14 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
 ####################################################
 # check os
 echo 'Check OS'
@@ -23,16 +31,19 @@ fi
 ####################################################
 export DEBIAN_FRONTEND=noninteractive
 # environment value
+export DELAYED_START=${DELAYED_START:-0}
+export FULLOPTION=${FULLOPTION:-false}
 export SSHOPTION=${SSH:-false}
 export CRONOPTION=${CRON:-false}
 export NFSOPTION=${NFS:-false}
 export SYNOLOGYOPTION=${SYNOLOGY:-false}
 export UPGRADEOPTION=${UPGRADE:-false}
+export TZ=${TZ:-Asia/Ho_Chi_Minh}
 export WWWUSER=${WWWUSER:-www-data}
 export WWWUSERID=${WWWUSERID:-1023}
 export MYSQLUSER=${MYSQLUSER:-mysql}
 export MYSQLUSERID=${MYSQLUSERID:-66}
-export POSTGRESUSER=${POSTGRESUSER:-$postgres}
+export POSTGRESUSER=${POSTGRESUSER:-postgres}
 export POSTGRESUSERID=${POSTGRESUSERID:-55}
 export DNSOPTION=${DNS:-false}
 export CLOUDFLARE=1.1.1.1
@@ -42,13 +53,13 @@ export GOOGLE=8.8.8.8
 		case "${f}" in
 			[yY] | yes | YES | Yes | true | True | ON | on | TRUE ) export ${f}=true      ;;
 			[nN] | no  | NO  | No | false | False | OFF | off | FALSE  ) export $f=false       ;;
-			* ) say "cant check value"	;;
+			* ) echo "cant check value"	;;
 		esac
 	done
 
 DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20SCRIPT%20AUTO"
 # environment set true all
-if [ "$FULLOPTION" = "true" ] || [ "$FULLOPTION" = "on" ]; then
+if [ "${FULLOPTION}" = "true" ] || [ "${FULLOPTION}" = "on" ]; then
     export SSHOPTION=${SSH:-true}
     export CRONOPTION=${CRON:-true}
     export NFSOPTION=${NFS:-true}

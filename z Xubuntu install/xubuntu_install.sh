@@ -5,108 +5,140 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# set environment
+setenvironment() {
+	export DEBIAN_FRONTEND=noninteractive
+	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
+	export ADMINAPP=${ADMINAPP:-true}
+	if [[ "$ADMINAPP";then
+		ADMINAPPALL=${ADMINAPPALL:-true}
+	fi
+}
+
+# install by OS
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	# set environment
-	export DEBIAN_FRONTEND=noninteractive
-	DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
-		export ADMINAPP=${ADMINAPP:-true}
-	if [[ "$ADMINAPP" == "true" ]];then
-		ADMINAPPALL=${ADMINAPPALL:-true}
-	fi
+		setenvironment
+		debian_cmd_interface	
 	# install depend
 		apt-get clean && dpkg --add-architecture i386 && \
-		apt-get update && apt-get install -y software-properties-common apt-transport-https gnupg
+		install_package software-properties-common apt-transport-https gnupg
 	# add repo
-		add-apt-repository ppa:atareao/atareao -y
-		add-apt-repository ppa:diesch/testing -y
-		add-apt-repository ppa:libreoffice/ppa -y
-		add-apt-repository ppa:nilarimogard/webupd8 -y
-		wget --no-check-certificate -O - http://deb.opera.com/archive.key | apt-key add - && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
-		wget --no-check-certificate -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-		add-apt-repository ppa:teejee2008/ppa -y
-		add-apt-repository ppa:webupd8team/java -y
-	apt-get update
+		debian_add_repo atareao/atareao
+		debian_add_repo diesch/testing
+		debian_add_repo libreoffice/ppa
+		debian_add_repo nilarimogard/webupd8
+		debian_add_repo_key http://deb.opera.com/archive.key && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
+		debian_add_repo_key https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+		debian_add_repo teejee2008/ppa
+		debian_add_repo webupd8team/java
 	# install GUI
-		apt-get install xubuntu-desktop --no-install-recommends -y --force-yes
+		install_package xubuntu-desktop
 	# install app 
-		apt-get install -y --force-yes nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer enrampa ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer enrampa ristretto catfish thunar
     
-# install admin app
-	if [[ "$ADMINAPP" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-		apt-get install -y --force-yes \
+	# install admin app
+	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
+		install_package \
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
 		regexxer fwbuilder font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
 		gtkorphan screenruler zenmap nmap rsync mysql-client thunar-archive-plugin \
 		tomboy p7zip-full mc telnet fdupes duperemove
 		
-		apt-get purge sane* scan* transmission* abiword* gnumeric* parole* banshee* totem* -y --force-yes
+		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
 		# opera-stable google-chrome-stable
 	fi
 	# Wimlib
-		if [[ "$WIMLIB_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/wimlib_install.sh | bash
+		if check_value_true "$WIMLIB_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/wimlib_install.sh
 		fi
 	# crossover
-		if [[ "$CROSSOVER_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/crossover_install.sh | bash
+		if check_value_true "$CROSSOVER_OPTION" 	|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/crossover_install.sh
 		fi
 	# freefile sync
-		if [[ "$FREEFILESYNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/freefilesync_install.sh | bash
+		if check_value_true "$FREEFILESYNC_OPTION" 	|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/freefilesync_install.sh
 		fi
 
 	# navicat_premium
-		if [[ "$NAVICAT_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/navicat_install.sh | bash
+		if check_value_true "$NAVICAT_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/navicat_install.sh
 		fi
 
 	# razorsql
-		if [[ "$RAZORSQL_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/razorsql_install.sh | bash
+		if check_value_true "$RAZORSQL_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/razorsql_install.sh
 		fi
 
 	# angry ip scanner
-		if [[ "$IPSCAN_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-
-				wget --no-check-certificate -O - $DOWN_URL/angryip_install.sh | bash
+		if check_value_true "$IPSCAN_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/angryip_install.sh
 		fi
 	# REALVNC Server
-		if [[ "$REALVNC_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-
-				wget --no-check-certificate -O - $DOWN_URL/realvnc_install.sh | bash
+		if check_value_true "$REALVNC_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/realvnc_install.sh
 		fi
 
 	# google drive ocamfuse
-		if [[ "$GDRIVE_OPTION" == "true" ]] || [[ "$ADMINAPPALL" == "true" ]];then
-			wget --no-check-certificate -O - $DOWN_URL/crossover_install.sh | bash
+		if check_value_true "$GDRIVE_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+			run_url $DOWN_URL/crossover_install.sh
 		fi
 
 # Web server
 	# APACHE
-		if [[ "$APACHE_OPTION" == "true" ]];then
-			wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh | bash
+		if check_value_true "$APACHE_OPTION";then
+			run_url https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/apache_install.sh
 		fi
 	# NGINX
-		if [[ "$NGINX_OPTION" == "true" ]];then
-			wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh | bash
+		if check_value_true "$NGINX_OPTION";then
+			run_url https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install/nginx_install.sh
 		fi
 
 # prepare etc start
-			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
+			run_url $DOWN_URL/prepare_final.sh
 
 # Define default command.
 		FILETEMP=/startup.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP $DOWN_URL/$FILETEMP
-			chmod 755 $FILETEMP
+			remove_file 		$FILETEMP
+			$download_save 		$FILETEMP $DOWN_URL/$FILETEMP
+			set_filefolder_mod 755 	$FILETEMP
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

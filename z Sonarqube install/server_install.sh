@@ -5,12 +5,37 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-# check permission root
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
 
 # set environment
 setenvironment() {
@@ -24,33 +49,28 @@ setenvironment() {
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Sonarqube%20install"
 }
-# install gosu
-installgosu() {
-	echo "Install gosu package..."
-	wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
-}
 # set command install
 installsonarqube() {
 	## Check version
-		if [[ -z "${SONAR_VERSION}" ]] || [[ -z "${SONARQUBE_HOME}" ]]; then
-			echo "Can not install without version. Please check and rebuild"
-			exit
+		if check_empty "${SONAR_VERSION}" ]] || [[ -z "${SONARQUBE_HOME}" ]]; then
+			say "Can not install without version. Please check and rebuild"
+			exit 1
 		fi
 	## download version software
-		echo "downloading and install sonarqube..."
-	if [ "${COMMERCIAL}" = "true" ]; then
-		wget -O /tmp/${SOFT}.zip https://binaries.sonarsource.com/CommercialDistribution/sonarqube-${EDITTION}/sonarqube-${EDITTION}-${SONAR_VERSION}.zip
+		say "downloading and install sonarqube..."
+	if check_value_true "${COMMERCIAL}"; then
+		$download_save /tmp/${SOFT}.zip https://binaries.sonarsource.com/CommercialDistribution/sonarqube-${EDITTION}/sonarqube-${EDITTION}-${SONAR_VERSION}.zip
 	else
-		wget -O /tmp/${SOFT}.zip https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONAR_VERSION}.zip
+		$download_save /tmp/${SOFT}.zip https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-${SONAR_VERSION}.zip
 	fi
 	## and extract source software
-		unzip /tmp/${SOFT}.zip -d /tmp
-		rm -rf ${SONARQUBE_HOME} && rm -rf /tmp/${SOFT}.zip
-		mv /tmp/sonarqube-$SONAR_VERSION ${SONARQUBE_HOME}
+		unzip_extract 		/tmp/${SOFT}.zip 	/tmp
+		remove_filefolder 	${SONARQUBE_HOME} 	/tmp/${SOFT}.zip
+		mv /tmp/sonarqube-	$SONAR_VERSION 		${SONARQUBE_HOME}
 	# Install sonarqube and helper tools and setup initial home
 	## directory structure.
-#		[[ -d "${SONARQUBE_HOME}" ]]		&& chmod -R 700				"${SONARQUBE_HOME}"
-		[[ -d "${SONARQUBE_HOME}" ]]		&& chown -R ${auser}:${aguser}	"${SONARQUBE_HOME}"
+#		set_filefolder_owner 	700			"${SONARQUBE_HOME}"
+		set_filefolder_owner	${auser}:${aguser}	"${SONARQUBE_HOME}"
 }
 dockerentry() {
 	# download docker entry
@@ -58,10 +78,6 @@ dockerentry() {
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
 			wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
 		chmod +x $FILETEMP
-}
-cleanpackage() {
-	# remove packages
-		wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
 }
 
 # install by OS
@@ -71,53 +87,43 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "installing openjdk..."
-			apk add --no-cache openjdk${OPENJDKV}-jre
-		fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk, please check and rebuild"
-			exit
-		fi
-			echo "Install depend packages..."
-#		apk add --no-cache curl
+		install_java_jre
+			say "Install depend packages..."
+#		install_package
 	# install gosu
-		installgosu
+		install_gosu
 	# Install sonarqube
 		installsonarqube
 	# download entrypoint
 		dockerentry
 	# clean
-		cleanpackage
+		remove_download_tool
+		clean_os
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 	# Set frontend debian
-		export DEBIAN_FRONTEND=noninteractive
+		debian_cmd_interface
 	# install depend
-		apt-get update
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then apt-get install --quiet --yes openjdk-${OPENJDKV}-jre; fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk${OPENJDKV}, please check and rebuild"
-			exit
-		fi
-			echo "Install depend packages..."
-#		apt-get install --quiet --yes --no-install-recommends curl
+		install_java_jre
+			say "Install depend packages..."
+#		install_package
 	# install gosu
-		installgosu
+		install_gosu
 	# Install sonarqube
 		installsonarqube
 	# download entrypoint
 		dockerentry
 	# clean
-		cleanpackage
+		remove_download_tool
+		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 # OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

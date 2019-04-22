@@ -8,16 +8,11 @@
 set -e
 
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+[[ -f "/option.sh" ]] && /option.sh
 
 # set environment
 		export SOFT=${SOFT:-crucible}
 #		export SOFTSUB=${SOFTSUB:-core}	
-	## Check version
-		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
-			echo "Can not run. Please check and rebuild"
-			exit
-		fi
 
 # check if the `server.xml` file has been changed since the creation of this
 # Docker image. If the file has been changed the entrypoint script will not

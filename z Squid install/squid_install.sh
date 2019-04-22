@@ -5,12 +5,37 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-# check permission root
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
 
 # set environment
 setenvironment() {
@@ -29,22 +54,16 @@ setenvironment() {
 dockerentry() {
 	# download docker entry
 	FILETEMP=/docker-entrypoint.sh
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-	wget -O $FILETEMP --no-check-certificate $DOWN_URL/${SOFT}_start.sh
-	chmod +x $FILETEMP
-}
-cleanpackage() {
-	# remove packages
-	wget --no-check-certificate -O - $DOWN_URL/${SOFT}_clean.sh | bash
+		remove_file 		$FILETEMP
+		$download_save 		$FILETEMP $DOWN_URL/${SOFT}_start.sh
+		set_filefolder_mod +x 	$FILETEMP
 }
 preparedata() {
 	# change to one directory
-	[ -d ${SQUID_CACHE_DIR} ] || mkdir -p ${SQUID_CACHE_DIR} && \
-	[ -d ${SQUID_LOG_DIR} ] || mkdir -p ${SQUID_LOG_DIR} && \
-	[ -d ${SQUID_DIR} ] || mkdir -p ${SQUID_DIR} && mkdir -p ${SQUID_DIR}_start && \
-	mv ${SQUID_CACHE_DIR} ${SQUID_DIR}_start/cache && ln -sf ${SQUID_DIR}/cache ${SQUID_CACHE_DIR} && \
-	mv ${SQUID_LOG_DIR} ${SQUID_DIR}_start/log && ln -sf ${SQUID_DIR}/log ${SQUID_LOG_DIR} && \
-	mv ${SQUID_CONFIG_DIR} ${SQUID_DIR}_start/config && ln -sf ${SQUID_DIR}/config ${SQUID_CONFIG_DIR}
+	create_folders ${SQUID_CACHE_DIR} ${SQUID_LOG_DIR} ${SQUID_DIR} ${SQUID_DIR}_start && \
+	mv ${SQUID_CACHE_DIR} ${SQUID_DIR}_start/cache && create_symlink ${SQUID_DIR}/cache ${SQUID_CACHE_DIR} && \
+	mv ${SQUID_LOG_DIR} ${SQUID_DIR}_start/log && create_symlink ${SQUID_DIR}/log ${SQUID_LOG_DIR} && \
+	mv ${SQUID_CONFIG_DIR} ${SQUID_DIR}_start/config && create_symlink ${SQUID_DIR}/config ${SQUID_CONFIG_DIR}
 }
 
 # install by OS
@@ -55,11 +74,13 @@ if [[ -f /etc/alpine-release ]]; then
 		setenvironment
 	# install
 	#export SQUID_VERSION=
-		apk add --no-cache squid apache2-utils
+		install_package squid apache2-utils
  	#mv ${SQUID_CONFIG_DIR}/squid.conf ${SQUID_CONFIG_DIR}/squid.conf.dist
 		dockerentry
 		preparedata
-		cleanpackage
+	# clean
+		remove_download_tool
+		clean_os
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
@@ -68,23 +89,26 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# Set frontend debian
 		export DEBIAN_FRONTEND=noninteractive
 	# install depend
-		apt-get update
-		apt-get install -y squid${SQUID_VERSION} apache2-utils
+		install_packagesquid${SQUID_VERSION} apache2-utils
 		dockerentry
 		preparedata
-		cleanpackage
+	# clean
+		remove_download_tool
+		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
     	# set environment
 		setenvironment
 	#export SQUID_VERSION=3
 	# install depend
-		yum install -y squid${SQUID_VERSION} httpd
+		install_package squid${SQUID_VERSION} httpd
 		dockerentry
 		preparedata
-		cleanpackage
+	# clean
+		remove_download_tool
+		clean_os
 # OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

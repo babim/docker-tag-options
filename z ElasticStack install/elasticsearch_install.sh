@@ -5,119 +5,145 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# set environment
+setenvironment() {
+	export SOFT=${SOFT:-elasticsearch}
+	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
+	export OPENJDKV=${OPENJDKV:-8}
+	env_openjdk_jre
+	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
+	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
+	export UNINSTALL="${DOWNLOAD_TOOL}"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+}
+# download entrypoint files
+downloadentrypoint() {
+FILETEMP=start.sh
+	remove_file /$FILETEMP
+	cd /
+if [[ "$ES" = "6" ]]; then
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
+elif [[ "$ES" = "6" ]]; then
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
+elif [[ "$ES" = "1" ]]; then
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}1_$FILETEMP
+elif [[ "$ES" = "2" ]]; then
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}2_$FILETEMP
+else
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}5_$FILETEMP
+fi
+	set_file_mod 755 /$FILETEMP
+# Supervisor
+	check_value_true "${SUPERVISOR}" && run_url $DOWN_URL/supervisor_${SOFT}.sh
+# prepare etc start
+	run_url $DOWN_URL/prepare_final.sh
+# docker health check
+FILETEMP=/usr/local/bin/docker-healthcheck
+	remove_file $FILETEMP
+	$download_save /$FILETEMP $DOWN_URL/elasticsearch_healthcheck/docker-healthcheck
+	set_file_mod 755 /$FILETEMP
+}
+prepareconfig() {
+FILETEMP=/usr/share/elasticsearch/config
+	[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+if [[ "$ES" = "1" ]]; then
+	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/1/elasticsearch.yml
+	FILETEMP=/usr/share/elasticsearch/config/logging.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/1/logging.yml
+elif [[ "$ES" = "2" ]]; then
+	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
+	FILETEMP=/usr/share/elasticsearch/config/logging.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+else
+	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
+	FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
+fi
+}
+prepagelogrotage() {
+	create_folder /etc/logrotate.d/elasticsearch
+if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
+	say "not download"
+else
+	FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
+fi
+}
+
+# install by OS
 echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
-	export OPENJDKV=${OPENJDKV:-8}
-	export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
-	export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
-	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
-	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
-	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+		setenvironment
 	# install depend
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "installing openjdk..."
-			apk add --no-cache openjdk${OPENJDKV}-jre
-		fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk, please check and rebuild"
-			exit
-		fi
-			echo "Install depend packages..."
-		apk add --no-cache ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
+		install_java_jre
+			say "Install depend packages..."
+		install_package gnupg openssl tini su-exec libzmq bash libc6-compat
 	# ensure elasticsearch user exists
-		adduser -DH -s /sbin/nologin elasticsearch
+		adduser -DH -s /sbin/nologin ${SOFT}
 	# install elasticsearch
-	cd /tmp \
-	  && echo "===> Install Elasticsearch..." \
-	  && wget --no-check-certificate -O elasticsearch.tar.gz "$ES_TARBAL"; \
-	  tar -xf elasticsearch.tar.gz \
-	  && ls -lah \
-	  && mv elasticsearch-$ES_VERSION /usr/share/elasticsearch \
-	  && echo "===> Creating Elasticsearch Paths..." \
-	  && for path in \
-	  	/usr/share/elasticsearch/data \
-	  	/usr/share/elasticsearch/logs \
-	  	/usr/share/elasticsearch/config \
-	  	/usr/share/elasticsearch/config/scripts \
-		/usr/share/elasticsearch/tmp \
-	  	/usr/share/elasticsearch/plugins \
-	  ; do \
-	  mkdir -p "$path"; \
-	  chown -R elasticsearch:elasticsearch "$path"; \
-	  done \
-	  && rm -rf /tmp/*
-	# download entrypoint files
-		downloadentrypoint() {
-		FILETEMP=start.sh
-			[[ ! -f /$FILETEMP ]] || rm -f /$FILETEMP
-			cd /
-		if [[ "$ES" = "6" ]]; then
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch6_$FILETEMP
-		elif [[ "$ES" = "6" ]]; then
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch6_$FILETEMP
-		elif [[ "$ES" = "1" ]]; then
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch1_$FILETEMP
-		elif [[ "$ES" = "2" ]]; then
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch2_$FILETEMP
-		else
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch5_$FILETEMP
-		fi
-			chmod 755 /$FILETEMP
-		# Supervisor
-		if [[ "$SUPERVISOR" = "true" ]] || [[ "$SUPERVISOR" = "yes" ]]; then
-			wget --no-check-certificate -O - $DOWN_URL/supervisor_elasticsearch.sh | bash
-		fi
-		# prepare etc start
-			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-		# docker health check
-		FILETEMP=/usr/local/bin/docker-healthcheck
-			[[ ! -f /$FILETEMP ]] || rm -f /$FILETEMP
-			wget -O /$FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_healthcheck/docker-healthcheck
-			chmod 755 /$FILETEMP
-		}
-		prepareconfig() {
-		FILETEMP=/usr/share/elasticsearch/config
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		if [[ "$ES" = "1" ]]; then
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/1/elasticsearch.yml
-			FILETEMP=/usr/share/elasticsearch/config/logging.yml
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/1/logging.yml
-		elif [[ "$ES" = "2" ]]; then
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
-			FILETEMP=/usr/share/elasticsearch/config/logging.yml
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/2/logging.yml
-		else
-			FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
-			FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-				[[ -f $FILETEMP ]] && rm -f $FILETEMP
-				wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/log4j2.properties
-		fi
-		}
-		prepagelogrotage() {
-			FILETEMP=/etc/logrotate.d/elasticsearch
-			[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
-			echo not download
-		else
-			FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/5/logrotate
-		fi
-		}
+		cd /tmp \
+		  && say "===> Install ${SOFT}..." \
+		  && $download_save ${SOFT}.tar.gz "${ES_TARBAL}"; \
+		  tar -xf ${SOFT}.tar.gz \
+		  && ls -lah \
+		  && mv elasticsearch-$ES_VERSION ${SOFTHOME} \
+		  && say "===> Creating ${SOFT} Paths..." \
+		  && for path in \
+		  	${SOFTHOME}/data \
+		  	${SOFTHOME}/logs \
+		  	${SOFTHOME}/config \
+		  	${SOFTHOME}/config/scripts \
+			${SOFTHOME}/tmp \
+		  	${SOFTHOME}/plugins \
+		  ; do \
+		  create_folder "$path"; \
+		  set_filefolder_owner ${SOFT}:${SOFT} "$path"; \
+		  done \
+		  && remove_filefolder /tmp/*
+	
 	if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 		prepareconfig
 	# download entrypoint
@@ -128,18 +154,19 @@ if [[ -f /etc/alpine-release ]]; then
 	# download entrypoint
 		downloadentrypoint
 	fi
-	if [[ "$XPACK" = "true" ]]; then
-		FILETEMP=/usr/share/elasticsearch/config/x-pack
-		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
+	if check_value_true "${XPACK}"; then
+		create_folder /usr/share/elasticsearch/config/x-pack
 		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
 	fi
 
-	# remove packages
-		wget --no-check-certificate -O - $DOWN_URL/elasticsearch_clean.sh | bash
+	# clean
+		clean_package
+		clean_os
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

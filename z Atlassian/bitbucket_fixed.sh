@@ -8,19 +8,13 @@
 set -e
 
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+[[ -f "/option.sh" ]] && /option.sh
 
 # set environment
 		export SOFT=${SOFT:-bitbucket}
 		#export SOFTSUB=${SOFTSUB:-core}
 		export auser=${auser:-daemon}
 		export aguser=${aguser:-daemon}
-	echo "check version"
-	## Check version
-		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
-			echo "Can not run. Please check and rebuild"
-			exit
-		fi
 
 # visible code
 	echo "check path and install"
@@ -29,8 +23,8 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
 		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
 	## set permission path
-		[[ -d "${SOFT_HOME}" ]] &&	chmod -R 700				"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]] &&	chown -R ${auser}:${aguser}		"${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]] 	&&	chmod -R 700			"${SOFT_HOME}"
+		[[ -d "${SOFT_HOME}" ]] 	&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
 		[[ -d "${SOFT_INSTALL}/conf" ]] &&	chmod -R 700			"${SOFT_INSTALL}/conf"
 		[[ -d "${SOFT_INSTALL}/logs" ]] &&	chmod -R 700			"${SOFT_INSTALL}/logs"
 		[[ -d "${SOFT_INSTALL}/temp" ]] &&	chmod -R 700			"${SOFT_INSTALL}/temp"

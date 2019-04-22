@@ -5,44 +5,83 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
-echo 'Check OS'
-if [[ -f /etc/alpine-release ]]; then
-	# set environment
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# set environment
+setenvironment() {
+	export SOFT=${SOFT:-logstash}
+	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
 	export OPENJDKV=${OPENJDKV:-8}
-	export JAVA_HOME=/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre
-	export PATH=$PATH:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre/bin:/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/bin
+	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
+	env_openjdk_jre
 	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+}
+# download entrypoint files
+downloadentrypoint() {
+	FILETEMP=/start.sh
+	remove_file $FILETEMP
+	$download_save $FILETEMP $DOWN_URL/logstash_$FILETEMP
+	set_file_mod 755 $FILETEMP
+# Supervisor
+	check_value_true "${SUPERVISOR}" && run_url $DOWN_URL/supervisor_${SOFT}.sh
+# prepare etc start
+	run_url $DOWN_URL/prepare_final.sh
+}
+
+# install by OS
+echo 'Check OS'
+if [[ -f /etc/alpine-release ]]; then
+	# set environment
+		setenvironment
 	# install depend
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "installing openjdk..."
-			apk add --no-cache openjdk${OPENJDKV}-jre
-		fi
-		if [ ! -d "/usr/lib/jvm/java-1.${OPENJDKV}-openjdk/jre" ]; then 
-			echo "Can not install openjdk, please check and rebuild"
-			exit
-		fi
-			echo "Install depend packages..."
-		apk add --no-cache ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
+		install_java_jre
+			say "Install depend packages..."
+		install_package ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
 	# make libzmq.so
-		mkdir -p /usr/local/lib \
-		&& ln -s /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
+		create_folder /usr/local/lib
+		create_symlink /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
 	# ensure logstash user exists
 		adduser -DH -s /sbin/nologin logstash
 	# install logstash
 		set -ex \
 		&& cd /tmp \
-		&& wget --no-check-certificate -O logstash.tar.gz "$LS_TARBAL" \
+		&& $download_save ${SOFT}.tar.gz "$LS_TARBAL" \
 		&& tar -xzf logstash.tar.gz \
-		&& mv logstash-$LS_VERSION /usr/share/logstash \
-		&& rm -rf /tmp/*
+		&& mv logstash-$LS_VERSION ${SOFTHOME} \
+		&& remove_filefolder /tmp/*
 	# config setting
 		if [[ "$LOGSTASH" = "1" ]] || [[ "$LOGSTASH" = "2" ]]; then
 			if [ -f "$LS_SETTINGS_DIR/logstash.yml" ]; then
@@ -54,47 +93,35 @@ if [[ -f /etc/alpine-release ]]; then
 				truncate -s 0 "$LS_SETTINGS_DIR/log4j2.properties"
 			fi
 		fi
-	# download entrypoint files
-		downloadentrypoint() {
-			FILETEMP=/start.sh
-			[[ -f $FILETEMP ]] && rm -f $FILETEMP
-			wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_start.sh && \
-			chmod 755 $FILETEMP
-		# Supervisor
-		if [[ "$SUPERVISOR" = "true" ]] || [[ "$SUPERVISOR" = "yes" ]]; then
-			wget --no-check-certificate -O - $DOWN_URL/supervisor_logstash.sh | bash
-		fi
-		# prepare etc start
-			wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-		}
+
 	if [[ "$LOGSTASH" = "6" ]]; then
-		FILETEMP=/usr/share/logstash/config
-		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		FILETEMP=/usr/share/logstash/pipeline
-		[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
-		FILETEMP=/usr/share/logstash/config/log4j2.properties
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/log4j2.properties
-		FILETEMP=/usr/share/logstash/config/logstash.yml
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/logstash/logstash.yml
-		FILETEMP=/usr/share/logstash/pipeline/logstash.conf
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/6/pipeline/default.conf
+		create_folder ${SOFTHOME}/config
+		create_folder /usr/share/logstash/pipeline
+		FILETEMP=${SOFTHOME}/config/log4j2.properties
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/logstash_config/6/logstash/log4j2.properties
+		FILETEMP=${SOFTHOME}/config/logstash.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/logstash_config/6/logstash/logstash.yml
+		FILETEMP=${SOFTHOME}/pipeline/logstash.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/logstash_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
-		FILETEMP=/usr/share/logstash/config/logstash.yml
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
+		FILETEMP=${SOFTHOME}/config/logstash.yml
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
 	fi
 
-	# remove packages
-		wget --no-check-certificate -O - $DOWN_URL/logstash_clean.sh | bash
+	# clean
+		clean_package
+		clean_os
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

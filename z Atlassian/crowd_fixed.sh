@@ -8,19 +8,13 @@
 set -e
 
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+[[ -f "/option.sh" ]] && /option.sh
 
 # set environment
 		export SOFT=${SOFT:-crowd}
 		#export SOFTSUB=${SOFTSUB:-core}
 		export auser=${auser:-daemon}
 		export aguser=${aguser:-daemon}
-	echo "check version"
-	## Check version
-		if [[ -z "${SOFT_VERSION}" ]] || [[ -z "${SOFT_HOME}" ]] || [[ -z "${SOFT_INSTALL}" ]]; then
-			echo "Can not run. Please check and rebuild"
-			exit
-		fi
 
 # visible code
 	echo "check path and install"

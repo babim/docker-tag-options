@@ -5,31 +5,72 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
-echo 'Check OS'
+download_option
+#####################################
+
+# need root to run
+	require_root
+
 	# set global environment
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Mongodb%20install"
 	export MONGO_REPO=${MONGO_REPO:-repo.mongodb.org}
+	export UNINSTALL="${DOWNLOAD_TOOL}"
 
-	# download entrypoint
-	downloadentry() {
-		FILETEMP=/start.sh
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP $DOWN_URL/mongodb_start.sh
-		chmod 755 $FILETEMP
-	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor_mongodb.sh | bash
-	# prepare etc start
-		wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-		}
+# download entrypoint
+downloadentry() {
+FILETEMP=start.sh
+	remove_file $FILETEMP
+	$download_save /$FILETEMP $DOWN_URL/mongodb_$FILETEMP
+	set_file_mod 755 /$FILETEMP
+# Supervisor
+	## Supervisor config
+		create_folder /var/log/supervisor/
+		create_folder /etc/supervisor/conf.d/
+	## download sypervisord config
+	FILETEMP=/etc/supervisor/supervisord.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=/etc/supervisord.conf
+		create_symlink $FILETEMP /etc/supervisor/supervisord.conf
+	## mongodb
+	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
+	 	remove_file $FILETEMP
+	 	$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/mongodb.conf
+# prepare etc start
+	run_url $DOWN_URL/prepare_final.sh
+}
 
+# install by OS
+echo 'Check OS'
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# set environment
-	export DEBIAN_FRONTEND=noninteractive
+	debian_cmd_interface
 	export MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org-unstable}
 	if [ -f /etc/lsb-release ]; then
     		export OSRUN=ubuntu
@@ -41,30 +82,26 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		groupadd -r mongodb && useradd -r -g mongodb mongodb
 
 	# install depend
-		apt-get update \
-		&& apt-get install -y ca-certificates gnupg dirmngr jq numactl
-
+		install_package ca-certificates gnupg dirmngr jq numactl
 	# install gosu
-		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
+		install_gosu
 	# install js-yaml
-		wget --no-check-certificate -O - $DOWN_URL/js-yaml_install.sh | bash
+		install_js-yaml
 
-	mkdir /docker-entrypoint-initdb.d
+	create_folder /docker-entrypoint-initdb.d
 	# add repo
-		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
+		run_url $DOWN_URL/mongodb_repo.sh
 	# install mongodb
-	set -x \
-		&& apt-get update
 		# install lastest version
 	if [ "$MONGO_MAJOR" == "4.1" ]; then
-		apt-get install -y \
+		install_package \
 			${MONGO_PACKAGE}-unstable \
 			${MONGO_PACKAGE}-unstable-server \
 			${MONGO_PACKAGE}-unstable-shell \
 			${MONGO_PACKAGE}-unstable-mongos \
 			${MONGO_PACKAGE}-unstable-tools
 	else
-		apt-get install -y \
+		install_package \
 			${MONGO_PACKAGE} \
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
@@ -77,37 +114,32 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		#	${MONGO_PACKAGE}-shell=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-mongos=$MONGO_VERSION \
 		#	${MONGO_PACKAGE}-tools=$MONGO_VERSION
-		rm -rf /var/lib/mongodb \
+		remove_filefolder /var/lib/mongodb \
 		&& mv /etc/mongod.conf /etc/mongod.conf.orig
 
-		mkdir -p /data/db /data/configdb \
-		&& chown -R mongodb:mongodb /data/db /data/configdb
+		create_folder /data/db /data/configdb \
+		&& set_filefolder_owner mongodb:mongodb /data/db /data/configdb
 
 	# download entrypoint
 		downloadentry
 
 	# clean os
-		apt-get purge -y wget curl && \
-		apt-get clean && \
-  		apt-get autoclean && \
-  		apt-get autoremove -y && \
-   		rm -rf /build && \
-   		rm -rf /tmp/* /var/tmp/* && \
-   		rm -rf /var/lib/apt/lists/*	
+		clean_package
+		clean_os	
 
 elif [[ -f /etc/redhat-release ]]; then
-	yum install -y supervisor
+	install_supervisor
 	# set environment
 	export MONGO_PACKAGE=${MONGO_PACKAGE:-mongodb-org}
 	# install gosu
-		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
+		install_gosu
 	# install js-yaml
-		wget --no-check-certificate -O - $DOWN_URL/js-yaml_install.sh | bash
+		install_js-yaml
 	# add repo
-		wget --no-check-certificate -O - $DOWN_URL/mongodb_repo.sh | bash
+		run_url $DOWN_URL/mongodb_repo.sh
 	# install mongodb
 		# install lastest version
-		yum install -y \
+		install_package \
 			${MONGO_PACKAGE} \
 			${MONGO_PACKAGE}-server \
 			${MONGO_PACKAGE}-shell \
@@ -122,9 +154,11 @@ elif [[ -f /etc/redhat-release ]]; then
 	# download entrypoint
 		downloadentry
 	# clean os
-		yum clean all
+		clean_package
+		clean_os
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

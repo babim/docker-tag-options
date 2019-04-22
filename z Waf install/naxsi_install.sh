@@ -5,16 +5,39 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
 
-cleanpackage() {
-	# remove packages
-		wget -O - $DOWN_URL/${SOFT}_clean.sh | bash
-}
+# need root to run
+	require_root
+
+# install by OS
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 	# set environment
@@ -26,20 +49,20 @@ if [[ -f /etc/debian_version ]]; then
 	export SOFT=naxsi
 	
 	# update and install dependencies
-		apt-get update
-		apt-get install -y --no-install-recommends \
-					    python-pip python-geoip logtail curl \
+		install_package		    python-pip python-geoip logtail curl \
 					    gcc make libpcre3-dev libssl-dev supervisor
 
 	# add user www-data
 	adduser --system --no-create-home --disabled-login --disabled-password --group www-data
 
 	# Get nginx and naxsi-ui
-	cd /usr/src/ && \
-		wget "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" && \
-		wget "https://github.com/nbs-system/naxsi/archive/${NAXSI_VERSION}.tar.gz" && \
-	tar zxvf nginx-${NGINX_VERSION}.tar.gz && \
-	tar zxvf ${NAXSI_VERSION}.tar.gz
+	cd /usr/src/
+	FILETEMP=nginx-${NGINX_VERSION}.tar.gz
+		$download_save $FILETEMP "http://nginx.org/download/${$FILETEMP}"
+	FILETEMP=${NAXSI_VERSION}.tar.gz
+		$download_save $FILETEMP "https://github.com/nbs-system/naxsi/archive/${$FILETEMP}"
+	tar_extract nginx-${NGINX_VERSION}.tar.gz && \
+	tar_extract ${NAXSI_VERSION}.tar.gz
 
 	# Build and install nginx + naxsi
 	cd /usr/src/nginx-${NGINX_VERSION} && ./configure \
@@ -69,7 +92,7 @@ if [[ -f /etc/debian_version ]]; then
 
 	# Install nxapi / nxtool
 	cd /usr/src/naxsi-${NAXSI_VERSION} && \
-	cp naxsi_config/naxsi_core.rules /etc/nginx/
+	dircopy naxsi_config/naxsi_core.rules /etc/nginx/
 
 	# install nxapi for elasticsearch
 	if [[ ! -z "${ELASTICSEARCH_HOST}" ]]; then
@@ -79,66 +102,68 @@ if [[ -f /etc/debian_version ]]; then
 	fi
 
 	# download config files
-		mkdir -p /etc/nginx/naxsi-local-rules
-		mkdir -p /var/lib/nginx/body
+		create_folder /etc/nginx/naxsi-local-rules
+		create_folder /var/lib/nginx/body
 	# download nginx conf.d
 	FILETEMP=/etc/nginx/sites-available/default
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
+		remove_file $FILETEMP
 	FILETEMP=/etc/nginx/sites-enabled/default
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
+		remove_file $FILETEMP
 	FILETEMP=/etc/nginx/nginx.conf
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/nginx.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/nginx.conf
 	FILETEMP=/etc/nginx/sites-enabled/default.conf
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/default_naxsi.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/sites-enabled/default_naxsi.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget -O $FILETEMP --no-check-certificate $DOWN_URL/nginx/http2-ssl.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/http2-ssl.conf
 	FILETEMP=/etc/nginx/sites-enabled/kibana.conf
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/sites-enabled/kibana.conf
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/sites-enabled/kibana.conf
 	# download naxsi rules
 	FILETEMP=/etc/nginx/naxsi.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/dokuwiki.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/dokuwiki.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/dokuwiki.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/drupal.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/drupal.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/drupal.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/etherpad-lite.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/etherpad-lite.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/etherpad-lite.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/iris.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/iris.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/iris.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/rutorrent.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/rutorrent.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/rutorrent.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/zerobin.rules
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/zerobin.rules
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/zerobin.rules
 	# download naxsi config
 	FILETEMP=/usr/local/etc/nxapi.json
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/naxsi/nxapi.json
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/naxsi/nxapi.json
 
 	# download entrypoint
 	FILETEMP=/start.sh
-		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/naxsi_start.sh
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/naxsi_start.sh
 		chmod 755 $FILETEMP
 
 	# Supervisor
-		wget --no-check-certificate -O - $DOWN_URL/supervisor_modsecurity.sh | bash
+		run_url $DOWN_URL/supervisor_modsecurity.sh
 	# prepare etc start
-	   	 wget --no-check-certificate -O - $DOWN_URL/prepare_final.sh | bash
-	# clean os
-		cleanpackage	
+	   	run_url $DOWN_URL/prepare_final.sh
+	# clean
+		remove_download_tool
+		clean_os	
 
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi

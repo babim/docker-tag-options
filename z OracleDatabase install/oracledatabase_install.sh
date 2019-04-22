@@ -5,15 +5,51 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
-echo 'Check root'
-if [ "x$(id -u)" != 'x0' ]; then
-    echo 'Error: this script can only be executed by root'
+# Stop script on NZEC
+set -e
+# Stop script if unbound variable found (use ${var:-} if intentional)
+set -u
+# By default cmd1 | cmd2 returns exit code of cmd2 regardless of cmd1 success
+# This is causing it to fail
+set -o pipefail
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
     exit 1
 fi
+download_option
+#####################################
+
+# need root to run
+	require_root
+
+# install by OS
 echo 'Check OS'
 if [ -f /etc/redhat-release ]; then
-	DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
-	HOST_DOWN="http://media.matmagoc.com/oracle"
+	# set host download
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
+	export HOST_DOWN="http://media.matmagoc.com/oracle"
+	# set uninstall app
+	export UNINSTALL="${DOWNLOAD_TOOL}"
+	# set install file
+	export INSTALL_FILE_1=${INSTALL_FILE_1:-"false"}
+	export INSTALL_FILE_2=${INSTALL_FILE_2:-"false"}
+	export INSTALL_FILE_3=${INSTALL_FILE_3:-"false"}
+	export INSTALL_FILE_4=${INSTALL_FILE_4:-"false"}
 	# set code
 	if [[ "$VERSION" == "12.2.0.1" ]] || [[ "$VERSION" == "12cr2" ]]; then
 		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-server-12cR2-preinstall"}
@@ -47,61 +83,66 @@ if [ -f /etc/redhat-release ]; then
 	export CLASSPATH=$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
 	# Copy binaries
 	# -------------
-	echo "Copy binaries"
-	mkdir -p $INSTALL_DIR/
-	mkdir -p $ORACLE_HOME/
+	say "Copy binaries"
+	create_folder $INSTALL_DIR/
+	create_folder $ORACLE_HOME/
 #	cd $INSTALL_DIR/ && pwd
-		wget -O $INSTALL_DIR/$INSTALL_RSP --no-check-certificate $DOWN_URL/template/$INSTALL_RSP-$VERSION
-		wget -O $INSTALL_DIR/$SETUP_LINUX_FILE --no-check-certificate $DOWN_URL/config/$SETUP_LINUX_FILE
-		wget -O $INSTALL_DIR/$CHECK_SPACE_FILE --no-check-certificate $DOWN_URL/config/$CHECK_SPACE_FILE
-		wget -O $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE --no-check-certificate $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
+		$download_save $INSTALL_DIR/$INSTALL_RSP $DOWN_URL/template/$INSTALL_RSP-$VERSION
+		$download_save $INSTALL_DIR/$SETUP_LINUX_FILE $DOWN_URL/config/$SETUP_LINUX_FILE
+		$download_save $INSTALL_DIR/$CHECK_SPACE_FILE $DOWN_URL/config/$CHECK_SPACE_FILE
+		$download_save $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
 #	cd $ORACLE_BASE/ && pwd
-		wget -O $ORACLE_BASE/$RUN_FILE --no-check-certificate $DOWN_URL/config/$RUN_FILE
-		wget -O $ORACLE_BASE/$START_FILE --no-check-certificate $DOWN_URL/config/$START_FILE
-		wget -O $ORACLE_BASE/$CREATE_DB_FILE --no-check-certificate $DOWN_URL/config/$CREATE_DB_FILE
-		wget -O $ORACLE_BASE/$CHECK_DB_FILE --no-check-certificate $DOWN_URL/config/$CHECK_DB_FILE
-		wget -O $ORACLE_BASE/$CONFIG_RSP --no-check-certificate $DOWN_URL/template/$CONFIG_RSP-$VERSION
-		wget -O $ORACLE_BASE/$PWD_FILE --no-check-certificate $DOWN_URL/config/$PWD_FILE
-		wget -O $ORACLE_BASE/$USER_SCRIPTS_FILE --no-check-certificate $DOWN_URL/config/$USER_SCRIPTS_FILE
+		$download_save $ORACLE_BASE/$RUN_FILE $DOWN_URL/config/$RUN_FILE
+		$download_save $ORACLE_BASE/$START_FILE $DOWN_URL/config/$START_FILE
+		$download_save $ORACLE_BASE/$CREATE_DB_FILE $DOWN_URL/config/$CREATE_DB_FILE
+		$download_save $ORACLE_BASE/$CHECK_DB_FILE $DOWN_URL/config/$CHECK_DB_FILE
+		$download_save $ORACLE_BASE/$CONFIG_RSP $DOWN_URL/template/$CONFIG_RSP-$VERSION
+		$download_save $ORACLE_BASE/$PWD_FILE $DOWN_URL/config/$PWD_FILE
+		$download_save $ORACLE_BASE/$USER_SCRIPTS_FILE $DOWN_URL/config/$USER_SCRIPTS_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
 	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files
 	echo "Download setup files"
 #	cd $INSTALL_DIR/ && pwd
-	if [[ ! -z "${INSTALL_FILE_1}" ]]; then
-		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_1" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_1 --no-check-certificate $HOST_DOWN/$INSTALL_FILE_1; fi
+	if ! check_value_false "${INSTALL_FILE_1}"; then
+		check_file "$INSTALL_DIR/$INSTALL_FILE_1" && $download_save $INSTALL_DIR/$INSTALL_FILE_1 $HOST_DOWN/$INSTALL_FILE_1 || say "File exists."
 	fi
-	if [[ ! -z "${INSTALL_FILE_2}" ]]; then
-		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_2" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_2 --no-check-certificate $HOST_DOWN/$INSTALL_FILE_2; fi
+	if ! check_value_false "${INSTALL_FILE_2}"; then
+		check_file "$INSTALL_DIR/$INSTALL_FILE_2" && $download_save $INSTALL_DIR/$INSTALL_FILE_2 $HOST_DOWN/$INSTALL_FILE_2 || say "File exists."
 	fi
-	if [[ ! -z "${INSTALL_FILE_3}" ]]; then
-		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_3" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_3 --no-check-certificate $HOST_DOWN/$INSTALL_FILE_3; fi
+	if ! check_value_false "${INSTALL_FILE_3}"; then
+		check_file "$INSTALL_DIR/$INSTALL_FILE_3" && $download_save $INSTALL_DIR/$INSTALL_FILE_3 $HOST_DOWN/$INSTALL_FILE_3 || say "File exists."
 	fi
-	if [[ ! -z "${INSTALL_FILE_4}" ]]; then
-		if [ ! -f "$INSTALL_DIR/$INSTALL_FILE_4" ]; then wget -O $INSTALL_DIR/$INSTALL_FILE_4 --no-check-certificate $HOST_DOWN/$INSTALL_FILE_4; fi
+	if ! check_value_false "${INSTALL_FILE_4}"; then
+		check_file "$INSTALL_DIR/$INSTALL_FILE_4" && $download_save $INSTALL_DIR/$INSTALL_FILE_4 $HOST_DOWN/$INSTALL_FILE_4 || say "File exists."
 	fi
 	# Install prepare setup
 	echo "Install prepare setup"
 		sync
 		$INSTALL_DIR/$CHECK_SPACE_FILE
-#		wget --no-check-certificate -O - $DOWN_URL/config/$CHECK_SPACE_FILE | bash
+#		wget -O - $DOWN_URL/config/$CHECK_SPACE_FILE | bash
 		$INSTALL_DIR/$SETUP_LINUX_FILE
-#		wget --no-check-certificate -O - $DOWN_URL/config/$SETUP_LINUX_FILE | bash
+#		wget -O - $DOWN_URL/config/$SETUP_LINUX_FILE | bash
 
 	# install gosu
-	echo "install gosu"
-		wget --no-check-certificate -O - $DOWN_URL/gosu_install.sh | bash
+		install_gosu
 	# Install DB software binaries
-	echo "Install DB software binaries"
+	say "Install DB software binaries"
 	# su -H -u oracle bash -c '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
 		gosu oracle $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT
 
 	# Clean
-	echo "Clean"
+	say "Clean"
 		$ORACLE_BASE/oraInventory/orainstRoot.sh && \
 		$ORACLE_HOME/root.sh && \
-		rm -rf $INSTALL_DIR
+		remove_folder $INSTALL_DIR
+
+	# clean os
+		clean_package
+		clean_os
+
+# OS - other
 else
-    echo "Not support your OS"
-    exit
+    say_err "Not support your OS"
+    exit 1
 fi
