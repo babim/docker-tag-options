@@ -644,6 +644,7 @@ function    download_option()
             sleep 3
             exit $FALSE
         fi
+        if machine_has "curl" && machine_has "wget"; then export DOWNLOAD_TOOL="wget curl";fi
     }
 
 
