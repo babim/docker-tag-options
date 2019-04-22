@@ -421,7 +421,7 @@ function    has_equal()
     {
         [[ ${1} == ${2} ]]      && return $TRUE         || return $FALSE
     }
-alias check_
+alias check_has_equal=has_equal
 
 # check has not equal
 # example: has_equal 2 2
@@ -435,7 +435,7 @@ alias check_has_not_equal=has_not_equal
 # example: has_equal_less 2 2
 function    has_equal_less()
     {
-        [[ ${1} <= ${2} ]]      && return $TRUE         || return $FALSE
+        [[ ${1} -le ${2} ]]      && return $TRUE         || return $FALSE
     }
 alias check_has_equal_less=has_equal_less
 
@@ -443,7 +443,7 @@ alias check_has_equal_less=has_equal_less
 # example: has_equal_greater 2 2
 function    has_equal_greater()
     {
-        [[ ${1} >= ${2} ]]      && return $TRUE         || return $FALSE
+        [[ ${1} -ge ${2} ]]      && return $TRUE         || return $FALSE
     }
 alias check_has_equal_greater=has_equal_greater
 
@@ -451,7 +451,7 @@ alias check_has_equal_greater=has_equal_greater
 # example: has_less 2 2
 function    has_less()
     {
-        [[ ${1} < ${2} ]]       && return $TRUE         || return $FALSE
+        [[ ${1} -lt ${2} ]]       && return $TRUE         || return $FALSE
     }
 alias check_has_less=has_less
 
@@ -459,7 +459,7 @@ alias check_has_less=has_less
 # example: has_greater 2 2
 function    has_greater()
     {
-        [[ ${1} > ${2} ]]       && return $TRUE         || return $FALSE
+        [[ ${1} -gt ${2} ]]       && return $TRUE         || return $FALSE
     }
 alias has_great=has_greater
 alias check_has_great=has_greater
