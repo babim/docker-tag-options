@@ -134,6 +134,8 @@ if [[ -f /etc/lsb-release ]]; then
 			remove_file 			$FILETEMP
 			$download_save 			$FILETEMP 	$DOWN_URL/$FILETEMP
 			set_filefolder_mod 		755 		$FILETEMP
+	# clean
+		clean_os
 
 # OS - other
 else
