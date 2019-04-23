@@ -822,7 +822,7 @@ function    dpkgArch()
             get_osname
                 # redhat
                 if [[ $osname == "rhel"* ]]; then 
-                    [[ ! -f /usr/bin/dpkg ]]        && yum install -y dpkg
+                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || yum install -y dpkg
                     check_dpkg
                 # ubuntu
                 elif [[ $osname == "ubuntu"* ]] || [[ $osname == "debian"* ]]; then
@@ -834,11 +834,11 @@ function    dpkgArch()
                     check_dpkg
                 # alpine
                 elif [[ $osname == "alpine"* ]]; then
-                    [[ ! -f /usr/bin/dpkg ]]        && apk add --no-cache dpkg
+                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || apk add --no-cache dpkg
                     check_dpkg
                 # opensuse
                 elif [[ $osname == "opensuse"* ]]; then
-                    [[ ! -f /usr/bin/dpkg ]]        && zypper install -n dpkg
+                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || zypper install -n dpkg
                     check_dpkg
                 else
                     say_err "Cannot install dpkg to check Arch. Your OS not support"
@@ -919,11 +919,11 @@ function    add_a_user()
 ##################################################################
 function    is_root() 
     {
-        [[ $(id -u) -eq 0 ]] && return $TRUE || return $FALSE
+        [[ $(id -u) -eq 0 ]]            && return $TRUE                     || return $FALSE
     }
 function    is_root_say() 
     {
-        [[ $(id -u) -eq 0 ]] && say "You are logged in as root." || say_warning "You are not logged in as root."
+        [[ $(id -u) -eq 0 ]]            && say "You are logged in as root." || say_warning "You are not logged in as root."
     }
 function    require_root()
     {
@@ -1023,7 +1023,7 @@ function    gen_passwd ()
 ####### reload the nginx web server #######
 function    reload_nginx()
     {
-            /usr/local/nginx/sbin/nginx -s reload && say 'nginx server reloaded.' || say_err 'nginx server reload failed.'
+            /usr/local/nginx/sbin/nginx -s reload       && say 'nginx server reloaded.'         || say_err 'nginx server reload failed.'
     }
 
 ####### Copy file folder #######
@@ -1246,7 +1246,7 @@ function    check_folders_say()
 function    check_folder_empty()
     {
         say "Checking folder: ${1}.."
-        [[ -d ${1} ]]                                                                               || return $FALSE
+        [[ -d ${1} ]]                                   && say "Folder: ${1} exists."               || return $FALSE
         [[ -z "`ls ${1}`" ]]                            && return $TRUE                             || return $FALSE
     }
 function    check_folders_empty()
@@ -1586,7 +1586,7 @@ function    core_command_remove_object()
         if ${command_check_object} ${object_remove}; then
             say "Removing ${object_remove}.."
             rm -rf ${object_remove}
-            ${command_check_object} ${object_remove}      && return $FALSE || say "${object_remove} removed"
+            ${command_check_object} ${object_remove}      && return $FALSE                          || say "${object_remove} removed"
         else
             say_warning "${object_remove} not exists"
         fi
@@ -1819,10 +1819,10 @@ function    set_filefolders_mod()
 function    rsync_folder()
     {
         say "Checking folder.."
-        check_folder ${1}                                                   || return $FALSE
-        check_folder ${2}                                                   || return $FALSE
+        check_folder ${1}                     && say "check ${1} done"          || return $FALSE
+        check_folder ${2}                     && say "check ${2} done"          || return $FALSE
         say "Begin rsync.."
-        machine_has rsync                                                   || return $FALSE
+        machine_has rsync                                                       || return $FALSE
         rsync -arvpz --delete --numeric-ids ${1} ${2}
         say "Rsync completed"
         return $TRUE
@@ -1834,10 +1834,10 @@ function    rsync_folder()
 function   rsync_os()
     {
         say "Checking folder.."
-        check_folder ${1}                                                   || return $FALSE
-        check_folder ${2}                                                   || return $FALSE
+        check_folder ${1}                     && say "check ${1} done"          || return $FALSE
+        check_folder ${2}                     && say "check ${2} done"          || return $FALSE
         say "Begin rsync.."
-        machine_has rsync                                                   || return $FALSE
+        machine_has rsync                                                       || return $FALSE
         rsync -arvpz --delete --numeric-ids --exclude dev --exclude proc --exclude tmp --exclude media ${1} ${2}
         say "Rsync completed"
         return $TRUE
@@ -1850,10 +1850,10 @@ function   rsync_os()
 function    rsync_folder_from_ssh()
     {
         say "Checking folder.."
-        check_folder ${4}                                                   || return $FALSE
+        check_folder ${4}                   && say "check ${4} done"            || return $FALSE
         say "Begin rsync.."
-        is_numeric ${2}                                                     || return $FALSE
-        machine_has rsync                                                   || return $FALSE
+        is_numeric ${2}                     && say "check ${2} done"            || return $FALSE
+        machine_has rsync                   && say "check rsync done"           || return $FALSE
         rsync -arvpz --delete --numeric-ids -e 'ssh -p ${2}' "${1}:${3}" ${4}
         say "Rsync completed"
         return $TRUE
@@ -1863,10 +1863,10 @@ function    rsync_folder_from_ssh()
 function    rsync_os_from_ssh()
     {
         say "Checking folder.."
-        check_folder ${4}                                                   || return $FALSE
+        check_folder ${4}                   && say "check ${4} done"            || return $FALSE
         say "Begin rsync.."
-        is_numeric ${2}                                                     || return $FALSE
-        machine_has rsync                                                   || return $FALSE
+        is_numeric ${2}                     && say "check ${2} done"            || return $FALSE
+        machine_has rsync                   && say "check rsync done"           || return $FALSE
         rsync -arvpz --delete --numeric-ids --exclude dev --exclude proc --exclude tmp --exclude media -e 'ssh -p ${2}' "${1}:${3}" ${4}
         say "Rsync completed"
         return $TRUE
@@ -1879,11 +1879,11 @@ function    rsync_os_from_ssh()
 function    rsync_folder_to_ssh()
     {
         say "Checking folder.."
-        check_folder ${1}                                                   || return $FALSE
+        check_folder ${1}                   && say "check ${1} done"            || return $FALSE
         say "Begin rsync.."
-        is_numeric ${2}                                                     || return $FALSE
-        machine_has ssh                                                     || return $FALSE
-        machine_has rsync                                                   || return $FALSE
+        is_numeric ${2}                     && say "check ${2} done"            || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        machine_has rsync                   && say "check rsync done"           || return $FALSE
         rsync -arvpz --delete --numeric-ids -e "ssh -p ${3}" ${1} "${2}:${4}"
         say "Rsync completed"
         return $TRUE
@@ -1893,11 +1893,11 @@ function    rsync_folder_to_ssh()
 function    rsync_os_to_ssh()
     {
         say "Checking folder.."
-        check_folder ${1}                                                   || return $FALSE
+        check_folder ${1}                   && say "check ${1} done"            || return $FALSE
         say "Begin rsync.."
-        is_numeric ${2}                                                     || return $FALSE
-        machine_has rsync                                                   || return $FALSE
-        machine_has ssh                                                     || return $FALSE
+        is_numeric ${2}                     && say "check ${2} done"            || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        machine_has rsync                   && say "check rsync done"           || return $FALSE
         rsync -arvpz --delete --numeric-ids  -e "ssh -p ${3}" ${1} "${2}:${4}"
         say "Rsync completed"
         return $TRUE
@@ -1910,10 +1910,10 @@ function    rsync_os_to_ssh()
 function    tar_folder()
     {
         say "Checking folder.."
-        check_folder ${2}                                                   || return $FALSE
-        check_file ${1}                                                     && return $FALSE
+        check_folder ${2}                   && say "check ${2} done"            || return $FALSE
+        check_file ${1}                     && return $FALSE                    || say "check ${1} done"
         say "Begin tar compress.."
-        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}         || return $FALSE
         say "Tar completed"
         return $TRUE
     }
@@ -1921,10 +1921,10 @@ function    tar_folder()
 function    tar_file()
     {
         say "Checking file.."
-        check_file ${2}                                                     || return $FALSE
-        check_file ${1}                                                     && return $FALSE
+        check_file ${2}                     && say "check ${2} done"            || return $FALSE
+        check_file ${1}                     && return $FALSE                    || say "check ${1} done"
         say "Begin tar compress.."
-        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}         || return $FALSE
         say "Tar completed"
         return $TRUE
     }
@@ -1932,10 +1932,10 @@ function    tar_file()
 function    tar_filefolder()
     {
         say "Checking file folder.."
-        check_filefolder ${2}                                               || return $FALSE
-        check_filefolder ${1}                                               && return $FALSE
+        check_folder ${2}                   && say "check ${2} done"            || return $FALSE
+        check_folder ${1}                   && return $FALSE                    || say "check ${1} done"
         say "Begin tar compress.."
-        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}     || return $FALSE
+        machine_has tar     && tar -cvpzf ${3} ${1} --exclude=${1} ${2}         || return $FALSE
         say "Tar completed"
         return $TRUE
     }
@@ -1947,10 +1947,10 @@ function    tar_filefolder()
 function    tar_folder_ssh()
     {
         say "Begin Tar compress, checking folder.."
-        check_folder ${1}                                                   || return $FALSE
+        check_folder ${1}                   && say "check ${1} done"            || return $FALSE
         say "Begin tar compress.."
-        machine_has tar                                                     || return $FALSE
-        machine_has ssh                                                     || return $FALSE
+        machine_has tar                     && say "check tar done"             || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
         tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
         say "Tar completed"
         return $TRUE
@@ -1959,10 +1959,10 @@ function    tar_folder_ssh()
 function    tar_file_ssh()
     {
         say "Checking file.."
-        check_file ${1}                                                     || return $FALSE
+        check_file ${1}                     && say "check ${1} done"            || return $FALSE
         say "Begin tar compress.."
-        machine_has tar                                                     || return $FALSE
-        machine_has ssh                                                     || return $FALSE
+        machine_has tar                     && say "check tar done"             || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
         tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
         say "Tar completed"
         return $TRUE
@@ -1971,10 +1971,10 @@ function    tar_file_ssh()
 function    tar_filefolder_ssh()
     {
         say "Checking file folder.."
-        check_filefolder ${1}                                               || return $FALSE
+        check_filefolder ${1}               && say "check ${1} done"            || return $FALSE
         say "Begin tar compress.."
-        machine_has tar                                                     || return $FALSE
-        machine_has ssh                                                     || return $FALSE
+        machine_has tar                     && say "check tar done"             || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
         tar -cvpzf - ${1} | ssh ${2} "cat > ${3}"
         say "Tar completed"
         return $TRUE
@@ -1987,9 +1987,9 @@ function    tar_filefolder_ssh()
 function    tar_extract()
     {
         say "Checking file folder.."
-        check_file ${1}                                                         || return $FALSE
+        check_file ${1}                     && say "check ${1} done"            || return $FALSE
         say "Begin tar extracting.."
-        check_empty ${2}    && ${2}=.
+        check_empty ${2}    && ${2}="."                                         || say "check ${2} done"
         machine_has tar     && tar -xvpzf ${1} -C ${2} --numeric-owner ${@:3}   || return $FALSE
         say "Tar completed"
         return $TRUE
@@ -2004,8 +2004,8 @@ alias tar_x=tar_extract
 function    tar_extract_ssh()
     {
         say "Begin tar extracting.."
-        machine_has ssh             || return $FALSE
-        ssh ${1} "cat > ${2}"       | tar -xvpzf - ${3}
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        ssh ${1} "cat > ${2}"               | tar -xvpzf - ${3}
         say "Tar completed"
         return $TRUE
     }
@@ -2021,10 +2021,10 @@ alias tar_x_ssh=tar_extract_ssh
 function    unzip_extract()
     {
         say "Checking file folder.."
-        check_file ${1}                                                         || return $FALSE
+        check_file ${1}                     && say "check ${1} done"            || return $FALSE
         say "Begin unzip extracting.."
-        check_empty ${2}        && ${2}=.
-        machine_has unzip       && unzip - ${1} -d ${2} ${@:3}                  || return $FALSE
+        check_empty ${2}                    && ${2}="."                         || say "check ${2} done"
+        machine_has unzip                   && unzip - ${1} -d ${2} ${@:3}      || return $FALSE
         say "Unzip completed"
         return $TRUE
     }
@@ -2039,8 +2039,8 @@ alias unzip_x=unzip_extract
 function    unzip_extract_ssh()
     {
         say "Begin unzip extracting.."
-        machine_has ssh             || return $FALSE
-        ssh ${1} "cat > ${2}"       | unzip - ${3}
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        ssh ${1} "cat > ${2}"               | unzip - ${3}
         say "Unzip completed"
         return $TRUE
     }
@@ -2055,7 +2055,7 @@ alias unzip_x_ssh=unzip_extract_ssh
 function    scp_folder()
     {
         say "Begin scp copying.."
-        machine_has scp             || return $FALSE
+        machine_has scp                     && say "check scp done"             || return $FALSE
         scp -pr ${1} ${2}
         say "scp completed"
         return $TRUE
@@ -2067,7 +2067,7 @@ function    scp_folder()
 function    scp_to_ssh()
     {
         say "Begin scp copying.."
-        machine_has scp             || return $FALSE
+        machine_has scp                     && say "check scp done"             || return $FALSE
         scp -pr ${1} ${2}:${3}
         say "scp completed"
         return $TRUE
@@ -2079,7 +2079,7 @@ function    scp_to_ssh()
 function    scp_from_ssh()
     {
         say "Begin scp copying.."
-        machine_has scp             || return $FALSE
+        machine_has scp                     && say "check scp done"             || return $FALSE
         scp -pr ${1}:${2} ${3}
         say "scp completed"
         return $TRUE
@@ -2094,9 +2094,9 @@ function    scp_from_ssh()
 #
 function    tar_copy_compress_ssh()
     {
-        machine_has tar             || return $FALSE
-        machine_has ssh             || return $FALSE
-        ssh ${1} "tar czf - ${2}"   | tar xvzf - -C ${3}
+        machine_has tar                     && say "check tar done"             || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        ssh ${1} "tar czf - ${2}"           | tar xvzf - -C ${3}
     }
 
 # tar copy ssh
@@ -2108,9 +2108,9 @@ function    tar_copy_compress_ssh()
 #
 function    tar_copy_ssh()
     {
-        machine_has tar             || return $FALSE
-        machine_has ssh             || return $FALSE
-        ssh ${1} "tar c - ${2}"     | tar xvf - -C ${3}
+        machine_has tar                     && say "check tar done"             || return $FALSE
+        machine_has ssh                     && say "check ssh done"             || return $FALSE
+        ssh ${1} "tar c - ${2}"             | tar xvf - -C ${3}
     }
 
 #    DirCmp - compare the files in two directories
@@ -2485,12 +2485,12 @@ function    hex2decimal()
 # check process
 function    check_process()
     {
-        grep -x ${1} >/dev/null                && return $TRUE         || return $FALSE
+        grep -x ${1} >/dev/null                && return $TRUE                  || return $FALSE
     }
 function    check_process_say()
     {
         for process in "${@}"; do
-            grep -x $process >/dev/null        && say "Process found"  || say_warning "Process not found"
+            grep -x $process >/dev/null        && say "Process found"           || say_warning "Process not found"
         done
         return $TRUE
     }
@@ -2878,7 +2878,7 @@ function    install_gosu()
                 return $FALSE
             fi
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
-        [[ ! -f ${FILE_TEMP} ]]         && return $FALSE
+        [[ -f ${FILE_TEMP} ]]           && say "download success"                   || return $FALSE
         chmod +x ${FILE_TEMP}           && gosu nobody true
         say "GOSU installed."
     fi
@@ -2933,8 +2933,8 @@ function    install_dmidecode()
 function    install_php_composer()
     {
        say "install php composer.."   
-       machine_has php                                                              || return $FALSE
-       machine_has $download_tool                                                   || return $FALSE
+       machine_has php                  && say "check php done"                     || return $FALSE
+       machine_has $download_tool       && say "check download tool done"           || return $FALSE
        machine_has composer             && say "php composer installed before!"     || $download_tool https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
        return $TRUE
     }

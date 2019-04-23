@@ -131,9 +131,9 @@ if [[ -f /etc/lsb-release ]]; then
 
 # Define default command.
 		FILETEMP=/startup.sh
-			remove_file 		$FILETEMP
-			$download_save 		$FILETEMP $DOWN_URL/$FILETEMP
-			set_filefolder_mod 755 	$FILETEMP
+			remove_file 			$FILETEMP
+			$download_save 			$FILETEMP 	$DOWN_URL/$FILETEMP
+			set_filefolder_mod 		755 		$FILETEMP
 
 # OS - other
 else
