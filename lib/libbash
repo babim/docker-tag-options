@@ -33,24 +33,8 @@ fi
     ####### USE FOR BASH SCRIPT NEED LOAD THIS LIBRARY #######
     ##########################################################
 # #####################################
-#     ####### Set download tool #######
-#     ####### and load library ########
-# # check has package
-# function    machine_has() {
-#         hash "${1}" > /dev/null 2>&1
-#         return $?; }
-# # Check and set download tool
-# echo "Check and set download tool..."
-# if machine_has "curl"; then
 #     source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-# elif machine_has "wget"; then
 #     source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-# else
-#     echo "without download tool"
-#     sleep 3
-#     exit 1
-# fi
-# download_option
 # #####################################
 
     ####### Content #######
