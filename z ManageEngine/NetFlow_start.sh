@@ -17,6 +17,27 @@ fi
 MACHINE_TYPE=`uname -m`
 [[ ${MACHINE_TYPE} == 'x86_64' ]] && echo "Your server is x86_64 system" || echo "Your server is x86 system"
 
+# download option
+say_warning "Check and set download tool..."
+if machine_has "curl"; then
+    # download_tool for command download. use like this $download_tool
+    export download_tool="curl -Ls"
+    # DOWNLOAD_TOOL use when remove download tool package
+    export DOWNLOAD_TOOL="curl"
+    export download_save=download_with_curl
+    say "use curl"
+elif machine_has "wget"; then
+    export download_tool="wget"
+    export DOWNLOAD_TOOL="wget"
+    export download_save=download_with_wget
+    say "use wget"
+else
+    say_err "without download tool"
+    sleep 3
+    exit $FALSE
+fi
+if machine_has "curl" && machine_has "wget"; then export DOWNLOAD_TOOL="wget curl";fi
+
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-NetFlow}
@@ -63,37 +84,37 @@ EOF
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_64bit.bin
+			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin
+			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin
+			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin
+			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin
+			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin
+			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
+			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
+			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			wget -O install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin
+			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin
 		else
-			wget -O install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free.bin
+			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free.bin
 		fi
 	else
 		echo "Not support please edit and rebuild"

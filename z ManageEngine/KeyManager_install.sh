@@ -64,7 +64,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M --shell /usr/sbin/nologin $PUNAME
 	# preparedata
-		preparedata
+		#preparedata
 		downloadentry
 	# clean
 		clean_package
@@ -78,7 +78,7 @@ elif [[ -f /etc/redhat-release ]]; then
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M $PUNAME
 	# preparedata
-		preparedata
+		#preparedata
 		downloadentry
 	# clean
 		clean_package

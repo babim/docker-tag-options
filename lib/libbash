@@ -1526,7 +1526,7 @@ function    core_command_create_object()
 # create dir
 function    create_folder()
     {
-        object_create="${@}"
+        object_create="${1}"
         command_check_object=check_folder
         command_create_object="mkdir -p"
             core_command_create_object
@@ -1551,7 +1551,7 @@ alias make_folders=create_folders
 # create file
 function    create_file()
     {
-        object_create="${@}"
+        object_create="${1}"
         command_check_object=check_file
         command_create_object="touch"
             core_command_create_object
@@ -2678,7 +2678,7 @@ function    core_command_debian_repo()
 # add repo key
 function    debian_add_repo_key()
     {
-        software=" ${1}"
+        software="${1}"
         command_repo="apt-key"
         server_key=keyserver.ubuntu.com
         command_extra=" adv --keyserver ${server_key} --recv-keys"
@@ -2694,7 +2694,7 @@ alias debian_add_repokey=debian_add_repo_key
 # add multi repo keys
 function    debian_add_repo_keys()
     {
-        for software in " ${@}"; do
+        for software in "${@}"; do
             command_repo="apt-key"
             server_key=${server_key:-keyserver.ubuntu.com}
             command_extra=" adv --keyserver ${server_key} --recv-keys"
