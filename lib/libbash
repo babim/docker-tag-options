@@ -3049,7 +3049,9 @@ alias delete_packages_run=remove_packages_run
 # Clean packages
 function    clean_package()
     {
-        if has_value "${UNINSTALL}" || has_value "${UNINSTALLAPP}" || has_value "${@}"; then
+        UNINSTALL=${UNINSTALL:-fail}
+        UNINSTALLAPP=${UNINSTALLAPP:-fail}
+        if ! check_value_false "${UNINSTALL}" || ! check_value_false "${UNINSTALLAPP}" || has_value "${@}"; then
             software="${UNINSTALL} ${UNINSTALLAPP} ${@}"
             core_command_remove
         else
