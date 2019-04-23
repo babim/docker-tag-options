@@ -42,9 +42,7 @@ setenvironment() {
 	export DEBIAN_FRONTEND=noninteractive
 	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
 	export ADMINAPP=${ADMINAPP:-true}
-	if [[ "$ADMINAPP";then
-		ADMINAPPALL=${ADMINAPPALL:-true}
-	fi
+	check_value_true "$ADMINAPP" && ADMINAPPALL=${ADMINAPPALL:-true}
 }
 
 # install by OS
