@@ -112,7 +112,7 @@ function export_all()
                     rsync_folder rsync_os rsync_folder_from_ssh rsync_os_from_ssh rsync_folder_to_ssh rsync_os_to_ssh \
 		            \
 		            tar_folder tar_file tar_filefolder tar_folder_ssh tar_file_ssh tar_filefolder_ssh \
-                    tar_extract tar_extract_ssh unzip_extract unzip_extract_ssh
+                    tar_extract tar_extract_ssh unzip_extract unzip_extract_ssh \
 		            \
                     scp_folder scp_to_ssh scp_from_ssh tar_copy_compress_ssh tar_copy_ssh
     # Function Install
@@ -120,7 +120,7 @@ function export_all()
                     install_package install_package_run install_packages install_packages_run \
 		            \
 		            core_command_debian_repo debian_add_repo debian_add_repos debian_add_repo_key debian_add_repo_keys \
-		            debian_list_repo_key debian_remove_repo_key debian_remove_repo_keys
+		            debian_list_repo_key debian_remove_repo_key debian_remove_repo_keys \
                     \
 		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
                     install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
