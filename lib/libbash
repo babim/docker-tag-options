@@ -535,10 +535,10 @@ function    core_command_check_value()
     {
         object_check=$(echo ${object_check} | tr 'A-Z' 'a-z')
         say "checking value of ${object_check}.."
-        if [[ $object_check == "true"       || $object_check == "y" || $object_check == "yes"   || $object_check == "on" ]]; then
+        if [[ $object_check == "true"       || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
             say "value - $object_check - is true"
             return ${object_check_mode_true}
-        elif [[ $object_check == "false"    || $object_check == "n" || $object_check == "no"    || $object_check == "off" ]]; then
+        elif [[ $object_check == "false"    || $object_check == "n" || $object_check == "no" || $object_check == "off" ]]; then
             say "value - $object_check - is false"
             return ${object_check_mode_false}
         elif [[ -z ${object_check} ]]; then
@@ -555,7 +555,7 @@ function    check_value_true()
         object_check_mode_true=0
         object_check_mode_false=1
         object_check=${1}
-            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
+            core_command_check_value                    && return $TRUE         || return $FALSE
     }
 # check multi value true
 function    check_value_trues()
@@ -563,7 +563,7 @@ function    check_value_trues()
         object_check_mode_true=0
         object_check_mode_false=1
         for object_check in ${@}; do
-            core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
+            core_command_check_value                    && return $TRUE         || return $FALSE
         done
     }
 # check multi value true just say not return
@@ -787,13 +787,13 @@ function    get_osname()
 # check debian need update
 function    check_debian_need_update()
     {
-        [[ ! -z /var/lib/apt/lists/ ]] && return $TRUE || return $FALSE
+        [[ ! -z /var/lib/apt/lists/ ]]  && return $TRUE     || return $FALSE
     }
 
 # release name
-[[ -f /etc/debian_version ]]    && export release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
+[[ -f /etc/debian_version ]]            && export release=$(cat /etc/debian_version|grep -o [0-9]|head -n1)
 # codename
-[[ -f /etc/os-release ]]        && export codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
+[[ -f /etc/os-release ]]                && export codename="$(cat /etc/os-release |grep VERSION= |cut -f 2 -d \(|cut -f 1 -d \))"
 
 
     ####### Get architecture #######
@@ -1219,7 +1219,7 @@ function    check_files_special_character()
 function    check_files_special_character_say()
     {
         for filefolder in "${@}"; do
-            check_file_special_character ${filefolder} && say "File: ${filefolder} is special character." || say_warning "File: ${filefolder} does not special character."
+            check_file_special_character ${filefolder}  && say "File: ${filefolder} is special character." || say_warning "File: ${filefolder} does not special character."
         done
             return $TRUE
     }

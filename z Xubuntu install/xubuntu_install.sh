@@ -41,7 +41,7 @@ download_option
 setenvironment() {
 	export DEBIAN_FRONTEND=noninteractive
 	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install"
-	export ADMINAPP=${ADMINAPP:-true}
+	ADMINAPP=${ADMINAPP:-true}
 	check_value_true "$ADMINAPP" && ADMINAPPALL=${ADMINAPPALL:-true}
 }
 
