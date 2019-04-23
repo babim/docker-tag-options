@@ -2753,16 +2753,16 @@ alias debian_delete_repokeys=debian_remove_repo_keys
 # add repo
 function    debian_add_repo()
     {
-        software=" ${1} -y"
+        software="${1}"
         command_repo="add-apt-repository"
-        command_extra=" ppa:"
+        command_extra=" -y ppa:"
             core_command_debian_repo
     }
 
 # add multi repo
 function    debian_add_repos()
     {
-        for software in " ${@}"; do
+        for software in "${@}"; do
             command_repo="add-apt-repository"
                 core_command_debian_repo
         done
@@ -2771,7 +2771,7 @@ function    debian_add_repos()
 # remove repo
 function    debian_remove_repo()
     {
-        software=" ${1} -y"
+        software="${1}"
         command_repo="add-apt-repository --remove"
             core_command_debian_repo
     }
@@ -2779,7 +2779,7 @@ function    debian_remove_repo()
 # remove multi repo
 function    debian_remove_repos()
     {
-        for software in " ${@}"; do
+        for software in "${@}"; do
             command_repo="add-apt-repository --remove"
                 core_command_debian_repo
         done
