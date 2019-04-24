@@ -774,6 +774,11 @@ function    get_osname()
                 export osname="rhel.5"
                 return $TRUE
             fi
+        elif [[ -e /etc/alpine-release ]]; then
+                echo "alpine linux"
+                export osname="alpine.$(cat /etc/alpine-release)"
+                return $TRUE
+        fi
 
             say "Linux specific platform name and version could not be detected: UName = $uname"
             return $FALSE
