@@ -2959,6 +2959,7 @@ function    clean_os()
     get_osname
  	if [[ -f /etc/redhat-release ]] || [[ $osname == "rhel"* ]]; then
         ${sudo_command}yum clean all
+        ${sudo_command}rm -rf /var/cache/yum
         say "Clean OS done"
  	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]] || [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
         ${sudo_command}apt-get autoremove -y
