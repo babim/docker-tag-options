@@ -1,5 +1,12 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
 export CROSSOVER=${CROSSOVER:-18.5.0-1}
-	apt-get install -y gcc-5-base:i386 gcc-6-base:i386 krb5-locales libavahi-client3:i386 \
+	install_package gcc-5-base:i386 gcc-6-base:i386 krb5-locales libavahi-client3:i386 \
 	libavahi-common-data:i386 libavahi-common3:i386 libbsd0:i386 libc6:i386 \
 	libcomerr2:i386 libcups2:i386 libdbus-1-3:i386 libdrm-amdgpu1:i386 \
 	libdrm-intel1:i386 libdrm-nouveau2:i386 libdrm-radeon1:i386 libdrm2:i386 \
@@ -16,9 +23,11 @@ export CROSSOVER=${CROSSOVER:-18.5.0-1}
 	libxcb-glx0:i386 libxcb-present0:i386 libxcb-sync1:i386 libxcb1:i386 \
 	libxcursor1:i386 libxdamage1:i386 libxdmcp6:i386 libxext6:i386 \
 	libxfixes3:i386 libxi6:i386 libxrandr2:i386 libxrender1:i386 \
-	libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386 && \
-	cd /tmp && wget http://media.matmagoc.com/crossover_${CROSSOVER}.deb && dpkg -i crossover_${CROSSOVER}.deb && \
-	apt-get install -f -y && rm -rf /tmp/crossover*
+	libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386
+	cd /tmp
+	FILETEMP=crossover_${CROSSOVER}.deb
+		$download_save http://media.matmagoc.com/$FILETEMP && install_package $FILETEMP
+		remove_filefolder /tmp/crossover*
 	FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
-	[[ -f $FILETEMP ]] && rm -f $FILETEMP
-	wget -O $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so
+		remove_file $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so

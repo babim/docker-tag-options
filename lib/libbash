@@ -622,7 +622,7 @@ function    download_with_wget()
         FILE_TEMP="${1}"
         [[ -f $FILE_TEMP ]] && rm -f $FILE_TEMP
             say "Downloading ..."
-            wget -O $FILE_TEMP --no-check-certificate "${2}"
+            wget -O $FILE_TEMP "${2}"
     }
 function    download_option()
     {
@@ -728,7 +728,7 @@ function    run_url()
             # bash <(curl -s ${1})
             curl -s ${1} | bash
         elif machine_has "wget"; then
-            wget --no-check-certificate -qO - ${1} | bash
+            wget -qO - ${1} | bash
         else
             say_err "without download tool"
             sleep 3
@@ -3216,7 +3216,7 @@ alias del_dmidecode=remove_dmidecode
 # remove download tool
 function    remove_download_tool()
     {
-       remove_package_run $DOWNLOAD_TOOL
+       remove_packages_run $DOWNLOAD_TOOL
     }
 
 alias delete_download_tool=remove_download_tool
