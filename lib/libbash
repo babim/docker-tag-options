@@ -2689,7 +2689,7 @@ function    debian_add_repo_key()
         software="${1}"
         command_repo="apt-key"
         server_key=keyserver.ubuntu.com
-        command_extra=" adv --keyserver ${server_key} --recv-keys"
+        command_extra=" adv --no-tty --recv-keys --keyserver ${server_key}"
             if [[ $software == "http"* ]]; then
                 machine_has curl && curl -s ${software} | apt-key add - || wget --quiet -O - ${software} | apt-key add -
             else

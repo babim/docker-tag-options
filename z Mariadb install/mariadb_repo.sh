@@ -50,8 +50,8 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		if [[ "$osname" == "wheezy" ]] || [[ "$OSDEB" == "trusty" ]];then
 			install_package python-software-properties
 		fi
-		apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
-		apt-key adv --no-tty --recv-keys --keyserver keyserver.ubuntu.com 0xCBCB082A1BB943DB
+		debian_add_repo_key 0xF1656F24C74CD1D8
+		debian_add_repo_key 0xCBCB082A1BB943DB
 		# set version
 		if [[ "$OSDEB" == "trusty" ]];then
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/ubuntu $OSDEB main"
@@ -63,7 +63,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		install_package lsb-release gnupg
 		FILETEMP=mysql-apt-config_0.8.12-1_all.deb
 			$download_save $FILETEMP https://dev.mysql.com/get/$FILETEMP
-			dpkg -i $FILETEMP && remove_file $FILETEMP keystrokes
+			install_package $FILETEMP && remove_file $FILETEMP keystrokes
 		export MYSQLDEFAULT=8.0
 		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
 			sed -i "s/${MYSQLDEFAULT}/5.6/" /etc/apt/sources.list.d/mysql.list

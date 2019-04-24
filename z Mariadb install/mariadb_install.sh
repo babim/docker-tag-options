@@ -48,8 +48,8 @@ finish() {
 ## Supervisor
 	install_supervisor
 	### Supervisor config
-		check_folder /var/log/supervisor 	|| mkdir -p /var/log/supervisor/
-		check_folder /etc/supervisor/conf.d 	|| mkdir -p /etc/supervisor/conf.d/
+		create_folder /var/log/supervisor/
+		create_folder /etc/supervisor/conf.d/
 	### download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
 		remove_file /$FILETEMP
