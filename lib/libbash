@@ -748,44 +748,49 @@ function    get_osname()
 
     local uname=$(uname)
     if [[ "$uname" = "Darwin" ]]; then
-        echo "osx"
-        return $TRUE
+        say     "osx"
+        return  $TRUE
     elif [[ "$uname" = "FreeBSD" ]]; then
-        echo "freebsd"
-        return $TRUE
+        say     "freebsd"
+        return  $TRUE
     elif [[ "$uname" = "Linux" ]]; then
         if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]]; then
             . /etc/os-release
-            echo "$ID.$VERSION_ID"
-            export osname="$ID.$VERSION_ID"
-            return $TRUE
+            say     "$ID.$VERSION_ID"
+            export  osname="$ID.$VERSION_ID"
+            return  $TRUE
         elif [[ -e /etc/redhat-release ]]; then
             local redhatRelease=$(</etc/redhat-release)
-            if [[ $redhatRelease == "CentOS release 6."*    || $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
-                echo "rhel.6"
-                export osname="rhel.6"
-                return $TRUE
-            elif [[ $redhatRelease == "CentOS release 7."*  || $redhatRelease == "Red Hat Enterprise Linux Server release 7."* ]]; then
-                echo "rhel.7"
+            if [[ $redhatRelease == "CentOS release 6."*    || $redhatRelease == "CentOS Linux release 6."* || $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
+                say     "rhel.6"
+                export  osname="rhel.6"
+                return  $TRUE
+            elif [[ $redhatRelease == "CentOS release 7."*  || $redhatRelease == "CentOS Linux release 6."* || $redhatRelease == "Red Hat Enterprise Linux Server release 7."* ]]; then
+                say     "rhel.7"
                 export osname="rhel.7"
-                return $TRUE
-            elif [[ $redhatRelease == "CentOS release 5."*  || $redhatRelease == "Red Hat Enterprise Linux Server release 5."* ]]; then
-                echo "rhel.5"
+                return  $TRUE
+            elif [[ $redhatRelease == "CentOS release 5."*  || $redhatRelease == "CentOS Linux release 5."* || $redhatRelease == "Red Hat Enterprise Linux Server release 5."* ]]; then
+                say     "rhel.5"
                 export osname="rhel.5"
-                return $TRUE
+                return  $TRUE
+            else
+                say "Red hat but cannot get release version"
+                export osname="rhel"
+                return  $TRUE
             fi
+
         elif [[ -e /etc/alpine-release ]]; then
-                echo "alpine linux"
-                export osname="alpine.$(cat /etc/alpine-release)"
-                return $TRUE
+                say     "alpine linux"
+                export  osname="alpine.$(cat /etc/alpine-release)"
+                return  $TRUE
         fi
 
-            say "Linux specific platform name and version could not be detected: UName = $uname"
-            return $FALSE
+            say     "Linux specific platform name and version could not be detected: UName = $uname"
+            return  $FALSE
         fi
 
     say_err "OS name could not be detected: UName = $uname"
-    return $FALSE
+    return  $FALSE
     fi    
     }
 
