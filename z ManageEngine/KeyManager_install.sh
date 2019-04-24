@@ -13,7 +13,7 @@ if [[ "x$(id -u)" != 'x0' ]]; then
 fi
 
 # set MACHINE_TYPE
-MACHINE_TYPE=`uname -m`
+MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 [[ ${MACHINE_TYPE} == 'x86_64' ]] && echo "Your server is x86_64 system" || echo "Your server is x86 system"
 
 setenvironment() {

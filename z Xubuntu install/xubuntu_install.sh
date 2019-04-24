@@ -66,7 +66,7 @@ if [[ -f /etc/lsb-release ]]; then
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
-		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer enrampa ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer ristretto catfish thunar
     
 	# install admin app
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
