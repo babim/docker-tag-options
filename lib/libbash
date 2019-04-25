@@ -2879,9 +2879,9 @@ function    install_gosu()
         get_osname
         say "Detect OS! Set path bin for gosu"
             if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
-                FILE_TEMP=/usr/local/bin/gosu
+                export FILE_TEMP=/usr/local/bin/gosu
             elif [[ $osname == "rhel"* || $osname == "opensuse"* ]]; then
-                FILE_TEMP=/usr/bin/gosu
+                export FILE_TEMP=/usr/bin/gosu
             else
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
@@ -2958,13 +2958,13 @@ function    install_php_composer()
 function    clean_os()
     {
         say "Cleaning OS cache.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command=""  || sudo_command="sudo "
     get_osname
- 	if [[ -f /etc/redhat-release ]] || [[ $osname == "rhel"* ]]; then
+ 	if [[ -f /etc/redhat-release    || $osname == "rhel"* ]]; then
         ${sudo_command}yum clean all
         ${sudo_command}rm -rf /var/cache/yum
         say "Clean OS done"
- 	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]] || [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
+ 	elif [[ -f /etc/lsb-release     || -f /etc/debian_version || $osname == "ubuntu"* || $osname == "debian"* ]]; then
         ${sudo_command}apt-get autoremove -y
         ${sudo_command}apt-get autoclean
         ${sudo_command}apt-get clean
@@ -2973,7 +2973,7 @@ function    clean_os()
         ${sudo_command}rm -rf /var/lib/apt/lists/*
         ${sudo_command}rm -f /etc/dpkg/dpkg.cfg.d/02apt-speedup
         say "Clean OS done"
- 	elif [[ -f /etc/alpine-release ]] || [[ $osname == "alpine"* ]]; then
+ 	elif [[ -f /etc/alpine-release  || $osname == "alpine"* ]]; then
         say "Clean OS done"
     elif [[ $osname == "opensuse"* ]]; then
         ${sudo_command}zypper clean
