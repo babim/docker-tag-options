@@ -2873,10 +2873,11 @@ function    install_gosu()
     GOSU_VERSION=1.11
     # install gosu on your OS linux
     if machine_has gosu; then
-        say "GOSU installed."
+        say_warning "GOSU installed."
     else
         # osname=$(get_osname)
         get_osname
+        say "Detect OS! Set path bin for gosu"
             if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu
             elif [[ $osname == "rhel"* || $osname == "opensuse"* ]]; then
@@ -2885,7 +2886,9 @@ function    install_gosu()
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
             fi
+        say "downloading gosu.."
         $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
+        say "checking gosu.."
         [[ -f ${FILE_TEMP} ]]           && say "download success"                   || return $FALSE
         chmod +x ${FILE_TEMP}           && gosu nobody true
         say "GOSU installed."
