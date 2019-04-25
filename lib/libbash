@@ -3216,7 +3216,7 @@ alias del_dmidecode=remove_dmidecode
 # remove download tool
 function    remove_download_tool()
     {
-       remove_packages_run $DOWNLOAD_TOOL
+       remove_package $DOWNLOAD_TOOL
     }
 
 alias delete_download_tool=remove_download_tool
