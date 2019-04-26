@@ -134,6 +134,7 @@ installatlassian() {
 		set_filefolder_mod 		755 "${SOFT_INSTALL}/start-${SOFT}.sh"				&& say "set done" || say_warning "file/folder not exist"
 
 		say " - Install done - "
+}
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh

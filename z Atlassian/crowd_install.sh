@@ -123,7 +123,6 @@ installatlassian() {
 		  				--delete "Server/Service/Engine/Host/@xmlValidation" \
 		 				--delete "Server/Service/Engine/Host/@xmlNamespaceAware" \
 						"${FILETEMP}" || say_warning "${FILETEMP} does not exist"
-	fi
 
 	# xmlstarlet end
 		check_file "${FILETEMP}"	&& touch -d "@0" "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
