@@ -105,12 +105,12 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 	## set permission path
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/conf"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/logs"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/temp"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/work"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_HOME}"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/conf"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/logs"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/temp"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/apache-tomcat/work"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_HOME}"				&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}"			&& say "set done" || say_warning "file/folder not exist"
 
 	FILETEMP="${SOFT_INSTALL}/apache-tomcat/bin/setenv.sh"
 		say "sed ${FILETEMP}..."	

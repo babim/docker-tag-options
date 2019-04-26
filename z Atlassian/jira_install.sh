@@ -105,14 +105,14 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 	## set permission path
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 
 		FILETEMP="${SOFT_INSTALL}/bin/check-java.sh"
 		say "sed ${FILETEMP}..."	
