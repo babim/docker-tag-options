@@ -53,7 +53,7 @@ prepareconfig() {
 
 # set environment
 setenvironment() {
-	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
 	export SOFT=plex
 }
 

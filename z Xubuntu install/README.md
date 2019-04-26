@@ -5,7 +5,7 @@
 `apt-get install wget bash -y`
 
 ## install xubuntu
-`wget --no-check-certificate -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install/xubuntu_install.sh | bash`
+`wget -O - https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Xubuntu%20install/xubuntu_install.sh | bash`
 
 ## Set environment
 ```

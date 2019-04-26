@@ -144,7 +144,7 @@ alpine-cron-start() {
 	apk add --no-cache wget
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	apk del --purge wget
 	fi
 }
@@ -186,7 +186,7 @@ alpine-ssh-start() {
 	apk add --no-cache wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	apk del --purge wget
 	fi
 }
@@ -268,7 +268,7 @@ redhat-cron-start() {
 	yum install -y wget
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	yum remove -y wget
 	fi
 }
@@ -296,7 +296,7 @@ redhat-ssh-start() {
 	yum install -y wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	yum remove -y wget
 	fi
 }
@@ -358,7 +358,7 @@ ubuntu-cron-start() {
 	apt-get install wget -y
 	FILETEMP=/etc/supervisor/conf.d/cron.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/cron.conf
 	apt-get purge -y wget
 	fi
 }
@@ -399,7 +399,7 @@ ubuntu-ssh-start() {
 	apt-get install -y wget
 	FILETEMP=/etc/supervisor/conf.d/ssh.conf
 		[[ -f $FILETEMP ]] && rm -f $FILETEMP
-		wget --no-check-certificate -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
+		wget -O $FILETEMP $DOWN_URL/supervisor/conf.d/ssh.conf
 	apt-get purge -y wget
 	fi
 }

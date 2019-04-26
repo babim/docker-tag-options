@@ -56,7 +56,7 @@ setenvironment() {
 	LS_TARBAL=${LS_TARBAL:-"${LS_DOWNLOAD_URL}/logstash-${LS_VERSION}.tar.gz"}
 	KB_TARBAL=${KB_TARBAL:-"${KB_DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/etc/logstash"}
-	export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }
 # download config files
 downloadentrypoint() {

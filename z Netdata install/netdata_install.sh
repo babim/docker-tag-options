@@ -117,7 +117,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# download docker entrypoint
 		downloadentry
 	# del dev tool
-		wget --no-check-certificate -O - $DOWN_URL/netdata_clean.sh | bash
+		wget -O - $DOWN_URL/netdata_clean.sh | bash
 	# symlink access log and error log to stdout/stderr
 		symlinkcreate
 # OS - redhat

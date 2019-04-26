@@ -37,7 +37,7 @@ download_option
 # need root to run
 	require_root
 
-export DOWN_URL="--no-check-certificate https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Postgresql%20install"
+export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Postgresql%20install"
 
 # install by OS
 echo 'Check OS'
