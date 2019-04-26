@@ -124,12 +124,12 @@ installatlassian() {
 	# fix path start file
 	FILETEMP="${SOFT_INSTALL}/bin/start_${SOFT}.sh"
 		say "checking ${FILETEMP}..."
-		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
-		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"	|| say_warning "file/folder not exist"
+		set_filefolder_mod 		755 "${SOFT_INSTALL}/bin/start-${SOFT}.sh"			&& say "set done" || say_warning "file/folder not exist"
 	FILETEMP="${SOFT_INSTALL}/start_${SOFT}.sh"
 		say "checking ${FILETEMP}..."
-		check_file "${FILETEMP}"	&& "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"
-		check_file "${FILETEMP}"	&& chmod 755 "${SOFT_INSTALL}/start-${SOFT}.sh"
+		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"		|| say_warning "file/folder not exist"
+		set_filefolder_mod 		755 "${SOFT_INSTALL}/start-${SOFT}.sh"				&& say "set done" || say_warning "file/folder not exist"
 
 		say " - Install done - "
 }
