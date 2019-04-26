@@ -648,7 +648,7 @@ function    download_option()
             sleep 3
             exit $FALSE
         fi
-        if machine_has "curl" && machine_has "wget"; then export DOWNLOAD_TOOL="wget curl";fi
+        if machine_has "curl" && machine_has "wget"; then export DOWNLOAD_TOOL="curl wget";fi
     }
 
 
@@ -2669,7 +2669,7 @@ function    core_command_debian_repo()
         command_extra=${command_extra:-""}
         software=${software:-""}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                machine_has ${command_repo} || ${sudo_command}install_package software-properties-common
+                machine_has ${command_repo} || ${sudo_command}install_package software-properties-common gnupg2
                 ${sudo_command}${command_repo}${command_extra}${software}
             elif [[ $osname == "rhel"* ]]; then
                 say "You using Redhat/Centos and cannot use"
