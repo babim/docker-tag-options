@@ -165,7 +165,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# visible code
 		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
-		remove_package $DOWNLOAD_TOOL
+		remove_download_tool
 		clean_os
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
@@ -183,7 +183,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# visible code
 		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
-		remove_package $DOWNLOAD_TOOL
+		remove_download_tool
 		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
