@@ -617,7 +617,7 @@ function    download_with_curl()
             DIR1=$(pwd)
             DIR2=$(dirname "${FILE_TEMP}") && cd $DIR2
             FILE_TEMP1=$(basename "${FILE_TEMP}")
-                curl -L "${2}" -o $FILE_TEMP1
+                curl -L ${2} -o $FILE_TEMP1
             cd $DIR1
     }
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
@@ -2527,7 +2527,7 @@ function    install_epel()
         say "EPEL Repo not found"
         # osname=$(get_osname)
         get_osname
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "rhel.6" ]]; then 
                 ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
             elif [[ $osname == "rhel.7" ]]; then 
@@ -2548,7 +2548,7 @@ function    install_epel()
 # remove epel repo
 function    remove_epel()
     {
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
         if ! check_epel; then
             say "EPEL Repo not found"
             return $TRUE
@@ -2566,7 +2566,7 @@ function    update_os()
         # osname=$(get_osname)
         get_osname
         say "install ${software}.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                 check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
                 ${sudo_command}apt-get dist-upgrade -y
@@ -2591,7 +2591,7 @@ function    core_command_install()
         # osname=$(get_osname)
         get_osname
         say "install ${software}.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                 ${sudo_command}check_debian_need_update && ${sudo_command}apt-get update        || say "no need update repo"
                 if [[ $software == *".deb" ]]; then
@@ -2665,7 +2665,7 @@ function    core_command_debian_repo()
         # osname=$(get_osname)
         get_osname
         say "add/delete repo ${software}.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
         command_extra=${command_extra:-""}
         software=${software:-""}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
@@ -2803,7 +2803,7 @@ function    install_desktop_minimal()
         # osname=$(get_osname)
         get_osname
         say "install ${software}.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                 check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
                 ${sudo_command}apt-get install -y --no-install-recommends xubuntu-desktop
@@ -2910,7 +2910,7 @@ function    install_sudo()
 function    install_js-yaml()
     {
        JSYAML_VERSION=3.10.0
-       is_root && sudo_command="" || sudo_command="sudo "
+       is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
        ${sudo_command}${download_save} /js-yaml.js "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js"
     }
 
@@ -2962,7 +2962,7 @@ function    install_php_composer()
 function    clean_os()
     {
         say "Cleaning OS cache.."
-        is_root && sudo_command=""  || sudo_command="sudo "
+        is_root && sudo_command=""  || sudo_command=${sudo_command:-"sudo "}
     get_osname
  	if [[ -f /etc/redhat-release    || $osname == "rhel"* ]]; then
         ${sudo_command}yum clean all
@@ -2995,7 +2995,7 @@ function    core_command_remove()
         # osname=$(get_osname)
         get_osname
         say "remove ${software}.."
-        is_root && sudo_command="" || sudo_command="sudo "
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                 ${sudo_command}apt-get purge -y ${software}
                 ${sudo_command}apt-get autoremove -y
@@ -3084,7 +3084,7 @@ function    remove_desktop_minimal()
         # osname=$(get_osname)
         get_osname
         say "install ${software}.."
-        is_root && sudo_command=""      || sudo_command="sudo "
+        is_root && sudo_command=""      || sudo_command=${sudo_command:-"sudo "}
             if  [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
                 ${sudo_command}apt-get purge -y xubuntu-desktop
                 ${sudo_command}apt-get purge -y xinit xterm firefox
