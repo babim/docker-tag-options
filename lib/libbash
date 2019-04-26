@@ -612,15 +612,19 @@ function    check_value_falses_say()
 function    download_with_curl()
     {
         FILE_TEMP="${1}"
-        [[ -f "${FILE_TEMP}" ]] && rm -f "${FILE_TEMP}"
+        [[ -f $FILE_TEMP ]]     && rm -f $FILE_TEMP
             echo "Downloading ..."
-            curl -Ls "${2}" -o "${FILE_TEMP}"
+            DIR1=$(pwd)
+            DIR2=$(dirname "${FILE_TEMP}") && cd $DIR2
+            FILE_TEMP1=$(basename "${FILE_TEMP}")
+                curl -L "${2}" -o $FILE_TEMP1
+            cd $DIR1
     }
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_wget()
     {
         FILE_TEMP="${1}"
-        [[ -f $FILE_TEMP ]] && rm -f $FILE_TEMP
+        [[ -f $FILE_TEMP ]]     && rm -f $FILE_TEMP
             say "Downloading ..."
             wget -O $FILE_TEMP "${2}"
     }
@@ -629,7 +633,7 @@ function    download_option()
         say_warning "Check and set download tool..."
         if machine_has "curl"; then
             # download_tool for command download. use like this $download_tool
-            export download_tool="curl -Ls"
+            export download_tool="curl -L"
             # DOWNLOAD_TOOL use when remove download tool package
             export DOWNLOAD_TOOL="curl"
             export download_save=download_with_curl
