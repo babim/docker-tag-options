@@ -2902,6 +2902,7 @@ function    install_java_jre()
 function    install_gosu()
     {
     GOSU_VERSION=1.11
+    gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)
     # install gosu on your OS linux
     if machine_has gosu; then
         say_warning "GOSU installed."
@@ -2909,29 +2910,23 @@ function    install_gosu()
         # osname=$(get_osname)
         get_osname
         say "Detect OS! Set path bin for gosu"
-            if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
+            if [[ $osname == "ubuntu"*  || $osname == "debian"* || $osname == "alpine"* ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu
-            elif [[ $osname == "rhel"* || $osname == "opensuse"* ]]; then
+                say "downloading gosu.."
+                machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
+                mv gosu /usr/local/bin/gosu
+            elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
+                say "downloading gosu.."
+                machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
+                mv gosu /usr/bin/gosu
             else
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
             fi
-        say "downloading gosu.."
-        gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)
-        
-        if machine_has "curl"; then
-            DIR1=$(pwd)
-            DIR2=$(dirname "${FILE_TEMP}")
-            has_value $DIR2 && cd $DIR2 || say "This file is not have path"
-            FILE_TEMP1=$(basename "${FILE_TEMP}")
-                curl -L $gosu_url -o $FILE_TEMP1
-            cd $DIR1
-        elif machine_has "wget"; then
-            wget -O ${FILE_TEMP} $gosu_url
-        fi
+
         say "checking gosu.."
-        [[ -f ${FILE_TEMP} ]]           && say "download success"                   || return $FALSE
+        [[ -f ${FILE_TEMP} ]]           && say "download success"       || return $FALSE
         chmod +x ${FILE_TEMP}           && gosu nobody true
         say "GOSU installed."
     fi
