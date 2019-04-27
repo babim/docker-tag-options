@@ -610,7 +610,7 @@ function    check_values_false_say()
 ####### Download file #######
 # download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_curl()
-        [[ -z $FILE_TEMP ]]     && FILE_TEMP=${1}   || FILE_TEMP=${FILE_TEMP}
+        FILE_TEMP=${1}
         say "Checking $FILE_TEMP .."
         if [[ -z $FILE_TEMP ]]; then
             say_err "Must have filename to download!"
@@ -637,7 +637,7 @@ function    download_with_curl()
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_wget()
     {
-        [[ -z $FILE_TEMP ]]     && FILE_TEMP=${1}   || FILE_TEMP=${FILE_TEMP}
+        FILE_TEMP=${1}
         if [[ -z $FILE_TEMP ]]; then
             say_err "Must have filename to download!"
             return $FALSE
@@ -2910,15 +2910,26 @@ function    install_gosu()
         get_osname
         say "Detect OS! Set path bin for gosu"
             if [[ $osname == "ubuntu"* || $osname == "debian"* || $osname == "alpine"* ]]; then 
-                export FILE_TEMP=/usr/local/bin/gosu
+                FILE_TEMP=/usr/local/bin/gosu
             elif [[ $osname == "rhel"* || $osname == "opensuse"* ]]; then
-                export FILE_TEMP=/usr/bin/gosu
+                FILE_TEMP=/usr/bin/gosu
             else
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
             fi
         say "downloading gosu.."
-        $download_save ${FILE_TEMP} "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)"
+        gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)
+        
+        if machine_has "curl"; then
+            DIR1=$(pwd)
+            DIR2=$(dirname "${FILE_TEMP}")
+            has_value $DIR2 && cd $DIR2 || say "This file is not have path"
+            FILE_TEMP1=$(basename "${FILE_TEMP}")
+                curl -L $gosu_url -o $FILE_TEMP1
+            cd $DIR1
+        elif machine_has "wget"; then
+            wget -O ${FILE_TEMP} $gosu_url
+        fi
         say "checking gosu.."
         [[ -f ${FILE_TEMP} ]]           && say "download success"                   || return $FALSE
         chmod +x ${FILE_TEMP}           && gosu nobody true
