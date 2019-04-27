@@ -2914,12 +2914,12 @@ function    install_gosu()
                 FILE_TEMP=/usr/local/bin/gosu
                 say "downloading gosu.."
                 machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
-                mv gosu /usr/local/bin/gosu
+                mv gosu ${FILE_TEMP}
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
                 say "downloading gosu.."
                 machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
-                mv gosu /usr/bin/gosu
+                mv gosu ${FILE_TEMP}
             else
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
