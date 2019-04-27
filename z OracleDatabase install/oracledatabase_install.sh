@@ -44,12 +44,7 @@ if [ -f /etc/redhat-release ]; then
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
 	export HOST_DOWN="http://media.matmagoc.com/oracle"
 	# set uninstall app
-	export UNINSTALL="${DOWNLOAD_TOOL}"
-	# set install file
-	export INSTALL_FILE_1=${INSTALL_FILE_1:-"false"}
-	export INSTALL_FILE_2=${INSTALL_FILE_2:-"false"}
-	export INSTALL_FILE_3=${INSTALL_FILE_3:-"false"}
-	export INSTALL_FILE_4=${INSTALL_FILE_4:-"false"}
+	export UNINSTALL=""
 	# set code
 	if [[ "$VERSION" == "12.2.0.1" ]] || [[ "$VERSION" == "12cr2" ]]; then
 		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-server-12cR2-preinstall"}
@@ -104,17 +99,17 @@ if [ -f /etc/redhat-release ]; then
 	# Download setup files
 	echo "Download setup files"
 #	cd $INSTALL_DIR/ && pwd
-	if ! check_value_false "${INSTALL_FILE_1}"; then
-		check_file "$INSTALL_DIR/$INSTALL_FILE_1" && $download_save $INSTALL_DIR/$INSTALL_FILE_1 $HOST_DOWN/$INSTALL_FILE_1 || say "File exists."
+	if has_value "${INSTALL_FILE_1}"; then
+		! check_file "$INSTALL_DIR/$INSTALL_FILE_1" && $download_save $INSTALL_DIR/$INSTALL_FILE_1 $HOST_DOWN/$INSTALL_FILE_1 || say "File exists."
 	fi
-	if ! check_value_false "${INSTALL_FILE_2}"; then
-		check_file "$INSTALL_DIR/$INSTALL_FILE_2" && $download_save $INSTALL_DIR/$INSTALL_FILE_2 $HOST_DOWN/$INSTALL_FILE_2 || say "File exists."
+	if has_value "${INSTALL_FILE_2}"; then
+		! check_file "$INSTALL_DIR/$INSTALL_FILE_2" && $download_save $INSTALL_DIR/$INSTALL_FILE_2 $HOST_DOWN/$INSTALL_FILE_2 || say "File exists."
 	fi
-	if ! check_value_false "${INSTALL_FILE_3}"; then
-		check_file "$INSTALL_DIR/$INSTALL_FILE_3" && $download_save $INSTALL_DIR/$INSTALL_FILE_3 $HOST_DOWN/$INSTALL_FILE_3 || say "File exists."
+	if has_value "${INSTALL_FILE_3}"; then
+		! check_file "$INSTALL_DIR/$INSTALL_FILE_3" && $download_save $INSTALL_DIR/$INSTALL_FILE_3 $HOST_DOWN/$INSTALL_FILE_3 || say "File exists."
 	fi
-	if ! check_value_false "${INSTALL_FILE_4}"; then
-		check_file "$INSTALL_DIR/$INSTALL_FILE_4" && $download_save $INSTALL_DIR/$INSTALL_FILE_4 $HOST_DOWN/$INSTALL_FILE_4 || say "File exists."
+	if has_value "${INSTALL_FILE_4}"; then
+		! check_file "$INSTALL_DIR/$INSTALL_FILE_4" && $download_save $INSTALL_DIR/$INSTALL_FILE_4 $HOST_DOWN/$INSTALL_FILE_4 || say "File exists."
 	fi
 	# Install prepare setup
 	echo "Install prepare setup"

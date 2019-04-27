@@ -29,8 +29,44 @@ fi
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
+# set ID docker run
+export auid=${auid:-999}
+export agid=${agid:-$auid}
+export auser=${auser:-mysql}
+export aguser=${aguser:-$auser}
+
+	if [[ -z "${auid}" ]] || [[ "$auid" != "999" ]]; then
+	  echo "start"
+	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
+		echo "run in user root"
+		export auser=root
+	elif id $auid >/dev/null 2>&1; then
+	        echo "UID exists. Please change UID"
+	else
+		if id $auser >/dev/null 2>&1; then
+		        echo "user exists"
+			if [[ -f /etc/alpine-release ]]; then
+			# usermod alpine
+				deluser $auser && delgroup $aguser
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# usermod ubuntu/debian
+				usermod -u $auid $auser
+				groupmod -g $agid $aguser
+			fi
+		else
+			if [[ -f /etc/alpine-release ]]; then
+			# create user alpine
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# create user ubuntu/debian
+				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
+			fi
+		fi
+	fi
+
 # fix permission data folder
-if [ -d "/var/lib/mysql" ]; then chown -R mysql:mysql /var/lib/mysql; fi
+if [ -d "/var/lib/mysql" ]; then chown -R $auser:$aguser /var/lib/mysql; fi
 
 # if command starts with an option, prepend mysqld
 if [ "${1:0:1}" = '-' ]; then
@@ -95,8 +131,8 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" -a "$(id -u)" = '0' ]; then
 	_check_config "$@"
 	DATADIR="$(_get_config 'datadir' "$@")"
 	mkdir -p "$DATADIR"
-	chown -R mysql:mysql "$DATADIR"
-	exec gosu mysql "$BASH_SOURCE" "$@"
+	chown -R $auser:$aguser "$DATADIR"
+	exec gosu $auser "$BASH_SOURCE" "$@"
 fi
 
 if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then

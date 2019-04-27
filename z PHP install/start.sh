@@ -7,105 +7,26 @@
 
 export TERM=xterm
 
-# copy config supervisor
-if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
-if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/supervisor
-    fi
-fi
-
-# copy config apache
-if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
-if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/apache2
-    fi
-fi
-
-# copy config nginx
-if [ -d "/etc/nginx" ] && [ -d "/etc-start/nginx" ];then
-	if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/nginx
-    fi
-fi
-
-# copy default www
-if [ -d "/var/www" ] && [ -d "/etc-start/www" ]; then
-if [ -z "`ls /var/www`" ]; then
-	cp -R /etc-start/www/* /var/www
-	chown -R www-data:www-data /var/www
-fi
-fi
-
-# copy config php
-if [ -d "/etc/php" ] && [ -d "/etc-start/php" ]; then
-if [ -z "`ls /etc/php`" ]; then 
-	cp -R /etc-start/php/* /etc/php
-    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-       echo "setup SYNOLOGY environment"
-       chmod -R 777 /etc/php
-    fi
-fi
-fi
-
-# copy default litespeed
-if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
-	# copy all
-	if [ -z "`ls /usr/local/lsws`" ]; then
-		cp -R /etc-start/lsws/* /usr/local/lsws
-		chmod -R 755 /usr/local/lsws
-		chown -R lsadm:lsadm /usr/local/lsws/conf
-		chown -R nobody:nogroup /usr/local/lsws/autoupdate
-		chown -R nobody:nogroup /usr/local/lsws/cachedata
-	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
-	       echo "setup SYNOLOGY environment"
-	       chmod -R 777 /usr/local/lsws
-		# set ID litespeed run
-		export auid=${auid:-33}
-		export agid=${agid:-$auid}
-		export auser=${auser:-www-data}
-		export aguser=${aguser:-$auser}
-		chown -R $auser:$aguser /usr/local/lsws/autoupdate
-		chown -R $auser:$aguser /usr/local/lsws/cachedata
-	    fi
-	else
-		# copy just missing
-		for i in `ls /etc-start/lsws`; do
-			if [ ! -d "/usr/local/lsws/$i" ] && [ -d "/etc-start/lsws/$i" ]; then
-			cp -R /etc-start/lsws/$i //usr/local/lsws
-			fi
-		done
-	fi
-fi
-
-# option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
-
 # set loop
 setphpuser() {
 #Set php user
-if [ -d "/etc/php" ]; then
-if [ -z "`ls /etc/php`" ]; then 
-	for VARIABLE in /etc/php/*
-	do
-	if [ -f "$VARIABLE/fpm/php-fpm.conf" ]; then
-	sed -i -E \
-		-e "/^user = .*/cuser = $auser" \
-		-e "/^group = .*/cgroup = $aguser" \
-	$VARIABLE/fpm/php-fpm.conf
-	sed -i -E \
-		-e "/^user = .*/cuser = $auser" \
-		-e "/^group = .*/cgroup = $aguser" \
-	$VARIABLE/fpm/pool.d/www.conf
+	if [ -d "/etc/php" ]; then
+		if [ -z "`ls /etc/php`" ]; then 
+			for VARIABLE in /etc/php/*
+			do
+			if [ -f "$VARIABLE/fpm/php-fpm.conf" ]; then
+			sed -i -E \
+				-e "/^user = .*/cuser = $auser" \
+				-e "/^group = .*/cgroup = $aguser" \
+			$VARIABLE/fpm/php-fpm.conf
+			sed -i -E \
+				-e "/^user = .*/cuser = $auser" \
+				-e "/^group = .*/cgroup = $aguser" \
+			$VARIABLE/fpm/pool.d/www.conf
+			fi
+			done
+		fi
 	fi
-	done
-fi
-fi
 }
 setapacheuser() {
 	#Set apache user
@@ -114,29 +35,32 @@ setapacheuser() {
 }
 setnginxuser() {
 #Set nginx user
-if [ -d "/etc/nginx" ]; then
-if [ -z "`ls /etc/nginx`" ]; then 
-	if [ -f "/etc/nginx/nginx.conf" ]; then
-	sed -i -E \
-		-e "/^user  .*/cuser  $auser" \
-		-e "/^group  .*/group  $aguser" \
-	/etc/nginx/nginx.conf
+	if [ -d "/etc/nginx" ]; then
+		if [ -z "`ls /etc/nginx`" ]; then 
+			if [ -f "/etc/nginx/nginx.conf" ]; then
+			sed -i -E \
+				-e "/^user  .*/cuser  $auser" \
+				-e "/^group  .*/group  $aguser" \
+			/etc/nginx/nginx.conf
+			fi
+		fi
 	fi
-fi
-fi
 }
 setlitespeeduser() {
 #Set litespeed user
-if [ -d "/usr/local/lsws" ]; then
-if [ -z "`ls /usr/local/lsws/conf`" ]; then 
-	if [ -f "/usr/local/lsws/conf/$i" ]; then
-	sed -i -E \
-		-e "/^user  .*/cuser  $auser" \
+	if [ -d "/usr/local/lsws" ]; then
+		if [ -z "`ls /usr/local/lsws/conf`" ]; then 
+			if [ -f "/usr/local/lsws/conf/$i" ]; then
+			sed -i -E \
+				-e "/^user  .*/cuser  $auser" \
 
-	/usr/local/lsws/conf/$i
+			/usr/local/lsws/conf/$i
+			fi
+		fi
 	fi
-fi
-fi
+# set ID litespeed run
+	chown -R $auser:$aguser /usr/local/lsws/autoupdate
+	chown -R $auser:$aguser /usr/local/lsws/cachedata
 }
 
  # Set environments
@@ -153,10 +77,10 @@ setnginxphpvalue() {
 #Set nginx user
 if [ -z "`ls /etc/nginx`" ]; then 
 	if [ -f "/etc/nginx/nginx.conf" ]; then
-	sed -i -E \
-		-e "/^client_max_body_size  .*/cclient_max_body_size  $PHP_MAX_POST" \
-		-e "/^keepalive_timeout  .*/ckeepalive_timeout  $MAX_INPUT_TIME" \
-	/etc/nginx/nginx.conf
+		sed -i -E \
+			-e "/^client_max_body_size  .*/cclient_max_body_size  $PHP_MAX_POST" \
+			-e "/^keepalive_timeout  .*/ckeepalive_timeout  $MAX_INPUT_TIME" \
+		/etc/nginx/nginx.conf
 	fi
 fi
 }
@@ -173,63 +97,84 @@ phpvalue() {
 		-e "s/error_reporting = .*/error_reporting = E_ALL/" \
 		-e "s/display_errors = .*/display_errors = ${DISPLAYERROR}/" \
 	$VARIABLE/$FILETEMP
-	}
+}
 
-	# set php value
-	FILETEMP=php.ini
-	for VARIABLE in /etc/php/*
-	do
-	if [ -f "$VARIABLE/$FILETEMP" ]; then
-		phpvalue
-	fi
-	done
-
-	# set php fpm value
-	FILETEMP=fpm/php.ini
-	for VARIABLE in /etc/php/*
-	do
-	if [ -f "$VARIABLE/$FILETEMP" ]; then
-		phpvalue
-	fi
-	done
-
-	# set nginx php value
-	if [ -d "/etc/nginx" ]; then
-		setnginxphpvalue
-	fi
-
-# Pass real-ip to logs when behind ELB, etc
-if [[ "$REAL_IP_HEADER" == "1" ]] ; then
- sed -i "s/#real_ip_header X-Forwarded-For;/real_ip_header X-Forwarded-For;/" /etc/nginx/sites-available/default.conf
- sed -i "s/#set_real_ip_from/set_real_ip_from/" /etc/nginx/conf.d/default.conf
- if [ ! -z "$REAL_IP_FROM" ]; then
-  sed -i "s#172.16.0.0/12#$REAL_IP_FROM#" /etc/nginx/conf.d/default.conf
- fi
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /etc/supervisor
+	    fi
 fi
-# Do the same for SSL sites
-if [ -f /etc/nginx/sites-available/default-ssl.conf ]; then
- if [[ "$REAL_IP_HEADER" == "1" ]] ; then
-  sed -i "s/#real_ip_header X-Forwarded-For;/real_ip_header X-Forwarded-For;/" /etc/nginx/sites-available/default-ssl.conf
-  sed -i "s/#set_real_ip_from/set_real_ip_from/" /etc/nginx/conf.d/default-ssl.conf
-  if [ ! -z "$REAL_IP_FROM" ]; then
-   sed -i "s#172.16.0.0/12#$REAL_IP_FROM#" /etc/nginx/conf.d/default-ssl.conf
-  fi
- fi
+
+# copy config apache
+if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
+	if [ -z "`ls /etc/apache2`" ]; then cp -R /etc-start/apache2/* /etc/apache2; fi
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /etc/apache2
+	    fi
+fi
+
+# copy config nginx
+if [ -d "/etc/nginx" ] && [ -d "/etc-start/nginx" ];then
+	if [ ! -f "/etc/nginx/nginx.conf" ]; then cp -R -f /etc-start/nginx/* /etc/nginx; fi
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /etc/nginx
+	    fi
+fi
+
+# copy default www
+if [ -d "/var/www" ] && [ -d "/etc-start/www" ]; then
+	if [ -z "`ls /var/www`" ]; then
+		cp -R /etc-start/www/* /var/www
+		chown -R www-data:www-data /var/www
+	fi
+fi
+
+# copy config php
+if [ -d "/etc/php" ] && [ -d "/etc-start/php" ]; then
+	if [ -z "`ls /etc/php`" ]; then 
+		cp -R /etc-start/php/* /etc/php
+		    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+		       echo "setup SYNOLOGY environment"
+		       chmod -R 777 /etc/php
+		    fi
+	fi
+fi
+
+# copy default litespeed
+if [ -d "/usr/local/lsws" ] && [ -d "/etc-start/lsws" ]; then
+	# copy all
+	if [ -z "`ls /usr/local/lsws`" ]; then
+		cp -R /etc-start/lsws/* /usr/local/lsws
+		chmod -R 755 /usr/local/lsws
+		chown -R lsadm:lsadm /usr/local/lsws/conf
+		chown -R nobody:nogroup /usr/local/lsws/autoupdate
+		chown -R nobody:nogroup /usr/local/lsws/cachedata
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /usr/local/lsws
+	    fi
+	else
+		# copy just missing
+		for i in `ls /etc-start/lsws`; do
+			if [ ! -d "/usr/local/lsws/$i" ] && [ -d "/etc-start/lsws/$i" ]; then
+			cp -R /etc-start/lsws/$i //usr/local/lsws
+			fi
+		done
+	fi
 fi
 
 # set ID docker run
-agid=${agid:-$auid}
-auser=${auser:-www-data}
+export auid=${auid:-33}
+export agid=${agid:-$auid}
+export auser=${auser:-www-data}
+export aguser=${aguser:-$auser}
 
-	# set nginx
-	if [ -d "/etc/nginx" ]; then
-		[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx
-		[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
-		[[ ! -d /var/cache/nginx ]] || chown -R $auser /var/cache/nginx
-		[[ ! -d /var/log/nginx ]] || chown -R $auser /var/log/nginx
-	fi
-
-	if [[ -z "${auid}" ]]; then
+	if [[ -z "${auid}" ]] || [[ "$auid" != "33" ]]; then
 	  echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
@@ -255,6 +200,7 @@ auser=${auser:-www-data}
 			setapacheuser
 			setphpuser
 			setnginxuser
+			setlitespeeduser
 		else
 			if [[ -f /etc/alpine-release ]]; then
 			# create user alpine
@@ -266,7 +212,61 @@ auser=${auser:-www-data}
 			setapacheuser
 			setphpuser
 			setnginxuser
+			setlitespeeduser
 		fi
+	fi
+
+# option with entrypoint
+if [ -f "/option.sh" ]; then /option.sh; fi
+
+# set php value
+	FILETEMP=php.ini
+	for VARIABLE in /etc/php/*
+	do
+	if [ -f "$VARIABLE/$FILETEMP" ]; then
+		phpvalue
+	fi
+	done
+
+# set php fpm value
+	FILETEMP=fpm/php.ini
+	for VARIABLE in /etc/php/*
+	do
+	if [ -f "$VARIABLE/$FILETEMP" ]; then
+		phpvalue
+	fi
+	done
+
+# set nginx php value
+if [ -d "/etc/nginx" ]; then
+	setnginxphpvalue
+fi
+
+# Pass real-ip to logs when behind ELB, etc
+if [[ "$REAL_IP_HEADER" == "1" ]] ; then
+ sed -i "s/#real_ip_header X-Forwarded-For;/real_ip_header X-Forwarded-For;/" /etc/nginx/sites-available/default.conf
+ sed -i "s/#set_real_ip_from/set_real_ip_from/" /etc/nginx/conf.d/default.conf
+ if [ ! -z "$REAL_IP_FROM" ]; then
+  sed -i "s#172.16.0.0/12#$REAL_IP_FROM#" /etc/nginx/conf.d/default.conf
+ fi
+fi
+# Do the same for SSL sites
+if [ -f /etc/nginx/sites-available/default-ssl.conf ]; then
+ if [[ "$REAL_IP_HEADER" == "1" ]] ; then
+  sed -i "s/#real_ip_header X-Forwarded-For;/real_ip_header X-Forwarded-For;/" /etc/nginx/sites-available/default-ssl.conf
+  sed -i "s/#set_real_ip_from/set_real_ip_from/" /etc/nginx/conf.d/default-ssl.conf
+  if [ ! -z "$REAL_IP_FROM" ]; then
+   sed -i "s#172.16.0.0/12#$REAL_IP_FROM#" /etc/nginx/conf.d/default-ssl.conf
+  fi
+ fi
+fi
+
+	# set nginx
+	if [ -d "/etc/nginx" ]; then
+		[[ -d /var/cache/nginx ]] || mkdir -p /var/cache/nginx
+		[[ -d /var/log/nginx ]] || mkdir -p /var/log/nginx
+		[[ ! -d /var/cache/nginx ]] || chown -R $auser /var/cache/nginx
+		[[ ! -d /var/log/nginx ]] || chown -R $auser /var/log/nginx
 	fi
 
 	# install modsecurity
