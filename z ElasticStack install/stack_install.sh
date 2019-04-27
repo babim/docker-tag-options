@@ -39,7 +39,7 @@ download_option
 
 # set environment
 setenvironment() {
-	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
+	export UNINSTALL="ca-certificates gnupg openssl"
 	export OPENJDKV=${OPENJDKV:-8}
 	env_openjdk_jre
 	STACK_NEW=${STACK_NEW:-"true"}

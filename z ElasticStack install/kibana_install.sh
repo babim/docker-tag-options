@@ -41,7 +41,7 @@ download_option
 setenvironment() {
 	export SOFT=${SOFT:-kibana}
 	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
-	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
+	export UNINSTALL="ca-certificates gnupg openssl"
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
 	BIT=${BIT:-"$(uname -i)"}
 	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/${SOFT}-${KB_VERSION}-linux-${BIT}.tar.gz"}

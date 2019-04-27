@@ -55,8 +55,6 @@ FILETEMP=start.sh
 	cd /
 if [[ "$ES" = "6" ]]; then
 	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
-elif [[ "$ES" = "6" ]]; then
-	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
 elif [[ "$ES" = "1" ]]; then
 	$download_save /$FILETEMP $DOWN_URL/${SOFT}1_$FILETEMP
 elif [[ "$ES" = "2" ]]; then

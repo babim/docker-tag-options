@@ -42,7 +42,7 @@ setenvironment() {
 	export SOFT=${SOFT:-logstash}
 	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
 	export OPENJDKV=${OPENJDKV:-8}
-	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
+	export UNINSTALL="ca-certificates gnupg openssl"
 	env_openjdk_jre
 	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
 	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/${SOFT}-${LS_VERSION}.tar.gz"}
