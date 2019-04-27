@@ -2940,8 +2940,23 @@ function    install_sudo()
 function    install_js-yaml()
     {
        JSYAML_VERSION=3.10.0
-       is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
-       ${sudo_command}${download_save} /js-yaml.js "https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js"
+       jsyaml_url=https://github.com/nodeca/js-yaml/raw/${JSYAML_VERSION}/dist/js-yaml.js
+       is_root && sudo_command=""       || sudo_command=${sudo_command:-"sudo "}
+
+       FILE_TEMP=/js-yaml.js
+       # install js-yaml on your OS linux
+        if [[ -f ${FILE_TEMP} ]]; then
+            say_warning "js-yaml installed."
+        else
+            say "downloading js-yaml.."
+                machine_has "curl"          && ${sudo_command}curl $jsyaml_url -o jsyaml    || ${sudo_command}wget -O jsyaml $jsyaml_url
+                mv jsyaml ${FILE_TEMP}
+            say "checking js-yaml.."
+                [[ -f ${FILE_TEMP} ]]       && say "download success"                       || return $FALSE
+                chmod +x ${FILE_TEMP}       && gosu nobody true
+            say "js-yaml installed."
+        fi
+        return $TRUE
     }
 
 # install supervisor
