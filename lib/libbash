@@ -610,8 +610,7 @@ function    check_values_false_say()
 ####### Download file #######
 # download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_curl()
-    {
-        FILE_TEMP="${1}"
+        FILE_TEMP=${FILE_TEMP:-${1}}
         say "Checking $FILE_TEMP .."
         if [[ -z $FILE_TEMP ]]; then
             say_err "Must have filename to download!"
@@ -638,7 +637,7 @@ function    download_with_curl()
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_wget()
     {
-        FILE_TEMP="${1}"
+        FILE_TEMP=${FILE_TEMP:-${1}}
         if [[ -z $FILE_TEMP ]]; then
             say_err "Must have filename to download!"
             return $FALSE
