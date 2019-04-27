@@ -71,6 +71,7 @@ if [ -f /etc/redhat-release ]; then
 	export CHECK_DB_FILE=${CHECK_DB_FILE:-"checkDBStatus.sh"}
 	export USER_SCRIPTS_FILE=${USER_SCRIPTS_FILE:-"runUserScripts.sh"}
 	export INSTALL_DB_BINARIES_FILE=${INSTALL_DB_BINARIES_FILE:-"installDBBinaries.sh"}
+	export INSTALL_PERL_FILE=${INSTALL_DB_BINARIES_FILE:-"installPerl.sh"}
 	# Use second ENV so that variable get substituted
 	export INSTALL_DIR=${INSTALL_DIR:-$ORACLE_BASE/install}
 	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
@@ -82,18 +83,19 @@ if [ -f /etc/redhat-release ]; then
 	create_folder $INSTALL_DIR/
 	create_folder $ORACLE_HOME/
 #	cd $INSTALL_DIR/ && pwd
-		$download_save $INSTALL_DIR/$INSTALL_RSP $DOWN_URL/template/$INSTALL_RSP-$VERSION
-		$download_save $INSTALL_DIR/$SETUP_LINUX_FILE $DOWN_URL/config/$SETUP_LINUX_FILE
-		$download_save $INSTALL_DIR/$CHECK_SPACE_FILE $DOWN_URL/config/$CHECK_SPACE_FILE
-		$download_save $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
+		$download_save $INSTALL_DIR/$INSTALL_RSP 		$DOWN_URL/template/$INSTALL_RSP-$VERSION
+		$download_save $INSTALL_DIR/$SETUP_LINUX_FILE 		$DOWN_URL/config/$SETUP_LINUX_FILE
+		$download_save $INSTALL_DIR/$CHECK_SPACE_FILE 		$DOWN_URL/config/$CHECK_SPACE_FILE
+		$download_save $INSTALL_DIR/$INSTALL_DB_BINARIES_FILE 	$DOWN_URL/config/$INSTALL_DB_BINARIES_FILE
+		$download_save $INSTALL_DIR/$INSTALL_PERL_FILE 		$DOWN_URL/config/$INSTALL_PERL_FILE
 #	cd $ORACLE_BASE/ && pwd
-		$download_save $ORACLE_BASE/$RUN_FILE $DOWN_URL/config/$RUN_FILE
-		$download_save $ORACLE_BASE/$START_FILE $DOWN_URL/config/$START_FILE
-		$download_save $ORACLE_BASE/$CREATE_DB_FILE $DOWN_URL/config/$CREATE_DB_FILE
-		$download_save $ORACLE_BASE/$CHECK_DB_FILE $DOWN_URL/config/$CHECK_DB_FILE
-		$download_save $ORACLE_BASE/$CONFIG_RSP $DOWN_URL/template/$CONFIG_RSP-$VERSION
-		$download_save $ORACLE_BASE/$PWD_FILE $DOWN_URL/config/$PWD_FILE
-		$download_save $ORACLE_BASE/$USER_SCRIPTS_FILE $DOWN_URL/config/$USER_SCRIPTS_FILE
+		$download_save $ORACLE_BASE/$RUN_FILE 			$DOWN_URL/config/$RUN_FILE
+		$download_save $ORACLE_BASE/$START_FILE 		$DOWN_URL/config/$START_FILE
+		$download_save $ORACLE_BASE/$CREATE_DB_FILE 		$DOWN_URL/config/$CREATE_DB_FILE
+		$download_save $ORACLE_BASE/$CHECK_DB_FILE 		$DOWN_URL/config/$CHECK_DB_FILE
+		$download_save $ORACLE_BASE/$CONFIG_RSP 		$DOWN_URL/template/$CONFIG_RSP-$VERSION
+		$download_save $ORACLE_BASE/$PWD_FILE 			$DOWN_URL/config/$PWD_FILE
+		$download_save $ORACLE_BASE/$USER_SCRIPTS_FILE 		$DOWN_URL/config/$USER_SCRIPTS_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
 	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files
