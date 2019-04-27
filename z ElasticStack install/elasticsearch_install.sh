@@ -43,8 +43,8 @@ setenvironment() {
 	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
 	export OPENJDKV=${OPENJDKV:-8}
 	env_openjdk_jre
-	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
-	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"}
+	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
+	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/${SOFT}-${ES_VERSION}.tar.gz"}
 	export UNINSTALL="${DOWNLOAD_TOOL}"
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }
@@ -72,43 +72,43 @@ fi
 # docker health check
 FILETEMP=/usr/local/bin/docker-healthcheck
 	remove_file $FILETEMP
-	$download_save /$FILETEMP $DOWN_URL/elasticsearch_healthcheck/docker-healthcheck
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}_healthcheck/docker-healthcheck
 	set_file_mod 755 /$FILETEMP
 }
 prepareconfig() {
-FILETEMP=/usr/share/elasticsearch/config
+FILETEMP=/usr/share/${SOFT}/config
 	[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 if [[ "$ES" = "1" ]]; then
-	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/1/elasticsearch.yml
-	FILETEMP=/usr/share/elasticsearch/config/logging.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/1/${SOFT}.yml
+	FILETEMP=/usr/share/${SOFT}/config/logging.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/1/logging.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/1/logging.yml
 elif [[ "$ES" = "2" ]]; then
-	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/2/elasticsearch.yml
-	FILETEMP=/usr/share/elasticsearch/config/logging.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/2/${SOFT}.yml
+	FILETEMP=/usr/share/${SOFT}/config/logging.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/2/logging.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/2/logging.yml
 else
-	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
+	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/elasticsearch.yml
-	FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/${SOFT}.yml
+	FILETEMP=/usr/share/${SOFT}/config/log4j2.properties
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/log4j2.properties
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/log4j2.properties
 fi
 }
 prepagelogrotage() {
-	create_folder /etc/logrotate.d/elasticsearch
+	create_folder /etc/logrotate.d/${SOFT}
 if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 	say "not download"
 else
-	FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
+	FILETEMP=/etc/logrotate.d/${SOFT}/logrotate
 	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/elasticsearch_config/5/logrotate
+	$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/logrotate
 fi
 }
 
@@ -129,7 +129,7 @@ if [[ -f /etc/alpine-release ]]; then
 		  && $download_save ${SOFT}.tar.gz "${ES_TARBAL}"; \
 		  tar -xf ${SOFT}.tar.gz \
 		  && ls -lah \
-		  && mv elasticsearch-$ES_VERSION ${SOFTHOME} \
+		  && mv ${SOFT}-$ES_VERSION ${SOFTHOME} \
 		  && say "===> Creating ${SOFT} Paths..." \
 		  && for path in \
 		  	${SOFTHOME}/data \
@@ -155,10 +155,10 @@ if [[ -f /etc/alpine-release ]]; then
 		downloadentrypoint
 	fi
 	if check_value_true "${XPACK}"; then
-		create_folder /usr/share/elasticsearch/config/x-pack
-		FILETEMP=/usr/share/elasticsearch/config/x-pack/log4j2.properties
+		create_folder /usr/share/${SOFT}/config/x-pack
+		FILETEMP=/usr/share/${SOFT}/config/x-pack/log4j2.properties
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/elasticsearch_config/x-pack/log4j2.properties
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/x-pack/log4j2.properties
 	fi
 
 	# clean

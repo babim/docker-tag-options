@@ -57,6 +57,9 @@ setenvironment() {
 	KB_TARBAL=${KB_TARBAL:-"${KB_DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/etc/logstash"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
+	# set ID docker run
+	export auser=${auser:-elstack}
+	export aguser=${aguser:-$auser}
 }
 # download config files
 downloadentrypoint() {
@@ -143,7 +146,7 @@ if [[ -f /etc/alpine-release ]]; then
 		create_folder /usr/local/lib \
 		&& create_symlink /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
 	# ensure elstack user exists
-		adduser -DH -s /sbin/nologin elstack
+		adduser -DH -s /sbin/nologin $auser
 	# install elstack
 		set -x \
 		  && cd /tmp \
@@ -187,9 +190,9 @@ if [[ -f /etc/alpine-release ]]; then
 		  && remove_folder /usr/share/kibana/node \
 		  && say "Make Ngins SSL directory..." \
 		  && create_folder /etc/nginx/ssl \
-		  && set_filefolder_owner elstack:elstack /usr/share/elasticsearch \
-		  && set_filefolder_owner elstack:elstack /usr/share/logstash \
-		  && set_filefolder_owner elstack:elstack /usr/share/kibana \
+		  && set_filefolder_owner $auser:$aguser /usr/share/elasticsearch \
+		  && set_filefolder_owner $auser:$aguser /usr/share/logstash \
+		  && set_filefolder_owner $auser:$aguser /usr/share/kibana \
 		  && say "Clean Up..." \
 		  && remove_filefolder /tmp/*
 

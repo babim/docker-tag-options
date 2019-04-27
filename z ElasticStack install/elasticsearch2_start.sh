@@ -15,6 +15,42 @@ fi
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
+# set ID docker run
+export auid=${auid:-100}
+export agid=${agid:-$101}
+export auser=${auser:-elasticsearch}
+export aguser=${aguser:-$auser}
+
+	if [[ -z "${auid}" ]] || [[ "$auid" != "100" ]]; then
+	  echo "start"
+	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
+		echo "run in user root"
+		export auser=root
+	elif id $auid >/dev/null 2>&1; then
+	        echo "UID exists. Please change UID"
+	else
+		if id $auser >/dev/null 2>&1; then
+		        echo "user exists"
+			if [[ -f /etc/alpine-release ]]; then
+			# usermod alpine
+				deluser $auser && delgroup $aguser
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# usermod ubuntu/debian
+				usermod -u $auid $auser
+				groupmod -g $agid $aguser
+			fi
+		else
+			if [[ -f /etc/alpine-release ]]; then
+			# create user alpine
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# create user ubuntu/debian
+				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
+			fi
+		fi
+	fi
+
 es_opts=''
 
 # Add elasticsearch as command if needed
@@ -36,13 +72,13 @@ if [ "$1" = 'master' -a "$(id -u)" = '0' ]; then
 	# allow the container to be started with `--user`
 	if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 		# Change the ownership of user-mutable directories to elasticsearch
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+		chown -R $auser:$aguser /usr/share/elasticsearch/data
+		chown -R $auser:$aguser /usr/share/elasticsearch/logs
 
-		set -- su-exec elasticsearch /sbin/tini -s -- "$@" ${es_opts}
+		set -- su-exec $auser /sbin/tini -s -- "$@" ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
+	set -- su-exec $auser /sbin/tini -- "$@" ${es_opts}
 fi
 
 ################################################
@@ -63,13 +99,13 @@ if [ "$1" = 'client' -a "$(id -u)" = '0' ]; then
 	# allow the container to be started with `--user`
 	if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 		# Change the ownership of user-mutable directories to elasticsearch
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+		chown -R $auser:$aguser /usr/share/elasticsearch/data
+		chown -R $auser:$aguser /usr/share/elasticsearch/logs
 
-		set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
+		set -- su-exec $auser /sbin/tini -- "$@" ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
+	set -- su-exec $auser /sbin/tini -- "$@" ${es_opts}
 fi
 
 ################################################
@@ -90,23 +126,23 @@ if [ "$1" = 'data' -a "$(id -u)" = '0' ]; then
 	# allow the container to be started with `--user`
 	if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 		# Change the ownership of user-mutable directories to elasticsearch
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
-		chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+		chown -R $auser:$aguser /usr/share/elasticsearch/data
+		chown -R $auser:$aguser /usr/share/elasticsearch/logs
 
-		set -- su-exec elasticsearch /sbin/tini -- elasticsearch ${es_opts}
+		set -- su-exec $auser /sbin/tini -- elasticsearch ${es_opts}
 	fi
 
-	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
+	set -- su-exec $auser /sbin/tini -- "$@" ${es_opts}
 fi
 
 # Drop root privileges if we are running elasticsearch
 # allow the container to be started with `--user`
 if [ "$1" = 'elasticsearch' -a "$(id -u)" = '0' ]; then
 	# Change the ownership of user-mutable directories to elasticsearch
-	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
-	chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+	chown -R $auser:$aguser /usr/share/elasticsearch/data
+	chown -R $auser:$aguser /usr/share/elasticsearch/logs
 
-	set -- su-exec elasticsearch /sbin/tini -- "$@" ${es_opts}
+	set -- su-exec $auser /sbin/tini -- "$@" ${es_opts}
 fi
 
 exec "$@"

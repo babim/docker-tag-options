@@ -42,9 +42,9 @@ setenvironment() {
 	export SOFT=${SOFT:-kibana}
 	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
 	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
-	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}
+	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
 	BIT=${BIT:-"$(uname -i)"}
-	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/kibana-${KB_VERSION}-linux-${BIT}.tar.gz"}
+	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/${SOFT}-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }
 # download entrypoint files
@@ -52,13 +52,13 @@ downloadentrypoint() {
 FILETEMP=start.sh
 	remove_file $FILETEMP
 if [[ "$KIBANA" = "6" ]]; then
-	$download_save /$FILETEMP $DOWN_URL/kibana6_$FILETEMP
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
 else
-	$download_save /$FILETEMP $DOWN_URL/kibana_$FILETEMP
+	$download_save /$FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
 fi
 	set_file_mod 755 /$FILETEMP
 # Supervisor
-	check_value_true "$SUPERVISOR" && run_url $DOWN_URL/supervisor_kibana.sh
+	check_value_true "$SUPERVISOR" && run_url $DOWN_URL/supervisor_${SOFT}.sh
 # prepare etc start
 	run_url $DOWN_URL/prepare_final.sh
 }
@@ -73,39 +73,39 @@ if [[ -f /etc/alpine-release ]]; then
 		install_package nodejs su-exec tini
 		install_package ca-certificates gnupg openssl
 	# ensure kibana user exists
-		adduser -DH -s /sbin/nologin kibana
+		adduser -DH -s /sbin/nologin ${SOFT}
 	# install kibana
 		cd /tmp \
 		  && say "===> Install ${SOFT}..." \
 		  && $download_save ${SOFT}.tar.gz "${TARBAL}"; \
 		  tar -xf ${SOFT}.tar.gz \
 		  && ls -lah \
-		  && check_folder "kibana-$KB_VERSION-linux-${BIT}"	&& mv kibana-$KB_VERSION-linux-${BIT} ${SOFTHOME}
+		  && check_folder "${SOFT}-$KB_VERSION-linux-${BIT}"	&& mv ${SOFT}-$KB_VERSION-linux-${BIT} ${SOFTHOME}
 	# Config after install
 	if [[ "$KIBANA" = "4" ]]; then
 		remove_file ${SOFTHOME}/node/bin/node
 		remove_file ${SOFTHOME}/node/bin/npm
 		create_symlink /usr/bin/node ${SOFTHOME}/node/bin/node
 		create_symlink /usr/bin/npm ${SOFTHOME}/node/bin/npm
-		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/kibana.yml
-		grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml 
+		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/${SOFT}.yml
+		grep -q "^server\.host: '0.0.0.0'\$" /usr/share/${SOFT}/config/${SOFT}.yml 
   	# ensure the default configuration is useful when using --link
-		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/kibana.yml
-		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/kibana.yml
+		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/${SOFT}.yml
+		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/${SOFT}.yml
 	elif [ "${KB_VERSION}" == "6.6.0" ] || [ "${KB_VERSION}" == "6.6.1" ] || [ "${KB_VERSION}" == "6.6.2" ] || [ "${KB_VERSION}" == "6.6.3" ] || [ "${KB_VERSION}" == "6.6.4" ]; then
 		echo "no need sed value"
 	else
-		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/kibana.yml
-		grep -q "^server\.host: '0.0.0.0'\$" ${SOFTHOME}/config/kibana.yml 
+		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/${SOFT}.yml
+		grep -q "^server\.host: '0.0.0.0'\$" ${SOFTHOME}/config/${SOFT}.yml 
   	# ensure the default configuration is useful when using --link
-		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/kibana.yml
-		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/kibana.yml
+		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/${SOFT}.yml
+		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/${SOFT}.yml
 	fi
  	 # usr alpine nodejs and not bundled version
 		bundled='NODE="${DIR}/node/bin/node"'
 		apline_node='NODE="/usr/bin/node"'
-		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/kibana-plugin
-		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/kibana
+		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/${SOFT}-plugin
+		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/${SOFT}
 		remove_filefolder ${SOFTHOME}/node
 		set_filefolder_owner ${SOFT}:${SOFT} ${SOFTHOME}
 	# clean
@@ -113,7 +113,7 @@ if [[ -f /etc/alpine-release ]]; then
 		remove_filefolder /tmp/*
 	
 	if [[ "$KIBANA" = "4" ]]; then
-		$download_save /usr/share/kibana/config/kibana.yml $DOWN_URL/kibana_config/4/kibana.yml
+		$download_save /usr/share/${SOFT}/config/${SOFT}.yml $DOWN_URL/${SOFT}_config/4/${SOFT}.yml
 		downloadentrypoint
 	else
 		downloadentrypoint

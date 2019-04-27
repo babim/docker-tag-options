@@ -44,16 +44,16 @@ setenvironment() {
 	export OPENJDKV=${OPENJDKV:-8}
 	export UNINSTALL="${DOWNLOAD_TOOL} ca-certificates gnupg openssl"
 	env_openjdk_jre
-	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/logstash"}
-	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/logstash-${LS_VERSION}.tar.gz"}
-	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/logstash/config"}
+	LS_URL=${LS_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
+	LS_TARBAL=${LS_TARBAL:-"${LS_URL}/${SOFT}-${LS_VERSION}.tar.gz"}
+	LS_SETTINGS_DIR=${LS_SETTINGS_DIR:-"/usr/share/${SOFT}/config"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }
 # download entrypoint files
 downloadentrypoint() {
 	FILETEMP=/start.sh
 	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/logstash_$FILETEMP
+	$download_save $FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
 	set_file_mod 755 $FILETEMP
 # Supervisor
 	check_value_true "${SUPERVISOR}" && run_url $DOWN_URL/supervisor_${SOFT}.sh
@@ -74,18 +74,18 @@ if [[ -f /etc/alpine-release ]]; then
 		create_folder /usr/local/lib
 		create_symlink /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
 	# ensure logstash user exists
-		adduser -DH -s /sbin/nologin logstash
+		adduser -DH -s /sbin/nologin ${SOFT}
 	# install logstash
 		set -ex \
 		&& cd /tmp \
 		&& $download_save ${SOFT}.tar.gz "$LS_TARBAL" \
-		&& tar -xzf logstash.tar.gz \
-		&& mv logstash-$LS_VERSION ${SOFTHOME} \
+		&& tar -xzf ${SOFT}.tar.gz \
+		&& mv ${SOFT}-$LS_VERSION ${SOFTHOME} \
 		&& remove_filefolder /tmp/*
 	# config setting
 		if [[ "$LOGSTASH" = "1" ]] || [[ "$LOGSTASH" = "2" ]]; then
-			if [ -f "$LS_SETTINGS_DIR/logstash.yml" ]; then
-				sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"
+			if [ -f "$LS_SETTINGS_DIR/${SOFT}.yml" ]; then
+				sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/${SOFT}.yml"
 			fi
 		else
 			if [ -f "$LS_SETTINGS_DIR/log4j2.properties" ]; then
@@ -96,24 +96,24 @@ if [[ -f /etc/alpine-release ]]; then
 
 	if [[ "$LOGSTASH" = "6" ]]; then
 		create_folder ${SOFTHOME}/config
-		create_folder /usr/share/logstash/pipeline
+		create_folder /usr/share/${SOFT}/pipeline
 		FILETEMP=${SOFTHOME}/config/log4j2.properties
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/logstash_config/6/logstash/log4j2.properties
-		FILETEMP=${SOFTHOME}/config/logstash.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/log4j2.properties
+		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/logstash_config/6/logstash/logstash.yml
-		FILETEMP=${SOFTHOME}/pipeline/logstash.conf
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/${SOFT}.yml
+		FILETEMP=${SOFTHOME}/pipeline/${SOFT}.conf
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/logstash_config/6/pipeline/default.conf
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
-		FILETEMP=${SOFTHOME}/config/logstash.yml
+		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
 		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/logstash_config/xpack/logstash/logstash.yml
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/xpack/${SOFT}/${SOFT}.yml
 	fi
 
 	# clean
