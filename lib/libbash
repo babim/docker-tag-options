@@ -2918,7 +2918,7 @@ function    install_gosu()
             fi
 
         say "downloading gosu.."
-            machine_has "curl"          && curl $gosu_url -o gosu       || wget -O gosu $gosu_url
+            machine_has "curl"          && curl -Ls $gosu_url -o gosu       || wget -O gosu $gosu_url
             mv gosu ${FILE_TEMP}
         say "checking gosu.."
             [[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
@@ -2947,7 +2947,7 @@ function    install_js-yaml()
             say_warning "js-yaml installed."
         else
             say "downloading js-yaml.."
-                machine_has "curl"          && ${sudo_command}curl $jsyaml_url -o jsyaml    || ${sudo_command}wget -O jsyaml $jsyaml_url
+                machine_has "curl"          && ${sudo_command}curl -Ls $jsyaml_url -o jsyaml    || ${sudo_command}wget -O jsyaml $jsyaml_url
                 mv jsyaml ${FILE_TEMP}
             say "checking js-yaml.."
                 [[ -f ${FILE_TEMP} ]]       && say "download success"                       || return $FALSE
