@@ -8,7 +8,10 @@
 say " Install RealVNC"
 
 export REALVNC=${REALVNC:-6.4.0}
-	cd /tmp && wget https://www.realvnc.com/download/file/vnc.files/VNC-Server-$REALVNC-Linux-x64.deb && dpkg -i VNC-Server-*.deb && \
-	echo "vnclicense -add KCG8D-BADL3-L8K3F-TW4VF-XWD7A" > /vnckey.sh && \
-	chmod +x /vnckey.sh
-	rm -f /tmp/VNC-Server-*.deb
+	cd /tmp
+	FILETEMP=VNC-Server-$REALVNC-Linux-x64.deb
+		$download_save $FILETEMP https://www.realvnc.com/download/file/vnc.files/$FILETEMP
+		install_package $FILETEMP
+		echo "vnclicense -add KCG8D-BADL3-L8K3F-TW4VF-XWD7A" > /vnckey.sh
+		set_filefolder_mod +x /vnckey.sh
+		remove_file /tmp/$FILETEMP
