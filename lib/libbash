@@ -64,8 +64,8 @@ function export_all()
     # check has value
         export -f machine_has has_value has_empty \
                     has_equal has_not_equal has_equal_less has_equal_greater has_less has_greater \
-                    check_value_true check_value_trues check_value_trues_say \
-                    check_value_false check_value_falses check_value_falses_say
+                    check_value_true check_values_true check_values_true_say \
+                    check_value_false check_values_false check_values_false_say
     # processing text
         export -f arg_input url_encode url_decode html_encode html_decode
     # download tool
@@ -558,7 +558,7 @@ function    check_value_true()
             core_command_check_value                    && return $TRUE         || return $FALSE
     }
 # check multi value true
-function    check_value_trues()
+function    check_values_true()
     {
         object_check_mode_true=0
         object_check_mode_false=1
@@ -567,7 +567,7 @@ function    check_value_trues()
         done
     }
 # check multi value true just say not return
-function    check_value_trues_say()
+function    check_values_true_say()
     {
         object_check_mode_true=0
         object_check_mode_false=1
@@ -585,7 +585,7 @@ function    check_value_false()
             core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
     }
 # check multi value false
-function    check_value_falses()
+function    check_values_falss()
     {
         object_check_mode_true=1
         object_check_mode_false=0
@@ -594,7 +594,7 @@ function    check_value_falses()
         done
     }
 # check multi value false just say not return
-function    check_value_falses_say()
+function    check_values_false_say()
     {
         object_check_mode_true=1
         object_check_mode_false=0
@@ -787,11 +787,15 @@ function    get_osname()
         say     "freebsd"
         return  $TRUE
     elif [[ "$uname" = "Linux" ]]; then
-        if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]]; then
+        if [[ -e /etc/os-release ]] && [[ ! -e /etc/redhat-release ]] && [[ ! -e /etc/alpine-release ]]; then
             . /etc/os-release
-            say     "$ID.$VERSION_ID"
+            echo    "$ID.$VERSION_ID"
             export  osname="$ID.$VERSION_ID"
             return  $TRUE
+        elif [[ -e /etc/alpine-release ]]; then
+                say     "alpine linux"
+                export  osname="alpine.$(cat /etc/alpine-release)"
+                return  $TRUE
         elif [[ -e /etc/redhat-release ]]; then
             local redhatRelease=$(</etc/redhat-release)
             if [[ $redhatRelease == "CentOS release 6."*    || $redhatRelease == "CentOS Linux release 6."* || $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
@@ -806,22 +810,17 @@ function    get_osname()
                 say     "rhel.5"
                 export osname="rhel.5"
                 return  $TRUE
-            elif [[ -e /etc/alpine-release ]]; then
-                say     "alpine linux"
-                export  osname="alpine.$(cat /etc/alpine-release)"
-                return  $TRUE
             else
                 say "Red hat but cannot get release version"
                 export osname="rhel"
                 return  $TRUE
             fi
-
-            say     "Linux specific platform name and version could not be detected: UName = $uname"
-            return  $FALSE
         fi
-
-    say_err "OS name could not be detected: UName = $uname"
-    return  $FALSE
+        say     "Linux specific platform name and version could not be detected: UName = $uname"
+        return  $FALSE
+    else
+        say_err "OS name could not be detected: UName = $uname"
+        return  $FALSE
     fi    
     }
 
@@ -886,8 +885,7 @@ function    dpkgArch()
                     return $FALSE
                 fi
         fi
-            dpkg --print-architecture | awk -F- '{ print $NF }'
-            return $TRUE
+        check_dpkg
     }
 
 # machine architecture
@@ -949,6 +947,7 @@ function    add_a_user()
         echo useradd -c "$COMMENTS" $USER
         echo passwd $USER $PASSWORD
         echo "Added user $USER ($COMMENTS) with pass $PASSWORD"
+        return $TRUE
     }
 
 ##################################################################
