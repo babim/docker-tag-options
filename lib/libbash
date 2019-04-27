@@ -585,7 +585,7 @@ function    check_value_false()
             core_command_check_value ${object_check}    && return $TRUE         || return $FALSE
     }
 # check multi value false
-function    check_values_falss()
+function    check_values_false()
     {
         object_check_mode_true=1
         object_check_mode_false=0
