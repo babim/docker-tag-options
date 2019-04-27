@@ -610,26 +610,26 @@ function    check_values_false_say()
 ####### Download file #######
 # download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_curl()
-        FILE_TEMP=${1}
-        say "Checking $FILE_TEMP .."
-        if [[ -z $FILE_TEMP ]]; then
+    {
+        say "Checking ${1} .."
+        if [[ -z ${1} ]]; then
             say_err "Must have filename to download!"
             return $FALSE
         else
-            if [[ -f $FILE_TEMP ]]; then
-                say "$FILE_TEMP exist, removing.."
-                rm -f $FILE_TEMP
-                [[ -f $FILE_TEMP ]] && say_warning "Cannot remove $FILE_TEMP"   || say "remove done"
+            if [[ -f ${1} ]]; then
+                say "${1} exist, removing.."
+                rm -f ${1}
+                [[ -f ${1} ]] && say_warning "Cannot remove ${1}"   || say "remove done"
             else
-                say "$FILE_TEMP does not exist"
+                say "${1} does not exist"
             fi
         fi
             echo "Downloading ..."
             DIR1=$(pwd)
-            DIR2=$(dirname "${FILE_TEMP}")
+            DIR2=$(dirname "${1}")
             has_value $DIR2 && cd $DIR2 || say "This file is not have path"
-            FILE_TEMP1=$(basename "${FILE_TEMP}")
-                curl -L ${2} -o $FILE_TEMP1
+            FILE_TEMP=$(basename "${1}")
+                curl -L ${2} -o $FILE_TEMP
             cd $DIR1
         return $TRUE
     }
@@ -637,17 +637,17 @@ function    download_with_curl()
 # download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
 function    download_with_wget()
     {
-        FILE_TEMP=${1}
-        if [[ -z $FILE_TEMP ]]; then
+        say "Checking ${1} .."
+        if [[ -z ${1} ]]; then
             say_err "Must have filename to download!"
             return $FALSE
         else
-            if [[ -f $FILE_TEMP ]]; then
-                say "$FILE_TEMP exist, removing.."
-                rm -f $FILE_TEMP
-                [[ -f $FILE_TEMP ]] && say_warning "Cannot remove $FILE_TEMP"   || say "remove done"
+            if [[ -f ${1} ]]; then
+                say "${1} exist, removing.."
+                rm -f ${1}
+                [[ -f ${1} ]] && say_warning "Cannot remove ${1}"   || say "remove done"
             else
-                say "$FILE_TEMP does not exist"
+                say "${1} does not exist"
             fi
         fi
             say "Downloading ..."
