@@ -142,7 +142,7 @@ dockerentry() {
 		say "download entrypoint.."
 	# visible code
 		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
-		chmod +x $FILETEMP
+		set_filefolder_mod +x $FILETEMP
 }
 
 # install by OS
