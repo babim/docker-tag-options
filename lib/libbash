@@ -629,7 +629,7 @@ function    download_with_curl()
             DIR2=$(dirname "${1}")
             has_value $DIR2 && cd $DIR2 || say "This file is not have path"
             FILE_TEMP=$(basename "${1}")
-                curl -L ${2} -o $FILE_TEMP
+                curl -Ls ${2} -o $FILE_TEMP
             cd $DIR1
         return $TRUE
     }
@@ -661,7 +661,7 @@ function    download_option()
         say_warning "Check and set download tool..."
         if machine_has "curl"; then
             # download_tool for command download. use like this $download_tool
-            export download_tool="curl -L"
+            export download_tool="curl -Ls"
             # DOWNLOAD_TOOL use when remove download tool package
             export DOWNLOAD_TOOL="curl"
             export download_save=download_with_curl
