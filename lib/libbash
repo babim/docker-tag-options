@@ -2911,23 +2911,20 @@ function    install_gosu()
         get_osname
         say "Detect OS! Set path bin for gosu"
             if [[ $osname == "ubuntu"*  || $osname == "debian"* || $osname == "alpine"* ]]; then 
-                FILE_TEMP=/usr/local/bin/gosu
-                say "downloading gosu.."
-                machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
-                mv gosu ${FILE_TEMP}
+                FILE_TEMP=/usr/local/bin/gosu     
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
-                say "downloading gosu.."
-                machine_has "curl"      && curl -L $gosu_url -o gosu    || wget -O gosu $gosu_url
-                mv gosu ${FILE_TEMP}
             else
                 say_err "Cannot install Gosu. OS not support."
                 return $FALSE
             fi
 
+        say "downloading gosu.."
+            machine_has "curl"          && curl $gosu_url -o gosu    || wget -O gosu $gosu_url
+            mv gosu ${FILE_TEMP}
         say "checking gosu.."
-        [[ -f ${FILE_TEMP} ]]           && say "download success"       || return $FALSE
-        chmod +x ${FILE_TEMP}           && gosu nobody true
+            [[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
+            chmod +x ${FILE_TEMP}       && gosu nobody true
         say "GOSU installed."
     fi
         return $TRUE
