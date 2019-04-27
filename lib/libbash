@@ -124,13 +124,13 @@ function export_all()
                     \
 		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
                     install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
-                    install_php_composer
+                    install_php_composer install_dpkg
     # Function Remove
         export -f core_command_remove clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run \
                     \
 	                remove_epel debian_remove_repo debian_remove_repos remove_desktop_minimal remove_java_jre remove_gosu remove_sudo \
                     remove_js-yaml remove_supervisor remove_tar remove_rsync remove_unzip remove_dmidecode remove_download_tool \
-                    remove_php_composer
+                    remove_php_composer remove_dpkg
     # Group: Network
         export -f is_ipv4 is_fqdn is_ipv4_netmask is_ipv4_cidr is_ipv4_subnet get_ipv4_network get_ipv4_broadcast mask2cidr cidr2mask
     }
@@ -278,7 +278,7 @@ function    say()
 ####### echo with pause if not have content #######
 # arg_input abc => echo abc
 # arg_input => type content to input: _
-arg_input() {
+function    arg_input() {
   local arg
   if [[ $# -eq 0 || -z "$1" ]]; then
     local func="type content to input"
@@ -299,7 +299,7 @@ arg_input() {
 # Note: must convert % first, otherwise the other entities will
 # get double-converted.
 
-url_encode() {
+function    url_encode() {
   arg_input "$@" |
   sed -Ee "\
            s/\%/%25/g  ;
@@ -317,7 +317,7 @@ url_encode() {
 # url_decode STRING -- decode STRING for urls
 # url_decode        -- decode STDIN for urls
 
-url_decode() {
+function    url_decode() {
   arg_input "$@" |
   sed -e "\
            s/%20/ /g  ;  s/%29/)/g   ;   s/%5B/[/g    ;\
@@ -336,7 +336,7 @@ url_decode() {
 #
 # converts '&' => &amp;  '>' => &gt;  '<' => &lt;
 
-html_encode() {
+function    html_encode() {
   arg_input "$@" |
   sed -e "s/\&/\&amp;/g ; s/[<]/\&lt;/g  ; s/[>]/\&gt;/g"
 }
@@ -344,7 +344,7 @@ html_encode() {
 # html_decode STRING  -- decode STRING from HTML presentation
 # html_decode         -- decode STDIN from HTML presentation
 
-html_decode() {
+function    html_decode() {
   arg_input "$@" |
   sed -Ee "s/\&lt;/</g ; s/\&gt;/>/g ; s/\&amp;/\&/g"
 }
@@ -534,7 +534,7 @@ function    is_numeric()
 function    core_command_check_value()
     {
         object_check=$(echo ${object_check} | tr 'A-Z' 'a-z')
-        say "checking value of ${object_check}.."
+        say "checking value ${object_check}.."
         if [[ $object_check == "true"       || $object_check == "y" || $object_check == "yes" || $object_check == "on" ]]; then
             say "value - $object_check - is true"
             return ${object_check_mode_true}
@@ -856,29 +856,25 @@ function    check_dpkg()
     }
 function    dpkgArch()
     {
-        if [[ ! -f /usr/bin/dpkg ]]; then
+        if ! machine_has dpkg; then
             # osname=$(get_osname)
             get_osname
                 # redhat
                 if [[ $osname == "rhel"* ]]; then 
-                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || yum install -y dpkg
-                    check_dpkg
+                    yum install -y dpkg
                 # ubuntu
                 elif [[ $osname == "ubuntu"* ]] || [[ $osname == "debian"* ]]; then
-                    if check_debian_need_update     && [[ ! -f /usr/bin/dpkg ]]; then
+                    if check_debian_need_update; then
                         apt-get install -y dpkg
-                    elif ! check_debian_need_update && [[ ! -f /usr/bin/dpkg ]]; then
-                        apt-get update              && apt-get install -y dpkg
+                    elif ! check_debian_need_update; then
+                        apt-get update          && apt-get install -y dpkg
                     fi
-                    check_dpkg
                 # alpine
                 elif [[ $osname == "alpine"* ]]; then
-                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || apk add --no-cache dpkg
-                    check_dpkg
+                    apk add --no-cache dpkg
                 # opensuse
                 elif [[ $osname == "opensuse"* ]]; then
-                    [[ -f /usr/bin/dpkg ]]          && say "check dpkg done"      || zypper install -n dpkg
-                    check_dpkg
+                    zypper install -n dpkg
                 else
                     say_err "Cannot install dpkg to check Arch. Your OS not support"
                     return $FALSE
@@ -2902,7 +2898,9 @@ function    install_java_jre()
 function    install_gosu()
     {
     GOSU_VERSION=1.11
-    gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkgArch)
+    install_dpkg
+    arch=$(dpkg --print-architecture | awk -F- '{ print $NF }')
+    gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$arch
     # install gosu on your OS linux
     if machine_has gosu; then
         say_warning "GOSU installed."
@@ -2920,7 +2918,7 @@ function    install_gosu()
             fi
 
         say "downloading gosu.."
-            machine_has "curl"          && curl $gosu_url -o gosu    || wget -O gosu $gosu_url
+            machine_has "curl"          && curl $gosu_url -o gosu       || wget -O gosu $gosu_url
             mv gosu ${FILE_TEMP}
         say "checking gosu.."
             [[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
@@ -2981,6 +2979,12 @@ function    install_rsync()
 function    install_unzip()
     {
        install_package_run unzip
+    }
+
+# install dpkg
+function    install_dpkg()
+    {
+       install_package_run dpkg
     }
 
 # install dmidecode
@@ -3255,6 +3259,15 @@ function    remove_unzip()
 
 alias delete_unzip=remove_unzip
 alias del_unzip=remove_unzip
+
+# remove dpkg
+function    remove_dpkg()
+    {
+       remove_package_run dpkg
+    }
+
+alias delete_dpkg=remove_dpkg
+alias del_dpkg=remove_dpkg
 
 # remove dmidecode
 function    remove_dmidecode()
