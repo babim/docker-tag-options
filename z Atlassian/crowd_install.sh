@@ -78,7 +78,7 @@ installatlassian() {
 		echo "crowd.home=${SOFT_HOME}" > ${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes/crowd-init.properties
 
 	## update database connector
-		FILELIB="${SOFT_INSTALL}/lib"
+		FILELIB="${SOFT_INSTALL}/apache-tomcat/lib"
 
 	### update mysql connector
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
@@ -117,7 +117,7 @@ installatlassian() {
 		check_file "${FILETEMP}"	&& sed --in-place 's/^# umask 0027$/umask 0027/g' "${FILETEMP}" || say_warning "${FILETEMP} does not exist"
 
 	# xmlstarlet
-	FILETEMP="${SOFT_INSTALL}/conf/server.xml"
+	FILETEMP="${SOFT_INSTALL}/apache-tomcat/conf/server.xml"
 		say "xmlstarlet ${FILETEMP}..."
 		check_file "${FILETEMP}"	&& xmlstarlet ed --inplace \
 		  				--delete "Server/Service/Engine/Host/@xmlValidation" \
