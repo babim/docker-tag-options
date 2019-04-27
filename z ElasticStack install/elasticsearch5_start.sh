@@ -16,10 +16,17 @@ fi
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # set ID docker run
-export auid=${auid:-100}
-export agid=${agid:-$101}
-export auser=${auser:-elasticsearch}
-export aguser=${aguser:-$auser}
+if [[ $STACK_NEW == true || $STACK_NEW == false ]];then
+	export auid=${auid:-100}
+	export agid=${agid:-$101}
+	export auser=${auser:-elstack}
+	export aguser=${aguser:-$auser}
+else
+	export auid=${auid:-100}
+	export agid=${agid:-$101}
+	export auser=${auser:-elasticsearch}
+	export aguser=${aguser:-$auser}
+fi
 
 	if [[ -z "${auid}" ]] || [[ "$auid" != "100" ]]; then
 	  echo "start"
