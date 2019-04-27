@@ -5,6 +5,8 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+say " Install gdrive"
+
 if [ -r /etc/os-release ]; then
 	echo " detecting OS type : "
 	. /etc/os-release

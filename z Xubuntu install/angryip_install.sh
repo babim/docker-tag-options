@@ -5,6 +5,8 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+say " Install Angry IP Scanner"
+
 export IPSCAN=${IPSCAN:-3.5.5}
 	install_package \
 		ca-certificates-java fonts-dejavu-extra java-common libbonobo2-0 \

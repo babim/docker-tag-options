@@ -612,7 +612,14 @@ function    check_value_falses_say()
 function    download_with_curl()
     {
         FILE_TEMP="${1}"
-        [[ -f $FILE_TEMP ]]     && rm -f $FILE_TEMP
+        say "Checking $FILE_TEMP .."
+        if [[ -f $FILE_TEMP ]]; then
+            say "$FILE_TEMP exist, removing.."
+            rm -f $FILE_TEMP
+            [[ -f $FILE_TEMP ]] && say_warning "Cannot remove $FILE_TEMP"   || say "remove done"
+        else
+            say "$FILE_TEMP does not exist"
+        fi
             echo "Downloading ..."
             DIR1=$(pwd)
             DIR2=$(dirname "${FILE_TEMP}") && cd $DIR2
@@ -624,7 +631,13 @@ function    download_with_curl()
 function    download_with_wget()
     {
         FILE_TEMP="${1}"
-        [[ -f $FILE_TEMP ]]     && rm -f $FILE_TEMP
+        if [[ -f $FILE_TEMP ]]; then
+            say "$FILE_TEMP exist, removing.."
+            rm -f $FILE_TEMP
+            [[ -f $FILE_TEMP ]] && say_warning "Cannot remove $FILE_TEMP"   || say "remove done"
+        else
+            say "$FILE_TEMP does not exist"
+        fi
             say "Downloading ..."
             wget -O $FILE_TEMP "${2}"
     }

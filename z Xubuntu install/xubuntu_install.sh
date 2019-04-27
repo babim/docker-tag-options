@@ -127,7 +127,7 @@ if [[ -f /etc/lsb-release ]]; then
 		fi
 
 # prepare etc start
-			run_url $DOWN_URL/prepare_final.sh
+		run_url $DOWN_URL/prepare_final.sh
 
 # Define default command.
 		FILETEMP=/startup.sh

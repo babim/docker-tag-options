@@ -5,6 +5,8 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+say " Install Navicat"
+
 	FILETEMP=navicat_premium.tar.gz
 		$download_save $FILETEMP http://media.matmagoc.com/$FILETEMP
 		tar_extract $FILETEMP /opt && remove_file $FILETEMP

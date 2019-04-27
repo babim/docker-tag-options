@@ -5,6 +5,8 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+say " Install freefilesync"
+
 export FREEFILESYNC=${FREEFILESYNC:-10.9}
 	FILETEMP=FreeFileSync_${FREEFILESYNC}_Linux.tar.gz
 		$download_save $FILETEMP http://media.matmagoc.com/$FILETEMP

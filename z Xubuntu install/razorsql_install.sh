@@ -1,3 +1,12 @@
+#!/bin/bash
+#  ____        _     _
+# | __ )  __ _| |__ (_)_ __ ___
+# |  _ \ / _` | '_ \| | '_ ` _ \
+# | |_) | (_| | |_) | | | | | | |
+# |____/ \__,_|_.__/|_|_| |_| |_|
+
+say " Install RazorSQL"
+
 # download and install
 export RAZORSQL=${RAZORSQL:-7_4_10}
 #	wget http://media.matmagoc.com/razorsql_linux_x64.tar.gz

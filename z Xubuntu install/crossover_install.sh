@@ -5,6 +5,8 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+say " Install crossover"
+
 export CROSSOVER=${CROSSOVER:-18.5.0-1}
 	install_package gcc-5-base:i386 gcc-6-base:i386 krb5-locales libavahi-client3:i386 \
 	libavahi-common-data:i386 libavahi-common3:i386 libbsd0:i386 libc6:i386 \
