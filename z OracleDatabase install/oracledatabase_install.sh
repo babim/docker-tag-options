@@ -71,7 +71,7 @@ if [ -f /etc/redhat-release ]; then
 	export CHECK_DB_FILE=${CHECK_DB_FILE:-"checkDBStatus.sh"}
 	export USER_SCRIPTS_FILE=${USER_SCRIPTS_FILE:-"runUserScripts.sh"}
 	export INSTALL_DB_BINARIES_FILE=${INSTALL_DB_BINARIES_FILE:-"installDBBinaries.sh"}
-	export INSTALL_PERL_FILE=${INSTALL_DB_BINARIES_FILE:-"installPerl.sh"}
+	export INSTALL_PERL_FILE=${INSTALL_PERL_FILE:-"installPerl.sh"}
 	# Use second ENV so that variable get substituted
 	export INSTALL_DIR=${INSTALL_DIR:-$ORACLE_BASE/install}
 	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
