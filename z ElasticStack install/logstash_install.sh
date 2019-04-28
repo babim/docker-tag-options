@@ -71,7 +71,7 @@ if [[ -f /etc/alpine-release ]]; then
 		install_package ca-certificates gnupg openssl tini su-exec libzmq bash libc6-compat
 	# make libzmq.so
 		create_folder /usr/local/lib
-		create_symlink /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
+		ln -sf /usr/lib/*/libzmq.so.3 /usr/local/lib/libzmq.so
 	# ensure logstash user exists
 		adduser -DH -s /sbin/nologin ${SOFT}
 	# install logstash

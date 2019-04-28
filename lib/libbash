@@ -1607,10 +1607,16 @@ alias make_files=create_files
 # create file. use like this: create_symlink /source /destination
 function    create_symlink()
     {
-        object_create="${1} ${2}"
-        command_check_object=check_filefolders
+        command_check_object=check_filefolder
         command_create_object="ln -sf"
-            core_command_create_object
+        if ${command_check_object} ${2}; then
+            say_warning "${object_create} exists"
+        else
+            ${command_check_object} ${1}                && say "Creating ${2}.."                    || return $FALSE
+            ${command_create_object} ${1} ${2}
+            ${command_check_object} ${2}                && say "${object_create} created"           || return $FALSE
+        fi
+        return $TRUE
     }
 
 alias make_symlink=create_symlink
