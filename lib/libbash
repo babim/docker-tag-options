@@ -92,7 +92,7 @@ function export_all()
                     check_file_groupid check_file_sticky check_file_symlink check_file_owned_userid check_file_read \
                     check_file_socket check_file_nonzero check_file_userid check_file_write check_file_run \
                     check_files_block check_files_block_say check_files_special_character check_files_special_character_say \
-                    check_folders check_folders_say check_filefolders check_filefolders_say check_files check_files_say \
+                    check_folders check_folders_say check_filefolders check_filefolders_say check_file check_files check_files_say \
                     check_files_owned_groupid check_files_owned_groupid_say check_files_groupid check_files_groupid_say \
                     check_files_sticky check_files_sticky_say check_files_symlink check_files_symlink_say check_files_owned_userid \
                     check_files_owned_userid_say check_files_read check_files_read_say check_files_socket check_files_socket_say \
