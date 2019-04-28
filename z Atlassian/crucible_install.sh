@@ -39,78 +39,78 @@ download_option
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-crucible}
+	export SOFT=${SOFT:-crucible}
 #		export SOFTSUB=${SOFTSUB:-core}
-		export auser=${auser:-daemon}
-		export aguser=${aguser:-daemon}
-		export OPENJDKV=${OPENJDKV:-8}
-		export POSTGRESQLV=42.2.5
-		export MYSQLV=5.1.47
-		export MSSQLV=7.2.1.jre8
-		export ORACLEV=8
-		export VISIBLECODE=${VISIBLECODE:-false}
-		env_openjdk_jre
-	# set host download
-		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
+	export auser=${auser:-daemon}
+	export aguser=${aguser:-daemon}
+	export OPENJDKV=${OPENJDKV:-8}
+	export POSTGRESQLV=42.2.5
+	export MYSQLV=5.1.47
+	export MSSQLV=7.2.1.jre8
+	export ORACLEV=8
+	export VISIBLECODE=${VISIBLECODE:-false}
+	env_openjdk_jre
+# set host download
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
 # set command install
 installatlassian() {
-	## Check version
-		if has_empty "${SOFT_VERSION}" || has_empty "${SOFT_HOME}" || has_empty "${SOFT_INSTALL}"; then
-			say "Can not install without version. Please check and rebuild"
-			exit $FALSE
-		fi
+## Check version
+	if has_empty "${SOFT_VERSION}" || has_empty "${SOFT_HOME}" || has_empty "${SOFT_INSTALL}"; then
+		say "Can not install without version. Please check and rebuild"
+		exit $FALSE
+	fi
 
-	# Install Atlassian JIRA and helper tools and setup initial home
-		say " - Begin install - "
+# Install Atlassian JIRA and helper tools and setup initial home
+	say " - Begin install - "
 
-	## directory structure.
-		create_folders                			"${SOFT_HOME}" "${SOFT_INSTALL}"
-		set_filefolder_mod	700            		"${SOFT_HOME}"
-		set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
+## directory structure.
+	create_folders                			"${SOFT_HOME}" "${SOFT_INSTALL}"
+	set_filefolder_mod	700            		"${SOFT_HOME}"
+	set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
 
-	## download and extract source software
-		say "downloading and install atlassian..."
-		check_folder_empty "${SOFT_INSTALL}" && $download_save /tmp/crucible.zip https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.zip
-			unzip /tmp/crucible.zip -d /tmp
-			remove_filefolder ${SOFT_INSTALL} /tmp/crucible.zip
-		mv /tmp/fecru-${SOFT_VERSION} ${SOFT_INSTALL}
+## download and extract source software
+	say "downloading and install atlassian..."
+	check_folder_empty "${SOFT_INSTALL}" && $download_save /tmp/crucible.zip https://www.atlassian.com/software/${SOFT}/downloads/binary/${SOFT}-${SOFT_VERSION}.zip
+		unzip /tmp/crucible.zip -d /tmp
+		remove_filefolder ${SOFT_INSTALL} /tmp/crucible.zip
+	mv /tmp/fecru-${SOFT_VERSION} ${SOFT_INSTALL}
 
-	## update database connector
-		FILELIB="${SOFT_INSTALL}/lib"
+## update database connector
+	FILELIB="${SOFT_INSTALL}/lib"
 
-	### update mysql connector
+### update mysql connector
 	remove_filefolder ${FILELIB}/mysql-connector-java-*.jar
 		say "downloading and update mysql-connector-java..."
 	FILETEMP="${FILELIB}/mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQLV}.tar.gz" | tar -xz --directory "${FILELIB}" --strip-components=1 --no-same-owner "mysql-connector-java-${MYSQLV}/mysql-connector-java-${MYSQLV}-bin.jar"
 
-	### update postgresql connector
+### update postgresql connector
 	remove_filefolder ${FILELIB}/postgresql-*.jar
 		say "downloading and update postgresql-connector-java..."
 	FILETEMP="${FILELIB}/postgresql-${POSTGRESQLV}.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "https://jdbc.postgresql.org/download/postgresql-${POSTGRESQLV}.jar"
 
-	### update mssql-server connector
+### update mssql-server connector
 	remove_filefolder ${FILELIB}/mssql-jdbc-*.jar
 		say "downloading and update mssql-jdbc..."
 	FILETEMP="${FILELIB}/mssql-jdbc-${MSSQLV}.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/mssql-jdbc-${MSSQLV}.jar"
 
-	### update oracle database connector
+### update oracle database connector
 	remove_filefolder ${FILELIB}/ojdbc*.jar
 		say "downloading and update oracle-ojdbc..."
 	FILETEMP="${FILELIB}/ojdbc${ORACLEV}.jar"
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
-	## set permission path
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
-		set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
-		set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}"	&& say "set done" || say_warning "file/folder not exist"
+## set permission path
+	set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}"	&& say "set done" || say_warning "file/folder not exist"
 
-	# fix path start file
+# fix path start file
 	FILETEMP="${SOFT_INSTALL}/bin/start_${SOFT}.sh"
 		say "checking ${FILETEMP}..."
 		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/bin/start-${SOFT}.sh"	|| say_warning "file/folder not exist"
@@ -120,15 +120,7 @@ installatlassian() {
 		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"		|| say_warning "file/folder not exist"
 		set_filefolder_mod 		755 "${SOFT_INSTALL}/start-${SOFT}.sh"				&& say "set done" || say_warning "file/folder not exist"
 
-		say " - Install done - "
-}
-dockerentry() {
-	# download docker entry
-		FILETEMP=/docker-entrypoint.sh
-		say "download entrypoint.."
-	# visible code
-		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
-		set_filefolder_mod +x $FILETEMP
+	say " - Install done - "
 }
 
 # install by OS
@@ -143,7 +135,7 @@ if [[ -f /etc/alpine-release ]]; then
 		install_package curl xmlstarlet ttf-dejavu libc6-compat unzip
 	# Install Atlassian
 		installatlassian
-		dockerentry
+		run_url $DOWN_URL/prepare_final.sh
 	# visible code
 		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
@@ -161,7 +153,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		install_package curl ttf-dejavu libtcnative-1 xmlstarlet
 	# Install Atlassian
 		installatlassian
-		dockerentry
+		run_url $DOWN_URL/prepare_final.sh
 	# visible code
 		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
