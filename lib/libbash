@@ -103,7 +103,7 @@ function export_all()
                     \
 		            create_folders create_files create_folder create_file create_symlink \
 		            \
-                    remove_folders remove_files remove_filefolders remove_symlink remove_symlinks \
+                    remove_file remove_folder remove_filefolder remove_folders remove_files remove_filefolders remove_symlink remove_symlinks \
                     \
                     set_files_owner set_folders_owner set_filefolders_owner set_file_owner set_folder_owner set_filefolder_owner \
                     \
