@@ -35,8 +35,8 @@ export agid=${agid:-$auid}
 export auser=${auser:-mysql}
 export aguser=${aguser:-$auser}
 
-	if [[ -z "${auid}" ]] || [[ "$auid" != "999" ]]; then
-	  echo "start"
+	if [[ -z "${auid}" ]] || [[ "$auid" == "999" ]]; then
+		echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
 		export auser=root

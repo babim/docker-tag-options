@@ -11,26 +11,46 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 # set ID docker run
 auid=${auid:-797}
 agid=${agid:-$auid}
-auser=${auser:-user}
+auser=${auser:-plex}
+aguser=${aguser:-$auser}
 
-if [[ "$auid" = "0" ]] || [[ "$agid" == "0" ]]; then
-  echo "Run in ROOT user"
-else
-  echo "Run in $auser"
-  if [ ! -d "/home/$auser" ]; then
-	  if [[ -f /etc/alpine-release ]]; then
-	  	addgroup -g ${agid} $auser && \
-	  	adduser -D -u ${auid} -G $auser $auser
-	  fi
-	  if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
-	  	groupadd -g $agid $auser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $auser $auser
-	  fi
-  chown -R $auid:$agid /home/$auser #no need
-  # fix su command user
-  sed -i '$ d' /etc/passwd
-  echo "$auser:x:$auid:$agid:Linux User:/home/$auser:/bin/sh" >> /etc/passwd
+	if [[ -z "${auid}" ]] || [[ "$auid" == "797" ]]; then
+		echo "start"
+		su - $auser
+	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
+		echo "run in user root"
+		export auser=root
+	elif id $auid >/dev/null 2>&1; then
+	        echo "UID exists. Please change UID"
+	else
+		if id $auser >/dev/null 2>&1; then
+		        echo "user exists"
+			if [[ -f /etc/alpine-release ]]; then
+			# usermod alpine
+				deluser $auser && delgroup $aguser
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# usermod ubuntu/debian
+				usermod -u $auid $auser
+				groupmod -g $agid $aguser
+			fi
+		else
+			if [[ -f /etc/alpine-release ]]; then
+			# create user alpine
+				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
+			else
+			# create user ubuntu/debian
+				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
+			fi
+		fi
+	chown -R $auid:$agid /home/$auser #no need
+	# fix su command user
+	sed -i '$ d' /etc/passwd
+	echo "$auser:x:$auid:$agid:Linux User:/home/$auser:/bin/sh" >> /etc/passwd
+	fi
+  
   fi
-  su - $auser
+  
 fi
 
 # Remove plexmediaserver.pid

@@ -34,8 +34,8 @@ else
 	export aguser=${aguser:-$auser}
 fi
 
-	if [[ -z "${auid}" ]] || [[ "$auid" != "100" ]]; then
-	  echo "start"
+	if [[ -z "${auid}" ]] || [[ "$auid" == "100" ]]; then
+		echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
 		export auser=root

@@ -174,8 +174,8 @@ export agid=${agid:-$auid}
 export auser=${auser:-www-data}
 export aguser=${aguser:-$auser}
 
-	if [[ -z "${auid}" ]] || [[ "$auid" != "33" ]]; then
-	  echo "start"
+	if [[ -z "${auid}" ]] || [[ "$auid" == "33" ]]; then
+		echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
 		export auser=root

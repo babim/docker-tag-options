@@ -52,6 +52,11 @@ prepareconfig() {
 setenvironment() {
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
 	export SOFT=plex
+	# set ID docker run
+	auid=${auid:-797}
+	agid=${agid:-$auid}
+	auser=${auser:-plex}
+	aguser=${aguser:-$auser}
 }
 
 
@@ -66,7 +71,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 
 	# Install Plex
 	# Create plex user
-		useradd --system --uid 797 -M --shell /usr/sbin/nologin plex
+		useradd --system --uid $auid -M --shell /usr/sbin/nologin $auser
 	# Download and install Plex (non plexpass) after displaying downloaded URL in the log.
 	# This gets the latest non-plexpass version
 	# Note: We created a dummy /bin/start to avoid install to fail due to upstart not being installed.
@@ -85,7 +90,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		set_filefolder_mod +x /usr/local/bin/dumb-init
 	# Create writable config directory in case the volume isn't mounted
 		create_folder /config
-		set_filefolder_owner plex:plex /config
+		set_filefolder_owner $auser:$aguser /config
 
 	# preconfig
 		prepareconfig
@@ -94,6 +99,8 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		clean_os
 
 elif [[ -f /etc/alpine-release ]]; then
+	# set environment
+		setenvironment
 	# Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 	DESTDIR="/glibc"
 	GLIBC_LIBRARY_PATH="$DESTDIR/lib" DEBS="libc6 libgcc1 libstdc++6"
@@ -122,16 +129,11 @@ elif [[ -f /etc/alpine-release ]]; then
 	remove_package xz \
 	remove_filefolder /tmp/*
 
-	# install Plex
-	PUID=797
-	PUNAME=plex
-	PGID=797
-	PGNAME=plex
 		FILETEMP=/start_pms.patch
 			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
 
-	addgroup -g $PGID $PGNAME \
-	 && adduser -SH -u $PUID -G $PGNAME -s /usr/sbin/nologin $PUNAME \
+	addgroup -g $agid $aguser \
+	 && adduser -SH -u $agid -G $aguser -s /usr/sbin/nologin $auser \
 	 && install_package xz binutils patchelf openssl file xmlstarlet \
 	 && $download_save plexmediaserver.deb 'https://plex.tv/downloads/latest/1?channel=8&build=linux-ubuntu-x86_64&distro=ubuntu' \
 	 && ar x plexmediaserver.deb \
