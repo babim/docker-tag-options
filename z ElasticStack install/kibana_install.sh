@@ -80,8 +80,9 @@ if [[ -f /etc/alpine-release ]]; then
 	if [[ "$KIBANA" = "4" ]]; then
 		remove_file ${SOFTHOME}/node/bin/node
 		remove_file ${SOFTHOME}/node/bin/npm
-		create_symlink /usr/bin/node ${SOFTHOME}/node/bin/node
-		create_symlink /usr/lib/node_modules/npm/bin/npm-cli.js ${SOFTHOME}/node/bin/npm
+		check_file /usr/bin/node 	&& create_symlink /usr/bin/node ${SOFTHOME}/node/bin/node	|| say_error "Not have nodejs"
+		check_file /usr/lib/node_modules/npm/bin/npm-cli.js 	&& create_symlink /usr/lib/node_modules/npm/bin/npm-cli.js ${SOFTHOME}/node/bin/npm	|| say "search npm and create symlink"
+		check_file /usr/bin/npm 	&& create_symlink /usr/lib/node_modules/npm/bin/npm-cli.js ${SOFTHOME}/node/bin/npm	|| say "search npm and create symlink"
 		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/${SOFT}.yml
 		grep -q "^server\.host: '0.0.0.0'\$" /usr/share/${SOFT}/config/${SOFT}.yml 
   	# ensure the default configuration is useful when using --link

@@ -14,11 +14,11 @@
 # visible code
 	if check_value_true "${VISIBLECODE}"; then
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh
-		if [[ "${SOFT}" = "confluence" || "${SOFT}" = "jira" ]]; then
+		if [[ "${SOFT}" == "confluence" || "${SOFT}" == "jira" ]]; then
 			$download_save ${SOFT_INSTALL}/agent.jar http://media.matmagoc.com/atlassian-agent.jar
 			echo 'export CATALINA_OPTS="-javaagent:${SOFT_INSTALL}/agent.jar ${CATALINA_OPTS}"' >> ${SOFT_INSTALL}/bin/setenv.sh
 		fi
 	else
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 	fi
-	set_filefolder_mod +x $FILETEMP
+	set_file_mod +x $FILETEMP
