@@ -10,22 +10,23 @@
 
 # prepare etc start
     remove_filefolder 	/etc-start
-    create_folders	/etc-start/nginx \
-			/etc-start/php \
-			/etc-start/apache2 \
-			/etc-start/www \
-			/etc-start/supervisor \
-			/etc-start/lsws
+    check_folder	/etc/nginx		&& create_folders /etc-start/nginx 			|| say "no need create nginx setting folder"
+    check_folder	/etc/php		&& create_folders /etc-start/php 			|| say "no need create php setting folder"
+    check_folder	/etc/apache2		&& create_folders /etc-start/apache2 			|| say "no need create apache2 setting folder"
+    check_folder	/var/www		&& create_folders /etc-start/www 			|| say "no need create www folder"
+    check_folder	/etc/supervisor		&& create_folders /etc-start/supervisor			|| say "no need create supervisor setting folder"
+    check_folder	/etc/lsws		&& create_folders /etc-start/lsws			|| say "no need create litespeed setting folder"
+
 # nginx
-    dircopy 		/etc/nginx/ 		/etc-start/nginx
+    check_folder	/etc/nginx		&& dircopy /etc/nginx/ /etc-start/nginx			|| say "no need copy nginx setting files"
 # php
-    dircopy 		/etc/php/ 		/etc-start/php
+    check_folder	/etc/nginx		&& dircopy /etc/php/ /etc-start/php			|| say "no need copy php setting files"
 # apache
-    dircopy 		/etc/apache2/ 		/etc-start/apache2
+    check_folder	/etc/nginx		&& dircopy /etc/apache2/ /etc-start/apache2		|| say "no need copy apache2 setting files"
 # www data
-    dircopy 		/var/www/ 		/etc-start/www
+    check_folder	/etc/nginx		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
 # supervisor
-    dircopy 		/etc/supervisor/ 	/etc-start/supervisor
+    check_folder	/etc/nginx		&& dircopy /etc/supervisor/ /etc-start/supervisor	|| say "no need copy supervisor setting files"
 # litespeed
-    dircopy 		/usr/local/lsws/ 	/etc-start/lsws
+    check_folder	/etc/nginx		&& dircopy /usr/local/lsws/ /etc-start/lsws		|| say "no need copy litespeed setting files"
 # end

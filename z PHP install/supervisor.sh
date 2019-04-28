@@ -32,17 +32,20 @@
 			check_file 	/etc/php/${PHP_VERSION}/fpm ]] || $download_save $FILETEMP $DOWN_URL/supervisor/conf.d/phpfpm-${PHP_VERSION}.conf
 		fi
 	# apache
-	if check_file "/usr/sbin/apache2ctl"; then
+	#if check_file "/usr/sbin/apache2ctl"; then
+	if machine_has apache2ctl; then
 		FILETEMP=supervisor/conf.d/apache.conf
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi
 	# nginx
-	if check_file "/usr/sbin/nginx"; then
+	#if check_file "/usr/sbin/nginx"; then
+	if machine_has nginx; then
 		FILETEMP=supervisor/conf.d/nginx.conf
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi
 	# litespeed
-	if check_file "/usr/local/lsws/bin/lswsctrl"; then
+	#if check_file "/usr/local/lsws/bin/lswsctrl"; then
+	if machine_has lswsctrl; then
 		FILETEMP=supervisor/conf.d/litespeed.conf
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi
