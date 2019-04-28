@@ -45,7 +45,7 @@ setenvironment() {
 	env_openjdk_jre
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
 	ES_TARBAL=${ES_TARBAL:-"${DOWNLOAD_URL}/${SOFT}-${ES_VERSION}.tar.gz"}
-	export UNINSTALL="${DOWNLOAD_TOOL}"
+	export UNINSTALL=""
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }
 # download entrypoint files
@@ -151,6 +151,7 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 
 	# clean
+		remove_download_tool
 		clean_package
 		clean_os
 

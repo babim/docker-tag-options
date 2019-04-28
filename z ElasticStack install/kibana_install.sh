@@ -115,6 +115,7 @@ if [[ -f /etc/alpine-release ]]; then
 	fi
 
 	# clean
+		remove_download_tool
 		clean_package
 		clean_os
 

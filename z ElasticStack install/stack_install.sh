@@ -90,47 +90,35 @@ prepareconfig() {
 	create_folder /usr/share/elasticsearch/config
 	create_folder /etc/logrotate.d/elasticsearch
 	FILETEMP=/usr/share/elasticsearch/config/elasticsearch.yml
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/elasticsearch.yml
 	FILETEMP=/usr/share/elasticsearch/config/log4j2.properties
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/log4j2.properties
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/log4j2.properties
 	FILETEMP=/etc/logrotate.d/elasticsearch/logrotate
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/elastic/logrotate
 # logstash
 	create_folder /etc/logstash/conf.d
 	create_folder /opt/logstash/patterns
 	create_folder /etc/logstash
 	FILETEMP=/etc/logstash/conf.d/02-beats-input.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/02-beats-input.conf
 	FILETEMP=/etc/logstash/conf.d/10-syslog-filter.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/10-syslog-filter.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/10-syslog-filter.conf
 	FILETEMP=/etc/logstash/conf.d/11-nginx-filter.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/11-nginx-filter.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/11-nginx-filter.conf
 	FILETEMP=/etc/logstash/conf.d/30-elasticsearch-output.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/30-elasticsearch-output.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/conf.d/30-elasticsearch-output.conf
 	FILETEMP=/opt/logstash/patterns/nginx
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/patterns/nginx
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/patterns/nginx
 	FILETEMP=/etc/logstash/logstash.yml
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/logstash/logstash.yml
 # nginx
 	create_folder /etc/nginx/conf.d
 	FILETEMP=/etc/nginx/nginx.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/nginx.conf
 	FILETEMP=/etc/nginx/conf.d/kibana.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/kibana.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/kibana.conf
 	FILETEMP=/etc/nginx/conf.d/ssl.kibana.conf
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
+		$download_save $FILETEMP $DOWN_URL/stack_config/config/nginx/ssl.kibana.conf
 }
 
 # install by OS
@@ -202,6 +190,7 @@ if [[ -f /etc/alpine-release ]]; then
 		preparefinal
 
 	# clean
+		remove_download_tool
 		clean_package
 		clean_os
 	
