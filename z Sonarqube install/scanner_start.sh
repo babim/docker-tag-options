@@ -92,7 +92,7 @@ runscanner() {
 }
 
 # check and run
-	if [[ -z "${auid}" ]]; then
+	if [[ -z "${auid}" ]] || [[ "$auid" == "1" ]]; then
 		echo "start"
 		# run
 		runscanner

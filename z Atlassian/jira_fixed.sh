@@ -19,8 +19,8 @@ export agid=${agid:-$auid}
 export auser=${auser:-daemon}
 export aguser=${aguser:-daemon}
 
-	if [[ -z "${auid}" ]] || [[ "$auid" != "1" ]]; then
-	  echo "start"
+	if [[ -z "${auid}" ]] || [[ "$auid" == "1" ]]; then
+		echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
 		export auser=root

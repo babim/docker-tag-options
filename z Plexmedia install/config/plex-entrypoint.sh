@@ -42,6 +42,7 @@ aguser=${aguser:-$auser}
 			# create user ubuntu/debian
 				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
 			fi
+		su - $auser
 		fi
 	chown -R $auid:$agid /home/$auser #no need
 	# fix su command user
