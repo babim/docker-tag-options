@@ -2628,7 +2628,7 @@ function    core_command_install()
                 elif [[ $software == *".rpm" ]]; then
                     say "This package for redhat/centos, cannot install on this server"         && return $FALSE
                 else
-                    ${sudo_command}apt-get install -y --no-install-recommends ${software}
+                    ${sudo_command}apt-get install -y --force-yes --no-install-recommends ${software}
                 fi
             elif [[ $osname == "rhel"* ]]; then
                 if [[ $software == *".rpm" ]]; then

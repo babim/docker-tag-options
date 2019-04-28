@@ -17,7 +17,6 @@
 		create_folder 	/etc/supervisor/conf.d/
 	# download sypervisord config
 	FILETEMP=supervisor/supervisord.conf
-		remove_file 	/etc/$FILETEMP
 		$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	FILETEMP=/etc/supervisord.conf
 		create_symlink 	$FILETEMP /etc/supervisor/supervisord.conf
@@ -35,18 +34,15 @@
 	# apache
 	if check_file "/usr/sbin/apache2ctl"; then
 		FILETEMP=supervisor/conf.d/apache.conf
-			remove_file 	/etc/$FILETEMP
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi
 	# nginx
 	if check_file "/usr/sbin/nginx"; then
 		FILETEMP=supervisor/conf.d/nginx.conf
-			remove_file 	/etc/$FILETEMP
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi
 	# litespeed
 	if check_file "/usr/local/lsws/bin/lswsctrl"; then
 		FILETEMP=supervisor/conf.d/litespeed.conf
-			remove_file 	/etc/$FILETEMP
 			$download_save 	/etc/$FILETEMP $DOWN_URL/$FILETEMP
 	fi

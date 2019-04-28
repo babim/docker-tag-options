@@ -108,6 +108,8 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 		debian_cmd_interface
+	# install depend for download key in script litespeed install
+		install_package wget
 	# install repo
 		run_url http://rpms.litespeedtech.com/debian/enable_lst_debain_repo.sh
 	# install litespeed
