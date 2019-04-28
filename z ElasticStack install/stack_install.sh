@@ -64,17 +64,13 @@ setenvironment() {
 # download config files
 downloadentrypoint() {
 	FILETEMP=/elastic-entrypoint.sh
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+		$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 	FILETEMP=/logstash-entrypoint.sh
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+		$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 	FILETEMP=/kibana-entrypoint.sh
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+		$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 	FILETEMP=/nginx-entrypoint.sh
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
+		$download_save $FILETEMP $DOWN_URL/stack_config/entrypoints$FILETEMP
 	chmod 755 /*.sh
 }
 # Supervisor

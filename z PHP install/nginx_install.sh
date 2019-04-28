@@ -41,6 +41,11 @@ download_option
 setenvironment() {
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 	export nginx=stable
+	# set ID nginx run
+	export auid=${auid:-33}
+	export agid=${agid:-$auid}
+	export auser=${auser:-www-data}
+	export aguser=${aguser:-$auser}
 }
 
 # install by OS
@@ -53,10 +58,10 @@ if [[ -f /etc/lsb-release ]]; then
 	    echo "deb http://ppa.launchpad.net/nginx/$nginx/ubuntu xenial main" > /etc/apt/sources.list.d/nginx-$nginx.list && \
 	    debian_add_repo_key C300EE8C && \
 	    install_package nginx && \
-	    set_filefolder_owner www-data:www-data /var/lib/nginx && \
+	    set_filefolder_owner $auser:$aguser /var/lib/nginx && \
 	    remove_package apache*
 
-	# create folder    
+	# create folder
 		create_folder 	/var/cache/nginx
 		create_folder 	/var/log/nginx
 

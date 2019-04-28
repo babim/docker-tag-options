@@ -40,7 +40,6 @@ download_option
 # set environment
 setenvironment() {
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
-	PHP_VERSION=${PHP_VERSION:-false}
 }
 
 # install by OS
