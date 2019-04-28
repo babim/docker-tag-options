@@ -43,7 +43,7 @@ setenvironment() {
 	export SOFTHOME=${SOFTHOME:-"/usr/share/${SOFT}"}
 	export UNINSTALL="ca-certificates gnupg openssl"
 	DOWNLOAD_URL=${DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/${SOFT}"}
-	BIT=${BIT:-"$(uname -i)"}
+	BIT=${BIT:-"$(uname -m)"}
 	TARBAL=${TARBAL:-"${DOWNLOAD_URL}/${SOFT}-${KB_VERSION}-linux-${BIT}.tar.gz"}
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ElasticStack%20install"
 }

@@ -48,7 +48,7 @@ setenvironment() {
 		LS_VERSION=$STACK
 		KB_VERSION=$STACK
 	fi
-	BIT=${BIT:-"$(uname -i)"}
+	BIT=${BIT:-"$(uname -m)"}
 	ES_DOWNLOAD_URL=${ES_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/elasticsearch"}
 	LS_DOWNLOAD_URL=${LS_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/logstash"}
 	KB_DOWNLOAD_URL=${KB_DOWNLOAD_URL:-"https://artifacts.elastic.co/downloads/kibana"}

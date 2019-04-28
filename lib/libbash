@@ -1614,7 +1614,7 @@ function    create_symlink()
         else
             ${command_check_object} ${1}                && say "Creating ${2}.."                    || return $FALSE
             ${command_create_object} ${1} ${2}
-            ${command_check_object} ${2}                && say "${object_create} created"           || return $FALSE
+            ${command_check_object} ${2}                && say "${2} created"                       || return $FALSE
         fi
         return $TRUE
     }
