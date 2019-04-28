@@ -62,7 +62,6 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# download config files
 		check_file /entrypoint.sh && remove_file /start.sh
 		FILETEMP=/entrypoint.sh
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL$FILETEMP
 		set_filefolder_mod 755 $FILETEMP
 	# clean
@@ -197,7 +196,6 @@ elif [ -f /etc/alpine-release ]; then
 
 	# download config files
 		FILETEMP=/alpine_start.sh
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL$FILETEMP
 			set_filefolder_mod 755 $FILETEMP
 

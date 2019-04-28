@@ -74,7 +74,6 @@ installsonarqube() {
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 			set_filefolder_mod +x $FILETEMP
 }

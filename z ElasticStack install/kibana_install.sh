@@ -50,12 +50,7 @@ setenvironment() {
 # download entrypoint files
 downloadentrypoint() {
 FILETEMP=start.sh
-	remove_file $FILETEMP
-if [[ "$KIBANA" = "6" ]]; then
-	$download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP
-else
-	$download_save /$FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
-fi
+	[[ "$KIBANA" = "6" ]] && $download_save /$FILETEMP $DOWN_URL/${SOFT}6_$FILETEMP || $download_save /$FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
 	set_file_mod 755 /$FILETEMP
 # Supervisor
 	check_value_true "$SUPERVISOR" && run_url $DOWN_URL/supervisor_${SOFT}.sh

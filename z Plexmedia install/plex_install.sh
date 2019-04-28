@@ -40,14 +40,11 @@ download_option
 # set loop
 prepareconfig() {
 		FILETEMP=/Preferences.xml
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
 		FILETEMP=/plex-entrypoint.sh
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
 			set_filefolder_mod +x $FILETEMP
 		FILETEMP=/usr/local/bin/retrieve-plex-token
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
 }
 
@@ -131,7 +128,6 @@ elif [[ -f /etc/alpine-release ]]; then
 	PGID=797
 	PGNAME=plex
 		FILETEMP=/start_pms.patch
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
 
 	addgroup -g $PGID $PGNAME \

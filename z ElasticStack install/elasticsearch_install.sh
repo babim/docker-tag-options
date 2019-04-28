@@ -69,7 +69,6 @@ fi
 	run_url $DOWN_URL/prepare_final.sh
 # docker health check
 FILETEMP=/usr/local/bin/docker-healthcheck
-	remove_file $FILETEMP
 	$download_save /$FILETEMP $DOWN_URL/${SOFT}_healthcheck/docker-healthcheck
 	set_file_mod 755 /$FILETEMP
 }
@@ -78,24 +77,18 @@ FILETEMP=/usr/share/${SOFT}/config
 	[[ -d $FILETEMP ]] || mkdir -p $FILETEMP
 if [[ "$ES" = "1" ]]; then
 	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/1/${SOFT}.yml
 	FILETEMP=/usr/share/${SOFT}/config/logging.yml
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/1/logging.yml
 elif [[ "$ES" = "2" ]]; then
 	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/2/${SOFT}.yml
 	FILETEMP=/usr/share/${SOFT}/config/logging.yml
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/2/logging.yml
 else
 	FILETEMP=/usr/share/${SOFT}/config/${SOFT}.yml
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/${SOFT}.yml
 	FILETEMP=/usr/share/${SOFT}/config/log4j2.properties
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/log4j2.properties
 fi
 }
@@ -105,8 +98,7 @@ if [[ "$ES" = "1" ]] || [[ "$ES" = "2" ]]; then
 	say "not download"
 else
 	FILETEMP=/etc/logrotate.d/${SOFT}/logrotate
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/logrotate
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/5/logrotate
 fi
 }
 
@@ -155,8 +147,7 @@ if [[ -f /etc/alpine-release ]]; then
 	if check_value_true "${XPACK}"; then
 		create_folder /usr/share/${SOFT}/config/x-pack
 		FILETEMP=/usr/share/${SOFT}/config/x-pack/log4j2.properties
-		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/x-pack/log4j2.properties
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_config/x-pack/log4j2.properties
 	fi
 
 	# clean

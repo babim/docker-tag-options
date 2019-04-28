@@ -52,9 +52,8 @@ setenvironment() {
 # download entrypoint files
 downloadentrypoint() {
 	FILETEMP=/start.sh
-	remove_file $FILETEMP
-	$download_save $FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
-	set_file_mod 755 $FILETEMP
+		$download_save $FILETEMP $DOWN_URL/${SOFT}_$FILETEMP
+		set_file_mod 755 $FILETEMP
 # Supervisor
 	check_value_true "${SUPERVISOR}" && run_url $DOWN_URL/supervisor_${SOFT}.sh
 # prepare etc start
@@ -98,22 +97,18 @@ if [[ -f /etc/alpine-release ]]; then
 		create_folder ${SOFTHOME}/config
 		create_folder /usr/share/${SOFT}/pipeline
 		FILETEMP=${SOFTHOME}/config/log4j2.properties
-		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/log4j2.properties
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/log4j2.properties
 		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
-		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/${SOFT}.yml
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/${SOFT}/${SOFT}.yml
 		FILETEMP=${SOFTHOME}/pipeline/${SOFT}.conf
-		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/pipeline/default.conf
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_config/6/pipeline/default.conf
 		downloadentrypoint
 	else
 		downloadentrypoint
 	fi
 	if [[ "$XPACK" = "true" ]]; then
 		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
-		remove_file $FILETEMP
-		$download_save $FILETEMP $DOWN_URL/${SOFT}_config/xpack/${SOFT}/${SOFT}.yml
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_config/xpack/${SOFT}/${SOFT}.yml
 	fi
 
 	# clean

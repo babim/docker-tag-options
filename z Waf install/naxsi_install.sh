@@ -105,52 +105,36 @@ if [[ -f /etc/debian_version ]]; then
 		create_folder /etc/nginx/naxsi-local-rules
 		create_folder /var/lib/nginx/body
 	# download nginx conf.d
-	FILETEMP=/etc/nginx/sites-available/default
-		remove_file $FILETEMP
-	FILETEMP=/etc/nginx/sites-enabled/default
-		remove_file $FILETEMP
+	remove_files /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 	FILETEMP=/etc/nginx/nginx.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/nginx.conf
 	FILETEMP=/etc/nginx/sites-enabled/default.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/sites-enabled/default_naxsi.conf
 	FILETEMP=/etc/nginx/http2-ssl.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/http2-ssl.conf
 	FILETEMP=/etc/nginx/sites-enabled/kibana.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/sites-enabled/kibana.conf
 	# download naxsi rules
 	FILETEMP=/etc/nginx/naxsi.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/dokuwiki.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/dokuwiki.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/drupal.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/drupal.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/etherpad-lite.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/etherpad-lite.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/iris.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/iris.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/rutorrent.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/rutorrent.rules
 	FILETEMP=/etc/nginx/naxsi-local-rules/zerobin.rules
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/nginx/naxsi-local-rules/zerobin.rules
 	# download naxsi config
 	FILETEMP=/usr/local/etc/nxapi.json
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/naxsi/nxapi.json
 
 	# download entrypoint
 	FILETEMP=/start.sh
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/naxsi_start.sh
 		chmod 755 $FILETEMP
 

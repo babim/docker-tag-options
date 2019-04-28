@@ -45,7 +45,6 @@ download_option
 # download entrypoint
 downloadentry() {
 FILETEMP=start.sh
-	remove_file $FILETEMP
 	$download_save /$FILETEMP $DOWN_URL/mongodb_$FILETEMP
 	set_file_mod 755 /$FILETEMP
 # Supervisor
@@ -54,13 +53,11 @@ FILETEMP=start.sh
 		create_folder /etc/supervisor/conf.d/
 	## download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/supervisor/supervisord.conf
 	FILETEMP=/etc/supervisord.conf
 		create_symlink $FILETEMP /etc/supervisor/supervisord.conf
 	## mongodb
 	FILETEMP=/etc/supervisor/conf.d/mongodb.conf
-	 	remove_file $FILETEMP
 	 	$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/mongodb.conf
 # prepare etc start
 	run_url $DOWN_URL/prepare_final.sh

@@ -136,7 +136,6 @@ installatlassian() {
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
-		remove_file $FILETEMP
 		say "download entrypoint.."
 	# visible code
 		check_value_true "${VISIBLECODE}" && $download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh || $download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh

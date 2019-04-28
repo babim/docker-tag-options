@@ -87,9 +87,8 @@ if [[ -f /etc/lsb-release ]]; then
 	preparefinal() {
 		# download entrypoint
 			FILETEMP=/start.sh
-			remove_file $FILETEMP
-			$download_save $FILETEMP $DOWN_URL/start.sh
-			set_filefolder_mod 755 $FILETEMP
+				$download_save $FILETEMP $DOWN_URL/start.sh
+				set_filefolder_mod 755 $FILETEMP
 		# prepare etc start
 			run_url $DOWN_URL/prepare_final.sh
 		}

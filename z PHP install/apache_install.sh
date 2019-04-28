@@ -66,22 +66,17 @@ if [[ -f /etc/lsb-release ]]; then
 		FILETEMP=/etc/apache2/sites-available
 			create_folder $FILETEMP
 		FILETEMP=/etc/apache2/sites-available/000-default.conf
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/apache_config/000-default.conf
 		FILETEMP=/etc/apache2/sites-available/default-ssl.conf
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/apache_config/default-ssl.conf
 		# config ssl default
 		FILETEMP=/etc/apache2/certs
 			create_folder $FILETEMP
 		FILETEMP=/etc/apache2/certs/example-cert.pem
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/ssl/example-cert.pem
 		FILETEMP=/etc/apache2/certs/example-key.pem
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/ssl/example-key.pem
 		FILETEMP=/etc/apache2/certs/ca-cert.pem
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/ssl/ca-cert.pem
 	fi
 
@@ -118,7 +113,6 @@ if [[ -f /etc/lsb-release ]]; then
 
 	# download entrypoint
 		FILETEMP=/start.sh
-			remove_file $FILETEMP
 			$download_save $FILETEMP $DOWN_URL/start.sh
 			set_filefolder_mod 755 $FILETEMP
 	# prepare etc start

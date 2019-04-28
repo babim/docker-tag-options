@@ -45,15 +45,12 @@ download_option
 		create_folders 	/etc/supervisor/conf.d/
 	# download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/supervisor/supervisord.conf
 	FILETEMP=/etc/supervisord.conf
 		[[ ! -f $FILETEMP ]] || create_symlink $FILETEMP /etc/supervisor/supervisord.conf
 	# nginx
 	FILETEMP=/etc/supervisor/conf.d/nginx.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/nginx.conf
 	# naxsi
 	FILETEMP=/etc/supervisor/conf.d/nxtool.conf
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/nxtool.conf

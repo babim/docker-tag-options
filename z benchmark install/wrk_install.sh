@@ -51,7 +51,6 @@ installsoft() {
 dockerentry() {
 	# download docker entry
 		FILETEMP=/docker-entrypoint.sh
-		remove_file $FILETEMP
 		say "download entrypoint.."
 	# visible code
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh

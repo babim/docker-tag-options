@@ -69,10 +69,9 @@ if [[ -f /etc/debian_version ]]; then
    		cert-sync /etc/ssl/certs/ca-certificates.crt
 	# download entrypoint
 		FILETEMP=/start.sh
-		remove_file $FILETEMP
-		say "download entrypoint.."
-		$download_save $FILETEMP $DOWN_URL/start.sh
-		chmod 755 $FILETEMP
+			say "download entrypoint.."
+			$download_save $FILETEMP $DOWN_URL/start.sh
+			chmod 755 $FILETEMP
 	# remove packages
 		clean_package
 		clean_os

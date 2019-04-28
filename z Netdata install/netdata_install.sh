@@ -77,7 +77,6 @@ installnetdata() {
 downloadentry() {
 	# download docker entry
 	FILETEMP=/docker-entrypoint.sh
-		remove_file $FILETEMP
 		$download_save $FILETEMP $DOWN_URL/netdata_start.sh
 		set_file_mod +x $FILETEMP
 }
