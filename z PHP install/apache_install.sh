@@ -52,7 +52,7 @@ if [[ -f /etc/lsb-release ]]; then
 		debian_cmd_interface
 
 	# add repo apache
-		debian_add_repo ppa:ondrej/apache2
+		debian_add_repo ondrej/apache2
 	# install apache
 		install_package apache2
 	# enable apache mod
