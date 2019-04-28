@@ -42,9 +42,8 @@ download_option
 finish() {
 ## download entrypoint
 	FILETEMP=start.sh
-	remove_file /$FILETEMP
-	$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
-	set_filefolder_mod 755 /$FILETEMP
+		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
+		set_filefolder_mod 755 /$FILETEMP
 ## Supervisor
 	install_supervisor
 	### Supervisor config
@@ -52,17 +51,14 @@ finish() {
 		create_folder /etc/supervisor/conf.d/
 	### download sypervisord config
 	FILETEMP=/etc/supervisor/supervisord.conf
-		remove_file /$FILETEMP
 		$download_save $FILETEMP $DOWN_URL/supervisor/supervisord.conf
 	FILETEMP=/etc/supervisord.conf
 		create_symlink $FILETEMP /etc/supervisor/supervisord.conf
 	### mysql
 	FILETEMP=/etc/supervisor/conf.d/mysql.conf
-	 	remove_file /$FILETEMP
 	 	$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/mysql.conf
 ## download backup script
 	FILETEMP=backup.sh
-		remove_file /$FILETEMP
 		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
 		set_filefolder_mod 755 /$FILETEMP
 ## prepare etc start
