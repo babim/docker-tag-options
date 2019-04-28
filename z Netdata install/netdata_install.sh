@@ -55,13 +55,6 @@ installnetdata() {
 	# fetch netdata
 	git clone https://github.com/firehol/netdata.git /netdata.git --depth=1
 	cd /netdata.git
-	TAG=$(</git-tag)
-	if [ ! -z "$TAG" ]; then
-		echo "Checking out tag: $TAG"
-		git checkout tags/$TAG
-	else
-		echo "No tag, using master"
-	fi
 	# use the provided installer
 	./netdata-installer.sh --dont-wait --dont-start-it
 	# remove git
