@@ -651,7 +651,7 @@ function    download_with_wget()
             fi
         fi
             say "Downloading ..."
-            wget -O $FILE_TEMP "${2}"
+            wget -O ${1} ${2}
         return $TRUE
     }
 
