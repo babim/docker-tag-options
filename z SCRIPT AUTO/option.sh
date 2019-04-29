@@ -53,7 +53,7 @@ export GOOGLE=8.8.8.8
 		case "${f}" in
 			[yY] | yes | YES | Yes | true | True | ON | on | TRUE ) export ${f}=true      ;;
 			[nN] | no  | NO  | No | false | False | OFF | off | FALSE  ) export $f=false       ;;
-			* ) echo "cant check value"	;;
+			* ) echo "Options run value are empty"	;;
 		esac
 	done
 
