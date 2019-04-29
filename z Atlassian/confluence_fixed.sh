@@ -14,12 +14,19 @@ set -e
 	export SOFT=${SOFT:-confluence}
 #		export SOFTSUB=${SOFTSUB:-core}
 # set ID docker run
+if [[ -f /etc/alpine-release ]]; then
+	export auid=${auid:-2}
+	export agid=${agid:-2}
+	export auser=${auser:-daemon}
+	export aguser=${aguser:-daemon}
+else
 	export auid=${auid:-1}
 	export agid=${agid:-1}
 	export auser=${auser:-daemon}
 	export aguser=${aguser:-daemon}
+fi
 
-	if [[ -z "${auid}" ]] || [[ "$auid" == "1" ]]; then
+	if [[ -z "${auid}" ]] || [[ "$auid" == "1" ]] || [[ "$auid" == "2" ]]; then
 		echo "start"
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
