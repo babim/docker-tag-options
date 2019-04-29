@@ -55,6 +55,7 @@ export aguser=${aguser:-$auser}
 				groupmod -g $agid $aguser
 			fi
 		else
+		        echo "create user"
 			if [[ -f /etc/alpine-release ]]; then
 			# create user alpine
 				addgroup -g $agid $aguser && adduser -D -H -G $aguser -s /bin/false -u $auid $auser
