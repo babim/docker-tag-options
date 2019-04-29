@@ -100,8 +100,10 @@ if [[ -f /etc/alpine-release ]]; then
  	 # usr alpine nodejs and not bundled version
 		bundled='NODE="${DIR}/node/bin/node"'
 		apline_node='NODE="/usr/bin/node"'
-		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/${SOFT}-plugin
-		sed -i "s|$bundled|$apline_node|g" ${SOFTHOME}/bin/${SOFT}
+	FILETEMP=${SOFTHOME}/bin/${SOFT}-plugin
+		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
+	FILETEMP=${SOFTHOME}/bin/${SOFT}
+		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
 		remove_filefolder ${SOFTHOME}/node
 		set_filefolder_owner ${SOFT}:${SOFT} ${SOFTHOME}
 	# clean
