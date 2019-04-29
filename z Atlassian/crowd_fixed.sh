@@ -11,20 +11,13 @@ set -e
 [[ -f "/option.sh" ]] && /option.sh
 
 # set environment
-		export SOFT=${SOFT:-crowd}
-		#export SOFTSUB=${SOFTSUB:-core}
+	export SOFT=${SOFT:-crowd}
+	#export SOFTSUB=${SOFTSUB:-core}
 # set ID docker run
-if [[ -f /etc/alpine-release ]]; then
-	export auid=${auid:-1}
-	export agid=${agid:-2}
-	export auser=${auser:-daemon}
-	export aguser=${aguser:-daemon}
-else
 	export auid=${auid:-1}
 	export agid=${agid:-1}
 	export auser=${auser:-daemon}
 	export aguser=${aguser:-daemon}
-fi
 
 	if [[ -z "${auid}" ]] || [[ "$auid" == "1" ]]; then
 		echo "start"
