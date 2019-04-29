@@ -2030,7 +2030,7 @@ function    tar_extract()
         say "Checking file folder.."
         check_file ${1}                     && say "check ${1} done"            || return $FALSE
         say "Begin tar extracting.."
-        check_empty ${2}    && ${2}="."                                         || say "check ${2} done"
+        has_empty ${2}    && ${2}="."                                         || say "check ${2} done"
         machine_has tar     && tar -xvpzf ${1} -C ${2} --numeric-owner ${@:3}   || return $FALSE
         say "Tar completed"
         return $TRUE
@@ -2064,7 +2064,7 @@ function    unzip_extract()
         say "Checking file folder.."
         check_file ${1}                     && say "check ${1} done"            || return $FALSE
         say "Begin unzip extracting.."
-        check_empty ${2}                    && ${2}="."                         || say "check ${2} done"
+        has_empty ${2}                    && ${2}="."                         || say "check ${2} done"
         machine_has unzip                   && unzip - ${1} -d ${2} ${@:3}      || return $FALSE
         say "Unzip completed"
         return $TRUE

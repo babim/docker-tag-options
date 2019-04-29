@@ -52,7 +52,7 @@ setenvironment() {
 # set command install
 installsonarqube() {
 	## Check version
-		if check_empty "${SONAR_VERSION}" ]] || [[ -z "${SONARQUBE_HOME}" ]]; then
+		if has_empty "${SONAR_VERSION}" ]] || [[ -z "${SONARQUBE_HOME}" ]]; then
 			say "Can not install without version. Please check and rebuild"
 			exit 1
 		fi
