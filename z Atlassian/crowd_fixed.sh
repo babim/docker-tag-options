@@ -77,23 +77,23 @@ fi
 # Docker image. If the file has been changed the entrypoint script will not
 # perform modifications to the configuration file.
 	echo "set environment"
-export CONFIGFILE=conf/server.xml
+export CONFIGFILE=apache-tomcat/conf/server.xml
 	if [ "$(stat -c "%Y" "${SOFT_INSTALL}/${CONFIGFILE}")" -eq "0" ]; then
 	 	if [ -n "${X_PROXY_NAME}" ]; then
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${SOFT_INSTALL}/${CONFIGFILE}"'
 		fi
 		if [ -n "${X_PROXY_PORT}" ]; then
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/${CONFIGFILE}"'
 		fi
 		if [ -n "${X_PROXY_SCHEME}" ]; then
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${SOFT_INSTALL}/${CONFIGFILE}"'
 		fi
 		if [ "${X_PROXY_SCHEME}" = "https" ]; then
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="8095"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --insert '//Connector[@port="8095"]' --type "attr" --name "secure" --value "true" "${SOFT_INSTALL}/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --update '//Connector[@port="8095"]/@redirectPort' --value "${X_PROXY_PORT}" "${SOFT_INSTALL}/${CONFIGFILE}"'
 		fi
 		if [ -n "${X_PATH}" ]; then
-			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --update '//Context/@path' --value "${X_PATH}" "${SOFT_INSTALL}/apache-tomcat/${CONFIGFILE}"'
+			gosu ${auser} 'xmlstarlet ed --inplace --pf --ps --update '//Context/@path' --value "${X_PATH}" "${SOFT_INSTALL}/${CONFIGFILE}"'
 		fi
 	fi
 
