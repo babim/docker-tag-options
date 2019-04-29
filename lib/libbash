@@ -1128,10 +1128,13 @@ function    dircopy()
         TARGET=`pwd`
         cd $CURDIR
 
+        say "Copy dir/folder by cpio command.." 
+
         cd "${1}"
         find . -depth -print            |
             cpio -pdmu $TARGET 2>&1     |
             grep -iv "blocks"
+        cd $CURDIR
     }
 
 # Defning return code check function
