@@ -20,13 +20,13 @@
 # nginx
     check_folder	/etc/nginx		&& dircopy /etc/nginx/ /etc-start/nginx			|| say "no need copy nginx setting files"
 # php
-    check_folder	/etc/nginx		&& dircopy /etc/php/ /etc-start/php			|| say "no need copy php setting files"
+    check_folder	/etc/php		&& dircopy /etc/php/ /etc-start/php			|| say "no need copy php setting files"
 # apache
-    check_folder	/etc/nginx		&& dircopy /etc/apache2/ /etc-start/apache2		|| say "no need copy apache2 setting files"
+    check_folder	/etc/apache2		&& dircopy /etc/apache2/ /etc-start/apache2		|| say "no need copy apache2 setting files"
 # www data
-    check_folder	/etc/nginx		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
+    check_folder	/etc/www		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
 # supervisor
-    check_folder	/etc/nginx		&& dircopy /etc/supervisor/ /etc-start/supervisor	|| say "no need copy supervisor setting files"
+    check_folder	/etc/supervisor		&& dircopy /etc/supervisor/ /etc-start/supervisor	|| say "no need copy supervisor setting files"
 # litespeed
-    check_folder	/etc/nginx		&& dircopy /usr/local/lsws/ /etc-start/lsws		|| say "no need copy litespeed setting files"
+    check_folder	/etc/local/lsws		&& dircopy /usr/local/lsws/ /etc-start/lsws		|| say "no need copy litespeed setting files"
 # end
