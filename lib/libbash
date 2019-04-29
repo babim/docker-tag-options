@@ -624,13 +624,14 @@ function    download_with_curl()
                 say "${1} does not exist"
             fi
         fi
-            echo "Downloading ..."
+            say "Downloading ..."
             DIR1=$(pwd)
             DIR2=$(dirname "${1}")
             has_value $DIR2 && cd $DIR2 || say "This file is not have path"
             FILE_TEMP=$(basename "${1}")
                 curl -Ls ${2} -o $FILE_TEMP
             cd $DIR1
+            say "Download file: $FILE_TEMP done"
         return $TRUE
     }
 
@@ -652,6 +653,7 @@ function    download_with_wget()
         fi
             say "Downloading ..."
             wget -O ${1} ${2}
+            say "Download file: $FILE_TEMP done"
         return $TRUE
     }
 
