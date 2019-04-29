@@ -132,23 +132,32 @@ if [[ -f /etc/alpine-release ]]; then
 	# ensure elstack user exists
 		adduser -DH -s /sbin/nologin $auser
 	# install elstack
-		set -x \
-		  && cd /tmp \
-		  && say "Download Elastic Stack ======================================================" \
-		  && say "Download Elasticsearch..." \
-		  && $download_save elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL" \
-		  && tar -xzf elasticsearch-$ES_VERSION.tar.gz \
-		  && mv elasticsearch-$ES_VERSION /usr/share/elasticsearch \
-		  && say "Download Logstash..." \
-		  && $download_save logstash-$LS_VERSION.tar.gz "$LS_TARBAL" \
-		  && tar -xzf logstash-$LS_VERSION.tar.gz \
-		  && mv logstash-$LS_VERSION /usr/share/logstash \
-		  && say "Download Kibana..." \
-		  && $download_save kibana-$KB_VERSION.tar.gz "$KB_TARBAL" \
-		  && tar -xzf kibana-$KB_VERSION.tar.gz \
-		  && mv kibana-$KB_VERSION-linux-x86_64 /usr/share/kibana \
-		  && say "Configure [Elasticsearch] ===================================================" \
-		  && for path in \
+		set -x
+		  cd /tmp
+		  say "Download Elastic Stack ======================================================"
+		  say "Download Elasticsearch..."
+		  $download_save elasticsearch-$ES_VERSION.tar.gz "$ES_TARBAL"
+		  tar -xzf elasticsearch-$ES_VERSION.tar.gz
+		FILETEMP=elasticsearch-$ES_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/elasticsearch	|| say "${FILETEMP} does not exist"
+		FILETEMP=elasticsearch-oss-$ES_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/elasticsearch 	|| say "${FILETEMP} does not exist"
+		  say "Download Logstash..."
+		  $download_save logstash-$LS_VERSION.tar.gz "$LS_TARBAL"
+		  tar -xzf logstash-$LS_VERSION.tar.gz
+		FILETEMP=logstash-$LS_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/logstash		|| say "${FILETEMP} does not exist"
+		FILETEMP=logstash-oss-$LS_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/logstash 		|| say "${FILETEMP} does not exist"
+		  say "Download Kibana..."
+		  $download_save kibana-$KB_VERSION.tar.gz "$KB_TARBAL"
+		  tar -xzf kibana-$KB_VERSION.tar.gz
+		FILETEMP=kibana-$KB_VERSION-linux-x86_64
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/kibana		|| say "${FILETEMP} does not exist"
+		FILETEMP=kibana-oss-$KB_VERSION-linux-x86_64
+		  check_folder $FILETEMP	&& mv $FILETEMP /usr/share/kibana 		|| say "${FILETEMP} does not exist"
+		  say "Configure [Elasticsearch] ==================================================="
+		  for path in \
 		  	/usr/share/elasticsearch/data \
 		  	/usr/share/elasticsearch/logs \
 		  	/usr/share/elasticsearch/config \
@@ -157,28 +166,30 @@ if [[ -f /etc/alpine-release ]]; then
 			/usr/share/elasticsearch/tmp \
 		  ; do \
 		  create_folder "$path"; \
-		  done \
-		  && say "Configure [Logstash] ========================================================" \
-		  && if check_file "$LS_SETTINGS_DIR/logstash.yml"; then \
-		  		sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"; \
-		  	fi \
-		  && say "Configure [Kibana] =========================================================="
+		  done
+		  say "Configure [Logstash] ========================================================"
+		  if check_file "$LS_SETTINGS_DIR/logstash.yml"; then
+		  	sed -ri 's!^(path.log|path.config):!#&!g' "$LS_SETTINGS_DIR/logstash.yml"
+		  fi
+		  say "Configure [Kibana] =========================================================="
 		  # the default "server.host" is "localhost" in 5+
-		  sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml \
-		  && grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml
+		  sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" /usr/share/kibana/config/kibana.yml
+		  grep -q "^server\.host: '0.0.0.0'\$" /usr/share/kibana/config/kibana.yml
 		  # usr alpine nodejs and not bundled version
-		  bundled='NODE="${DIR}/node/bin/node"' \
-		  && apline_node='NODE="/usr/bin/node"' \
-		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana-plugin \
-		  && sed -i "s|$bundled|$apline_node|g" /usr/share/kibana/bin/kibana \
-		  && remove_folder /usr/share/kibana/node \
-		  && say "Make Ngins SSL directory..." \
-		  && create_folder /etc/nginx/ssl \
-		  && set_filefolder_owner $auser:$aguser /usr/share/elasticsearch \
-		  && set_filefolder_owner $auser:$aguser /usr/share/logstash \
-		  && set_filefolder_owner $auser:$aguser /usr/share/kibana \
-		  && say "Clean Up..." \
-		  && remove_filefolder /tmp/*
+		  bundled='NODE="${DIR}/node/bin/node"'
+		  apline_node='NODE="/usr/bin/node"'
+	FILETEMP=/usr/share/kibana/bin/kibana-plugin
+		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
+	FILETEMP=/usr/share/kibana/bin/kibana
+		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
+		  remove_folder /usr/share/kibana/node
+		  say "Make Ngins SSL directory..."
+		  create_folder /etc/nginx/ssl
+		  set_filefolder_owner $auser:$aguser /usr/share/elasticsearch
+		  set_filefolder_owner $auser:$aguser /usr/share/logstash
+		  set_filefolder_owner $auser:$aguser /usr/share/kibana
+		  say "Clean Up..."
+		  remove_filefolder /tmp/*
 
 		prepareconfig
 		downloadentrypoint

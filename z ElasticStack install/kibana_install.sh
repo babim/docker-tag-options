@@ -70,12 +70,15 @@ if [[ -f /etc/alpine-release ]]; then
 	# ensure kibana user exists
 		adduser -DH -s /sbin/nologin ${SOFT}
 	# install kibana
-		cd /tmp \
-		  && say "===> Install ${SOFT}..." \
-		  && $download_save ${SOFT}.tar.gz "${TARBAL}"; \
-		  tar -xf ${SOFT}.tar.gz \
-		  && ls -lah \
-		  && check_folder "${SOFT}-$KB_VERSION-linux-${BIT}"	&& mv ${SOFT}-$KB_VERSION-linux-${BIT} ${SOFTHOME}
+		cd /tmp
+		  say "===> Install ${SOFT}..."
+		  $download_save ${SOFT}.tar.gz "${TARBAL}"
+		  tar -xf ${SOFT}.tar.gz
+		  ls -lah
+		FILETEMP=${SOFT}-$KB_VERSION-linux-${BIT}
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
+		FILETEMP=${SOFT}-oss-$KB_VERSION-linux-${BIT}
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
 	# Config after install
 	if [[ "$KIBANA" = "4" ]]; then
 		remove_file ${SOFTHOME}/node/bin/node

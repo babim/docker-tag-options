@@ -75,12 +75,15 @@ if [[ -f /etc/alpine-release ]]; then
 	# ensure logstash user exists
 		adduser -DH -s /sbin/nologin ${SOFT}
 	# install logstash
-		set -ex \
-		&& cd /tmp \
-		&& $download_save ${SOFT}.tar.gz "$LS_TARBAL" \
-		&& tar -xzf ${SOFT}.tar.gz \
-		&& mv ${SOFT}-$LS_VERSION ${SOFTHOME} \
-		&& remove_filefolder /tmp/*
+		set -ex
+		cd /tmp
+		$download_save ${SOFT}.tar.gz "$LS_TARBAL"
+		tar -xzf ${SOFT}.tar.gz
+		FILETEMP=${SOFT}-$LS_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
+		FILETEMP=${SOFT}-oss-$LS_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
+		remove_filefolder /tmp/*
 	# config setting
 		if [[ "$LOGSTASH" = "1" ]] || [[ "$LOGSTASH" = "2" ]]; then
 			if [ -f "$LS_SETTINGS_DIR/${SOFT}.yml" ]; then

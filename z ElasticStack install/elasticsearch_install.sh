@@ -114,14 +114,17 @@ if [[ -f /etc/alpine-release ]]; then
 	# ensure elasticsearch user exists
 		adduser -DH -s /sbin/nologin ${SOFT}
 	# install elasticsearch
-		cd /tmp \
-		  && say "===> Install ${SOFT}..." \
-		  && $download_save ${SOFT}.tar.gz "${ES_TARBAL}"; \
-		  tar -xf ${SOFT}.tar.gz \
-		  && ls -lah \
-		  && mv ${SOFT}-$ES_VERSION ${SOFTHOME} \
-		  && say "===> Creating ${SOFT} Paths..." \
-		  && for path in \
+		cd /tmp
+		  say "===> Install ${SOFT}..."
+		  $download_save ${SOFT}.tar.gz "${ES_TARBAL}"
+		  tar -xf ${SOFT}.tar.gz
+		  ls -lah
+		FILETEMP=${SOFT}-$ES_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
+		FILETEMP=${SOFT}-oss-$ES_VERSION
+		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
+		  say "===> Creating ${SOFT} Paths..."
+		  for path in \
 		  	${SOFTHOME}/data \
 		  	${SOFTHOME}/logs \
 		  	${SOFTHOME}/config \
