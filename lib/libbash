@@ -124,13 +124,13 @@ function export_all()
                     \
 		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
                     install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
-                    install_php_composer install_dpkg
+                    install_php_composer install_dpkg install_cpio
     # Function Remove
         export -f core_command_remove clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run \
                     \
 	                remove_epel debian_remove_repo debian_remove_repos remove_desktop_minimal remove_java_jre remove_gosu remove_sudo \
                     remove_js-yaml remove_supervisor remove_tar remove_rsync remove_unzip remove_dmidecode remove_download_tool \
-                    remove_php_composer remove_dpkg
+                    remove_php_composer remove_dpkg remove_cpio
     # Group: Network
         export -f is_ipv4 is_fqdn is_ipv4_netmask is_ipv4_cidr is_ipv4_subnet get_ipv4_network get_ipv4_broadcast mask2cidr cidr2mask
     }
@@ -1098,22 +1098,25 @@ function    dircopy()
         #    1    Usage error
         #
         ############################################################
+        
+        machine_has cpio        && say "Copy dir/folder.."      || install_cpio
+ 
         CMDNAME=`basename $0`
         CURDIR=`pwd`                  # Current directory
         TARGET=                       # Destination directory
 
         if [[ $# -ne 2 ]]; then
-            echo "Usage: $CMDNAME directory1 directory2" 1>&2
+            say "Usage: $CMDNAME directory1 directory2" 1>&2
             return $FALSE
         fi
 
         if [[ ! -d "${1}" ]]; then
-            echo "${1} is not a directory." 1>&2
+            say_err "${1} is not a directory." 1>&2
             return $FALSE
         fi
 
         if [[ -f "${2}" ]]; then
-            echo "${2} is not a directory." 1>&2
+            say_err "${2} is not a directory." 1>&2
             return $FALSE
         fi
 
@@ -1126,8 +1129,8 @@ function    dircopy()
         cd $CURDIR
 
         cd "${1}"
-        find . -depth -print          |
-            cpio -pdmu $TARGET 2>&1  |
+        find . -depth -print            |
+            cpio -pdmu $TARGET 2>&1     |
             grep -iv "blocks"
     }
 
@@ -3002,6 +3005,12 @@ function    install_dmidecode()
        install_package_run dmidecode
     }
 
+# install cpio
+function    install_cpio()
+    {
+        install_package_run cpio
+    }
+
 # install php composer
 function    install_php_composer()
     {
@@ -3186,6 +3195,7 @@ function    remove_java_jre()
         return $TRUE
     }
 
+alias uninstall_java_jre=remove_java_jre
 alias delete_java_jre=remove_java_jre
 alias del_java_jre=remove_java_jre
 
@@ -3213,6 +3223,7 @@ function    remove_gosu()
         return $TRUE
     }
 
+alias uninstall_gosu=remove_gosu
 alias delete_gosu=remove_gosu
 alias del_gosu=remove_gosu
 
@@ -3228,6 +3239,7 @@ function    remove_js-yaml()
        remove_file /js-yaml.js
     }
 
+alias uninstall_js-yaml=remove_js-yaml
 alias delete_js-yaml=remove_js-yaml
 alias del_js-yaml=remove_js-yaml
 
@@ -3237,6 +3249,7 @@ function    remove_supervisor()
        remove_package supervisor
     }
 
+alias uninstall_supervisor=remove_supervisor
 alias delete_supervisor=remove_supervisor
 alias del_supervisor=remove_supervisor
 
@@ -3246,6 +3259,7 @@ function    remove_tar()
        remove_package_run tar
     }
 
+alias uninstall_tar=remove_tar
 alias delete_tar=remove_tar
 alias del_tar=remove_tar
 
@@ -3255,6 +3269,7 @@ function    remove_rsync()
        remove_package_run rsync
     }
 
+alias uninstall_rsync=remove_rsync
 alias delete_rsync=remove_rsync
 alias del_rsync=remove_rsync
 
@@ -3264,6 +3279,7 @@ function    remove_unzip()
        remove_package_run unzip
     }
 
+alias uninstall_unzip=remove_unzip
 alias delete_unzip=remove_unzip
 alias del_unzip=remove_unzip
 
@@ -3273,6 +3289,7 @@ function    remove_dpkg()
        remove_package_run dpkg
     }
 
+alias uninstall_dpkg=remove_dpkg
 alias delete_dpkg=remove_dpkg
 alias del_dpkg=remove_dpkg
 
@@ -3282,8 +3299,19 @@ function    remove_dmidecode()
        remove_package_run dmidecode
     }
 
+alias uninstall_dmidecode=remove_dmidecode
 alias delete_dmidecode=remove_dmidecode
 alias del_dmidecode=remove_dmidecode
+
+# remove cpio
+function    remove_cpio()
+    {
+       remove_package_run cpio
+    }
+
+alias uninstall_cpio=remove_cpio
+alias delete_cpio=remove_cpio
+alias del_cpio=remove_cpio
 
 # remove download tool
 function    remove_download_tool()
@@ -3291,6 +3319,8 @@ function    remove_download_tool()
        remove_packages_run $DOWNLOAD_TOOL && say "uninstall download tools done" || say_warning "cannot uninstall download tools"
     }
 
+alias uninstall_download_tool=remove_download_tool
+alias uninstall_downloadtool=remove_download_tool
 alias delete_download_tool=remove_download_tool
 alias del_download_tool=remove_download_tool
 alias delete_downloadtool=remove_download_tool
@@ -3306,6 +3336,10 @@ function    remove_php_composer()
         remove_filefolders ~/.cache/composer ~/.local/share/composer ~/.config/composer
         remove_filefolder /root/.cache/composer /root/.local/share/composer /root/.config/composer
     }
+
+alias uninstall_php_composer=remove_php_composer
+alias delete_php_composer=remove_php_composer
+alias del_php_composer=remove_php_composer
 
 
 # Group: Network
