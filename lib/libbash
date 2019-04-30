@@ -2584,6 +2584,9 @@ function    install_epel()
         return $TRUE
     fi
     }
+
+alias setup_epel=install_epel
+
 # remove epel repo
 function    remove_epel()
     {
@@ -2598,6 +2601,11 @@ function    remove_epel()
             check_epel          && return $TRUE                     || return $FALSE
         fi
     }
+
+alias uninstall_epel=remove_epel
+alias del_epel=remove_epel
+alias delete_epel=remove_epel
+alias remove_epel=remove_epel
 
 # update_os
 function    update_os()
@@ -2667,6 +2675,8 @@ function    install_package()
             core_command_install
     }
 
+alias setup_package=install_package
+
 # install multi package
 function    install_packages()
     {
@@ -2674,6 +2684,8 @@ function    install_packages()
             core_command_install
         done
     }
+
+alias setup_packages=install_packages
 
 # install package have run bin
 function    install_package_run()
@@ -2686,6 +2698,8 @@ function    install_package_run()
         machine_has ${software}     && return $TRUE                     || return $FALSE
     }
 
+alias setup_package_run=install_package_run
+
 # install multi packages have run bin
 function    install_packages_run()
     {
@@ -2697,6 +2711,8 @@ function    install_packages_run()
         machine_has ${software}     && return $TRUE                     || return $FALSE
         done
     }
+
+alias setup_packages_run=install_packages_run
 
 # core command repo ubuntu-debian
 function    core_command_debian_repo()
@@ -2870,17 +2886,23 @@ function    install_desktop_minimal()
         return $TRUE
     }
 
+alias setup_desktop_minimal=install_desktop_minimal
+
 # install curl
 function    install_curl()
     {
         install_package_run curl
     }
 
+alias setup_curl=install_curl
+
 # install wget
 function    install_wget()
     {
         install_package_run wget
     }
+
+alias setup_wget=install_wget
 
 # export environment java
 function    env_openjdk_jre()
@@ -2912,6 +2934,8 @@ function    install_java_jre()
         fi
         return $TRUE
     }
+
+alias setup_java_jre=install_java_jre
 
 # install Gosu
 function    install_gosu()
@@ -2947,6 +2971,8 @@ function    install_gosu()
         return $TRUE
     }
 
+alias setup_gosu=install_gosu
+
 # install sudo
 function    install_sudo()
     {
@@ -2976,11 +3002,15 @@ function    install_js-yaml()
         return $TRUE
     }
 
+alias setup_js-yaml=install_js-yaml
+
 # install supervisor
 function    install_supervisor()
     {
        install_package supervisor
     }
+
+alias setup_supervisor=install_supervisor
 
 # install tar
 function    install_tar()
@@ -2988,11 +3018,15 @@ function    install_tar()
        install_package_run tar
     }
 
+alias setup_tar=install_tar
+
 # install rsync
 function    install_rsync()
     {
        install_package_run rsync
     }
+
+alias setup_rsync=install_rsync
 
 # install unzip
 function    install_unzip()
@@ -3000,11 +3034,15 @@ function    install_unzip()
        install_package_run unzip
     }
 
+alias setup_unzip=install_unzip
+
 # install dpkg
 function    install_dpkg()
     {
        install_package_run dpkg
     }
+
+alias setup_dpkg=install_dpkg
 
 # install dmidecode
 function    install_dmidecode()
@@ -3012,11 +3050,15 @@ function    install_dmidecode()
        install_package_run dmidecode
     }
 
+alias setup_dmidecode=install_dmidecode
+
 # install cpio
 function    install_cpio()
     {
         install_package_run cpio
     }
+
+alias setup_cpio=install_cpio
 
 # install php composer
 function    install_php_composer()
@@ -3027,6 +3069,8 @@ function    install_php_composer()
        machine_has composer             && say "php composer installed before!"     || $download_tool https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
        return $TRUE
     }
+
+alias setup_php_composer=install_php_composer
 
 
     ####### Function Remove ########
