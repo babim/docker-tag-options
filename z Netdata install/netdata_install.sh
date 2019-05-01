@@ -61,7 +61,7 @@ installnetdata() {
 	cd /
 	remove_filefolder /netdata.git
 	# prepare data
-	if check_folder /etc/netdata;then
+	if check_folder /etc/netdata; then
 		create_folder /etc-start
 		dircopy /etc/netdata /etc-start/
 	fi
