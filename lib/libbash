@@ -828,7 +828,7 @@ function    get_osname()
 # check debian need update
 function    check_debian_need_update()
     {
-        [[ ! -z /var/lib/apt/lists/ ]]  && return $TRUE     || return $FALSE
+        [[ ! -z "`ls /var/lib/apt/lists/`" ]]  && return $TRUE     || return $FALSE
     }
 
 # release name

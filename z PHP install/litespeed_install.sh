@@ -81,25 +81,14 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	elif 	[[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION=70;
 	elif 	[[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION=71;
 	elif 	[[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION=72;
+	elif 	[[ "$PHP_VERSION" == "7.3" ]];then export PHP_VERSION=73;
 	else export PHP_VERSION=$PHP_VERSION;fi
 
 	# create php bin
-	if [[ "$PHP_VERSION" == "56" ]] || [[ "$PHP_VERSION" == "55" ]] || [[ "$PHP_VERSION" == "54" ]] || [[ "$PHP_VERSION" == "53" ]];then
-		install_package lsphp${PHP_VERSION} lsphp${PHP_VERSION}-common lsphp${PHP_VERSION}-mysql lsphp${PHP_VERSION}-gd \
-		lsphp${PHP_VERSION}-process lsphp${PHP_VERSION}-mbstring lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-mcrypt \
-		lsphp${PHP_VERSION}-pdo lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-soap lsphp${PHP_VERSION}-bcmath
-		create_symlink /usr/local/lsws/lsphp54/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp5
-	elif [[ "$PHP_VERSION" == "70" ]] || [[ "$PHP_VERSION" == "71" ]] || [[ "$PHP_VERSION" == "72" ]] || [[ "$PHP_VERSION" == "73" ]];then
-		install_package lsphp${PHP_VERSION} lsphp${PHP_VERSION}-mcrypt lsphp${PHP_VERSION}-bcmath lsphp${PHP_VERSION}-common \
-		lsphp${PHP_VERSION}-dba lsphp${PHP_VERSION}-dbg lsphp${PHP_VERSION}-devel lsphp${PHP_VERSION}-enchant lsphp${PHP_VERSION}-gd \
-		lsphp${PHP_VERSION}-gmp lsphp${PHP_VERSION}-imap lsphp${PHP_VERSION}-intl lsphp${PHP_VERSION}-json lsphp${PHP_VERSION}-ldap \
-		lsphp${PHP_VERSION}-mbstring lsphp${PHP_VERSION}-mysqlnd lsphp${PHP_VERSION}-odbc lsphp${PHP_VERSION}-opcache \
-		lsphp${PHP_VERSION}-pdo lsphp${PHP_VERSION}-pear lsphp${PHP_VERSION}-pecl-apcu lsphp${PHP_VERSION}-pecl-apcu-devel \
-		lsphp${PHP_VERSION}-pecl-apcu-panel lsphp${PHP_VERSION}-pecl-igbinary lsphp${PHP_VERSION}-pecl-igbinary-devel \
-		lsphp${PHP_VERSION}-pecl-mcrypt lsphp${PHP_VERSION}-pecl-memcache lsphp${PHP_VERSION}-pecl-memcached lsphp${PHP_VERSION}-pecl-msgpack \
-		lsphp${PHP_VERSION}-pecl-msgpack-devel lsphp${PHP_VERSION}-pecl-redis lsphp${PHP_VERSION}-pgsql lsphp${PHP_VERSION}-process \
-		lsphp${PHP_VERSION}-pspell lsphp${PHP_VERSION}-recode lsphp${PHP_VERSION}-snmp lsphp${PHP_VERSION}-soap \
-		lsphp${PHP_VERSION}-tidy lsphp${PHP_VERSION}-xml lsphp${PHP_VERSION}-xmlrpc lsphp${PHP_VERSION}-zip
+	if [[ "$PHP_VERSION" == "5"* ]]; then
+		install_package lsphp${PHP_VERSION}*
+	elif [[ "$PHP_VERSION" == "7"* ]]; then
+		install_package lsphp${PHP_VERSION}*
 	else
 		say "Not support your PHP version"
 	fi
