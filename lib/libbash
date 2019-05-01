@@ -2566,7 +2566,7 @@ function    check_epel_say()
 function    install_epel()
     {
     if ! check_epel; then
-        say "EPEL Repo not found"
+        say "EPEL Repo not install, Begin installing.."
         # osname=$(get_osname)
         get_osname
         is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
@@ -2600,7 +2600,7 @@ function    remove_epel()
             say "EPEL Repo not found"
             return $TRUE
         else
-            say "EPEL Repo installed"
+            say "Removing EPEL Repo.."
             ${sudo_command}yum remove epel* -y
             check_epel          && say "EREL REPO removed"          || say_err "EREL REPO found and Cannot removed"
             check_epel          && return $TRUE                     || return $FALSE

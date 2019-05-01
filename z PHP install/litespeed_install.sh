@@ -54,10 +54,14 @@ setenvironment() {
 }
 setlitespeedadmin() {
 ## Set litespeed admin user
-/usr/local/lsws/admin/misc/admpass.sh <<< "$LITESPEED_ADMIN
+cat <<EOF > keystroke
+$LITESPEED_ADMIN
 $LITESPEED_PASS
 $LITESPEED_PASS
-"
+EOF
+	/usr/local/lsws/admin/misc/admpass.sh < keystroke
+	# remove install files
+	rm -f install.bin keystroke
 }
 preparefinal() {
 ## Prepare value
