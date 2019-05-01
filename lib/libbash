@@ -2620,7 +2620,7 @@ function    update_os()
         say "install ${software}.."
         is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
+                check_debian_need_update && say "no need update repo"            || ${sudo_command}apt-get update
                 ${sudo_command}apt-get dist-upgrade -y
             elif [[ $osname == "rhel"* ]]; then
                 ${sudo_command}yum update -y
@@ -2645,7 +2645,7 @@ function    core_command_install()
         say "install ${software}.."
         is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                ${sudo_command}check_debian_need_update && ${sudo_command}apt-get update        || say "no need update repo"
+                ${sudo_command}check_debian_need_update && say "no need update repo"            || ${sudo_command}apt-get update
                 if [[ $software == *".deb" ]]; then
                     ${sudo_command}dpkg -i ${software}  && say "install ${software} completed"  || ${sudo_command}apt-get install -f -y
                 elif [[ $software == *".rpm" ]]; then
@@ -2868,7 +2868,7 @@ function    install_desktop_minimal()
         say "install ${software}.."
         is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
             if [[ $osname == "ubuntu"* || $osname == "debian"* ]]; then
-                check_debian_need_update && ${sudo_command}apt-get update || say "no need update repo"
+                check_debian_need_update && say "no need update repo"            || ${sudo_command}apt-get update
                 ${sudo_command}apt-get install -y --no-install-recommends xubuntu-desktop
                 ${sudo_command}apt-get install -y --no-install-recommends xinit xterm firefox
             elif [[ $osname == "rhel.6"* ]]; then

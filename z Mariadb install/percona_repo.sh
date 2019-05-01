@@ -9,7 +9,10 @@
 	require_root
 
 if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		FILETEMP=percona-release_0.1-4.${OSDEB}_all.deb
+		# percona need wget
+		install_package lsb-release gnupg wget
+		# install percona repo
+		FILETEMP=percona-release_0.1-10.${OSDEB}_all.deb
 			$download_save $FILETEMP https://repo.percona.com/apt/$FILETEMP
 			install_package $FILETEMP
 			remove_file $FILETEMP

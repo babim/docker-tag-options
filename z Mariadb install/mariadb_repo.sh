@@ -15,7 +15,7 @@
 		export MYSQL_VERSION=${MYSQL_VERSION:-5.5.61}
 
 if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-	if [[ "$TYPESQL" == "mariadb" ]];then
+	if [[ "$TYPESQL" == "mariadb" ]]; then
 		# add repo Mariadb
 		install_package software-properties-common dirmngr gnupg
 		if [[ "$osname" == "wheezy" ]] || [[ "$OSDEB" == "trusty" ]];then
@@ -24,25 +24,33 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		debian_add_repo_key 0xF1656F24C74CD1D8
 		debian_add_repo_key 0xCBCB082A1BB943DB
 		# set version
-		if [[ "$OSDEB" == "trusty" ]];then
+		get_osname
+		if [[ $osname == "ubuntu"* ]]; then
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/ubuntu $OSDEB main"
-		else
+		elif [[ $osname == "debian"* ]]; then
 			add-apt-repository "deb [arch=amd64,i386,ppc64el] http://mirror.truenetwork.ru/mariadb/repo/$MARIADB_MAJOR/debian $OSDEB main"
+		else
+			say_err "This repo cannot install on this os system"
+			return $FALSE
 		fi
 
-	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
-		install_package lsb-release gnupg
+	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]]; then
+		# mysql need wget
+		install_package lsb-release gnupg wget
+		# install mysql
 		FILETEMP=mysql-apt-config_0.8.12-1_all.deb
 			$download_save $FILETEMP https://dev.mysql.com/get/$FILETEMP
-			install_package $FILETEMP && remove_file $FILETEMP keystrokes
+			install_package $FILETEMP
+		FILETEMP=/etc/apt/sources.list.d/mysql.list
+			check_file $FILETEMP && say "use sed to change correct version repo"	|| return $FALSE
 		export MYSQLDEFAULT=8.0
-		if [[ "$MYSQL_MAJOR" == "5.6" ]];then
-			sed -i "s/${MYSQLDEFAULT}/5.6/" /etc/apt/sources.list.d/mysql.list
-		elif [[ "$MYSQL_MAJOR" == "5.7" ]];then
-			sed -i "s/${MYSQLDEFAULT}/5.7/" /etc/apt/sources.list.d/mysql.list
-		elif [[ "$MYSQL_MAJOR" == "8.0" ]];then
-			sed -i "s/${MYSQLDEFAULT}/8.0/" /etc/apt/sources.list.d/mysql.list
-		fi
+			if [[ "$MYSQL_MAJOR" == "5.6" ]]; then
+				sed -i "s/${MYSQLDEFAULT}/5.6/" $FILETEMP
+			elif [[ "$MYSQL_MAJOR" == "5.7" ]]; then
+				sed -i "s/${MYSQLDEFAULT}/5.7/" $FILETEMP
+			elif [[ "$MYSQL_MAJOR" == "8.0" ]]; then
+				sed -i "s/${MYSQLDEFAULT}/8.0/" $FILETEMP
+			fi
 
 	# code add repo old
 	# 	add repo Mysql
@@ -60,6 +68,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# 	echo "deb http://repo.mysql.com/apt/debian/ $OSDEB mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
 	else
 		say_err "Not support your sql"
+		return $FALSE
 	fi
 
 elif [[ -f /etc/redhat-release ]]; then
@@ -71,7 +80,7 @@ elif [[ -f /etc/redhat-release ]]; then
 		echo "gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB" >> /etc/yum.repos.d/mariadb.repo
 		echo "gpgcheck=1" >> /etc/yum.repos.d/mariadb.repo
 
-	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]];then
+	elif [[ "$TYPESQL" == "mysql" || "$TYPESQL" == "mysql5" ]];then
 		# add repo Mysql
 		echo "[mysql-community]" > /etc/yum.repos.d/mysql.repo
 		echo "name=MySQL Community Server" >> /etc/yum.repos.d/mysql.repo
@@ -81,6 +90,7 @@ elif [[ -f /etc/redhat-release ]]; then
 		echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-mysql" >> /etc/yum.repos.d/mysql.repo
 	else
 		say_err "Not support your sql"
+		return $FALSE
 	fi
 
 else
