@@ -97,7 +97,7 @@ if [[ -f /etc/alpine-release ]]; then
 		  else
 			say "${FILETEMP} does not exist"
 		  fi
-	elif [ "${KB_VERSION}" == "6.6.0" ] || [ "${KB_VERSION}" == "6.6.1" ] || [ "${KB_VERSION}" == "6.6.2" ] || [ "${KB_VERSION}" == "6.6.3" ] || [ "${KB_VERSION}" == "6.6.4" ]; then
+	elif [[ "${KB_VERSION}" == "6.6.0" || "${KB_VERSION}" == "6.6.1" || "${KB_VERSION}" == "6.6.2" || "${KB_VERSION}" == "6.6.3" || "${KB_VERSION}" == "6.6.4" ]]; then
 		say "setting for kibana 6.6.x"
 		say "no need sed value"
 	else
