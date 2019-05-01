@@ -1111,20 +1111,23 @@ function    dircopy()
             say "Usage: $CMDNAME directory1 directory2" 1>&2
             return $FALSE
         fi
-
+        say "Check folder ${1}"
         if [[ ! -d "${1}" ]]; then
             say_err "${1} is not a directory." 1>&2
             return $FALSE
         fi
-
+        say "folder ${1} done"
+        say "Check folder ${2}"
         if [[ -f "${2}" ]]; then
             say_err "${2} is not a directory." 1>&2
             return $FALSE
         fi
 
         if [[ ! -d "${2}" ]]; then
+            say "folder ${2} not exist. Creating.."
             mkdir -p "${2}"
         fi
+        say "folder ${2} done"
 
         cd "${2}"
         TARGET=`pwd`
@@ -1137,14 +1140,15 @@ function    dircopy()
             cpio -pdmu $TARGET 2>&1     |
             grep -iv "blocks"
         cd $CURDIR
+        return $TRUE
     }
 
 # Defning return code check function
 function    die()
     {
         if [[ ${1} -ne 0 ]]; then
-            echo "Error: ${2}"
-            exit ${1}
+            say_err "Error: ${2}"
+            exit $FALSE
         fi
     } >&2 # function writes to stderr
 
