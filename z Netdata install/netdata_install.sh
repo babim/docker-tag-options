@@ -42,7 +42,7 @@ setenvironment() {
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Netdata%20install"
 	# set uninstall app
-		export UNINSTALL="libmnl-dev gcc make git autoconf automake ${DOWNLOAD_TOOL}"
+		export UNINSTALL="libmnl-dev gcc make git autoconf automake"
 }
 # install symlink
 symlinkcreate() {
@@ -106,13 +106,13 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	install_package msmtp msmtp-mta apcupsd fping
 	# install netdata
 		installnetdata
+	# symlink access log and error log to stdout/stderr
+		symlinkcreate
 	# download docker entrypoint
 		downloadentry
 	# del dev tool
 		clean_package
 		clean_os
-	# symlink access log and error log to stdout/stderr
-		symlinkcreate
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
 	# set environment
@@ -122,13 +122,13 @@ elif [[ -f /etc/redhat-release ]]; then
 			MySQL-python nc pkgconfig python python-psycopg2 PyYAML zlib-devel
 	# install netdata
 		installnetdata
+	# symlink access log and error log to stdout/stderr
+		symlinkcreate
 	# download docker entrypoint
 		downloadentry
 	# del dev tool
 		clean_package
 		clean_os
-	# symlink access log and error log to stdout/stderr
-		symlinkcreate
 
 # OS - other
 else

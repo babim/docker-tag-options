@@ -89,7 +89,7 @@ recreate_mysql() {
 echo 'Check OS'
 if [[ -f /etc/debian_version ]]; then
 	# uninstall app after install
-		export UNINSTALL="${DOWNLOAD_TOOL}"
+		export UNINSTALL=""
 	# Set app version
 		export TYPESQL=${TYPESQL:-mariadb}
 		export MARIADB_MAJOR=${MARIADB_MAJOR:-10.4}

@@ -1706,6 +1706,11 @@ function    remove_symlinks()
         done
     }
 
+alias del_symlink=remove_symlink
+alias delele_symlink=remove_symlink
+alias del_symlinks=remove_symlinks
+alias delele_symlinks=remove_symlinks
+
 # remove file and folder. Can use this command to remove abc*
 function    remove_filefolder()
     {

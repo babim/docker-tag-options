@@ -81,32 +81,54 @@ if [[ -f /etc/alpine-release ]]; then
 		  check_folder $FILETEMP	&& mv $FILETEMP ${SOFTHOME} 	|| say "${FILETEMP} does not exist"
 	# Config after install
 	if [[ "$KIBANA" = "4" ]]; then
+		say "setting for kibana 4"
 		remove_file ${SOFTHOME}/node/bin/node
 		remove_file ${SOFTHOME}/node/bin/npm
 		check_file /usr/bin/node 	&& create_symlink /usr/bin/node ${SOFTHOME}/node/bin/node	|| say_error "Not have nodejs"
 		check_file /usr/lib/node_modules/npm/bin/npm-cli.js 	&& create_symlink /usr/lib/node_modules/npm/bin/npm-cli.js ${SOFTHOME}/node/bin/npm	|| say "search npm and create symlink"
 		check_file /usr/bin/npm 	&& create_symlink /usr/lib/node_modules/npm/bin/npm-cli.js ${SOFTHOME}/node/bin/npm	|| say "search npm and create symlink"
-		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/${SOFT}.yml
-		grep -q "^server\.host: '0.0.0.0'\$" /usr/share/${SOFT}/config/${SOFT}.yml 
-  	# ensure the default configuration is useful when using --link
-		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/${SOFT}.yml
-		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/${SOFT}.yml
+		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
+		  if check_file ${FILETEMP}; then
+			sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${FILETEMP}
+			grep -q "^server\.host: '0.0.0.0'\$" ${FILETEMP}
+	  	# ensure the default configuration is useful when using --link
+			sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${FILETEMP}
+			grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${FILETEMP}
+		  else
+			say "${FILETEMP} does not exist"
+		  fi
 	elif [ "${KB_VERSION}" == "6.6.0" ] || [ "${KB_VERSION}" == "6.6.1" ] || [ "${KB_VERSION}" == "6.6.2" ] || [ "${KB_VERSION}" == "6.6.3" ] || [ "${KB_VERSION}" == "6.6.4" ]; then
-		echo "no need sed value"
+		say "setting for kibana 6.6.x"
+		say "no need sed value"
 	else
-		sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${SOFTHOME}/config/${SOFT}.yml
-		grep -q "^server\.host: '0.0.0.0'\$" ${SOFTHOME}/config/${SOFT}.yml 
-  	# ensure the default configuration is useful when using --link
-		sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${SOFTHOME}/config/${SOFT}.yml
-		grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${SOFTHOME}/config/${SOFT}.yml
+		FILETEMP=${SOFTHOME}/config/${SOFT}.yml
+		  if check_file ${FILETEMP}; then
+			sed -ri "s!^(\#\s*)?(server\.host:).*!\2 '0.0.0.0'!" ${FILETEMP}
+			grep -q "^server\.host: '0.0.0.0'\$" ${FILETEMP}
+	  	  # ensure the default configuration is useful when using --link
+			sed -ri "s!^(\#\s*)?(elasticsearch\.url:).*!\2 'http://elasticsearch:9200'!" ${FILETEMP}
+			grep -q "^elasticsearch\.url: 'http://elasticsearch:9200'\$" ${FILETEMP}
+		  else
+			say "${FILETEMP} does not exist"
+		  fi
 	fi
  	 # usr alpine nodejs and not bundled version
 		bundled='NODE="${DIR}/node/bin/node"'
 		apline_node='NODE="/usr/bin/node"'
 	FILETEMP=${SOFTHOME}/bin/${SOFT}-plugin
-		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
+		say "sed node path ${FILETEMP}"
+		if check_folder ${FILETEMP}; then
+			sed -i "s|$bundled|$apline_node|g" ${FILETEMP}
+		else
+			say "${FILETEMP} does not exist"
+		fi
 	FILETEMP=${SOFTHOME}/bin/${SOFT}
-		check_folder ${FILETEMP} && sed -i "s|$bundled|$apline_node|g" ${FILETEMP} || say "${FILETEMP} does not exist"
+		say "sed node path ${FILETEMP}"
+		if check_folder ${FILETEMP}; then
+			sed -i "s|$bundled|$apline_node|g" ${FILETEMP}
+		else
+			say "${FILETEMP} does not exist"
+		fi
 		remove_filefolder ${SOFTHOME}/node
 		set_filefolder_owner ${SOFT}:${SOFT} ${SOFTHOME}
 	# clean
