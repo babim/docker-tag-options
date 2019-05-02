@@ -137,7 +137,7 @@ installatlassian() {
 		check_file "${FILETEMP}"	&& mv "${FILETEMP}" "${SOFT_INSTALL}/start-${SOFT}.sh"		|| say_warning "file/folder not exist"
 		set_filefolder_mod 		755 "${SOFT_INSTALL}/start-${SOFT}.sh"				&& say "set done" || say_warning "file/folder not exist"
 
-	say " - Install done - "
+	e_success " - Install done - "
 }
 
 # install by OS

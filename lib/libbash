@@ -2640,6 +2640,8 @@ function    update_os()
     }
 
 alias upgrade_os=update_os
+alias capnhat=update_os
+alias cap_nhat=update_os
 
 # core command install. Core command for install packages
 function    core_command_install()
