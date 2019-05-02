@@ -33,6 +33,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			say_err "This repo cannot install on this os system"
 			return $FALSE
 		fi
+		apt-get update
 
 	elif [[ "$TYPESQL" == "mysql" ]] || [[ "$TYPESQL" == "mysql5" ]]; then
 		# mysql need wget
@@ -51,6 +52,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			elif [[ "$MYSQL_MAJOR" == "8.0" ]]; then
 				sed -i "s/${MYSQLDEFAULT}/8.0/" $FILETEMP
 			fi
+		apt-get update
 
 	# code add repo old
 	# 	add repo Mysql

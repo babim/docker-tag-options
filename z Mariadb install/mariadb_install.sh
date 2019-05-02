@@ -113,7 +113,7 @@ if [[ -f /etc/debian_version ]]; then
 	# make docker-entrypoint-initdb
 		create_folder /docker-entrypoint-initdb.d
 			
-	if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]];then
+	if [[ "$TYPESQL" == "mariadb" ]] || [[ "$TYPESQL" == "" ]]; then
 		# install mysql over repo with major version
 		set -e;\
 			{ \
@@ -138,7 +138,7 @@ if [[ -f /etc/debian_version ]]; then
 		# finish
 			finish
 
-	elif [[ "$TYPESQL" == "mysql" ]];then
+	elif [[ "$TYPESQL" == "mysql" ]]; then
 		# # the "/var/lib/mysql" stuff here is because the mysql-server postinst doesn't have an explicit way to disable the mysql_install_db codepath besides having a database already "configured" (ie, stuff in /var/lib/mysql/mysql)
 		# # also, we set debconf keys to make APT a little quieter
 		# { \
@@ -153,7 +153,7 @@ if [[ -f /etc/debian_version ]]; then
 		# finish
 			finish
 
-	elif [[ "$TYPESQL" == "mysql5" ]];then
+	elif [[ "$TYPESQL" == "mysql5" ]]; then
 		# install mysql over repo with major version
 		FILETEMP=mysql.tar.gz
 		check_file $FILETEMP && $download_save $FILETEMP "https://cdn.mysql.com/Downloads/MySQL-$MYSQL_MAJOR/mysql-$MYSQL_VERSION-linux-glibc2.12-x86_64.tar.gz" \

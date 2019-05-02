@@ -16,6 +16,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 			$download_save $FILETEMP https://repo.percona.com/apt/$FILETEMP
 			install_package $FILETEMP
 			remove_file $FILETEMP
+		apt-get update
 
 	# # install depend
 	# apt-get install -y --no-install-recommends \
