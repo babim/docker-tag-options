@@ -3156,7 +3156,8 @@ function    remove_packages()
         done
     }
 
-alias remove_packages=remove_packages
+alias uninstall_package=remove_package
+alias uninstall_packages=remove_packages
 alias del_package=remove_package
 alias del_packages=remove_packages
 alias delete_package=remove_package
@@ -3185,7 +3186,8 @@ function   remove_packages_run()
         done
     }
 
-alias remove_packages_run=remove_packages_run
+alias uninstall_package_run=remove_package_run
+alias uninstall_packages_run=remove_packages_run
 alias del_package_run=remove_package_run
 alias del_packages_run=remove_packages_run
 alias delete_package_run=remove_package_run
