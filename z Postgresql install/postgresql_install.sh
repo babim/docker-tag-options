@@ -53,6 +53,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# add repo
 		debian_add_repo_key https://www.postgresql.org/media/keys/ACCC4CF8.asc \
 		&& echo "deb http://apt.postgresql.org/pub/repos/apt/ $OSDEB-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+		apt-get update
 	# install
 		install_package acl sudo \
 		postgresql-${PG_VERSION} postgresql-client-${PG_VERSION} postgresql-contrib-${PG_VERSION} \
