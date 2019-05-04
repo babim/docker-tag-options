@@ -82,13 +82,13 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	elif 	[[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION=71;
 	elif 	[[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION=72;
 	elif 	[[ "$PHP_VERSION" == "7.3" ]];then export PHP_VERSION=73;
-	else export PHP_VERSION=$PHP_VERSION;fi
+	else return $FALSE;fi
 
 	# create php bin
 	if [[ "$PHP_VERSION" == "5"* ]]; then
-		install_package lsphp${PHP_VERSION}*
+		install_package lsphp${PHP_VERSION}-*
 	elif [[ "$PHP_VERSION" == "7"* ]]; then
-		install_package lsphp${PHP_VERSION}*
+		install_package lsphp${PHP_VERSION}-*
 	else
 		say "Not support your PHP version"
 	fi
