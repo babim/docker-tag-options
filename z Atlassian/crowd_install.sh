@@ -65,9 +65,7 @@ installatlassian() {
 	say " - Begin install - "
 
 ## directory structure.
-	create_folders		"${SOFT_HOME}" "${SOFT_INSTALL}" "${SOFT_INSTALL}/crowd-webapp/WEB-INF/classes" \
-				"${SOFT_INSTALL}/apache-tomcat/lib" "${SOFT_INSTALL}/apache-tomcat/webapps/ROOT" \
-				"${SOFT_INSTALL}/apache-tomcat/conf/Catalina/localhost"
+	create_folders		"${SOFT_HOME}" "${SOFT_INSTALL}"
 	set_filefolder_mod	700            		"${SOFT_HOME}"
 	set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
 
