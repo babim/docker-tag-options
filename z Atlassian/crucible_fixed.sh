@@ -59,21 +59,19 @@ fi
 
 # visible code
 	echo "check path and install"
-	if [ ! -d ${SOFT_INSTALL} ]; then mkdir -p ${SOFT_INSTALL}; fi
-	if [ -z "`ls ${SOFT_INSTALL}`" ]; then
-			cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}
-		[[ ! -d "${SOFT_HOME}" ]] && mkdir -p "${SOFT_HOME}"
-	## set permission path
-		[[ -d "${SOFT_HOME}" ]]			&&	chmod -R 700			"${SOFT_HOME}"
-		[[ -d "${SOFT_HOME}" ]]			&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
-		[[ ! -d "${SOFT_INSTALL}/log}" ]] 	&& 	mkdir -p			"${SOFT_INSTALL}/log}"
-		[[ -d "${SOFT_INSTALL}" ]]		&&	chmod -R 755			"${SOFT_INSTALL}"
-		[[ -d "${SOFT_INSTALL}/conf" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/conf"
-		[[ -d "${SOFT_INSTALL}/logs" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/logs"
-		[[ -d "${SOFT_INSTALL}/temp" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/temp"
-		[[ -d "${SOFT_INSTALL}/work" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/work"
-		[[ -d "${SOFT_INSTALL}" ]]		&&	chown -R ${auser}:${aguser}	"${SOFT_INSTALL}"
-	fi
+	[[ ! -d "${SOFT_INSTALL}" ]]		&& 	mkdir -p ${SOFT_INSTALL}
+	[[ -z "`ls ${SOFT_INSTALL}`" ]]		&& 	cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}/
+	[[ ! -d "${SOFT_HOME}" ]]		&& 	mkdir -p "${SOFT_HOME}"
+## set permission path
+	[[ -d "${SOFT_HOME}" ]]			&&	chmod -R 700			"${SOFT_HOME}"
+	[[ -d "${SOFT_HOME}" ]]			&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
+	[[ ! -d "${SOFT_INSTALL}/log}" ]] 	&& 	mkdir -p			"${SOFT_INSTALL}/log}"
+	[[ -d "${SOFT_INSTALL}" ]]		&&	chmod -R 755			"${SOFT_INSTALL}"
+	[[ -d "${SOFT_INSTALL}/conf" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/conf"
+	[[ -d "${SOFT_INSTALL}/logs" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/logs"
+	[[ -d "${SOFT_INSTALL}/temp" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/temp"
+	[[ -d "${SOFT_INSTALL}/work" ]]		&&	chmod -R 700			"${SOFT_INSTALL}/work"
+	[[ -d "${SOFT_INSTALL}" ]]		&&	chown -R ${auser}:${aguser}	"${SOFT_INSTALL}"
 
 # check if the `server.xml` file has been changed since the creation of this
 # Docker image. If the file has been changed the entrypoint script will not
