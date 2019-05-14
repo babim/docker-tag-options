@@ -8,13 +8,13 @@ set -e
 
 # copy config supervisor
 if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
-	[[ ! -f "/etc/supervisor/supervisord.conf" ]] && cp -R -f /etc-start/supervisor/* /etc/supervisor || say "no need copy supervisor config"
+	[[ ! -f "/etc/supervisor/supervisord.conf" ]] && cp -R -f /etc-start/supervisor/* /etc/supervisor || echo "no need copy supervisor config"
 fi
 [[ -z "`ls ${1}`" ]]  
 
 # copy config soft config
 if [ -d "/usr/share/${SOFT}/config" ] && [ -d "/etc-start/${SOFT}" ];then
-	[[ -z "`ls /usr/share/${SOFT}/config`" ]]  && cp -R -f /etc-start/${SOFT}/* /usr/share/${SOFT}/config || say "no need copy ${SOFT} config"
+	[[ -z "`ls /usr/share/${SOFT}/config`" ]]  && cp -R -f /etc-start/${SOFT}/* /usr/share/${SOFT}/config || echo "no need copy ${SOFT} config"
 fi
 
 # option with entrypoint
