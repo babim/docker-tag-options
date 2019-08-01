@@ -43,7 +43,7 @@ if [[ -f /etc/debian_version ]]; then
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Duplicati%20install"
 	# Set frontend debian
 		debian_cmd_interface
-		export DUPLICATI_VER=2.0.4.5-1
+		export DUPLICATI_VER=2.0.4.23-1
 		export D_CODEPAGE=UTF-8
 		export D_LANG=en_US
 		export UNINSTALL="${DOWNLOAD_TOOL}"
