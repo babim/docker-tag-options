@@ -167,7 +167,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# Set frontend debian
 		debian_cmd_interface
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl ttf-dejavu libtcnative-1 xmlstarlet
 	# Install Atlassian
