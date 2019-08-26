@@ -17,27 +17,6 @@ fi
 MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 [[ ${MACHINE_TYPE} == 'x86_64' ]] && echo "Your server is x86_64 system" || echo "Your server is x86 system"
 
-# download option
-say_warning "Check and set download tool..."
-if machine_has "curl"; then
-    # download_tool for command download. use like this $download_tool
-    export download_tool="curl -Ls"
-    # DOWNLOAD_TOOL use when remove download tool package
-    export DOWNLOAD_TOOL="curl"
-    export download_save=download_with_curl
-    say "use curl"
-elif machine_has "wget"; then
-    export download_tool="wget"
-    export DOWNLOAD_TOOL="wget"
-    export download_save=download_with_wget
-    say "use wget"
-else
-    say_err "without download tool"
-    sleep 3
-    exit $FALSE
-fi
-if machine_has "curl" && machine_has "wget"; then export DOWNLOAD_TOOL="wget curl";fi
-
 # set environment
 setenvironment() {
 		export SOFT=${SOFT:-AppManager}
@@ -48,6 +27,27 @@ setenvironment() {
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
+
+#####################################
+    ####### Set download tool #######
+    ####### and load library ########
+# check has package
+function    machine_has() {
+        hash "$1" > /dev/null 2>&1
+        return $?; }
+# Check and set download tool
+echo "Check and set download tool..."
+if machine_has "curl"; then
+    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+elif machine_has "wget"; then
+    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
+else
+    echo "without download tool"
+    sleep 3
+    exit 1
+fi
+download_option
+#####################################
 }
 # set command install
 installmanageengine() {
