@@ -61,8 +61,8 @@ installnetdata() {
 	cd /
 	remove_filefolder /netdata.git
 	# prepare data
-	create_folder /etc-start
-	dircopy /etc/netdata /etc-start/
+	#create_folder /etc-start
+	#dircopy /etc/netdata /etc-start/
 }
 # download docker entrypoint
 downloadentry() {
