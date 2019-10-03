@@ -216,7 +216,6 @@ if [[ -f /etc/lsb-release ]]; then
 		# disable libsslcommon2-dev
 		# config
 			fullphpdo
-	fi
 
 	elif [[ "$PHP_VERSION" == "7.3" ]];then
 		# install PHP
