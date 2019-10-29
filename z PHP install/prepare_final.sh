@@ -24,7 +24,7 @@
 # apache
     check_folder	/etc/apache2		&& dircopy /etc/apache2/ /etc-start/apache2		|| say "no need copy apache2 setting files"
 # www data
-    check_folder	/etc/www		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
+    check_folder	/var/www		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
 # supervisor
     check_folder	/etc/supervisor		&& dircopy /etc/supervisor/ /etc-start/supervisor	|| say "no need copy supervisor setting files"
 # litespeed
