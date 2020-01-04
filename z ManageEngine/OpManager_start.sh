@@ -27,27 +27,6 @@ setenvironment() {
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
-
-#####################################
-    ####### Set download tool #######
-    ####### and load library ########
-# check has package
-function    machine_has() {
-        hash "$1" > /dev/null 2>&1
-        return $?; }
-# Check and set download tool
-echo "Check and set download tool..."
-if machine_has "curl"; then
-    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-elif machine_has "wget"; then
-    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-else
-    echo "without download tool"
-    sleep 3
-    exit 1
-fi
-download_option
-#####################################
 }
 # set command install
 installmanageengine() {
@@ -112,53 +91,54 @@ EOF
 }
 
 	echo "Download and install"
+	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin -o $FILE_TEMP
 		else
-		$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free_64bit.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		else
-		$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'plus' ]]; then
 		opmanagerkeystroke
-		$download_save install.bin https://www.manageengine.com/it-operations-management/29809517/ManageEngine_OpManager_Plus_64bit.bin
+		curl -Ls https://www.manageengine.com/it-operations-management/29809517/ManageEngine_OpManager_Plus_64bit.bin -o $FILE_TEMP
 	else
 		echo "Not support please edit and rebuild"
 		exit 1
 	fi
 	echo "Install"
-		chmod +x install.bin
-		./install.bin -console < keystroke
+		chmod +x $FILE_TEMP
+		./$FILE_TEMP -console < keystroke
 	# remove install files
-		rm -f install.bin keystroke
+		rm -f $FILE_TEMP keystroke
 	# fix reading serverparameters.conf
 	if [[ ! -f "${SOFT_HOME}/conf/OpManager/serverparameters.conf" ]]; then
 		cp ${SOFT_HOME}/ancillary/en/html/serverparameters.conf ${SOFT_HOME}/conf/OpManager/
@@ -166,6 +146,7 @@ EOF
 }
 installapm() {
 	echo "Download and install APM"
+	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin

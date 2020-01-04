@@ -85,7 +85,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_package rsync unzip
+		install_package rsync unzip curl
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M --shell /usr/sbin/nologin $PUNAME
 	# preparedata
@@ -99,7 +99,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_package rsync hostname unzip
+		install_package rsync hostname unzip curl
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M $PUNAME
 	# preparedata

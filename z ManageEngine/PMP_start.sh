@@ -27,27 +27,6 @@ setenvironment() {
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
-
-#####################################
-    ####### Set download tool #######
-    ####### and load library ########
-# check has package
-function    machine_has() {
-        hash "$1" > /dev/null 2>&1
-        return $?; }
-# Check and set download tool
-echo "Check and set download tool..."
-if machine_has "curl"; then
-    source <(curl -s https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-elif machine_has "wget"; then
-    source <(wget -qO- https://raw.githubusercontent.com/babim/docker-tag-options/master/lib/libbash)
-else
-    echo "without download tool"
-    sleep 3
-    exit 1
-fi
-download_option
-#####################################
 }
 # set command install
 installmanageengine() {
@@ -75,43 +54,44 @@ y
 EOF
 }
 	echo "Download and install"
+	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin
+			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin
+			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin
+			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
 		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP.bin
+			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
 		fi
 	else
 		echo "Not support please edit and rebuild"
 		exit 1
 	fi
 	echo "Install"
-		chmod +x install.bin
-		./install.bin -i console < keystroke
+		chmod +x $FILE_TEMP
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
-		rm -f install.bin keystroke
+		rm -f $FILE_TEMP keystroke
 }
 
 # option with entrypoint
