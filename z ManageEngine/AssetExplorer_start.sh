@@ -106,7 +106,7 @@ EOF
 }
 	echo "Download and install"
 	if [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_AssetExplorer.bin
 		else

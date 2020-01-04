@@ -86,21 +86,21 @@ EOF
 			$download_save install.bin https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer.bin
 		else
 			$download_save install.bin https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer.bin
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE_64bit.bin
 		else
 			$download_save install.bin https://www.manageengine.com/products/firewall/distributed-monitoring/11042744/ManageEngine_FirewallAnalyzer_DE_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE.bin
 		else

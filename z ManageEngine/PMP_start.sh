@@ -83,21 +83,21 @@ EOF
 			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin
 		else
 			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin
 		else
 			$download_save install.bin https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin
 		else

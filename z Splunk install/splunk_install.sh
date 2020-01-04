@@ -66,6 +66,12 @@ splunk_install() {
 	&& chown -R ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_HOME} \
 	&& chown -R ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_BACKUP_DEFAULT_ETC}
 }
+download_entry() {
+## download entrypoint
+	FILETEMP=start.sh
+		$download_save /$FILETEMP $DOWN_URL/${SOFT}_${FILETEMP} && \
+		set_filefolder_mod 755 /$FILETEMP
+}
 
 # install by OS
 echo 'Check OS'
@@ -87,10 +93,11 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# Install splunk
 		splunk_adduser
 		splunk_install
+		download_entry
 	# visible code
 		check_value_true "${VISIBLECODE}" && install_gosu
 	# clean
-		remove_download_tool
+		#remove_download_tool
 		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then

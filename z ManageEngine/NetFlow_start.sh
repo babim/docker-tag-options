@@ -89,14 +89,14 @@ EOF
 			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin
 		else
 			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin
 		else
@@ -110,7 +110,7 @@ EOF
 			$download_save install.bin https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin
 		else

@@ -84,7 +84,7 @@ EOF
 			$download_save install.bin https://www.manageengine.com/products/eventlog/91517554/ManageEngine_EventLogAnalyzer_64bit.bin
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		opmanagerkeystroke
+		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_EventLogAnalyzer.bin
 		else
