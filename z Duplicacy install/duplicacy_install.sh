@@ -40,9 +40,9 @@ download_option
 # set environment
 setenvironment() {
 	export SOFT=${SOFT:-duplicacy}
-	export VERSION_DUPLICACY=${VERSION_DUPLICACY:-2.2.0  }
+	export VERSION_DUPLICACY=${VERSION_DUPLICACY:-2.3.0  }
 #		export SOFTSUB=${SOFTSUB:-core}
-	export VERSION_DUPLICACY_WEB=${VERSION_DUPLICACY_WEB:-1.0.0}
+	export VERSION_DUPLICACY_WEB=${VERSION_DUPLICACY_WEB:-1.1.0}
 	export ARCHITECTURE=${ARCHITECTURE:-linux_x64}
 	export _URL_DUPLICACY="$(                                                                \
       printf https://github.com/gilbertchen/duplicacy/releases/download/v%s/duplicacy_%s_%s      \
