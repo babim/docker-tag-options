@@ -78,7 +78,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-	install_package alpine-sdk bash curl zlib-dev util-linux-dev libmnl-dev gcc make git autoconf automake pkgconfig python logrotate
+	install_package alpine-sdk bash curl libuv-dev zlib-dev util-linux-dev libmnl-dev gcc make git autoconf automake pkgconfig python logrotate
 	install_package nodejs ssmtp
 	# install netdata
 		installnetdata
@@ -99,7 +99,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	echo "deb http://ftp.nl.debian.org/debian/ stretch main" > /etc/apt/sources.list
 	echo "deb http://security.debian.org/debian-security stretch/updates main" >> /etc/apt/sources.list
 	# install dependencies for build
-	install_package zlib1g-dev uuid-dev libmnl-dev gcc make curl git autoconf autogen automake pkg-config netcat-openbsd jq
+	install_package zlib1g-dev uuid-dev libuv-dev libmnl-dev gcc make curl git autoconf autogen automake pkg-config netcat-openbsd jq
 	install_package autoconf-archive lm-sensors nodejs python python-mysqldb python-yaml
 	install_package msmtp msmtp-mta apcupsd fping
 	# install netdata
