@@ -190,7 +190,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		$download_save plexmediaserver.deb 'https://plex.tv/downloads/latest/1?channel=8&build=linux-ubuntu-x86_64&distro=ubuntu'
 		create_file /bin/start
 		set_filefolder_mod +x /bin/start
-		install_package plexmediaserver.deb
+		dpkg -i plexmediaserver.deb && apt-get install -f
 		remove_file plexmediaserver.deb
 		remove_file /bin/start
 	# Create writable config directory in case the volume isn't mounted
