@@ -48,6 +48,14 @@ setenvironment() {
 installacdcli() {
 	pip3 install --upgrade git+https://github.com/yadayada/acd_cli.git
 }
+#install webdav
+installwebdav() {
+	install_package lighttpd lighttpd-mod_webdav lighttpd-mod_auth apache2-utils
+## download webdav
+	FILETEMP=webdav.sh
+		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
+		set_filefolder_mod 755 /$FILETEMP
+}
 # finish after install app
 finish() {
 ## download entrypoint
@@ -70,6 +78,8 @@ if [[ -f /etc/debian_version ]]; then
 		install_package python3 python3-appdirs python3-dateutil python3-requests python3-sqlalchemy python3-pip git
 	# install acdcli
 		installacdcli
+	# webdav
+		check_value_true "${WEBDAV_OPTION}" && installwebdav
 	# finish
 		finish
 elif [[ -f /etc/alpine-release ]]; then
@@ -78,7 +88,7 @@ elif [[ -f /etc/alpine-release ]]; then
 	# Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
 	# create dirs for the config, local mount point, and cloud destination
 		#mkdir /config /cache /data /cloud
-		mkdir /cache /data /cloud
+		create_folders /cache /data /cloud
 	# set the cache, settings, and libfuse path accordingly
 		export ACD_CLI_CACHE_PATH /cache
 		export ACD_CLI_SETTINGS_PATH /cache
@@ -87,6 +97,8 @@ elif [[ -f /etc/alpine-release ]]; then
 		install_package python3 fuse git && pip3 install --upgrade pip
 	# install acd_cli
 		installacdcli
+	# webdav
+		check_value_true "${WEBDAV_OPTION}" && installwebdav
 	# finish
 		finish
 else
