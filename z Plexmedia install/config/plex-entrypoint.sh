@@ -163,6 +163,9 @@ echo "nameserver 8.8.8.8" >> /etc/resolv.conf
 # option with acdcli
 if [ -f "/acdcli-entrypoint.sh" ]; then /acdcli-entrypoint.sh; fi
 
+# option with gdrive
+if [ -f "/gdrive-entrypoint.sh" ]; then /gdrive-entrypoint.sh; fi
+
 # wait /media mount
 if [ -n "$WAIT_OPTION" ]; then
 	while [ -z "`ls /media`" ]

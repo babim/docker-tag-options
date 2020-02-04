@@ -50,13 +50,17 @@ prepareconfig() {
 
 # set environment
 setenvironment() {
+# set host download
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Plexmedia%20install"
+# uninstall app after install
+	export UNINSTALL=""
+# set software
 	export SOFT=plex
-	# set ID docker run
-	auid=${auid:-797}
-	agid=${agid:-$auid}
-	auser=${auser:-plex}
-	aguser=${aguser:-$auser}
+# set ID docker run
+	export auid=${auid:-797}
+	export agid=${agid:-$auid}
+	export auser=${auser:-plex}
+	export aguser=${aguser:-$auser}
 }
 
 #install acdcli
@@ -82,6 +86,27 @@ else
 	pip3 install --upgrade git+https://github.com/yadayada/acd_cli.git
 ## download entrypoint
 	FILETEMP=acdcli-entrypoint.sh
+		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
+		set_filefolder_mod 755 /$FILETEMP
+}
+#install gdrive
+installgdrive() {
+export DRIVE_PATH=${DRIVE_PATH:-/media}
+if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
+	# install depend
+		install_package gnupg
+	# install google-drive-ocamlfuse
+		echo "deb http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu bionic main" >> /etc/apt/sources.list
+		echo "deb-src http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu bionic main" >> /etc/apt/sources.list
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F639B041
+		apt-get update
+		apt-get install -yy google-drive-ocamlfuse fuse
+		echo "user_allow_other" >> /etc/fuse.conf
+else
+	say_err "Not support your OS"
+	exit 1
+## download entrypoint
+	FILETEMP=gdrive-entrypoint.sh
 		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
 		set_filefolder_mod 755 /$FILETEMP
 }
@@ -128,6 +153,22 @@ fi
 		set_filefolder_mod 755 /$FILETEMP
 }
 
+# finish_install
+finish_install() {
+	# acdcli
+		check_value_true "${ACDCLI_OPTION}" && installacdcli
+	# gdrive
+		check_value_true "${GDRIVE_OPTION}" && installgdrive
+	# openvpn
+		check_value_true "${OPENVPN_OPTION}" && installopenvpn
+
+	# preconfig
+		prepareconfig
+	# clean
+		remove_download_tool
+		clean_os
+}
+
 # install by OS
 echo 'Check OS'
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
@@ -159,18 +200,9 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# Create writable config directory in case the volume isn't mounted
 		create_folder /config
 		set_filefolder_owner $auser:$aguser /config
-	# acdcli
-		check_value_true "${ACDCLI_OPTION}" && installacdcli
-	# gdrive
-		check_value_true "${GDRIVE_OPTION}" && installgdrive
-	# openvpn
-		check_value_true "${OPENVPN_OPTION}" && installopenvpn
 
-	# preconfig
-		prepareconfig
-	# clean
-		remove_download_tool
-		clean_os
+	# finish
+		finish_install
 
 elif [[ -f /etc/alpine-release ]]; then
 	# set environment
@@ -221,18 +253,9 @@ elif [[ -f /etc/alpine-release ]]; then
 	 && set_filefolder_mod 777 /tmp \
 	 && mv usr/sbin/start_pms $DESTDIR/ \
 	 && mv usr/lib/plexmediaserver $DESTDIR/plex-media-server
-	# acdcli
-		check_value_true "${ACDCLI_OPTION}" && installacdcli
-	# gdrive
-		check_value_true "${GDRIVE_OPTION}" && installgdrive
-	# openvpn
-		check_value_true "${OPENVPN_OPTION}" && installopenvpn
 
-	# preconfig
-		prepareconfig
-	# clean
-		remove_download_tool
-		clean_os
+	# finish
+		finish_install
 
 # OS - other
 else
