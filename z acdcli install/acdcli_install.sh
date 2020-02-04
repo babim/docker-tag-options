@@ -90,9 +90,9 @@ elif [[ -f /etc/alpine-release ]]; then
 		#mkdir /config /cache /data /cloud
 		create_folders /cache /data /cloud
 	# set the cache, settings, and libfuse path accordingly
-		export ACD_CLI_CACHE_PATH /cache
-		export ACD_CLI_SETTINGS_PATH /cache
-		export LIBFUSE_PATH /usr/lib/libfuse.so.2
+		export ACD_CLI_CACHE_PATH=/cache
+		export ACD_CLI_SETTINGS_PATH=/cache
+		export LIBFUSE_PATH=/usr/lib/libfuse.so.2
 	# install python 3, fuse, and git
 		install_package python3 fuse git && pip3 install --upgrade pip
 	# install acd_cli
