@@ -177,7 +177,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		setenvironment
 		debian_cmd_interface
 	# Install basic required packages.
-		install_package ca-certificates curl xmlstarlet dumb-init
+		install_package ca-certificates curl xmlstarlet dumb-init unrar uuid-runtime
 
 	# Install Plex
 	# Create plex user
