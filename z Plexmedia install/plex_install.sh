@@ -163,7 +163,6 @@ finish_install() {
 		check_value_true "${GDRIVE_OPTION}" && installgdrive
 	# openvpn
 		check_value_true "${OPENVPN_OPTION}" && installopenvpn
-
 	# preconfig
 		prepareconfig
 	# clean
@@ -178,7 +177,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		setenvironment
 		debian_cmd_interface
 	# Install basic required packages.
-		install_package ca-certificates curl xmlstarlet
+		install_package ca-certificates curl xmlstarlet dumb-init
 
 	# Install Plex
 	# Create plex user
@@ -194,11 +193,6 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		install_package plexmediaserver.deb
 		remove_file plexmediaserver.deb
 		remove_file /bin/start
-	# Install dumb-init
-	# https://github.com/Yelp/dumb-init
-		DUMP_INIT_URI=$(curl -L https://github.com/Yelp/dumb-init/releases/latest | grep -Po '(?<=href=")[^"]+_amd64(?=")')
-		$download_save /usr/local/bin/dumb-init "https://github.com/$DUMP_INIT_URI"
-		set_filefolder_mod +x /usr/local/bin/dumb-init
 	# Create writable config directory in case the volume isn't mounted
 		create_folder /config
 		set_filefolder_owner $auser:$aguser /config
