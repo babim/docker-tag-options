@@ -50,13 +50,13 @@ finish() {
 		create_folder /var/log/supervisor/
 		create_folder /etc/supervisor/conf.d/
 	### download sypervisord config
-	FILETEMP=/etc/supervisor/supervisord.conf
-		$download_save $FILETEMP $DOWN_URL/supervisor/supervisord.conf
+	FILETEMP=supervisor/supervisord.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
 	FILETEMP=/etc/supervisord.conf
 		create_symlink $FILETEMP /etc/supervisor/supervisord.conf
 	### mysql
-	FILETEMP=/etc/supervisor/conf.d/mysql.conf
-	 	$download_save $FILETEMP $DOWN_URL/supervisor/conf.d/mysql.conf
+	FILETEMP=supervisor/conf.d/mysql.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
 ## download backup script
 	FILETEMP=backup.sh
 		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \

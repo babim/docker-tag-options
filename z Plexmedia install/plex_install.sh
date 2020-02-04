@@ -59,8 +59,76 @@ setenvironment() {
 	aguser=${aguser:-$auser}
 }
 
+#install acdcli
+installacdcli() {
+if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
+	# install python 3, fuse, and git
+		install_package python3 python3-appdirs python3-dateutil python3-requests python3-sqlalchemy python3-pip git
+elif [[ -f /etc/alpine-release ]]; then
+	# Here we install GNU libc (aka glibc) and set C.UTF-8 locale as default.
+	# create dirs for the config, local mount point, and cloud destination
+		#mkdir /config /cache /data /cloud
+		create_folders /cache /data /cloud
+	# set the cache, settings, and libfuse path accordingly
+		export ACD_CLI_CACHE_PATH=/cache
+		export ACD_CLI_SETTINGS_PATH=/cache
+		export LIBFUSE_PATH=/usr/lib/libfuse.so.2
+	# install python 3, fuse, and git
+		install_package python3 fuse git && pip3 install --upgrade pip
+else
+	say_err "Not support your OS"
+	exit 1
+# install acdcli
+	pip3 install --upgrade git+https://github.com/yadayada/acd_cli.git
+## download entrypoint
+	FILETEMP=acdcli-entrypoint.sh
+		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
+		set_filefolder_mod 755 /$FILETEMP
+}
+#install openvpn
+installopenvpn() {
+## Supervisor
+	install_supervisor
+	### Supervisor config
+		create_folder /var/log/supervisor/
+		create_folder /etc/supervisor/conf.d/
+	### download sypervisord config
+	FILETEMP=supervisor/supervisord.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
+	FILETEMP=/etc/supervisord.conf
+		create_symlink $FILETEMP /etc/supervisor/supervisord.conf
+	#openvpn
+	FILETEMP=supervisor/conf.d/openvpn.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
+	#plex
+	FILETEMP=supervisor/conf.d/plex.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
+	#syslog
+	FILETEMP=supervisor/conf.d/syslog.conf
+	 	$download_save /etc/$FILETEMP ${DOWN_URL}/${FILETEMP}
+	# prepare etc start
+		check_folder 	/etc-start	&& remove_folder /etc-start				|| say "/etc-start not exist"
+	# supervisor
+		create_folder 	/etc-start/supervisor
+		check_folder	/etc/supervisor	&& dircopy /etc/supervisor /etc-start/supervisor	|| say "no need copy supervisor config"
 
+# openvpn
+if [[ -f /etc/alpine-release ]]; then
+	echo "http://dl-4.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories
+	echo "http://dl-4.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
+	install_package rsyslog openvpn
+# OS - other
+else
+	say_err "Not support your OS"
+	exit 1
+fi
+## download entrypoint
+	FILETEMP=openvpn-entrypoint.sh
+		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
+		set_filefolder_mod 755 /$FILETEMP
+}
 
+# install by OS
 echo 'Check OS'
 if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# set environment
@@ -91,6 +159,12 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 	# Create writable config directory in case the volume isn't mounted
 		create_folder /config
 		set_filefolder_owner $auser:$aguser /config
+	# acdcli
+		check_value_true "${ACDCLI_OPTION}" && installacdcli
+	# gdrive
+		check_value_true "${GDRIVE_OPTION}" && installgdrive
+	# openvpn
+		check_value_true "${OPENVPN_OPTION}" && installopenvpn
 
 	# preconfig
 		prepareconfig
@@ -147,6 +221,12 @@ elif [[ -f /etc/alpine-release ]]; then
 	 && set_filefolder_mod 777 /tmp \
 	 && mv usr/sbin/start_pms $DESTDIR/ \
 	 && mv usr/lib/plexmediaserver $DESTDIR/plex-media-server
+	# acdcli
+		check_value_true "${ACDCLI_OPTION}" && installacdcli
+	# gdrive
+		check_value_true "${GDRIVE_OPTION}" && installgdrive
+	# openvpn
+		check_value_true "${OPENVPN_OPTION}" && installopenvpn
 
 	# preconfig
 		prepareconfig

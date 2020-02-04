@@ -15,4 +15,4 @@
     check_folder 	/etc/mysql	&& dircopy /etc/mysql /etc-start/mysql			|| say "no need copy mysql config"
 # supervisor
     create_folder 	/etc-start/supervisor
-    check_folder	/etc/supervisor	&& dircopy /etc/supervisor /etc-start/supervisor	|| say "no need copy mysql config"
+    check_folder	/etc/supervisor	&& dircopy /etc/supervisor /etc-start/supervisor	|| say "no need copy supervisor config"

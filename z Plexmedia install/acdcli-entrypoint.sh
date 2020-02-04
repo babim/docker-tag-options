@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #  ____        _     _
 # | __ )  __ _| |__ (_)_ __ ___
 # |  _ \ / _` | '_ \| | '_ ` _ \
@@ -28,8 +28,6 @@ else
 fi
 
 create_directory() {
-# option with webdav
-	if [ -f "/webdav.sh" ]; then /webdav.sh; fi
 # create directory
 	if [ ! -d "$CONFIGPATH" ]; then mkdir -p $CONFIGPATH; fi
 	if [ ! -d "$CACHEPATH" ]; then mkdir -p $CACHEPATH; fi
@@ -46,11 +44,6 @@ cat <<EOF> /etc/fuse.conf
 # mount options.
 user_allow_other
 EOF
-
-# set ID docker run
-export auid=${auid:-1000}
-export agid=${agid:-$auid}
-export auser=${auser:-user}
 
 if [[ "$auid" = "0" ]] || [[ "$agid" == "0" ]]; then
 	echo "Run in ROOT user"
@@ -80,6 +73,3 @@ fi
 echo "use acdcli command"
 echo "---"
 acdcli -h
-
-# stop and wait command
-bash

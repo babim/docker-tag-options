@@ -5,17 +5,35 @@
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
 
+# copy config supervisor
+if [ -d "/etc/supervisor" ] && [ -d "/etc-start/supervisor" ];then
+	if [ ! -f "/etc/supervisor/supervisord.conf" ]; then cp -R -f /etc-start/supervisor/* /etc/supervisor; fi
+	if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+		echo "setup SYNOLOGY environment"
+		chmod -R 777 /etc/supervisor
+	fi
+fi
+
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 # set ID docker run
-auid=${auid:-797}
-agid=${agid:-$auid}
-auser=${auser:-plex}
-aguser=${aguser:-$auser}
+export auid=${auid:-797}
+export agid=${agid:-$auid}
+export auser=${auser:-plex}
+export aguser=${aguser:-$auser}
 
+# fix su
+plex_fix_su() {
+	chown -R $auid:$agid /home/$auser #no need
+	# fix su command user
+	sed -i '$ d' /etc/passwd
+	echo "$auser:x:$auid:$agid:Linux User:/home/$auser:/bin/sh" >> /etc/passwd
+}
+# create and check user
 	if [[ -z "${auid}" ]] || [[ "$auid" == "797" ]]; then
 		echo "start"
+		plex_fix_su
 		su - $auser
 	elif [[ "$auid" == "0" ]] || [[ "$aguid" == "0" ]]; then
 		echo "run in user root"
@@ -42,12 +60,9 @@ aguser=${aguser:-$auser}
 			# create user ubuntu/debian
 				groupadd -g $agid $aguser && useradd --system --uid $auid --shell /usr/sbin/nologin -g $aguser $auser
 			fi
+		plex_fix_su
 		su - $auser
 		fi
-	chown -R $auid:$agid /home/$auser #no need
-	# fix su command user
-	sed -i '$ d' /etc/passwd
-	echo "$auser:x:$auid:$agid:Linux User:/home/$auser:/bin/sh" >> /etc/passwd
 	fi
   
   fi
@@ -144,5 +159,18 @@ ulimit -s $PLEX_MAX_STACK_SIZE
 export DNSSERVER=${DNSSERVER:-8.8.8.8}
 # Set DNS Server to localhost
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+
+# option with acdcli
+if [ -f "/acdcli-entrypoint.sh" ]; then /acdcli-entrypoint.sh; fi
+
+# wait /media mount
+if [ -n "$WAIT_OPTION" ]; then
+	while [ -z "`ls /media`" ]
+	do
+	  echo "wait mount /media"
+	  sleep 10
+	done
+	echo "mount completed! Plex starting..."
+fi
 
 exec "$@"
