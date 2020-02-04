@@ -82,6 +82,7 @@ elif [[ -f /etc/alpine-release ]]; then
 else
 	say_err "Not support your OS"
 	exit 1
+fi
 # install acdcli
 	pip3 install --upgrade git+https://github.com/yadayada/acd_cli.git
 ## download entrypoint
@@ -105,6 +106,7 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 else
 	say_err "Not support your OS"
 	exit 1
+fi
 ## download entrypoint
 	FILETEMP=gdrive-entrypoint.sh
 		$download_save /$FILETEMP $DOWN_URL/$FILETEMP && \
