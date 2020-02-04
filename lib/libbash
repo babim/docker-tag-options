@@ -4,6 +4,10 @@
 # |  _ \ / _` | '_ \| | '_ ` _ \
 # | |_) | (_| | |_) | | | | | | |
 # |____/ \__,_|_.__/|_|_| |_| |_|
+#
+# contact: babim@matmagoc.com
+# AQ.jsc Viet Nam
+#
 
 # this script checks to see if bash is running and if the version is >= 3.3
 if [[ "${#BASH_VERSINFO[@]}" -eq 0 ||
