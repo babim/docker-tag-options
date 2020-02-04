@@ -54,13 +54,6 @@ aguser=${aguser:-$auser}
   
 fi
 
-# Remove plexmediaserver.pid
-if [ -f /config/Plex\ Media\ Server/plexmediaserver.pid ] 
-then 
-  echo "Removing old PID file"
-  rm /config/Plex\ Media\ Server/plexmediaserver.pid 
-fi
-
 # This codec folder seems to be populated dynamically - so we need to check for any more binaries to patch on every boot :(
 if [ -d /config/Plex\ Media\ Server/Codecs ]
 then

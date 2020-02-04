@@ -109,7 +109,7 @@ elif [[ -f /etc/alpine-release ]]; then
 	cd /tmp
 
 	install_package xz binutils patchelf
-	FILETEMP=libc6_2.27-6_amd64.deb
+	FILETEMP=libc6_2.29-9_amd64.deb
 	$download_save $FILETEMP http://ftp.debian.org/debian/pool/main/g/glibc/$FILETEMP
 	FILETEMP=libgcc1_4.9.2-10+deb8u1_amd64.deb
 	$download_save $FILETEMP http://ftp.debian.org/debian/pool/main/g/gcc-4.9/$FILETEMP
