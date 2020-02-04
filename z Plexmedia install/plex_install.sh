@@ -231,8 +231,8 @@ elif [[ -f /etc/alpine-release ]]; then
 	remove_package xz \
 	remove_filefolder /tmp/*
 
-		FILETEMP=/start_pms.patch
-			$download_save $FILETEMP $DOWN_URL/config/$FILETEMP
+		FILETEMP=start_pms.patch
+			$download_save /$FILETEMP $DOWN_URL/config/$FILETEMP
 
 	addgroup -g $agid $aguser \
 	 && adduser -SH -u $agid -G $aguser -s /usr/sbin/nologin $auser \
