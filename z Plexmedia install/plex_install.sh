@@ -177,16 +177,11 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		setenvironment
 		debian_cmd_interface
 	# Install basic required packages.
-		install_package ca-certificates curl xmlstarlet dumb-init udev
+		install_package ca-certificates curl xmlstarlet dumb-init
 
 	# Install Plex
 	# Create plex user
 		useradd --system --uid $auid -M --shell /usr/sbin/nologin $auser
-	#Udevadm hack
-		echo "**** Udevadm hack ****" && \
-		mv /sbin/udevadm /sbin/udevadm.bak && \
-		echo "exit 0" > /sbin/udevadm && \
-		chmod +x /sbin/udevadm
 	# Download and install Plex (non plexpass) after displaying downloaded URL in the log.
 	# This gets the latest non-plexpass version
 	# Note: We created a dummy /bin/start to avoid install to fail due to upstart not being installed.
@@ -198,8 +193,6 @@ if [[ -f /etc/debian_version ]] || [[ -f /etc/lsb-release ]]; then
 		install_package plexmediaserver.deb
 		remove_file plexmediaserver.deb
 		remove_file /bin/start
-	#Udevadm hack
-		mv /sbin/udevadm.bak /sbin/udevadm
 	# Create writable config directory in case the volume isn't mounted
 		create_folder /config
 		set_filefolder_owner $auser:$aguser /config
