@@ -42,8 +42,8 @@ q
 1
 0
 1
-/opt/ManageEngine/SupportCenter
-/opt/ManageEngine/SupportCenter
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1
@@ -71,8 +71,8 @@ q
 2
 0
 1
-/opt/ManageEngine/SupportCenter
-/opt/ManageEngine/SupportCenter
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1
@@ -100,8 +100,8 @@ q
 3
 0
 1
-/opt/ManageEngine/SupportCenter
-/opt/ManageEngine/SupportCenter
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1
@@ -129,8 +129,8 @@ q
 4
 0
 1
-/opt/ManageEngine/SupportCenter
-/opt/ManageEngine/SupportCenter
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1

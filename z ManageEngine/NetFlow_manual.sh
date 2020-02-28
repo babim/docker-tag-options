@@ -30,67 +30,33 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
-keystroke() {
-cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@example.com
-0
-0
-184
-0
-0
-1
-q
-1
-0
-1
-${SOFT_HOME}
-${SOFT_HOME}
-1
-8060
-9996
-1
-1
-3
-EOF
-}
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin -o $FILE_TEMP
 		else
@@ -102,9 +68,10 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+	read -p "Are you ready? Attach to this container and Enter to be continue"
+		./$FILE_TEMP -console
 	# remove install files
-		rm -f $FILE_TEMP keystroke
+		rm -f $FILE_TEMP
 }
 
 # option with entrypoint

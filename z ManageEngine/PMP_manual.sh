@@ -30,54 +30,27 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
-keystroke() {
-cat <<EOF > keystroke
-
-
-
-
-
-
-
-
-
-
-
-y
-${SOFT_HOME}
-y
-1
-
-
-
-
-EOF
-}
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
 		else
@@ -89,9 +62,10 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -i console < keystroke
+	read -p "Are you ready? Attach to this container and Enter to be continue"
+		./$FILE_TEMP -i console
 	# remove install files
-		rm -f $FILE_TEMP keystroke
+		rm -f $FILE_TEMP
 }
 
 # option with entrypoint

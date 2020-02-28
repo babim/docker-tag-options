@@ -49,8 +49,8 @@ admin@example.com
 1
 0
 1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1
@@ -76,8 +76,8 @@ admin@example.com
 2
 0
 1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1
@@ -108,8 +108,8 @@ admin@example.com
 3
 0
 1
-/opt/ManageEngine/ServiceDeskPlus-MSP
-/opt/ManageEngine/ServiceDeskPlus-MSP
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8080
 1

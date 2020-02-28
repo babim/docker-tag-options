@@ -45,7 +45,7 @@ cat <<EOF > keystroke
 
 y
 n
-/opt/ManageEngine/EventLog
+${SOFT_HOME}
 y
 8400
 

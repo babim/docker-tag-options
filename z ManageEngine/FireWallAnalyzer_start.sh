@@ -47,8 +47,8 @@ admin@example.com
 1
 q
 1
-/opt/ManageEngine
-/opt/ManageEngine
+${SOFT_HOME}
+${SOFT_HOME}
 1
 8060
 1

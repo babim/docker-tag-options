@@ -51,8 +51,8 @@ q
 1
 0
 1
-/opt/ManageEngine/AppManager
-/opt/ManageEngine/AppManager
+${SOFT_HOME}
+${SOFT_HOME}
 1
 admin
 admin@example.com
@@ -84,8 +84,8 @@ q
 1
 0
 1
-/opt/ManageEngine/AppManager
-/opt/ManageEngine/AppManager
+${SOFT_HOME}
+${SOFT_HOME}
 1
 admin
 admin@example.com
@@ -117,8 +117,8 @@ q
 1
 0
 1
-/opt/ManageEngine/AppManager
-/opt/ManageEngine/AppManager
+${SOFT_HOME}
+${SOFT_HOME}
 1
 admin
 admin@example.com

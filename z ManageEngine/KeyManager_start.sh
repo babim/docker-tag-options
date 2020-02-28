@@ -51,7 +51,7 @@ admin@example.com
 0
 252
 1
-/opt/ManageEngine
+${SOFT_HOME}
 y
 
 

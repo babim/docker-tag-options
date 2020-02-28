@@ -47,6 +47,7 @@ setenvironment() {
 		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/AppManager}
 		#export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
+		export MANUAL=${MANUAL:-false}
 
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
@@ -66,9 +67,13 @@ preparedata() {
 downloadentry() {
 	# download docker entry
 	echo "Download entrypoint"
-		FILETEMP=/docker-entrypoint.sh
+	FILETEMP=/docker-entrypoint.sh
+		if [[ ${MANUAL} == 'true' ]]; then
 			$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
-		set_filefolder_mod +x $FILETEMP
+		else
+			$download_save $FILETEMP $DOWN_URL/${SOFT}_manual.sh
+		fi
+	set_filefolder_mod +x $FILETEMP
 }
 
 # install by OS

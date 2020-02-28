@@ -30,105 +30,39 @@ setenvironment() {
 }
 # set command install
 installmanageengine() {
-opmanagerkeystroke() {
-	if [[ ${EDITTION} == 'plus' ]]; then
-cat <<EOF > keystroke
-1
-q
-1
-0
-1
-Admin
-admin@example.com
-0
-0
-184
-0
-0
-1
-q
-1
-${SOFT_HOME}
-${SOFT_HOME}
-1
-8060
-9996
-1
-1
-0
-1
-1
-3
-	else
-cat <<EOF > keystroke
-1
-q
-1
-0
-1
-Admin
-admin@example.com
-0
-0
-184
-0
-0
-1
-q
-1
-${SOFT_HOME}
-${SOFT_HOME}
-1
-8060
-1
-1
-0
-1
-1
-3
-EOF
-	fi
-}
-
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		opmanagerkeystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'plus' ]]; then
-		opmanagerkeystroke
 		curl -Ls https://www.manageengine.com/it-operations-management/29809517/ManageEngine_OpManager_Plus_64bit.bin -o $FILE_TEMP
 	else
 		echo "Not support please edit and rebuild"
@@ -136,9 +70,10 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+	read -p "Are you ready? Attach to this container and Enter to be continue"
+		./$FILE_TEMP -console
 	# remove install files
-		rm -f $FILE_TEMP keystroke
+		rm -f $FILE_TEMP
 	# fix reading serverparameters.conf
 	if [[ ! -f "${SOFT_HOME}/conf/OpManager/serverparameters.conf" ]]; then
 		cp ${SOFT_HOME}/ancillary/en/html/serverparameters.conf ${SOFT_HOME}/conf/OpManager/
@@ -165,25 +100,9 @@ installapm() {
 	fi
 	echo "Install"
 		chmod +x install.bin
-cat <<EOF > keystroke
-1
-0
-1
-0
-1
-0
-1
-9090
-8443
-1
-${SOFT_HOME}
-${SOFT_HOME}
-1
-1
-3
-EOF
-		./install.bin -console < keystroke
-		rm -f install.bin keystroke
+	read -p "Are you ready? Enter to be continue"
+		./install.bin -console
+		rm -f install.bin
 }
 
 # option with entrypoint
