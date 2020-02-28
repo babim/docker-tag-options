@@ -59,6 +59,7 @@ ${SOFT_HOME}
 1
 1
 3
+EOF
 	else
 cat <<EOF > keystroke
 1
