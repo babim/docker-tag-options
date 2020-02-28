@@ -68,7 +68,7 @@ downloadentry() {
 	# download docker entry
 	echo "Download entrypoint"
 	FILETEMP=/docker-entrypoint.sh
-		if [[ ${MANUAL} == 'true' ]]; then
+		if [[ ${MANUAL} == 'false' ]]; then
 			$download_save $FILETEMP $DOWN_URL/${SOFT}_start.sh
 		else
 			$download_save $FILETEMP $DOWN_URL/${SOFT}_manual.sh
