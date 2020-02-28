@@ -60,10 +60,11 @@ dockerentry() {
 }
 preparedata() {
 	# change to one directory
-	create_folders ${SQUID_CACHE_DIR} ${SQUID_LOG_DIR} ${SQUID_DIR} ${SQUID_DIR}_start && \
-	mv ${SQUID_CACHE_DIR} ${SQUID_DIR}_start/cache && create_symlink ${SQUID_DIR}/cache ${SQUID_CACHE_DIR} && \
-	mv ${SQUID_LOG_DIR} ${SQUID_DIR}_start/log && create_symlink ${SQUID_DIR}/log ${SQUID_LOG_DIR} && \
-	mv ${SQUID_CONFIG_DIR} ${SQUID_DIR}_start/config && create_symlink ${SQUID_DIR}/config ${SQUID_CONFIG_DIR}
+	create_folders ${SQUID_CACHE_DIR} ${SQUID_LOG_DIR} ${SQUID_DIR} ${SQUID_DIR}_start
+	create_folders ${SQUID_DIR}_start/cache ${SQUID_DIR}_start/log ${SQUID_DIR}_start/config
+	dircopy ${SQUID_CACHE_DIR} ${SQUID_DIR}_start/cache && create_symlink ${SQUID_DIR}/cache ${SQUID_CACHE_DIR}
+	dircopy ${SQUID_LOG_DIR} ${SQUID_DIR}_start/log && create_symlink ${SQUID_DIR}/log ${SQUID_LOG_DIR}
+	dircopy ${SQUID_CONFIG_DIR} ${SQUID_DIR}_start/config && create_symlink ${SQUID_DIR}/config ${SQUID_CONFIG_DIR}
 }
 
 # install by OS
