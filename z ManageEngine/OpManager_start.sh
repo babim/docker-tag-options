@@ -149,15 +149,15 @@ installapm() {
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn_64bit.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			$download_save install.bin http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
 		else
-			$download_save install.bin https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin
+			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
 		fi
 	else
 		echo "Not support cant install APM Plugin"
