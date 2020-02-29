@@ -33,60 +33,51 @@ installmanageengine() {
 keystroke() {
 	if [[ ${EDITTION} == 'pro' ]]; then
 cat <<EOF > keystroke
+
+
+
+
+
+
+
+
+
+Y
 1
-1
-0
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
-1
-0
-1
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
+Y
 8080
-1
-1
-3
+
+
+
 EOF
 	elif [[ ${EDITTION} == 'free' ]]; then
 cat <<EOF > keystroke
-1
-1
-0
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
+
+
+
+
+
+
+
+
+
+Y
 2
-0
-1
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
+Y
 8080
-1
-1
-3
+
+
+
 EOF
 	fi
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_AssetExplorer.bin -o $FILE_TEMP
 		else
@@ -98,7 +89,8 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+		keystroke
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke
 }

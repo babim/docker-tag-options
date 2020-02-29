@@ -43,9 +43,9 @@ cat <<EOF > keystroke
 
 
 
-y
+
+Y
 ${SOFT_HOME}
-y
 1
 
 
@@ -56,28 +56,24 @@ EOF
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
 		else
@@ -89,6 +85,7 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
+		keystroke
 		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke

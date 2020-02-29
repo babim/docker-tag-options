@@ -31,118 +31,95 @@ setenvironment() {
 # set command install
 installmanageengine() {
 keystroke() {
-	if [[ ${EDITTION} == 'essential' ]]; then
+	if [[ ${EDITTION} == 'essential' ]] || [[ ${EDITTION} == 'pro' ]] || [[ ${EDITTION} == 'professional' ]]; then
 cat <<EOF > keystroke
-0
+
+
+
+
+
+
+
+
+
+
+Y
 1
-q
 1
-0
-1
-1p
-0
-1
-0
-1
-0
 1
 9090
 8443
 1
-0
-1
 ${SOFT_HOME}
-${SOFT_HOME}
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
-1
+N
+
+
+
+
 EOF
 	elif [[ ${EDITTION} == 'enterprise' ]]; then
 cat <<EOF > keystroke
-0
-1
-q
-1
-0
-1
+
+
+
+
+
+
+
+
+
+
+Y
 2
-0
 1
-0
-1
-0
 1
 9090
 8443
 1
-0
-1
 ${SOFT_HOME}
-${SOFT_HOME}
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
-1
+N
+
+
+
+
 EOF
 	elif [[ ${EDITTION} == 'free' ]]; then
 cat <<EOF > keystroke
-0
-1
-q
-1
-0
-1
+
+
+
+
+
+
+
+
+
+
+Y
 3
-0
 1
-0
-1
-0
 1
 9090
 8443
 1
-0
-1
 ${SOFT_HOME}
-${SOFT_HOME}
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
-1
+N
+
+
+
+
 EOF
 	fi
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ApplicationsManager_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/applications_manager/54974026/ManageEngine_ApplicationsManager_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ApplicationsManager.bin -o $FILE_TEMP
 		else
@@ -154,7 +131,8 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+		keystroke
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke
 }

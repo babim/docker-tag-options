@@ -42,9 +42,9 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 [[ ${MACHINE_TYPE} == 'x86_64' ]] && echo "Your server is x86_64 system" || echo "Your server is x86 system"
 
 setenvironment() {
-		export SOFT=${SOFT:-EventLog}
+		export SOFT=${SOFT:-OpUtils}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/EventLog}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpUtils}
 		#export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
 		export MANUAL=${MANUAL:-false}
@@ -93,7 +93,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M --shell /usr/sbin/nologin $PUNAME
 	# preparedata
-		preparedata
+		#preparedata
 		downloadentry
 	# clean
 		clean_package

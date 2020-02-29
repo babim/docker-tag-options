@@ -44,7 +44,7 @@ cat <<EOF > keystroke
 
 
 
-y
+Y
 admin
 0
 admin@example.com
@@ -52,8 +52,6 @@ admin@example.com
 252
 1
 ${SOFT_HOME}
-y
-
 
 
 
@@ -62,14 +60,12 @@ EOF
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_KeyManagerPlus_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/key-manager/97531/ManageEngine_KeyManagerPlus_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_KeyManagerPlus.bin -o $FILE_TEMP
 		else
@@ -81,6 +77,7 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
+		keystroke
 		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke

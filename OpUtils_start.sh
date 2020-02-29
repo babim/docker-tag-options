@@ -19,9 +19,9 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-ServiceDeskPlus-MSP}
+		export SOFT=${SOFT:-OpUtils}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/ServiceDeskPlus-MSP}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpUtils}
 		#export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
 
@@ -31,7 +31,6 @@ setenvironment() {
 # set command install
 installmanageengine() {
 keystroke() {
-	if [[ ${EDITTION} == 'enterprise' ]]; then
 cat <<EOF > keystroke
 
 
@@ -42,82 +41,29 @@ cat <<EOF > keystroke
 
 
 
-
-
 Y
-1
 N
 ${SOFT_HOME}
-8080
-
-
-
+Y
+8060
+9996
 
 
 EOF
-	elif [[ ${EDITTION} == 'standard' ]]; then
-cat <<EOF > keystroke
-
-
-
-
-
-
-
-
-
-
-
-Y
-2
-N
-${SOFT_HOME}
-8080
-
-
-
-
-
-EOF
-	elif [[ ${EDITTION} == 'pro' ]]; then
-cat <<EOF > keystroke
-
-
-
-
-
-
-
-
-
-
-
-Y
-3
-N
-${SOFT_HOME}
-8080
-
-
-
-
-
-EOF
-	fi
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus_64bit.bin -o $FILE_TEMP
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		else
-			curl -Ls https://www.manageengine.com/products/service-desk/91677414/ManageEngine_ServiceDesk_Plus_64bit.bin -o $FILE_TEMP
+			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus.bin -o $FILE_TEMP
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		else
-			curl -Ls https://www.manageengine.com/products/service-desk/91677414/ManageEngine_ServiceDesk_Plus.bin -o $FILE_TEMP
+			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		fi
 	else
 		echo "Not support please edit and rebuild"

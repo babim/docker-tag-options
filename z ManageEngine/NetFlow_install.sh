@@ -103,7 +103,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_package rsync hostname unzip curl
+		install_package rsync hostname unzip curl iputils
 		groupadd -g $PGID $PGNAME && create_folder /home/postgres \
 		&& useradd --system --uid $PUID -g $PGNAME -d /home/postgres -M $PUNAME
 	# preparedata

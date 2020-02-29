@@ -21,7 +21,7 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 setenvironment() {
 		export SOFT=${SOFT:-FireWallAnalyzer}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpManager}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/FireWallAnalyzer}
 		#export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
 
@@ -32,55 +32,48 @@ setenvironment() {
 installmanageengine() {
 keystroke() {
 cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@example.com
-0
-0
-184
-0
-0
-1
-q
-1
+
+
+
+
+
+
+
+
+
+
+
+
+Y
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
 8060
-1
-1
-3
+
+
+
 EOF
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/distributed-monitoring/11042744/ManageEngine_FirewallAnalyzer_DE_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE.bin -o $FILE_TEMP
 		else
@@ -92,7 +85,8 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+		keystroke
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke
 }

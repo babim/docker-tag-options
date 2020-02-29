@@ -46,7 +46,6 @@ cat <<EOF > keystroke
 y
 n
 ${SOFT_HOME}
-y
 8400
 
 
@@ -57,14 +56,12 @@ EOF
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_EventLogAnalyzer_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/eventlog/91517554/ManageEngine_EventLogAnalyzer_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_EventLogAnalyzer.bin
 		else
@@ -76,6 +73,7 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
+		keystroke
 		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke

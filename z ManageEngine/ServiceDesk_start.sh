@@ -33,98 +33,87 @@ installmanageengine() {
 keystroke() {
 	if [[ ${EDITTION} == 'enterprise' ]]; then
 cat <<EOF > keystroke
+
+
+
+
+
+
+
+
+
+
+
+Y
 1
-q
-1
-0
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
-1
-0
-1
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
 8080
-1
-1
-1
-3
+
+
+
+
+
 EOF
 	elif [[ ${EDITTION} == 'standard' ]]; then
 cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
+
+
+
+
+
+
+
+
+
+
+
+Y
 2
-0
-1
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
 8080
-1
-1
-1
-3
+
+
+
+
+
 EOF
 	elif [[ ${EDITTION} == 'pro' ]]; then
 cat <<EOF > keystroke
-1
-q
-1
-0
-1
-admin
-admin@example.com
-0
-0
-246
-0
-0
-1
+
+
+
+
+
+
+
+
+
+
+
+Y
 3
-0
-1
+N
 ${SOFT_HOME}
-${SOFT_HOME}
-1
 8080
-1
-1
-1
-3
+
+
+
+
+
 EOF
 	fi
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/service-desk/91677414/ManageEngine_ServiceDesk_Plus_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		keystroke
 		if [[ ${FIXED} == 'true' ]]; then
 			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_ServiceDesk_Plus.bin -o $FILE_TEMP
 		else
@@ -136,7 +125,8 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+		keystroke
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke
 }
