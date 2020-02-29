@@ -137,7 +137,7 @@ EOF
 	fi
 	echo "Install"
 		chmod +x $FILE_TEMP
-		./$FILE_TEMP -console < keystroke
+		./$FILE_TEMP -i console < keystroke
 	# remove install files
 		rm -f $FILE_TEMP keystroke
 	# fix reading serverparameters.conf
@@ -183,7 +183,7 @@ ${SOFT_HOME}
 1
 3
 EOF
-		./install.bin -console < keystroke
+		./install.bin -i console < keystroke
 		rm -f install.bin keystroke
 }
 

@@ -71,7 +71,7 @@ installmanageengine() {
 	echo "Install"
 		chmod +x $FILE_TEMP
 	read -p "Are you ready? Attach to this container and Enter to be continue"
-		./$FILE_TEMP -console
+		./$FILE_TEMP -i console
 	# remove install files
 		rm -f $FILE_TEMP
 	# fix reading serverparameters.conf
@@ -101,7 +101,7 @@ installapm() {
 	echo "Install"
 		chmod +x install.bin
 	read -p "Are you ready? Enter to be continue"
-		./install.bin -console
+		./install.bin -i console
 		rm -f install.bin
 }
 
