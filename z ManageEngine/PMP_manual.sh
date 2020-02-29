@@ -28,55 +28,13 @@ setenvironment() {
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
 }
-# set command install
-installmanageengine() {
-	echo "Download and install"
-	export FILE_TEMP=install.bin
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'pro' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'msp' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/passwordmanagerpro/8621641/ManageEngine_PMP_MSP.bin -o $FILE_TEMP
-		fi
-	else
-		echo "Not support please edit and rebuild"
-		exit 1
-	fi
-	echo "Install"
-		chmod +x $FILE_TEMP
-	read -p "Are you ready? Attach to this container and Enter to be continue"
-		./$FILE_TEMP -i console
-	# remove install files
-		rm -f $FILE_TEMP
-}
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
 	if [[ -z "`ls ${SOFT_HOME}`" ]] || [[ ! -d "${SOFT_HOME}" ]]; then
-#		rsync -arvpz --numeric-ids /start/ ${SOFT_HOME}
-	# install manage engine
-		setenvironment
-		installmanageengine
+		/usr/sbin/init
 	fi
 # Run
 if [[ ! -f "/etc/rc.d/init.d/pmp-service" ]]; then

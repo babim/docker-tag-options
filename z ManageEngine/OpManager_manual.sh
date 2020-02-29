@@ -28,93 +28,13 @@ setenvironment() {
 	# set host download
 		export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20ManageEngine"
 }
-# set command install
-installmanageengine() {
-	echo "Download and install"
-	export FILE_TEMP=install.bin
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'plus' ]]; then
-		curl -Ls https://www.manageengine.com/it-operations-management/29809517/ManageEngine_OpManager_Plus_64bit.bin -o $FILE_TEMP
-	else
-		echo "Not support please edit and rebuild"
-		exit 1
-	fi
-	echo "Install"
-		chmod +x $FILE_TEMP
-	read -p "Are you ready? Attach to this container and Enter to be continue"
-		./$FILE_TEMP -i console
-	# remove install files
-		rm -f $FILE_TEMP
-	# fix reading serverparameters.conf
-	if [[ ! -f "${SOFT_HOME}/conf/OpManager/serverparameters.conf" ]]; then
-		cp ${SOFT_HOME}/ancillary/en/html/serverparameters.conf ${SOFT_HOME}/conf/OpManager/
-	fi
-}
-installapm() {
-	echo "Download and install APM"
-	export FILE_TEMP=install.bin
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
-		fi
-	else
-		echo "Not support cant install APM Plugin"
-		exit 1
-	fi
-	echo "Install"
-		chmod +x install.bin
-	read -p "Are you ready? Enter to be continue"
-		./install.bin -i console
-		rm -f install.bin
-}
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
 	if [[ -z "`ls ${SOFT_HOME}`" ]] || [[ ! -d "${SOFT_HOME}" ]]; then
-#		rsync -arvpz --numeric-ids /start/ ${SOFT_HOME}
-	# install manage engine
-		setenvironment
-		installmanageengine
-		if [[ ${APMINSTALL} == 'true' ]]; then installapm; fi
+		/usr/sbin/init
 	fi
 # Run
 cd ${SOFT_HOME}/bin
