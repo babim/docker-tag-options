@@ -37,11 +37,12 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		echo "need exec and install App"
 		echo "need exec and install App"
 		echo "need exec and install App"
+	else
+	# Run
+		if [[ ! -f "/etc/rc.d/init.d/pmp-service" ]]; then
+			cd ${SOFT_HOME}/bin
+			./pmp.sh install
+		fi
+		/etc/rc.d/init.d/pmp-service start
+		sleep infinity
 	fi
-# Run
-if [[ ! -f "/etc/rc.d/init.d/pmp-service" ]]; then
-	cd ${SOFT_HOME}/bin
-	./pmp.sh install
-fi
-/etc/rc.d/init.d/pmp-service start
-sleep infinity

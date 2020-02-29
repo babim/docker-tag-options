@@ -37,8 +37,9 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		echo "need exec and install App"
 		echo "need exec and install App"
 		echo "need exec and install App"
+	else
+	# Run
+		cd ${SOFT_HOME}
+		./startApplicationsManager.sh
+		sleep infinity
 	fi
-# Run
-cd ${SOFT_HOME}
-./startApplicationsManager.sh
-sleep infinity
