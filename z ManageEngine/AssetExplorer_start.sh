@@ -46,7 +46,6 @@ Y
 1
 N
 ${SOFT_HOME}
-Y
 8080
 
 
@@ -67,7 +66,6 @@ Y
 2
 N
 ${SOFT_HOME}
-Y
 8080
 
 

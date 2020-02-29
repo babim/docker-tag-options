@@ -19,10 +19,10 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-OpUtils}
+		export SOFT=${SOFT:-AnalyticsPlus}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpUtils}
-		#export EDITTION=${EDITTION:-essential}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/AnalyticsPlus}
+		export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
 
 	# set host download
@@ -41,29 +41,29 @@ cat <<EOF > keystroke
 
 
 
+
+
 Y
-N
 ${SOFT_HOME}
-Y
-8060
-9996
+8443
+
+
+
+
+
+
 
 
 EOF
 }
+
 	echo "Download and install"
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_AnalyticsPlus_64bit.bin -o $FILE_TEMP
 		else
-			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils.bin -o $FILE_TEMP
+			curl -Ls https://download.manageengine.com/analytics-plus/9182734/ManageEngine_AnalyticsPlus_64bit.bin -o $FILE_TEMP
 		fi
 	else
 		echo "Not support please edit and rebuild"

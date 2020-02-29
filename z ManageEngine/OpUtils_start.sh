@@ -19,9 +19,9 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 
 # set environment
 setenvironment() {
-		export SOFT=${SOFT:-NetFlow}
+		export SOFT=${SOFT:-OpUtils}
 		#export SOFTSUB=${SOFTSUB:-core}
-		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/NetFlow}
+		export SOFT_HOME=${SOFT_HOME:-/opt/ManageEngine/OpUtils}
 		#export EDITTION=${EDITTION:-essential}
 		export FIXED=${FIXED:-false}
 
@@ -41,46 +41,32 @@ cat <<EOF > keystroke
 
 
 
+
+
+
 Y
 N
 ${SOFT_HOME}
+Y
 8060
-9996
+
 
 
 EOF
 }
 	echo "Download and install"
 	export FILE_TEMP=install.bin
-	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_64bit.bin -o $FILE_TEMP
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		else
-			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_64bit.bin -o $FILE_TEMP
+			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
+	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer.bin -o $FILE_TEMP
+			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		else
-			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NFA_DE_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NFA_DE_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free_64bit.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free_64bit.bin -o $FILE_TEMP
-		fi
-	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
-		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_NetFlowAnalyzer_Free.bin -o $FILE_TEMP
-		else
-			curl -Ls https://www.manageengine.com/products/netflow/2028821/ManageEngine_NetFlowAnalyzer_Free.bin -o $FILE_TEMP
+			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		fi
 	else
 		echo "Not support please edit and rebuild"
