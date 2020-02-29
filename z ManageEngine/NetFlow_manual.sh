@@ -34,7 +34,9 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
 	if [[ -z "`ls ${SOFT_HOME}`" ]] || [[ ! -d "${SOFT_HOME}" ]]; then
-		/usr/sbin/init
+		echo "need exec and install App"
+		echo "need exec and install App"
+		echo "need exec and install App"
 	fi
 # Run
 cd ${SOFT_HOME}/bin
