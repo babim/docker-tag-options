@@ -46,6 +46,7 @@ Y
 1
 N
 ${SOFT_HOME}
+Y
 8080
 
 

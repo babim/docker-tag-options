@@ -48,6 +48,7 @@ cat <<EOF > keystroke
 Y
 N
 ${SOFT_HOME}
+Y
 8060
 
 
