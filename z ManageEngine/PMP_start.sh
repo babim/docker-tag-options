@@ -46,6 +46,7 @@ cat <<EOF > keystroke
 
 Y
 ${SOFT_HOME}
+Y
 1
 
 
