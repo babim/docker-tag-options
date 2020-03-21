@@ -56,15 +56,17 @@ splunk_adduser() {
 splunk_install() {
 # Download official Splunk release, verify checksum and unzip in /opt/splunk
 # Also backup etc folder, so it will be later copied to the linked volume
-	mkdir -p ${SPLUNK_HOME} \
-	&& wget -qO /tmp/${SPLUNK_FILENAME} https://download.splunk.com/products/${SPLUNK_PRODUCT}/releases/${SPLUNK_VERSION}/linux/${SPLUNK_FILENAME} \
+	say "Splunk installing..."
+	create_folder ${SPLUNK_HOME} \
+	&& $download_save /tmp/${SPLUNK_FILENAME} https://download.splunk.com/products/${SPLUNK_PRODUCT}/releases/${SPLUNK_VERSION}/linux/${SPLUNK_FILENAME} \
 	&& tar xzf /tmp/${SPLUNK_FILENAME} --strip 1 -C ${SPLUNK_HOME} \
-	&& rm /tmp/${SPLUNK_FILENAME} \
-	&& mkdir -p /var/opt/splunk \
+	&& remove_filefolder /tmp/${SPLUNK_FILENAME} \
+	&& create_folder /var/opt/splunk \
 	&& cp -R ${SPLUNK_HOME}/etc ${SPLUNK_BACKUP_DEFAULT_ETC} \
-	&& rm -fR ${SPLUNK_HOME}/etc \
-	&& chown -R ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_HOME} \
-	&& chown -R ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_BACKUP_DEFAULT_ETC}
+	&& remove_filefolder ${SPLUNK_HOME}/etc \
+	&& set_folder_owner ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_HOME} \
+	&& set_folder_owner ${SPLUNK_USER}:${SPLUNK_GROUP} ${SPLUNK_BACKUP_DEFAULT_ETC}
+	say "Splunk installed"
 }
 download_entry() {
 ## download entrypoint
