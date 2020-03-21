@@ -90,7 +90,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		# make the "en_US.UTF-8" locale so splunk will be utf-8 enabled by default
 			echo "Install depend packages..."
-		install_package apt-utils locales libgssapi-krb5-2 wget sudo
+		install_package apt-utils locales libgssapi-krb5-2 wget sudo procps
 		localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 	# Install splunk
 		splunk_adduser
