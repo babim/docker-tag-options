@@ -50,7 +50,7 @@ setenvironment() {
 
 # set command install
 	# download docker entry
-dockerentry() {
+downloadentry() {
 	FILETEMP=/start.sh
 		remove_file 		$FILETEMP
 		$download_save 		$FILETEMP $DOWN_URL/start.sh
