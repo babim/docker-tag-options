@@ -2582,6 +2582,8 @@ function    install_epel()
                 ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
             elif [[ $osname == "rhel.7" ]]; then 
                 ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+            elif [[ $osname == "rhel.8" ]]; then 
+                ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
             elif [[ $osname == "rhel.5" ]]; then 
                 ${sudo_command}yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-5.noarch.rpm
             elif [[ $osname == "rhel" ]]; then 
