@@ -109,7 +109,7 @@ fi
 	# finish app
 finish() {
 # copy etc
-	create_folder $NUSTER_CONFIG_DIR
+	create_folder $NUSTER_CONFIG_DIR/errors
 FOLDER="$NUSTER_SRC_DIR/examples/errorfiles"
 	check_folder $FOLDER && dircopy $FOLDER /etc/nuster/errors
 # remove build folder
