@@ -135,6 +135,7 @@ installlua() {
 
 # install by OS
 echo 'Check OS'
+# debian, ubuntu
 if [[ -f /etc/debian_version ]]; then
 	# Set frontend debian
 		debian_cmd_interface
@@ -157,7 +158,7 @@ if [[ -f /etc/debian_version ]]; then
 	# clean
 		clean_package
 		clean_os
-
+# alpine linux
 elif [[ -f /etc/alpine-release ]]; then
 	set -x
 	# set environment
@@ -179,6 +180,7 @@ elif [[ -f /etc/alpine-release ]]; then
 	# clean
 		clean_package
 		clean_os
+# redhat, centos
 elif [[ -f /etc/redhat-release ]]; then
 	# set environment
 		setenvironment
@@ -199,6 +201,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# clean
 		clean_package
 		clean_os
+# other os
 else
     say_err "Not support your OS"
     exit 1
