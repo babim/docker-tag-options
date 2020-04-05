@@ -115,6 +115,19 @@ FOLDER="$NUSTER_SRC_DIR/examples/errorfiles"
 # remove build folder
 	remove_filefolder /tmp/nuster*
 	remove_package $BUILDLIB
+# create sample config
+if [ ! -f "$NUSTER_CONFIG_DIR/nuster.cfg" ]; then
+cat <<EOF>> $NUSTER_CONFIG_DIR/nuster.cfg
+global
+    nuster nosql on data-size 200m
+frontend fe
+    bind *:8080
+    default_backend be
+backend be
+    nuster nosql on
+    nuster rule r1 ttl 3600
+EOF
+fi
 }
 	# install lua
 installlua() {
