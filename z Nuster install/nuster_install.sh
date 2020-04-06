@@ -81,8 +81,6 @@ if [[ -f /etc/alpine-release ]]; then
 	        PCREDIR= \
 	        USE_ZLIB=1 \
 	"
-	make -C $NUSTER_SRC_DIR -j "$(getconf _NPROCESSORS_ONLN)" all $makeOpts
-	make -C $NUSTER_SRC_DIR install-bin $makeOpts
 elif [[ -f /etc/debian_version ]]; then
 	makeOpts=" \
                 TARGET=linux2628 \
@@ -93,8 +91,6 @@ elif [[ -f /etc/debian_version ]]; then
                 PCREDIR= \
                 USE_ZLIB=1 \
 	"
-	make -C $NUSTER_SRC_DIR -j "$(nproc)" all $makeOpts
-	make -C $NUSTER_SRC_DIR install-bin $makeOpts
 elif [[ -f /etc/redhat-release ]]; then
 	makeOpts=" \
                 TARGET=linux2628 \
@@ -106,9 +102,9 @@ elif [[ -f /etc/redhat-release ]]; then
                 PCREDIR= \
                 USE_ZLIB=1 \
 	"
-	make -C $NUSTER_SRC_DIR -j "$(nproc)" all $makeOpts
-	make -C $NUSTER_SRC_DIR install-bin $makeOpts
 fi
+	make -C $NUSTER_SRC_DIR -j "$(getconf _NPROCESSORS_ONLN)" all $makeOpts
+	make -C $NUSTER_SRC_DIR install-bin $makeOpts
 }
 	# finish app
 finish() {
