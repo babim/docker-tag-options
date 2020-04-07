@@ -58,7 +58,7 @@ downloadentry() {
 }
 	# prepare etc start
 preparedata() {
-FOLDER="/etc-start/nuster"
+FOLDER="/etc_start/nuster"
 	create_folder $FOLDER
 	check_folder $NUSTER_CONFIG_DIR && dircopy $NUSTER_CONFIG_DIR $FOLDER	|| say_err "Cant copy files, etc dir not found"
 }
