@@ -32,6 +32,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 # environment value
 export DELAYED_START=${DELAYED_START:-0}
+export START_SECOND=${START_SECOND:-false}
 export FULLOPTION=${FULLOPTION:-false}
 export SSHOPTION=${SSH:-false}
 export CRONOPTION=${CRON:-false}
@@ -711,7 +712,7 @@ upgrade-del() {
        echo "nameserver $GOOGLE" >> /etc/resolv.conf
     elif [ "$DNSOPTION" = "cloudflare" ]; then
         echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
-    elif [ "$DNSOPTION" = "true" ] || [ "$DNSOPTION" = "on" ]; then
+    elif [ "$DNSOPTION" = "true" ] || [ "$DNSOPTION" = "on" ] || [ "$DNSOPTION" = "both" ]; then
         echo "nameserver $GOOGLE" >> /etc/resolv.conf
         echo "nameserver $CLOUDFLARE" >> /etc/resolv.conf
     fi
@@ -728,6 +729,9 @@ upgrade-del() {
 # QUIT
 	if [ -n "${DELAYED_START}" ]; then
 		sleep ${DELAYED_START}
+	fi
+	if [ "${START_SECOND}" = "true" ]; then
+		if [ ! -f "/start_second" ]; then /start_second.sh; fi
 	fi
 
 exec "$@"
