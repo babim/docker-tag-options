@@ -141,7 +141,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu libc6-compat git openssh
 	# Install Atlassian
