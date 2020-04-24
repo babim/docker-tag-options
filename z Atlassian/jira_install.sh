@@ -167,7 +167,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install google chrome for easybi
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
-		install_package google-chrome-stable
+		apt update && install_package google-chrome-stable
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
