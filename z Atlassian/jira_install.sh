@@ -164,6 +164,10 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl ttf-dejavu libtcnative-1 xmlstarlet git
+	# install google chrome for easybi
+		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+		install_package google-chrome-stable
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
@@ -174,8 +178,30 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    say_err "Not support your OS"
-    exit 1
+	# set environment
+		setenvironment
+	# install depend
+		#install_java_jre
+			echo "Install depend packages..."
+		install_package curl ttf-dejavu libtcnative-1 xmlstarlet
+	# install google chrome for easybi
+cat << EOF > /etc/yum.repos.d/google-chrome.repo
+[google-chrome]
+name=google-chrome - \$basearch
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub
+EOF
+		install_package google-chrome-stable
+	# Install Atlassian
+		installatlassian
+		run_url $DOWN_URL/prepare_final.sh
+	# visible code
+		check_value_true "${VISIBLECODE}" && install_gosu
+	# clean
+		remove_download_tool
+		clean_os
 # OS - other
 else
     say_err "Not support your OS"
