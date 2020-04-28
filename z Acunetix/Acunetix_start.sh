@@ -25,7 +25,7 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
-	if [[ -z "/home" ]]; then
+	if [[ ! -z "/home/acunetix" ]]; then
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
 			( \
 				echo ""; \
