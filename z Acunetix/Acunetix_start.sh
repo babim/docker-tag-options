@@ -45,7 +45,7 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 		echo "Password: ${PASSWORD}"
 	fi
 # check user
-	if id $USER >/dev/null 2>&1; then
+	if id acunetix >/dev/null 2>&1; then
 		echo "user exists"
 	else
 		groupadd -g 1000 acunetix
