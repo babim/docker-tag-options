@@ -79,7 +79,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2
+		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
 	# preparedata
 		#preparedata
 		downloadentry
