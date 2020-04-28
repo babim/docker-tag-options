@@ -31,18 +31,22 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 		groupadd -g 1000 acunetix
 		useradd --system --uid 999 -g acunetix acunetix
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
-			( \
-				echo ""; \
-				echo "q"; \
-				echo "yes"; \
-				echo "localhost"; \
-				echo "${EMAIL}"; \
-				echo "${PASSWORD}"; \
-				echo "${PASSWORD}"; \
-			) | bash acunetix_trial.sh
+		curl -#OL https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Acunetix/install.expect
+		chmod +x install.expect && ./install.expect
+		#	( \
+		#		echo ""; \
+		#		echo "q"; \
+		#		echo "yes"; \
+		#		echo "localhost"; \
+		#		echo "${EMAIL}"; \
+		#		echo "${PASSWORD}"; \
+		#		echo "${PASSWORD}"; \
+		#	) | bash acunetix_trial.sh
 		echo "Installed with:"
 		echo "Email: ${EMAIL}"
 		echo "Password: ${PASSWORD}"
+		# remove file
+		rm -f install.expect acunetix_trial.sh
 	fi
 # check user
 	if id acunetix >/dev/null 2>&1; then
