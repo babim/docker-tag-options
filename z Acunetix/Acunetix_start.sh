@@ -19,7 +19,7 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 
 # environment
 	EMAIL=${EMAIL:-example@matmagoc.com}
-	PASSWORD=${PASSWORD:-123456}
+	PASSWORD=${PASSWORD:-Hello123!}
 
 # option with entrypoint
 if [ -f "/option.sh" ]; then /option.sh; fi
