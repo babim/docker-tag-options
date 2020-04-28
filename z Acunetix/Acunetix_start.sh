@@ -25,7 +25,8 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 if [ -f "/option.sh" ]; then /option.sh; fi
 
 	echo "check path and install"
-	if [[ ! -z "/home/acunetix" ]]; then
+	if [[ ! -d "/home/acunetix" ]]; then
+		echo "Instal Acunetix..."
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
 			( \
 				echo ""; \
@@ -36,7 +37,11 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 				echo "${PASSWORD}"; \
 				echo "${PASSWORD}"; \
 			) | bash acunetix_trial.sh
+		echo "Installed with:"
+		echo "Email: ${EMAIL}"
+		echo "Password: ${PASSWORD}"
 	fi
 
 # run
+echo "Run Acunetix..."
 runuser -l acunetix -c /home/acunetix/.acunetix/start.sh
