@@ -51,7 +51,7 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 		echo "user exists"
 	else
 		groupadd -g 1000 acunetix
-		useradd --system --uid 999 -g acunetix acunetix
+		useradd --system --uid 999 -g acunetix -d /home/acunetix acunetix
 	fi
 
 # run
