@@ -58,13 +58,13 @@ EOF
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpUtils.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/oputils/83624731/ManageEngine_OpUtils.bin -o $FILE_TEMP
 		fi

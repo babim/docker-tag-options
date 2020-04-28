@@ -59,31 +59,31 @@ EOF
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_${SOFTSUB}_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'free' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_Free.bin -o $FILE_TEMP
 		fi
@@ -109,13 +109,13 @@ installapm() {
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${APMINSTALL} == 'true' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/network-monitoring/29809517/ManageEngine_OpManager_APM_PlugIn.bin -o $FILE_TEMP
 		fi

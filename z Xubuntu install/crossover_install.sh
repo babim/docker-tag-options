@@ -28,7 +28,7 @@ export CROSSOVER=${CROSSOVER:-18.5.0-1}
 	libxshmfence1:i386 libxxf86vm1:i386 zlib1g:i386
 	cd /tmp
 	FILETEMP=crossover_${CROSSOVER}.deb
-		$download_save $FILETEMP http://media.matmagoc.com/$FILETEMP && install_package $FILETEMP
+		$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP && install_package $FILETEMP
 		remove_filefolder /tmp/crossover*
 	FILETEMP=/opt/cxoffice/lib/wine/winewrapper.exe.so
 		$download_save $FILETEMP $DOWN_URL/crossover/winewrapper.exe.so

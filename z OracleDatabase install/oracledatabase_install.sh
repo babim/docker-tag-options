@@ -42,7 +42,7 @@ echo 'Check OS'
 if [ -f /etc/redhat-release ]; then
 	# set host download
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20OracleDatabase%20install"
-	export HOST_DOWN="http://media.matmagoc.com/oracle"
+	export HOST_DOWN="http://file.matmagoc.com/oracle"
 	# set uninstall app
 	export UNINSTALL=""
 	# set code

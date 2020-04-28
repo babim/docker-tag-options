@@ -612,7 +612,7 @@ function    check_values_false_say()
     #################################
 
 ####### Download file #######
-# download_with_curl /winrar.zip http://media.matmagoc.com/winrar.zip
+# download_with_curl /winrar.zip http://file.matmagoc.com/winrar.zip
 function    download_with_curl()
     {
         say "Checking ${1} .."
@@ -639,7 +639,7 @@ function    download_with_curl()
         return $TRUE
     }
 
-# download_with_wget /winrar.zip http://media.matmagoc.com/winrar.zip
+# download_with_wget /winrar.zip http://file.matmagoc.com/winrar.zip
 function    download_with_wget()
     {
         say "Checking ${1} .."

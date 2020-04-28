@@ -14,7 +14,7 @@
 # visible code
 	if check_value_true "${VISIBLECODE}"; then
 		$download_save $FILETEMP $DOWN_URL/${SOFT}_fixed.sh
-		# $download_save ${SOFT_INSTALL}/agent.jar http://media.matmagoc.com/-agent.jar
+		# $download_save ${SOFT_INSTALL}/agent.jar http://file.matmagoc.com/-agent.jar
 		# if [[ -f  "${SOFT_INSTALL}/bin/start-${SOFT}.sh" ]]; then
 		# 	echo 'JAVA_OPTS="-javaagent:${SOFT_INSTALL}/agent.jar ${JAVA_OPTS}"' >> "${SOFT_INSTALL}/bin/start-${SOFT}.sh"
 		# elif [[ -f  "${SOFT_INSTALL}/bin/start_${SOFT}.sh" ]]; then

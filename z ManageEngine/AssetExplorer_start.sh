@@ -78,7 +78,7 @@ EOF
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} != 'x86_64' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_AssetExplorer.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_AssetExplorer.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/asset-explorer/87652187/ManageEngine_AssetExplorer.bin -o $FILE_TEMP
 		fi

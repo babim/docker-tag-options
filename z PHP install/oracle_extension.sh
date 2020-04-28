@@ -26,13 +26,13 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		has_value ${PHP_VERSION} && install_package php$PHP_VERSION-dev php-pear php-dev || say "not have php"
 	# install oracle client	
 		FILETEMP=instantclient-basic-linux.x64-$ORACLE_VERSION.zip
-			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://media.matmagoc.com/oracle/$FILETEMP
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
 			unzip_extract $FILETEMP /usr/local/			&& remove_file $FILETEMP
 		FILETEMP=instantclient-sdk-linux.x64-$ORACLE_VERSION.zip
-			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://media.matmagoc.com/oracle/$FILETEMP
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
 			unzip_extract $FILETEMP /usr/local/			&& remove_file $FILETEMP
 		FILETEMP=instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
-			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://media.matmagoc.com/oracle/$FILETEMP
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
 			unzip_extract $FILETEMP /usr/local/			&& remove_file $FILETEMP
 		create_symlink 		/usr/local/instantclient_12_2 /usr/local/instantclient
 		create_symlink 		/usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so

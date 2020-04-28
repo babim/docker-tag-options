@@ -57,25 +57,25 @@ EOF
 	export FILE_TEMP=install.bin
 	if [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'essential' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/61794333/ManageEngine_FirewallAnalyzer.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} == 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE_64bit.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE_64bit.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/distributed-monitoring/11042744/ManageEngine_FirewallAnalyzer_DE_64bit.bin -o $FILE_TEMP
 		fi
 	elif [[ ${MACHINE_TYPE} != 'x86_64' ]] && [[ ${EDITTION} == 'enterprise' ]]; then
 		if [[ ${FIXED} == 'true' ]]; then
-			curl -Ls http://media.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE.bin -o $FILE_TEMP
+			curl -Ls http://file.matmagoc.com/ManageEngine/ManageEngine_FirewallAnalyzer_DE.bin -o $FILE_TEMP
 		else
 			curl -Ls https://www.manageengine.com/products/firewall/distributed-monitoring/11042744/ManageEngine_FirewallAnalyzer_DE.bin -o $FILE_TEMP
 		fi
