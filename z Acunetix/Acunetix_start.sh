@@ -32,9 +32,9 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 				echo "q"; \
 				echo "yes"; \
 				echo "localhost"; \
-				echo "`${EMAIL}`"; \
-				echo "`${PASSWORD}`"; \
-				echo "`${PASSWORD}`"; \
+				echo "${EMAIL}"; \
+				echo "${PASSWORD}"; \
+				echo "${PASSWORD}"; \
 			) | bash acunetix_trial.sh
 	fi
 
