@@ -22,11 +22,14 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 	PASSWORD=${PASSWORD:-Hello123!}
 
 # option with entrypoint
-if [ -f "/option.sh" ]; then /option.sh; fi
+	if [ -f "/option.sh" ]; then /option.sh; fi
 
+# check path and install
 	echo "check path and install"
 	if [[ ! -d "/home/acunetix" ]]; then
 		echo "Instal Acunetix..."
+		groupadd -g 1000 acunetix
+		useradd --system --uid 999 -g acunetix acunetix
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
 			( \
 				echo ""; \
@@ -40,6 +43,13 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 		echo "Installed with:"
 		echo "Email: ${EMAIL}"
 		echo "Password: ${PASSWORD}"
+	fi
+# check user
+	if id $USER >/dev/null 2>&1; then
+		echo "user exists"
+	else
+		groupadd -g 1000 acunetix
+		useradd --system --uid 999 -g acunetix acunetix
 	fi
 
 # run
