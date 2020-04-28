@@ -39,4 +39,4 @@ if [ -f "/option.sh" ]; then /option.sh; fi
 	fi
 
 # run
-runuser -l acunetix -c /home/acunetix/.acunetix_trial/start.sh
+runuser -l acunetix -c /home/acunetix/.acunetix/start.sh
