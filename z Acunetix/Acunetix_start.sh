@@ -28,8 +28,6 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 	echo "check path and install"
 	if [[ ! -d "/home/acunetix" ]]; then
 		echo "Instal Acunetix..."
-		groupadd -g 1000 acunetix
-		useradd --system --uid 999 -g acunetix acunetix
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
 		curl -#OL https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Acunetix/install.expect
 		chmod +x install.expect && ./install.expect
