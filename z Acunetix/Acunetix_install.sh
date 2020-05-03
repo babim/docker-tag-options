@@ -94,6 +94,8 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install depend
 		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
 	# install openvas
+		install_package net-tools wget
+		wget -q -O - http://www.atomicorp.com/installers/atomic |sh
 		install_package openvas && openvas-setup
 		openvasmd --rebuild
 		systemctl daemon-reload
