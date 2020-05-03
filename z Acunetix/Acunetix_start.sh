@@ -29,7 +29,36 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 	if [[ ! -d "/home/acunetix" ]]; then
 		echo "Instal Acunetix..."
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
-		curl -#OL https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Acunetix/install.expect
+		#curl -#OL https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Acunetix/install.expect
+cat <<EOFF>> install.expect
+#!/usr/bin/expect -f
+ 
+set timeout -1
+set send_human {.1 .3 1 .05 2}
+ 
+spawn bash ./acunetix_trial.sh
+ 
+# expect "press ENTER to continue\r"
+expect ">>>"
+ 
+send -h "\r\n"
+send -h "\x03"
+
+expect "Accept the license terms?"
+send -h "yes\r"
+ 
+expect "Insert new hostname, or leave blank to use"
+send -h "\r"
+ 
+expect "Email:"
+send -h "${EMAIL}"
+expect "Password:"
+send -h "${PASSWORD}\r"
+expect "Password again:"
+send -h "${PASSWORD}\r"
+ 
+expect eof
+EOFF
 		chmod +x install.expect && ./install.expect
 		#	( \
 		#		echo ""; \
@@ -40,6 +69,9 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 		#		echo "${PASSWORD}"; \
 		#		echo "${PASSWORD}"; \
 		#	) | bash acunetix_trial.sh
+		# set password openvas
+		openvasmd --user=admin --new-password="${PASSWORD}"
+		# print password infomation
 		echo "Installed with:"
 		echo "Email: ${EMAIL}"
 		echo "Password: ${PASSWORD}"

@@ -77,6 +77,7 @@ if [[ -f /etc/alpine-release ]]; then
 # OS - ubuntu debian
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
+		debian_cmd_interface
 		setenvironment
 	# install depend
 		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
@@ -88,8 +89,26 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		clean_os
 # OS - redhat
 elif [[ -f /etc/redhat-release ]]; then
-    say_err "Not support your OS"
-    exit 1
+	# set environment
+		setenvironment
+	# install depend
+		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
+	# install openvas
+		install_package openvas && openvas-setup
+		openvasmd --rebuild
+		systemctl daemon-reload
+	# install clamav
+		install_epel
+		install_package clamd clamav clamav-filesystem clamav-lib clamav-data clamav-update
+	# enable clamav
+		systemctl enable clamav-freshclam
+		systemctl enable clamd@scan
+	# preparedata
+		#preparedata
+		downloadentry
+	# clean
+		clean_package
+		clean_os
 # OS - other
 else
     say_err "Not support your OS"
