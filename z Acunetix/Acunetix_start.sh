@@ -89,3 +89,5 @@ EOFF
 # run
 echo "Run Acunetix..."
 runuser -l acunetix -c /home/acunetix/.acunetix/start.sh
+
+exec "$@"
