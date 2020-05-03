@@ -26,23 +26,6 @@ MACHINE_TYPE=${MACHINE_TYPE:-`uname -m`}
 
 # check path and install
 echo "check path and install"
-	if [[ ! -d "/var/lib/openvas" ]]; then
-		echo "install openvas..."
-	# install openvas
-		yum install -y net-tools wget
-		wget -q -O - http://www.atomicorp.com/installers/atomic |sh
-		yum install -y openvas && openvas-setup
-		openvasmd --rebuild
-		systemctl daemon-reload
-	# install clamav
-		yum install -y epel-release
-		yum install -y clamd clamav clamav-filesystem clamav-lib clamav-data clamav-update
-	# enable clamav
-		systemctl enable clamav-freshclam
-		systemctl enable clamd@scan
-	# set password openvas
-		openvasmd --user=admin --new-password="${PASSWORD}"
-	fi
 	if [[ ! -d "/home/acunetix" ]]; then
 		echo "Instal Acunetix..."
 		curl -#OL https://file.matmagoc.com/acunetix_trial.sh
@@ -103,6 +86,7 @@ EOFF
 
 # run
 echo "Run Acunetix..."
+greenbone-scapdata-sync
 runuser -l acunetix -c /home/acunetix/.acunetix/start.sh
 
 exec "$@"
