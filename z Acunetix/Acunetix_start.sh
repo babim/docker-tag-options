@@ -83,7 +83,10 @@ EOFF
 		groupadd -g 1000 acunetix
 		useradd --system --uid 999 -g acunetix -d /home/acunetix acunetix
 	fi
-
+# set password openvas
+	if [[ ! -d "/var/lib/openvas" ]]; then
+		openvasmd --user=admin --new-password="${PASSWORD}"
+	fi
 # run
 echo "Run Acunetix..."
 greenbone-scapdata-sync
