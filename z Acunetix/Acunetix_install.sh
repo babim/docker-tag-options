@@ -84,7 +84,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install openvas
 		install_package openvas
 		install_package openvas && openvas-manage-certs -f -a && openvas-setup
-		openvasmd --rebuild
+		#openvasmd --rebuild
 	# install clamav
 		install_package clamav clamav-daemon
 		echo "TCPSocket 3310" >> /etc/clamav/clamd.conf
@@ -105,7 +105,7 @@ elif [[ -f /etc/redhat-release ]]; then
 		install_package net-tools wget
 		wget -q -O - http://www.atomicorp.com/installers/atomic |sh
 		install_package openvas && openvas-setup
-		openvasmd --rebuild
+		#openvasmd --rebuild
 	# install clamav
 		install_epel
 		install_package clamd clamav clamav-filesystem clamav-lib clamav-data clamav-update
