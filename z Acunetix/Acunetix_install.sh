@@ -81,6 +81,15 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		setenvironment
 	# install depend
 		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
+	# install openvas
+		install_package openvas
+		install_package openvas && openvas-setup
+		openvasmd --rebuild
+		systemctl daemon-reload
+	# install clamav
+		install_package clamav clamav-daemon
+		echo "TCPSocket 3310" >> /etc/clamav/clamd.conf
+		echo "TCPAddr 127.0.0.1" >> /etc/clamav/clamd.conf
 	# preparedata
 		#preparedata
 		downloadentry
@@ -93,6 +102,17 @@ elif [[ -f /etc/redhat-release ]]; then
 		setenvironment
 	# install depend
 		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
+	# install openvas
+		install_package net-tools wget
+		wget -q -O - http://www.atomicorp.com/installers/atomic |sh
+		install_package openvas && openvas-setup
+		openvasmd --rebuild
+		systemctl daemon-reload
+	# install clamav
+		install_epel
+		install_package clamd clamav clamav-filesystem clamav-lib clamav-data clamav-update
+		echo "TCPSocket 3310" >> /etc/clamav/scan.conf
+		echo "TCPAddr 127.0.0.1" >> /etc/clamav/scan.conf
 	# preparedata
 		#preparedata
 		downloadentry
