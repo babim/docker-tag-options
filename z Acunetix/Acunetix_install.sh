@@ -83,9 +83,8 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		install_package libxtst6 libxdamage1 libgtk-3-0 libasound2 libnss3 libxss1 libx11-xcb1 sudo curl bzip2 expect
 	# install openvas
 		install_package openvas
-		install_package openvas && openvas-setup
+		install_package openvas && openvas-manage-certs -f -a && openvas-setup
 		openvasmd --rebuild
-		systemctl daemon-reload
 	# install clamav
 		install_package clamav clamav-daemon
 		echo "TCPSocket 3310" >> /etc/clamav/clamd.conf
@@ -107,7 +106,6 @@ elif [[ -f /etc/redhat-release ]]; then
 		wget -q -O - http://www.atomicorp.com/installers/atomic |sh
 		install_package openvas && openvas-setup
 		openvasmd --rebuild
-		systemctl daemon-reload
 	# install clamav
 		install_epel
 		install_package clamd clamav clamav-filesystem clamav-lib clamav-data clamav-update
