@@ -2150,7 +2150,7 @@ function    scp_from_ssh()
 # tar copy compress ssh
 # copy over ssh use tar with compress package, maybe use more cpu
 #
-# example copy from /abc from backupserver to /home/abc
+# example copy from /abc to backupserver to /home/abc
 #
 # use: tar_copy_compress_ssh root@backupserver /abc /home/abc
 #
@@ -2164,7 +2164,7 @@ function    tar_copy_compress_ssh()
 # tar copy ssh
 # copy over ssh use tar without compress package, maybe faster
 #
-# example copy from /abc from backupserver to /home/abc
+# example copy from /abc to backupserver to /home/abc
 #
 # use: tar_copy_ssh root@backupserver /abc /home/abc
 #
