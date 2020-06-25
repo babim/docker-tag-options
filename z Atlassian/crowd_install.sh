@@ -147,7 +147,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package curl xmlstarlet ttf-dejavu
+		install_package curl xmlstarlet ttf-dejavu tzdata
 	# disable because use adoptopenjdk: libc6-compat
 	# Install Atlassian
 		installatlassian
