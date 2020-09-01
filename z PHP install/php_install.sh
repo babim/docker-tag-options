@@ -151,10 +151,16 @@ if [[ -f /etc/lsb-release ]]; then
 			fi
 			done
 		}
+	libreoffice_install() {
+		if [[ "$LIBREOFFICE" == "true" ]] || [[ "$LIBREOFFICE" == "True" ]] || [[ "$LIBREOFFICE" == "TRUE" ]];then
+			install_package libreoffice
+		fi
+		}
 	fullphpdo() {
 		# config
 			phpfinal
 			laravelinstall
+			libreoffice_install
 		# tweak
 			setphpvalue
 			setopcachevalue
