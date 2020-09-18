@@ -180,7 +180,10 @@ alpine-ssh-start() {
     rm -rf /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_dsa_key
     mkdir /var/run/sshd
     # allow root ssh
+    sed -i 's/#PermitRootLogin/PermitRootLogin/g' /etc/ssh/sshd_config
     sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
     touch /SSH.check
 	# supervisor
 	if [ -f "/etc/supervisor/supervisord.conf" ]; then
@@ -389,7 +392,10 @@ ubuntu-ssh-start() {
     # set password root is root
     echo 'root:root' | chpasswd
     # allow root ssh
+    sed -i 's/#PermitRootLogin/PermitRootLogin/g' /etc/ssh/sshd_config
     sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
     # SSH login fix. Otherwise user is kicked off after login
     sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
     export NOTVISIBLE="in users profile"
