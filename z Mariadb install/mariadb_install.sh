@@ -178,9 +178,9 @@ if [[ -f /etc/debian_version ]]; then
 			} > /etc/mysql/my.cnf
 
 		# ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
-			create_folder /var/lib/mysql /var/run/mysqld
-			set_filefolder_owner mysql:mysql /var/lib/mysql /var/run/mysqld
-			set_filefolder_mod 777 /var/run/mysqld
+			create_folder /var/lib/mysql
+		# comment to ignore folder /var/run/mysqld
+			set_filefolder_owner mysql:mysql /var/lib/mysql
 
 		# finish
 			finish
