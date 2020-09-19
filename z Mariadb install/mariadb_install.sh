@@ -76,7 +76,7 @@ recreate_mysql() {
  # comment to ignore /var/wun/mysqld
 ## ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
 	say "set folder mod.."
-	set_filefolder_mod 777 /var/run/mysqld
+	#set_filefolder_mod 777 /var/run/mysqld
 ## comment out a few problematic configuration values
 	say "find beginning.."
 	find /etc/mysql/ -name '*.cnf' -print0 \
