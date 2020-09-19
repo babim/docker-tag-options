@@ -71,8 +71,9 @@ finish() {
 recreate_mysql() {
 ## purge and re-create
 	say "set folder owner.."
-	remove_folder /var/lib/mysql && create_folder /var/lib/mysql var/run/mysqld \
-	&& set_filefolder_owner mysql:mysql /var/lib/mysql /var/run/mysqld
+	remove_folder /var/lib/mysql && create_folder /var/lib/mysql \
+	&& set_filefolder_owner mysql:mysql /var/lib/mysql
+ # comment to ignore /var/wun/mysqld
 ## ensure that /var/run/mysqld (used for socket and lock files) is writable regardless of the UID our mysqld instance ends up having at runtime
 	say "set folder mod.."
 	set_filefolder_mod 777 /var/run/mysqld
