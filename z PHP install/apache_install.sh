@@ -49,6 +49,7 @@ setenvironment() {
 		FILETEMP=truetype.zip
 			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
 		rm -rf /usr/share/fonts/truetype
+			install_package_run unzip
 			unzip_extract $FILETEMP /usr/share/fonts/truetype
 	fi
 
