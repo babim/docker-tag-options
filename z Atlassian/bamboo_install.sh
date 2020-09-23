@@ -54,10 +54,10 @@ setenvironment() {
 }
 	# install font
 	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
-		FILETEMP=truetype.tar.gz
+		FILETEMP=truetype.zip
 			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
 		rm -rf /usr/share/fonts/truetype
-			tar_extract $FILETEMP /usr/share/fonts/truetype
+			unzip_extract $FILETEMP /usr/share/fonts/truetype
 	fi
 # set command install
 installatlassian() {
