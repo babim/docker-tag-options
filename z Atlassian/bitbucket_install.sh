@@ -53,6 +53,13 @@ setenvironment() {
 # set host download
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
+	# install font
+	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
+		FILETEMP=truetype.tar.gz
+			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
+		rm -rf /usr/share/fonts/truetype
+			tar_extract $FILETEMP /usr/share/fonts/truetype
+	fi
 # set command install
 installatlassian() {
 ## Check version

@@ -49,6 +49,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# install composer
 			install_php_composer
 		# fix shortcut bin
+			rm -f 			/etc/alternatives/php
 			create_symlink 		/usr/bin/php$PHP_VERSION /etc/alternatives/php
 		# install option for webapp (owncloud)
 			install_package 	smbclient ffmpeg ghostscript openexr openexr openexr libxml2 gamin

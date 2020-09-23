@@ -48,6 +48,14 @@ setenvironment() {
 	export aguser=${aguser:-$auser}
 }
 
+	# install font
+	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
+		FILETEMP=truetype.tar.gz
+			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
+		rm -rf /usr/share/fonts/truetype
+			tar_extract $FILETEMP /usr/share/fonts/truetype
+	fi
+
 # install by OS
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
