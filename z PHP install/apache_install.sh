@@ -48,7 +48,7 @@ setenvironment() {
 	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
 		FILETEMP=truetype.zip
 			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
-		rm -rf /usr/share/fonts/truetype
+		rm -rf /usr/share/fonts/truetype && mkdir -p /usr/share/fonts/truetype
 			install_package_run unzip
 			unzip_extract $FILETEMP /usr/share/fonts/truetype
 	fi
