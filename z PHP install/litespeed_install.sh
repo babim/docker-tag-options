@@ -123,6 +123,8 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	else
 		say "Not support your PHP version"
 	fi
+else
+	say "No need install PHP."
 fi
 }
 

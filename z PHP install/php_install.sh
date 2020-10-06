@@ -171,7 +171,7 @@ if [[ -f /etc/lsb-release ]]; then
 			preparefinal
 		}
 
-	if [[ "$PHP_VERSION" == "5.6" ]];then
+	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
@@ -183,7 +183,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.0" ]];then
+	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
@@ -197,7 +197,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.1" ]];then
+	elif [[ "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
@@ -211,7 +211,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.2" ]];then
+	elif [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
@@ -225,7 +225,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.3" ]];then
+	elif [[ "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
@@ -239,7 +239,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# config
 			fullphpdo
 
-	elif [[ "$PHP_VERSION" == "7.4" ]];then
+	elif [[ "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		install_package imagemagick \
