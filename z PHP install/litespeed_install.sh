@@ -83,6 +83,7 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	elif 	[[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION=71;
 	elif 	[[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION=72;
 	elif 	[[ "$PHP_VERSION" == "7.3" ]];then export PHP_VERSION=73;
+	elif 	[[ "$PHP_VERSION" == "7.4" ]];then export PHP_VERSION=74;
 	else return $FALSE;fi
 
 	# create php bin
