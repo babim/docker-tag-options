@@ -53,14 +53,6 @@ setenvironment() {
 # set host download
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20Atlassian"
 }
-	# install font
-	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
-		FILETEMP=truetype.zip
-			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
-		rm -rf /usr/share/fonts/truetype/*
-			install_package_run unzip
-			unzip_extract $FILETEMP /usr/share/fonts/truetype
-	fi
 # set command install
 installatlassian() {
 ## Check version
@@ -173,6 +165,7 @@ if [[ -f /etc/alpine-release ]]; then
 elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
+		installfonts
 	# Set frontend debian
 		debian_cmd_interface
 	# install depend
@@ -195,6 +188,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 elif [[ -f /etc/redhat-release ]]; then
 	# set environment
 		setenvironment
+		installfonts
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."

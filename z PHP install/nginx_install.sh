@@ -48,21 +48,13 @@ setenvironment() {
 	export aguser=${aguser:-$auser}
 }
 
-	# install font
-	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
-		FILETEMP=truetype.zip
-			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
-		rm -rf /usr/share/fonts/truetype/*
-			install_package_run unzip
-			unzip_extract $FILETEMP /usr/share/fonts/truetype
-	fi
-
 # install by OS
 echo 'Check OS'
 if [[ -f /etc/lsb-release ]]; then
 	# set environment
 		setenvironment
 		debian_cmd_interface
+		installfonts
 	# add repo and install nginx
 	    echo "deb http://ppa.launchpad.net/nginx/$nginx/ubuntu xenial main" > /etc/apt/sources.list.d/nginx-$nginx.list && \
 	    debian_add_repo_key C300EE8C && \

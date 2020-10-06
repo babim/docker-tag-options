@@ -128,7 +128,7 @@ function export_all()
                     \
 		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
                     install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
-                    install_php_composer install_dpkg install_cpio
+                    install_php_composer install_dpkg install_cpio installfonts
     # Function Remove
         export -f core_command_remove clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run \
                     \
@@ -3089,6 +3089,19 @@ function    install_php_composer()
 
 alias setup_php_composer=install_php_composer
 
+# install fonts
+function    installfonts() {
+	FILETEMP=truetype.zip
+		$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
+	rm -rf /usr/share/fonts/truetype && mkdir -p /usr/share/fonts/truetype
+		install_package_run unzip
+		unzip_extract $FILETEMP /usr/share/fonts/truetype
+    if [[ -f /etc/lsb-release     || -f /etc/debian_version || $osname == "ubuntu"* || $osname == "debian"* ]]; then
+        install_package ttf-mscorefonts-installer
+    fi
+}
+
+alias installfont=installfonts
 
     ####### Function Remove ########
     ################################

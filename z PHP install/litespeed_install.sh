@@ -53,15 +53,6 @@ setenvironment() {
 	export aguser=${aguser:-$auser}
 }
 
-	# install font
-	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
-		FILETEMP=truetype.zip
-			$download_save $FILETEMP http://file.matmagoc.com/$FILETEMP
-		rm -rf /usr/share/fonts/truetype/*
-			install_package_run unzip
-			unzip_extract $FILETEMP /usr/share/fonts/truetype
-	fi
-
 setlitespeedadmin() {
 ## Set litespeed admin user
 cat <<EOF > keystroke
@@ -111,6 +102,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# set environment
 		setenvironment
 		debian_cmd_interface
+		installfonts
 	# install depend for download key in script litespeed install
 		install_package wget
 	# install repo
@@ -140,6 +132,7 @@ elif [[ -f /etc/redhat-release ]]; then
 	# install repo
 		install_package http://rpms.litespeedtech.com/centos/litespeed-repo-1.1-1.el7.noarch.rpm
 		install_epel
+		installfonts
 	# install litespeed
 		install_package openlitespeed
 	# set admin password
