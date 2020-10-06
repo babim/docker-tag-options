@@ -3096,7 +3096,7 @@ function    installfonts() {
 	rm -rf /usr/share/fonts/truetype && mkdir -p /usr/share/fonts/truetype
 		install_package_run unzip
 		unzip_extract $FILETEMP /usr/share/fonts/truetype
-    if [[ -f /etc/lsb-release     || -f /etc/debian_version || $osname == "ubuntu"* || $osname == "debian"* ]]; then
+    if [[ -f /etc/lsb-release || $osname == "ubuntu"* ]]; then
         install_package ttf-mscorefonts-installer
     fi
 }
