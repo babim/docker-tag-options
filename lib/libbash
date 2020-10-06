@@ -2083,7 +2083,7 @@ alias tar_x_ssh=tar_extract_ssh
 function    unzip_extract()
     {
         say "Checking file folder.."
-        check_file ${1}                     && say "check ${1} done"            || return $FALSE
+        check_filefolder ${1}               && say "check ${1} done"            || return $FALSE
         say "Begin unzip extracting.."
         has_empty ${2}                      && ${2}="."                         || say "check ${2} done"
         machine_has unzip                   && unzip - ${1} -d ${2} ${@:3}      || return $FALSE
