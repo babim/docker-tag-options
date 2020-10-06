@@ -2085,6 +2085,7 @@ function    unzip_extract()
         say "Checking file folder.."
         check_file ${1}               && say "check ${1} done"            || return $FALSE
         say "Begin unzip extracting.."
+        has_empty ${2}                      && ${2}="."                         || say "check ${2} done"
         machine_has unzip                   && unzip - ${1} -d ${2} ${@:3}      || return $FALSE
         say "Unzip completed"
         return $TRUE
