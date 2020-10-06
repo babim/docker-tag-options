@@ -44,6 +44,7 @@ setenvironment() {
 	PAGESPEED=${PAGESPEED:-false}
 }
 
+installfont() {
 	# install font
 	if has_value "${FONT}" && ! check_value_false "${FONT}"; then
 		FILETEMP=truetype.zip
@@ -52,6 +53,7 @@ setenvironment() {
 			install_package_run unzip
 			unzip_extract $FILETEMP /usr/share/fonts/truetype
 	fi
+}
 
 # install by OS
 echo 'Check OS'
@@ -59,7 +61,7 @@ if [[ -f /etc/lsb-release ]]; then
 	# set environment
 		setenvironment
 		debian_cmd_interface
-
+		installfont
 	# add repo apache
 		debian_add_repo ondrej/apache2
 	# install apache
