@@ -143,9 +143,15 @@ elif [[ -f /etc/redhat-release ]]; then
 		install_epel
 		installfonts
 	# install litespeed
-		install_package openlitespeed
+cat <<EOF > keystroke
+$LITESPEED_ADMIN
+$LITESPEED_PASS
+$LITESPEED_PASS
+EOF
+		install_package openlitespeed < keystroke
+rm -f keytroke
 	# set admin password
-		setlitespeedadmin
+		# setlitespeedadmin
 	# install php
 		install_php
 	# Build mode
