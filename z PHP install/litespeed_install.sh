@@ -91,13 +91,25 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 
 	# create php bin
 	if [[ "$PHP_VERSION" == "5.3" || "$PHP_VERSION" == "53" ]]; then
-		install_package lsphp${PHP_VERSION}-*
+		install_package lsphp53 lsphp53-bcmath lsphp53-common lsphp53-dba lsphp53-debuginfo lsphp53-devel \
+		lsphp53-enchant lsphp53-gd lsphp53-imap lsphp53-intl lsphp53-ldap lsphp53-mbstring lsphp53-mcrypt \
+		lsphp53-mysql lsphp53-pdo lsphp53-opcache lsphp53-pgsql lsphp53-process lsphp53-pspell lsphp53-recode \
+		lsphp53-snmp lsphp53-soap lsphp53-sqlite lsphp53-tidy lsphp53-xml  lsphp53-xmlrpc
 	elif [[ "$PHP_VERSION" == "5.4" || "$PHP_VERSION" == "54" ]]; then
-		install_package lsphp${PHP_VERSION}-*
+		install_package lsphp54 lsphp54-bcmath lsphp54-common lsphp54-dba lsphp54-debuginfo lsphp54-devel \
+		lsphp54-enchant lsphp54-gd lsphp54-imap lsphp54-intl lsphp54-ldap lsphp54-mbstring lsphp54-mcrypt \
+		lsphp54-mysql lsphp54-pdo lsphp54-opcache lsphp54-pgsql lsphp54-process lsphp54-pspell lsphp54-recode \
+		lsphp54-snmp lsphp54-soap lsphp54-sqlite lsphp54-tidy lsphp54-xml  lsphp54-xmlrpc
 	elif [[ "$PHP_VERSION" == "5.5" || "$PHP_VERSION" == "55" ]]; then
-		install_package lsphp${PHP_VERSION}-*
+		install_package lsphp56 lsphp56-bcmath lsphp56-common lsphp56-dba lsphp56-debuginfo lsphp56-devel \
+		lsphp56-enchant lsphp56-gd lsphp56-imap lsphp56-intl lsphp56-ldap lsphp56-mbstring lsphp56-mcrypt \
+		lsphp56-mysql lsphp56-pdo lsphp56-opcache lsphp56-pgsql lsphp56-process lsphp56-pspell lsphp56-recode \
+		lsphp56-snmp lsphp56-soap lsphp56-sqlite lsphp56-tidy lsphp56-xml  lsphp56-xmlrpc
 	elif [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
-		install_package lsphp${PHP_VERSION}-*
+		install_package lsphp53 lsphp53-bcmath lsphp53-common lsphp53-dba lsphp53-debuginfo lsphp53-devel \
+		lsphp53-enchant lsphp53-gd lsphp53-imap lsphp53-intl lsphp53-ldap lsphp53-mbstring lsphp53-mcrypt \
+		lsphp53-mysql lsphp53-pdo lsphp53-opcache lsphp53-pgsql lsphp53-process lsphp53-pspell lsphp53-recode \
+		lsphp53-snmp lsphp53-soap lsphp53-sqlite lsphp53-tidy lsphp53-xml  lsphp53-xmlrpc
 	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]]; then
 		install_package lsphp${PHP_VERSION}-*
 	elif [[ "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" ]]; then
@@ -152,13 +164,7 @@ elif [[ -f /etc/redhat-release ]]; then
 		install_epel
 		installfonts
 	# install litespeed
-cat <<EOF > keystroke
-$LITESPEED_ADMIN
-$LITESPEED_PASS
-$LITESPEED_PASS
-EOF
 		install_package openlitespeed
-rm -f keytroke
 	# set admin password
 		# setlitespeedadmin
 	# install php
