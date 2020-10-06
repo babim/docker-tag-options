@@ -87,17 +87,17 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	else return $FALSE;fi
 
 	# create php bin
-	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "5.6" ]]; then
+	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
 		install_package lsphp${PHP_VERSION}-*
-	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "7.0" ]]; then
+	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]]; then
 		install_package lsphp${PHP_VERSION}-*
-	elif [[ "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "7.1" ]]; then
+	elif [[ "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" ]]; then
 		install_package lsphp${PHP_VERSION}-*
-	elif [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "7.2" ]]; then
+	elif [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" ]]; then
 		install_package lsphp${PHP_VERSION}-*
-	elif [[ "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "7.3" ]]; then
+	elif [[ "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" ]]; then
 		install_package lsphp${PHP_VERSION}-*
-	elif [[ "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "7.4" ]]; then
+	elif [[ "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74" ]]; then
 		install_package lsphp${PHP_VERSION}-*
 	else
 		say "Not support your PHP version"
