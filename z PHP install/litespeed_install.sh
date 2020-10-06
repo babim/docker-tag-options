@@ -78,7 +78,10 @@ preparefinal() {
 install_php() {
 if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 
-	if 	[[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION=56;
+	if 	[[ "$PHP_VERSION" == "5.3" ]];then export PHP_VERSION=53;
+	elif 	[[ "$PHP_VERSION" == "5.4" ]];then export PHP_VERSION=54;
+	elif 	[[ "$PHP_VERSION" == "5.5" ]];then export PHP_VERSION=55;
+	elif 	[[ "$PHP_VERSION" == "5.6" ]];then export PHP_VERSION=56;
 	elif 	[[ "$PHP_VERSION" == "7.0" ]];then export PHP_VERSION=70;
 	elif 	[[ "$PHP_VERSION" == "7.1" ]];then export PHP_VERSION=71;
 	elif 	[[ "$PHP_VERSION" == "7.2" ]];then export PHP_VERSION=72;
@@ -87,7 +90,13 @@ if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
 	else return $FALSE;fi
 
 	# create php bin
-	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
+	if [[ "$PHP_VERSION" == "5.3" || "$PHP_VERSION" == "53" ]]; then
+		install_package lsphp${PHP_VERSION}-*
+	elif [[ "$PHP_VERSION" == "5.4" || "$PHP_VERSION" == "54" ]]; then
+		install_package lsphp${PHP_VERSION}-*
+	elif [[ "$PHP_VERSION" == "5.5" || "$PHP_VERSION" == "55" ]]; then
+		install_package lsphp${PHP_VERSION}-*
+	elif [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
 		install_package lsphp${PHP_VERSION}-*
 	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]]; then
 		install_package lsphp${PHP_VERSION}-*
@@ -148,7 +157,7 @@ $LITESPEED_ADMIN
 $LITESPEED_PASS
 $LITESPEED_PASS
 EOF
-		install_package openlitespeed < keystroke
+		install_package openlitespeed
 rm -f keytroke
 	# set admin password
 		# setlitespeedadmin
