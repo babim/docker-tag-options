@@ -1,7 +1,7 @@
 #!/bin/bash
 # LICENSE UPL 1.0
 #
-# Copyright (c) 1982-2016 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1982-2018 Oracle and/or its affiliates. All rights reserved.
 #
 # Since: December, 2016
 # Author: gerald.venzl@oracle.com
@@ -10,7 +10,8 @@
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 # 
 
-EDITION=$1
+# Convert $1 into upper case via "^^" (bash version 4 onwards)
+EDITION=${1^^}
 
 # Check whether edition has been passed on
 if [ "$EDITION" == "" ]; then
@@ -49,7 +50,7 @@ sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" $INSTALL_DIR/$INSTALL_RSP
 
 # Install Oracle binaries
 if [[ ! -z "${INSTALL_FILE_1}" ]]; then
-	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" || "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_1 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 		unzip $INSTALL_FILE_1 && ls && \
@@ -61,7 +62,7 @@ if [[ ! -z "${INSTALL_FILE_1}" ]]; then
 	fi
 fi
 if [[ ! -z "${INSTALL_FILE_2}" ]]; then
-	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" || "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_2 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 		unzip $INSTALL_FILE_2 && ls && \
@@ -73,7 +74,7 @@ if [[ ! -z "${INSTALL_FILE_2}" ]]; then
 	fi
 fi
 if [[ ! -z "${INSTALL_FILE_3}" ]]; then
-	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" || "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_3 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 		unzip $INSTALL_FILE_3 && ls && \
@@ -85,7 +86,7 @@ if [[ ! -z "${INSTALL_FILE_3}" ]]; then
 	fi
 fi
 if [[ ! -z "${INSTALL_FILE_4}" ]]; then
-	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+	if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" || "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
 		mv $INSTALL_DIR/$INSTALL_FILE_4 $ORACLE_HOME/
 		cd $ORACLE_HOME/
 		unzip $INSTALL_FILE_4 && ls && \
@@ -97,7 +98,7 @@ if [[ ! -z "${INSTALL_FILE_4}" ]]; then
 	fi
 fi
 
-if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
+if [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" || "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
 	$ORACLE_HOME/runInstaller -silent -force -waitforcompletion -responsefile $INSTALL_DIR/$INSTALL_RSP -ignorePrereqFailure && \
 	cd $HOME
 else

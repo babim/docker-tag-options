@@ -55,6 +55,9 @@ if [ -f /etc/redhat-release ]; then
 	elif [[ "$VERSION" == "18.3.0" ]] || [[ "$VERSION" == "18c" ]]; then
 		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-preinstall-18c"}
 		export VERSION=18c
+	elif [[ "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
+		export PREINSTALLPACK=${PREINSTALLPACK:-"oracle-database-preinstall-19c"}
+		export VERSION=19c
 	fi
 	# set environment
 	echo "set environment"
@@ -72,6 +75,8 @@ if [ -f /etc/redhat-release ]; then
 	export USER_SCRIPTS_FILE=${USER_SCRIPTS_FILE:-"runUserScripts.sh"}
 	export INSTALL_DB_BINARIES_FILE=${INSTALL_DB_BINARIES_FILE:-"installDBBinaries.sh"}
 	export INSTALL_PERL_FILE=${INSTALL_PERL_FILE:-"installPerl.sh"}
+	export RELINK_BINARY_FILE=${RELINK_BINARY_FILE:-"relinkOracleBinary.sh"}
+	export SLIMMING=$SLIMMING
 	# Use second ENV so that variable get substituted
 	export INSTALL_DIR=${INSTALL_DIR:-$ORACLE_BASE/install}
 	export PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH
@@ -96,6 +101,7 @@ if [ -f /etc/redhat-release ]; then
 		$download_save $ORACLE_BASE/$CONFIG_RSP 		$DOWN_URL/template/$CONFIG_RSP-$VERSION
 		$download_save $ORACLE_BASE/$PWD_FILE 			$DOWN_URL/config/$PWD_FILE
 		$download_save $ORACLE_BASE/$USER_SCRIPTS_FILE 		$DOWN_URL/config/$USER_SCRIPTS_FILE
+		$download_save $ORACLE_BASE/$RELINK_BINARY_FILE 		$DOWN_URL/config/$RELINK_BINARY_FILE
 	chmod ug+x $INSTALL_DIR/*.sh
 	chmod ug+x $ORACLE_BASE/*.sh
 	# Download setup files

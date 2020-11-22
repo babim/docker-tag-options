@@ -1,7 +1,7 @@
 #!/bin/bash
 # LICENSE UPL 1.0
 #
-# Copyright (c) 1982-2016 Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 1982-2018 Oracle and/or its affiliates. All rights reserved.
 # 
 # Since: November, 2016
 # Author: gerald.venzl@oracle.com
@@ -25,6 +25,10 @@ function moveFiles {
    mv $ORACLE_HOME/network/admin/sqlnet.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
    mv $ORACLE_HOME/network/admin/listener.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
    mv $ORACLE_HOME/network/admin/tnsnames.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+   if [[ "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
+      mv $ORACLE_HOME/install/.docker_* $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+   fi
+   
 
    # oracle user does not have permissions in /etc, hence cp and not mv
    cp /etc/oratab $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
@@ -110,6 +114,13 @@ if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes | wc -c` -lt 11 ]; then
    fi;
 fi;
 
+# Check that hostname doesn't container any "_"
+# Github issue #711
+if hostname | grep -q "_"; then
+   echo "Error: The hostname must not container any '_'".
+   echo "Your current hostname is '$(hostname)'"
+fi;
+
 # Set SIGINT handler
 trap _int SIGINT
 
@@ -123,6 +134,10 @@ trap _kill SIGKILL
 if [ "$ORACLE_SID" == "" ]; then
    export ORACLE_SID=ORCLCDB
 else
+  # Make ORACLE_SID upper case
+  # Github issue # 984
+  export ORACLE_SID=${ORACLE_SID^^}
+
   # Check whether SID is no longer than 12 bytes
   # Github issue #246: Cannot start OracleDB image
   if [ "${#ORACLE_SID}" -gt 12 ]; then
@@ -141,8 +156,17 @@ fi;
 # Default for ORACLE PDB
 export ORACLE_PDB=${ORACLE_PDB:-ORCLPDB1}
 
+# Make ORACLE_PDB upper case
+# Github issue # 984
+export ORACLE_PDB=${ORACLE_PDB^^}
+
 # Default for ORACLE CHARACTERSET
 export ORACLE_CHARACTERSET=${ORACLE_CHARACTERSET:-AL32UTF8}
+
+# Call relinkOracleBinary.sh before the database is created or started
+if [[ "$VERSION" == "19.3.0" ]] || [[ "$VERSION" == "19c" ]]; then
+. "$ORACLE_BASE/$RELINK_BINARY_FILE"
+fi
 
 # Check whether database already exists
 if [ -d $ORACLE_BASE/oradata/$ORACLE_SID ]; then
@@ -165,7 +189,7 @@ else
   rm -f $ORACLE_HOME/network/admin/tnsnames.ora
    
   # Create database
-  $ORACLE_BASE/$CREATE_DB_FILE $ORACLE_SID $ORACLE_PDB $ORACLE_PWD;
+  $ORACLE_BASE/$CREATE_DB_FILE $ORACLE_SID $ORACLE_PDB $ORACLE_PWD || exit 1;
    
   # Move database operational files to oradata
   moveFiles;
