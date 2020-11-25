@@ -128,7 +128,16 @@ if [ -f /etc/redhat-release ]; then
 #		wget -O - $DOWN_URL/config/$SETUP_LINUX_FILE | bash
 
 	# install gosu
-		install_gosu
+	GOSU_VERSION=1.12
+	gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-amd64	
+	FILE_TEMP=/usr/bin/gosu	
+		say "downloading gosu.."
+		machine_has "curl"          && curl -Ls $gosu_url -o gosu       || wget -O gosu $gosu_url
+		mv gosu ${FILE_TEMP}
+		say "checking gosu.."
+		[[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
+		chmod +x ${FILE_TEMP}       && gosu nobody true
+		say "GOSU installed."
 	# Install DB software binaries
 	say "Install DB software binaries"
 	# su -H -u oracle bash -c '$INSTALL_DIR/$INSTALL_DB_BINARIES_FILE $PRODUCT'
