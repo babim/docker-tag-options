@@ -11,6 +11,7 @@
 # set environment
 setenvironment() {
 	export ORACLE_VERSION=12.2.0.1.0
+	if [[ $ORACLE_VERSION == 12.2.0.1.0 ]]; then export ORCL_PATH=12_2; fi
 	PHP_VERSION=${PHP_VERSION:-false}
 }
 
@@ -34,9 +35,17 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		FILETEMP=instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
 			unzip_extract $FILETEMP /usr/local/			&& remove_file $FILETEMP
-		create_symlink 		/usr/local/instantclient_12_2 /usr/local/instantclient
+		create_symlink 		/usr/local/instantclient_$ORCL_PATH /usr/local/instantclient
 		create_symlink 		/usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so
-		create_symlink 		/usr/local/instantclient/sqlplus /usr/bin/sqlplus
+		create_symlink 		/usr/local/instantclient/libocci.so.12.1 /usr/local/instantclient/libocci.so
+		create_symlink 		/usr/local/instantclient/sqlplus /usr/bin/sqlplnus
+		echo /usr/local/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf
+		ldconfig
+	# set path
+		export ORACLE_HOME=/usr/local/instantclient
+		export LD_LIBRARY_PATH="$ORACLE_HOME"
+		export PATH="$ORACLE_HOME:$PATH"
+	# install php extension
 		echo 'instantclient,/usr/local/instantclient' 			| pecl install oci8
 		if check_folder /etc/php/; then
 			FILETEMP=conf.d/30-oci8.ini
