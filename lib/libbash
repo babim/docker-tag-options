@@ -2968,8 +2968,12 @@ function    install_gosu()
         say "Detect OS! Set path bin for gosu"
             if [[ $osname == "ubuntu"*  || $osname == "debian"* || $osname == "alpine"* ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu    
-		        install_dpkg
-		        arch=$(dpkg --print-architecture | awk -F- '{ print $NF }') 
+		        # check arch with uname
+                arch=$(uname -i)
+		        if [[ $arch == x86_64 ]]; then arch=amd64; fi
+                # check arch by dpkg
+                #install_dpkg
+		        #arch=$(dpkg --print-architecture | awk -F- '{ print $NF }') 
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
 		        arch=$(uname -i)
@@ -2985,7 +2989,8 @@ function    install_gosu()
         say "checking gosu.."
             [[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
             chmod +x ${FILE_TEMP}
-            #gosu nobody true
+            # Verify that the binary works
+                gosu nobody true
         say "GOSU installed."
     fi
         return $TRUE
