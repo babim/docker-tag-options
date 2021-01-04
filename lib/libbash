@@ -2966,15 +2966,30 @@ function    install_gosu()
         # osname=$(get_osname)
         get_osname
         say "Detect OS! Set path bin for gosu"
-            if [[ $osname == "ubuntu"*  || $osname == "debian"* || $osname == "alpine"* ]]; then 
+            if [[ $osname == "ubuntu"*  || $osname == "debian.9" ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu
 		apt-get install -y gosu
+            elif [[ $osname == "debian.8" || $osname == "alpine"* ]]; then
+                FILE_TEMP=/usr/local/bin/gosu
 		# check arch with uname
-		#arch=$(uname -i)
-		#if [[ $arch == x86_64 ]]; then arch=amd64; fi
+		arch=$(uname -i)
+		if [[ $arch == x86_64 ]]; then arch=amd64; fi
+		# install gosu depend on debian 8
+		if [[ $osname == "debian.8" ]]; then
+			apt-get install -y --no-install-recommends dirmngr
+		fi
 		# check arch by dpkg
 		#install_dpkg
-		#arch=$(dpkg --print-architecture | awk -F- '{ print $NF }') 
+		#arch=$(dpkg --print-architecture | awk -F- '{ print $NF }')
+		say "downloading gosu.."
+		machine_has "curl"          && curl -Ls $gosu_url -o gosu       || wget -O gosu $gosu_url
+		mv gosu ${FILE_TEMP}
+		say "checking gosu.."
+		[[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
+		chmod +x ${FILE_TEMP}
+		# Verify that the binary works
+		gosu nobody true
+		say "GOSU installed."
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
                 FILE_TEMP=/usr/bin/gosu
 		        arch=$(uname -i)
