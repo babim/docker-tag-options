@@ -2970,7 +2970,8 @@ function    install_gosu()
                 FILE_TEMP=/usr/local/bin/gosu
 		apt-get install -y gosu
             elif [[ $osname == "debian.8" || $osname == "alpine"* ]]; then
-                FILE_TEMP=/usr/local/bin/gosu
+                GOSU_VERSION=1.9
+		FILE_TEMP=/usr/local/bin/gosu
 		# check arch with uname
 		arch=$(uname -i)
 		if [[ $arch == x86_64 ]]; then arch=amd64; fi
@@ -2987,10 +2988,12 @@ function    install_gosu()
 		say "checking gosu.."
 		[[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
 		chmod +x ${FILE_TEMP}
-		# Verify that the binary works
+		# verify that the binary works
+		gosu --version; \
 		gosu nobody true
 		say "GOSU installed."
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
+                GOSU_VERSION=1.9
                 FILE_TEMP=/usr/bin/gosu
 		        arch=$(uname -i)
 		        if [[ $arch == x86_64 ]]; then arch=amd64; fi
@@ -3000,7 +3003,8 @@ function    install_gosu()
 		say "checking gosu.."
 		[[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
 		chmod +x ${FILE_TEMP}
-		# Verify that the binary works
+		# verify that the binary works
+		gosu --version; \
 		gosu nobody true
 		say "GOSU installed."
             else
