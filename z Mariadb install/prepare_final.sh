@@ -16,3 +16,6 @@
 # supervisor
     create_folder 	/etc-start/supervisor
     check_folder	/etc/supervisor	&& dircopy /etc/supervisor /etc-start/supervisor	|| say "no need copy supervisor config"
+
+# remove sock
+    remove_filefolder 	/var/lib/mysql/mysql.sock
