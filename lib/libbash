@@ -2966,7 +2966,7 @@ function    install_gosu()
         # osname=$(get_osname)
         get_osname
         say "Detect OS! Set path bin for gosu"
-            if [[ $osname == "ubuntu"*  || $osname == "debian.9" || $osname == "debian.10" || $osname == "debian.1"*]]; then 
+            if [[ $osname == "ubuntu"*  || $osname == "debian.9" || $osname == "debian.10" || $osname == "debian.1"* ]]; then 
                 FILE_TEMP=/usr/local/bin/gosu
 		        apt-get install -y gosu
             elif [[ $osname == "debian.8" || $osname == "alpine"* ]]; then
@@ -2989,7 +2989,7 @@ function    install_gosu()
                 [[ -f ${FILE_TEMP} ]]       && say "download success"       || return $FALSE
                 chmod +x ${FILE_TEMP}
                 # verify that the binary works
-                gosu --version; \
+                gosu --version
                 gosu nobody true
                 say "GOSU installed."
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
