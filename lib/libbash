@@ -2958,7 +2958,6 @@ alias setup_java_jre=install_java_jre
 function    install_gosu()
     {
     GOSU_VERSION=1.12
-    gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$arch
     # install gosu on your OS linux
     if machine_has gosu; then
         say_warning "GOSU installed."
@@ -2970,19 +2969,16 @@ function    install_gosu()
                 FILE_TEMP=/usr/local/bin/gosu
 		        apt-get install -y gosu
             elif [[ $osname == "debian.8" || $osname == "alpine"* ]]; then
-                GOSU_VERSION=1.9
                 FILE_TEMP=/usr/local/bin/gosu
-                # check arch with uname
-                arch=$(uname -i)
-                if [[ $arch == x86_64 ]]; then arch=amd64; fi
                 # install gosu depend on debian 8
                 if [[ $osname == "debian.8" ]]; then
                     apt-get install -y --no-install-recommends dirmngr
                 fi
                 # check arch by dpkg
-                #install_dpkg
-                #arch=$(dpkg --print-architecture | awk -F- '{ print $NF }')
+                install_dpkg
+                arch=$(dpkg --print-architecture | awk -F- '{ print $NF }')
                 say "downloading gosu.."
+                gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$arch
                 machine_has "curl"          && curl -Ls $gosu_url -o gosu       || wget -O gosu $gosu_url
                 mv gosu ${FILE_TEMP}
                 say "checking gosu.."
@@ -2993,11 +2989,11 @@ function    install_gosu()
                 gosu nobody true
                 say "GOSU installed."
             elif [[ $osname == "rhel"*  || $osname == "opensuse"* ]]; then
-                GOSU_VERSION=1.9
                 FILE_TEMP=/usr/bin/gosu
 		        arch=$(uname -i)
 		        if [[ $arch == x86_64 ]]; then arch=amd64; fi
                 say "downloading gosu.."
+                gosu_url=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$arch
                 machine_has "curl"          && curl -Ls $gosu_url -o gosu       || wget -O gosu $gosu_url
                 mv gosu ${FILE_TEMP}
                 say "checking gosu.."
