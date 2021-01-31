@@ -165,7 +165,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package wget curl ttf-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2
+		install_package wget curl ttf-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2 unzip
 	# install google chrome for easybi
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
