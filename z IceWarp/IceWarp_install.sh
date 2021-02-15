@@ -61,7 +61,7 @@ if [[ -f /etc/redhat-release ]]; then
 	FILETEMP="/icewarp-64bit.tar.gz"
 	INSTALLTEMP="/install"
 	INSTALLPATH="/opt/icewarp"
-	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "https://file.matmagoc.com/${FILETEMP}") || say "Error! Without version from officical host"
+	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "https://file.matmagoc.com${FILETEMP}") || say "Error! Without version from officical host"
 	# Install IceWarp
     		mkdir ${INSTALLTEMP} && \
 		tar xzf ${FILETEMP} --strip-components=1 -C ${INSTALLTEMP} ;\
