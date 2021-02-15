@@ -58,23 +58,24 @@ if [[ -f /etc/redhat-release ]]; then
 		install_package wget cryptsetup dnsutils sysstat lsof
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-kdc krb5-admin-server) || say "no install kerberos"
 	# Download IceWarp
-	FILETEMP=icewarp-64bit.tar.gz
-	INSTALLTEMP=/install
-	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http:/file.matmagoc.com/${FILETEMP}") || say "Error! Without version from officical host"
+	FILETEMP="/icewarp-64bit.tar.gz"
+	INSTALLTEMP="/install"
+	INSTALLPATH="/opt/icewarp"
+	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "https:/file.matmagoc.com/${FILETEMP}") || say "Error! Without version from officical host"
 	# Install IceWarp
     		mkdir ${INSTALLTEMP} && \
-		tar xzf ${FILETEMP} --strip-components=1 -C /install ;\
+		tar xzf ${FILETEMP} --strip-components=1 -C ${INSTALLTEMP} ;\
 		sed -i 's?>/dev/tty??' ${INSTALLTEMP}/platform ;\
-		${INSTALLTEMP}/install.sh --auto --install-dir /opt/icewarp && \
-		/opt/icewarp/icewarpd.sh --stop ;\
+		${INSTALLTEMP}/install.sh --auto --install-dir ${INSTALLPATH} && \
+		${INSTALLPATH}/icewarpd.sh --stop ;\
 		remove_folder ${INSTALLTEMP}
 	# Set kerberos
-	test $KERBEROS=yes	&& (say "set kerberos"; mv /etc/krb5.conf /opt/icewarp/krb5.conf && ln -sf /opt/icewarp/krb5.conf /etc/krb5.conf)
+	test $KERBEROS=yes	&& (say "set kerberos"; mv /etc/krb5.conf ${INSTALLPATH}/krb5.conf && ln -sf ${INSTALLPATH}/krb5.conf /etc/krb5.conf)
 	## Prepare start ##
 	## mkdir -p /opt-start/icewarp && rsync -arvpz --numeric-ids /opt/icewarp/ /opt-start/icewarp && rm -rf /opt/icewarp/*
-		create_folder /opt-start && mv /opt/icewarp /opt-start
+		create_folder /opt-start && mv ${INSTALLPATH} /opt-start
 	# Download Kerio Connect
-	FILETEMP=start.sh
+	FILETEMP=/start.sh
 		say "Download start script..."
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/${SOFT}_${FILETEMP}"
 		say "Set start script permission..."
