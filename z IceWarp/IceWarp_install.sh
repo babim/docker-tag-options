@@ -76,9 +76,9 @@ if [[ -f /etc/redhat-release ]]; then
 	# Download IceWarp start entry
 	FILETEMP=start.sh
 		say "Download start script..."
-		#check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "${DOWN_URL}/${SOFT}_${FILETEMP}"
+		$download_save /"${FILETEMP}" "${DOWN_URL}/${SOFT}_${FILETEMP}"
 		#say "Set start script permission..."
-		#set_filefolder_mod 755 "${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 755 "${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
 	# clean
 		clean_os
 else
