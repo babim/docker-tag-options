@@ -55,13 +55,13 @@ if [[ -f /etc/redhat-release ]]; then
 	# install depend
 		say "Install depend packages..."
 		update_os
-		install_package wget cryptsetup dnsutils sysstat lsof
+		install_package cryptsetup dnsutils sysstat lsof
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-kdc krb5-admin-server) || say "no install kerberos"
 	# Download IceWarp
 	FILETEMP="/icewarp-64bit.tar.gz"
 	INSTALLTEMP="/install"
 	INSTALLPATH="/opt/icewarp"
-	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "https:/file.matmagoc.com/${FILETEMP}") || say "Error! Without version from officical host"
+	test $FIXED=yes		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "https://file.matmagoc.com/${FILETEMP}") || say "Error! Without version from officical host"
 	# Install IceWarp
     		mkdir ${INSTALLTEMP} && \
 		tar xzf ${FILETEMP} --strip-components=1 -C ${INSTALLTEMP} ;\
