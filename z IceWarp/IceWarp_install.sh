@@ -39,7 +39,7 @@ download_option
 
 # set environment
 setenvironment() {
-	export SOFT=${SOFT:-KerioConnect}
+	export SOFT=${SOFT:-IceWarp}
 	#export SOFTSUB=${SOFTSUB:-core}
 	export KERIO_CONNECT_NOT_RUN=yes
 # set host download
@@ -48,31 +48,29 @@ setenvironment() {
 
 # install by OS
 echo 'Check OS'
-# OS - Debian linux
-if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+# OS - Centos linux
+if [[ -f /etc/redhat-release ]]; then
 	# set environment
-		setenvironment
 		installfonts
-	# Set frontend debian
-		debian_cmd_interface
 	# install depend
 		say "Install depend packages..."
 		update_os
 		install_package wget cryptsetup dnsutils sysstat lsof
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-kdc krb5-admin-server) || say "no install kerberos"
-	# Download Kerio Connect
-	FILETEMP=kerio-connect-linux-64bit.deb
-	test $FIXED=no		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http://download.kerio.com/dwn/${FILETEMP}") || (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http://file.matmagoc.com/${FILETEMP}")
-	# Install Kerio Connect
-    		dpkg -i ${FILETEMP} || true && apt-get install -f
+	# Download IceWarp
+	FILETEMP=icewarp-64bit.tar.gz
+	test $FIXED=no		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http:/file.matmagoc.com/${FILETEMP}") || (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http://file.matmagoc.com/${FILETEMP}")
+	# Install IceWarp
+    		mkdir /install && \
+		tar xzf ${FILETEMP} --strip-components=1 -C /install ${FILETEMP} ;\
+		sed -i 's?>/dev/tty??' /tmp/install/platform ;\
+		/install/install.sh --auto --install-dir /opt/icewarp && \
+		/opt/icewarp/icewarpd.sh --stop
 	# Set kerberos
-	test $KERBEROS=yes	&& (say "set kerberos"; mv /etc/krb5.conf /opt/kerio/krb5.conf && ln -sf /opt/kerio/krb5.conf /etc/krb5.conf)
-	## Set service ##
-		dpkg --fsys-tarfile ${FILETEMP} | tar xOf - ./etc/init.d/kerio-connect > /etc/init.d/kerio-connect
-		chmod +x /etc/init.d/kerio-connect && rm -f ${FILETEMP}
+	test $KERBEROS=yes	&& (say "set kerberos"; mv /etc/krb5.conf /opt/icewarp/krb5.conf && ln -sf /opt/icewarp/krb5.conf /etc/krb5.conf)
 	## Prepare start ##
-	## mkdir -p /opt-start/kerio && rsync -arvpz --numeric-ids /opt/kerio/ /opt-start/kerio && rm -rf /opt/kerio/*
-		create_folder /opt-start && mv /opt/kerio /opt-start
+	## mkdir -p /opt-start/icewarp && rsync -arvpz --numeric-ids /opt/icewarp/ /opt-start/icewarp && rm -rf /opt/icewarp/*
+		create_folder /opt-start && mv /opt/icewarp /opt-start
 	# Download Kerio Connect
 	FILETEMP=start.sh
 		say "Download start script..."
@@ -82,11 +80,6 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# clean
 		remove_download_tool
 		clean_os
-# OS - redhat
-elif [[ -f /etc/redhat-release ]]; then
-    say_err "Not support your OS"
-    exit 1
-# OS - other
 else
     say_err "Not support your OS"
     exit 1
