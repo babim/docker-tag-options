@@ -75,9 +75,9 @@ if [[ -f /etc/redhat-release ]]; then
 	## mkdir -p /opt-start/icewarp && rsync -arvpz --numeric-ids /opt/icewarp/ /opt-start/icewarp && rm -rf /opt/icewarp/*
 		create_folder /opt-start && mv ${INSTALLPATH} /opt-start
 	# Download Kerio Connect
-	FILETEMP=/start.sh
+	FILETEMP=start.sh
 		say "Download start script..."
-		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}${SOFT}_${FILETEMP}"
+		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "${DOWN_URL}/${SOFT}_${FILETEMP}"
 		say "Set start script permission..."
 		set_filefolder_mod 755 "${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
 	# clean
