@@ -41,9 +41,8 @@ download_option
 setenvironment() {
 	export SOFT=${SOFT:-IceWarp}
 	#export SOFTSUB=${SOFTSUB:-core}
-	export KERIO_CONNECT_NOT_RUN=yes
 # set host download
-	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20${SOFT}"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp"
 }
 
 # install by OS
@@ -74,7 +73,7 @@ if [[ -f /etc/redhat-release ]]; then
 	## Prepare start ##
 	## mkdir -p /opt-start/icewarp && rsync -arvpz --numeric-ids /opt/icewarp/ /opt-start/icewarp && rm -rf /opt/icewarp/*
 		create_folder /opt-start && mv ${INSTALLPATH} /opt-start
-	# Download Kerio Connect
+	# Download IceWarp start entry
 	FILETEMP=start.sh
 		say "Download start script..."
 		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "${DOWN_URL}/${SOFT}_${FILETEMP}"
