@@ -43,7 +43,7 @@ setenvironment() {
 	#export SOFTSUB=${SOFTSUB:-core}
 	export KERIO_CONNECT_NOT_RUN=yes
 # set host download
-	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20KerioConnect"
+	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20${SOFT}"
 }
 
 # install by OS
