@@ -79,8 +79,8 @@ if [[ -f /etc/redhat-release ]]; then
 	# Download IceWarp start entry
 	FILETEMP=start.sh
 		say "Download start script..."
-		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp_${FILETEMP}"
-		#say "Set start script permission..."
+		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp/IceWarp_${FILETEMP}"
+		#say "Set start script permission...
 		set_filefolder_mod 755 /"${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
 	# clean
 		#remove_download_tool
