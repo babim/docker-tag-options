@@ -81,9 +81,9 @@ if [[ -f /etc/redhat-release ]]; then
 		say "Download start script..."
 		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp_${FILETEMP}"
 		#say "Set start script permission..."
-		set_filefolder_mod 755 "${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
+		set_filefolder_mod 755 /"${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
 	# clean
-		remove_download_tool
+		#remove_download_tool
 		clean_os
 else
     say_err "Not support your OS"

@@ -24,6 +24,7 @@ export DNSSERVER=${DNSSERVER:-8.8.8.8}
 # Set DNS Server to localhost
 echo "nameserver $DNSSERVER" > /etc/resolv.conf
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
 
 # Start
 function terminate {
@@ -31,7 +32,7 @@ function terminate {
 	exit 0
 }
 trap terminate TERM INT
-/opt/icewarp/icewarpd.sh --stop
+/opt/icewarp/icewarpd.sh --start
 while :; do
 	sleep 1;
 done

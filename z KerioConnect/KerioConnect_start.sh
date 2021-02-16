@@ -24,6 +24,7 @@ export DNSSERVER=${DNSSERVER:-8.8.8.8}
 # Set DNS Server to localhost
 echo "nameserver $DNSSERVER" > /etc/resolv.conf
 echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
 
 # Start
 function terminate {
