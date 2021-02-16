@@ -53,7 +53,7 @@ if [[ -f /etc/redhat-release ]]; then
 		installfonts
 	# install depend
 		say "Install depend packages..."
-		update_os
+		install_epel && update_os
 		install_package cryptsetup dnsutils sysstat lsof
 	# install kerberos
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-server krb5-libs krb5-workstation) || say "no install kerberos"
