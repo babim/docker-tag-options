@@ -59,7 +59,10 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		say "Install depend packages..."
 		update_os
 		install_package wget cryptsetup dnsutils sysstat lsof
+	# install kerberos
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-kdc krb5-admin-server) || say "no install kerberos"
+	# install tools
+		install_package htop nload
 	# Download Kerio Connect
 	FILETEMP=kerio-connect-linux-64bit.deb
 	test $FIXED=no		&& (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http://download.kerio.com/dwn/${FILETEMP}") || (check_file "${FILETEMP}" && say_warning "${FILETEMP} exist" || $download_save "${FILETEMP}" "http://file.matmagoc.com/${FILETEMP}")

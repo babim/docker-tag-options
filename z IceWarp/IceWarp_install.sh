@@ -53,9 +53,12 @@ if [[ -f /etc/redhat-release ]]; then
 		installfonts
 	# install depend
 		say "Install depend packages..."
-		#update_os
+		update_os
 		install_package cryptsetup dnsutils sysstat lsof
+	# install kerberos
 	test $KERBEROS=yes	&& (say "install kerberos"; install_package krb5-server krb5-libs krb5-workstation) || say "no install kerberos"
+	# install tools
+		install_package htop nload
 	# Download IceWarp
 	FILETEMP="/icewarp-64bit.tar.gz"
 	INSTALLTEMP="/install"
@@ -76,10 +79,11 @@ if [[ -f /etc/redhat-release ]]; then
 	# Download IceWarp start entry
 	FILETEMP=start.sh
 		say "Download start script..."
-		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "$https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp_${FILETEMP}"
+		check_file /"${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save /"${FILETEMP}" "https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20IceWarp_${FILETEMP}"
 		#say "Set start script permission..."
 		set_filefolder_mod 755 "${FILETEMP}"				&& say "set done" || say_warning "file/folder not exist"
 	# clean
+		remove_download_tool
 		clean_os
 else
     say_err "Not support your OS"
