@@ -134,7 +134,7 @@ if [[ -f /etc/debian_version ]]; then
 		# comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
 			say "sed beginning.."
 			test -f /etc/mysql/my.cnf	&& sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf
-			test -z "`ls /etc/mysql/conf.d --hide='lost+found'`"	&& sed -ri 's/^user\s/#&/' /etc/mysql/conf.d/*
+			#test -z "`ls /etc/mysql/conf.d --hide='lost+found'`"	&& sed -ri 's/^user\s/#&/' /etc/mysql/conf.d/*
 		# purge and re-create /var/lib/mysql with appropriate ownership
 			recreate_mysql
 		# finish
