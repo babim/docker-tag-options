@@ -44,9 +44,9 @@ setenvironment() {
 	export auser=${auser:-daemon}
 	export aguser=${aguser:-daemon}	
 	export OPENJDKV=${OPENJDKV:-8}
-	export POSTGRESQLV=42.2.10
-	export MYSQLV=5.1.48
-	export MSSQLV=8.2.0.jre8
+	export POSTGRESQLV=42.2.19
+	export MYSQLV=8.0.24
+	export MSSQLV=9.2.1.jre8
 	export ORACLEV=8
 	export VISIBLECODE=${VISIBLECODE:-false}
 	env_openjdk_jre
