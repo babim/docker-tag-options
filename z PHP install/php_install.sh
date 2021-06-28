@@ -13,13 +13,6 @@ setenvironment() {
 	export DOWN_URL="https://raw.githubusercontent.com/babim/docker-tag-options/master/z%20PHP%20install"
 }
 
-# install by OS
-echo 'Check OS'
-if [[ -f /etc/lsb-release ]]; then
-	# set environment
-		setenvironment
-		debian_cmd_interface
-		
 	# fix value version
 		has_equal "$PHP_VERSION" "56" 		&& export PHP_VERSION=5.6;
 		has_equal "$PHP_VERSION" "70" 		&& export PHP_VERSION=7.0;
@@ -28,19 +21,6 @@ if [[ -f /etc/lsb-release ]]; then
 		has_equal "$PHP_VERSION" "73"		&& export PHP_VERSION=7.3;
 		has_equal "$PHP_VERSION" "74"		&& export PHP_VERSION=7.4;
 		has_equal "$PHP_VERSION" "80"		&& export PHP_VERSION=8.0;
-
-	# add repo php ubuntu
-		debian_add_repo ondrej/php
-	# install PHP
-		check_folder 	/etc/apache2 		&& install_package php$PHP_VERSION libapache2-mod-php$PHP_VERSION
-		check_folder	/etc/nginx 		&& install_package php$PHP_VERSION-fpm
-		check_file 	/PHPFPM 		&& install_package php$PHP_VERSION-fpm
-
-	# Fix run suck
-		create_folder 	/run/php/
-
-	# Supervisor
-		run_url $DOWN_URL/supervisor.sh
 
 	# set loop
 	phpfinal() {	
@@ -172,6 +152,26 @@ if [[ -f /etc/lsb-release ]]; then
 			preparefinal
 		}
 
+# install by OS
+echo 'Check OS'
+if [[ -f /etc/lsb-release ]]; then
+	# set environment
+		setenvironment
+		debian_cmd_interface
+		
+	# add repo php ubuntu
+		debian_add_repo ondrej/php
+	# install PHP
+		check_folder 	/etc/apache2 		&& install_package php$PHP_VERSION libapache2-mod-php$PHP_VERSION
+		check_folder	/etc/nginx 		&& install_package php$PHP_VERSION-fpm
+		check_file 	/PHPFPM 		&& install_package php$PHP_VERSION-fpm
+
+	# Fix run suck
+		create_folder 	/run/php/
+
+	# Supervisor
+		run_url $DOWN_URL/supervisor.sh
+
 	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
@@ -264,6 +264,123 @@ if [[ -f /etc/lsb-release ]]; then
 			php$PHP_VERSION-sqlite3 php$PHP_VERSION-mysqli php$PHP_VERSION-opcache php$PHP_VERSION-bz2 php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-apcu php-imagick \
 			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
 			php$PHP_VERSION-gmp php-xml php$PHP_VERSION-xml php$PHP_VERSION-bcmath php$PHP_VERSION-enchant php$PHP_VERSION-soap php$PHP_VERSION-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+	fi
+
+elif [[ -f /etc/redhat-release ]]; then
+	# set environment
+		setenvironment
+		
+	# add repo apache
+		install_remi
+	# install PHP
+		check_folder 	/etc/httpd 		&& install_package php$PHP_VERSION
+		check_folder	/etc/nginx 		&& install_package php$PHP_VERSION-fpm
+		check_file 	/PHPFPM 		&& install_package php$PHP_VERSION-fpm
+
+	# Supervisor
+		run_url $DOWN_URL/supervisor.sh
+
+	if [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-json php-gd php-sqlite php-curl php-ldap php-mysqli php-pgsql \
+			php-imap php-tidy php-xmlrpc php-zip php-mcrypt php-memcache php-intl \
+			php-mbstring php-sqlite3 php-sybase php-bcmath php-soap php-xml \
+			php-phpdbg php-opcache php-bz2 php-odbc php-interbase php-gmp php-xsl \
+			php-memcached php-pear php-xml
+		# config
+			fullphpdo
+	if [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-mcrypt php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+
+	elif [[ "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-mcrypt php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+
+	elif [[ "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+
+	elif [[ "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+
+	elif [[ "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
+		# disable libsslcommon2-dev
+		# config
+			fullphpdo
+
+	elif [[ "$PHP_VERSION" == "8.0" || "$PHP_VERSION" == "80" ]];then
+		# install PHP
+		say "install PHP $PHP_VERSION"
+		yum --enablerepo=remi-php$PHP_VERSION install php -y
+		yum --enablerepo=remi-php$PHP_VERSION install -y \
+			php-cgi php-cli php-phpdbg libphp-embed php-dev php-xdebug sqlite3 \
+			php-curl php-gd php-imap php-interbase php-intl php-ldap php-readline php-odbc \
+			php-pgsql php-pspell php-recode php-tidy php-xmlrpc php php-json php-all-dev php-sybase \
+			php-sqlite3 php-mysqli php-opcache php-bz2 php-mbstring php-zip php-apcu php-imagick \
+			php-memcached php-pear libsasl2-dev libssl-dev libcurl4-openssl-dev \
+			php-gmp php-xml php-xml php-bcmath php-enchant php-soap php-xsl
 		# disable libsslcommon2-dev
 		# config
 			fullphpdo

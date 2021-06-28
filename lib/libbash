@@ -120,19 +120,19 @@ function export_all()
 		            \
                     scp_folder scp_to_ssh scp_from_ssh tar_copy_compress_ssh tar_copy_ssh
     # Function Install
-        export -f update_os core_command_install check_epel check_epel_say \
+        export -f update_os core_command_install check_epel check_epel_say check_remi check_remi_say \
                     install_package install_package_run install_packages install_packages_run \
 		            \
 		            core_command_debian_repo debian_add_repo debian_add_repos debian_add_repo_key debian_add_repo_keys \
 		            debian_list_repo_key debian_remove_repo_key debian_remove_repo_keys \
                     \
 		            install_tar install_rsync install_unzip install_js-yaml install_gosu install_sudo install_curl install_wget \
-                    install_epel install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
+                    install_epel install_remi install_desktop_minimal install_java_jre install_supervisor install_js-yaml install_dmidecode \
                     install_php_composer install_dpkg install_cpio installfonts
     # Function Remove
         export -f core_command_remove clean_os clean_package remove_package remove_packages remove_package_run remove_packages_run \
                     \
-	                remove_epel debian_remove_repo debian_remove_repos remove_desktop_minimal remove_java_jre remove_gosu remove_sudo \
+	                remove_epel remove_remi debian_remove_repo debian_remove_repos remove_desktop_minimal remove_java_jre remove_gosu remove_sudo \
                     remove_js-yaml remove_supervisor remove_tar remove_rsync remove_unzip remove_dmidecode remove_download_tool \
                     remove_php_composer remove_dpkg remove_cpio
     # Group: Network
@@ -2570,6 +2570,7 @@ function    check_epel_say()
     {
         [[ -f /etc/yum.repos.d/epel.repo ]]     && say "EREL REPO installed"    || say_warning "EREL REPO not found"
     }
+
 # install epel repo
 function    install_epel()
     {
@@ -2600,8 +2601,6 @@ function    install_epel()
     fi
     }
 
-alias setup_epel=install_epel
-
 # remove epel repo
 function    remove_epel()
     {
@@ -2621,6 +2620,68 @@ alias uninstall_epel=remove_epel
 alias del_epel=remove_epel
 alias delete_epel=remove_epel
 alias remove_epel=remove_epel
+
+# check remi
+function    check_remi()
+    {
+        [[ -f /etc/yum.repos.d/remi.repo ]]     && return $TRUE                 || return $FALSE
+    }
+function    check_remi_say()
+    {
+        [[ -f /etc/yum.repos.d/remi.repo ]]     && say "REMI REPO installed"    || say_warning "REMI REPO not found"
+    }
+
+# install remi repo
+function    install_remi()
+    {
+    if ! check_remi; then
+        say "REMI Repo not install, Begin installing.."
+        # osname=$(get_osname)
+        get_osname
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
+            if [[ $osname == "rhel.6" ]]; then 
+                ${sudo_command}yum install -y http://rpms.remirepo.net/enterprise/remi-release-6.rpm
+            elif [[ $osname == "rhel.7" ]]; then 
+                ${sudo_command}yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+            elif [[ $osname == "rhel.8" ]]; then 
+                ${sudo_command}yum install -y http://rpms.remirepo.net/enterprise/remi-release-8.rpm
+            elif [[ $osname == "rhel.5" ]]; then 
+                ${sudo_command}yum install -y http://rpms.remirepo.net/enterprise/remi-release-5.rpm
+            elif [[ $osname == "rhel" ]]; then 
+                ${sudo_command}yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+            else
+                say_err "Cannot install REMI. Your OS not support"
+                return $FALSE
+            fi
+            check_remi          && say "REMI REPO installed"        || say_err "REMI REPO not found"
+            check_remi          && return $TRUE                     || return $FALSE
+    else
+        say "REMI Repo installed"
+        return $TRUE
+    fi
+    }
+
+alias setup_remi=install_remi
+
+# remove remi repo
+function    remove_remi()
+    {
+        is_root && sudo_command="" || sudo_command=${sudo_command:-"sudo "}
+        if ! check_remi; then
+            say "REMI Repo not found"
+            return $TRUE
+        else
+            say "Removing EPEL Repo.."
+            ${sudo_command}yum remove epel* -y
+            check_remi          && say "REMI REPO removed"          || say_err "REMI REPO found and Cannot removed"
+            check_remi          && return $TRUE                     || return $FALSE
+        fi
+    }
+
+alias uninstall_remi=remove_remi
+alias del_remi=remove_remi
+alias delete_remi=remove_remi
+alias remove_remi=remove_remi
 
 # update_os
 function    update_os()

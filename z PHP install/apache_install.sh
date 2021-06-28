@@ -121,6 +121,54 @@ if [[ -f /etc/lsb-release ]]; then
 		remove_download_tool
 		clean_os
 
+elif [[ -f /etc/redhat-release ]]; then
+	# set environment
+		setenvironment
+		installfonts
+	# add repo apache
+		install_epel
+		install_remi
+	# install apache
+		install_package httpd
+	# default config with mod rewrite
+	CONFIGMODREWRITE=${CONFIGMODREWRITE:-true}
+	if check_value_true "$CONFIGMODREWRITE"; then
+		# config default site
+		FILETEMP=/etc/httpd/conf.d
+			create_folder $FILETEMP
+		FILETEMP=/etc/httpd/conf.d/000-default.conf
+			$download_save $FILETEMP $DOWN_URL/apache_config/000-default.conf
+		FILETEMP=/etc/httpd/conf.d/default-ssl.conf
+			$download_save $FILETEMP $DOWN_URL/apache_config/default-ssl.conf
+		# config ssl default
+		FILETEMP=/etc/httpd/certs
+			create_folder $FILETEMP
+		FILETEMP=/etc/httpd/certs/example-cert.pem
+			$download_save $FILETEMP $DOWN_URL/ssl/example-cert.pem
+		FILETEMP=/etc/httpd/certs/example-key.pem
+			$download_save $FILETEMP $DOWN_URL/ssl/example-key.pem
+		FILETEMP=/etc/httpd/certs/ca-cert.pem
+			$download_save $FILETEMP $DOWN_URL/ssl/ca-cert.pem
+	fi
+	# install php
+	if has_value "${PHP_VERSION}" && ! check_value_false "${PHP_VERSION}"; then
+		run_url $DOWN_URL/php_install.sh
+	fi
+
+	# Supervisor
+		run_url $DOWN_URL/supervisor.sh
+
+	# download entrypoint
+		FILETEMP=/start.sh
+			$download_save $FILETEMP $DOWN_URL/start.sh
+			set_filefolder_mod 755 $FILETEMP
+	# prepare etc start
+		run_url $DOWN_URL/prepare_final.sh
+
+	# clean
+		remove_download_tool
+		clean_os
+
 # OS - other
 else
     say_err "Not support your OS"

@@ -32,6 +32,8 @@ setapacheuser() {
 	#Set apache user
 	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_USER=$auser
 	[[ ! -d /etc/apache2 ]] || export APACHE_RUN_GROUP=$aguser
+	[[ ! -d /etc/httpd ]] || export APACHE_RUN_USER=$auser
+	[[ ! -d /etc/httpd ]] || export APACHE_RUN_GROUP=$aguser
 }
 setnginxuser() {
 #Set nginx user
@@ -114,6 +116,13 @@ if [ -d "/etc/apache2" ] && [ -d "/etc-start/apache2" ]; then
 	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
 	       echo "setup SYNOLOGY environment"
 	       chmod -R 777 /etc/apache2
+	    fi
+fi
+if [ -d "/etc/httpd" ] && [ -d "/etc-start/httpd" ]; then
+	if [ -z "`ls /etc/httpd`" ]; then cp -R /etc-start/httpd/* /etc/httpd; fi
+	    if [ "$SYNOLOGYOPTION" = "true" ] || [ "$SYNOLOGYOPTION" = "on" ] || [ "$SYNOLOGY" = "true" ] || [ "$SYNOLOGY" = "on" ]; then
+	       echo "setup SYNOLOGY environment"
+	       chmod -R 777 /etc/httpd
 	    fi
 fi
 

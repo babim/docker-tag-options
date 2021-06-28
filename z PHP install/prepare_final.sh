@@ -13,6 +13,7 @@
     check_folder	/etc/nginx		&& create_folders /etc-start/nginx 			|| say "no need create nginx setting folder"
     check_folder	/etc/php		&& create_folders /etc-start/php 			|| say "no need create php setting folder"
     check_folder	/etc/apache2		&& create_folders /etc-start/apache2 			|| say "no need create apache2 setting folder"
+    check_folder	/etc/httpd		&& create_folders /etc-start/httpd 			|| say "no need create apache2 setting folder"
     check_folder	/var/www		&& create_folders /etc-start/www 			|| say "no need create www folder"
     check_folder	/etc/supervisor		&& create_folders /etc-start/supervisor			|| say "no need create supervisor setting folder"
     check_folder	/etc/lsws		&& create_folders /etc-start/lsws			|| say "no need create litespeed setting folder"
@@ -23,6 +24,7 @@
     check_folder	/etc/php		&& dircopy /etc/php/ /etc-start/php			|| say "no need copy php setting files"
 # apache
     check_folder	/etc/apache2		&& dircopy /etc/apache2/ /etc-start/apache2		|| say "no need copy apache2 setting files"
+    check_folder	/etc/httpd		&& dircopy /etc/httpd/ /etc-start/httpd		|| say "no need copy apache2 setting files"
 # www data
     check_folder	/var/www		&& dircopy /var/www/ /etc-start/www			|| say "no need copy www files"
 # supervisor

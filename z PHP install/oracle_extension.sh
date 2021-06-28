@@ -10,8 +10,11 @@
 
 # set environment
 setenvironment() {
-	export ORACLE_VERSION=12.2.0.1.0
-	if [[ $ORACLE_VERSION == 12.2.0.1.0 ]]; then export ORCL_PATH=12_2; fi
+	export ORACLE_VERSION=21.1.0.0.0
+	if [[ $ORACLE_VERSION == 21.1.0.0.0 ]]; then 
+		export ORCL_PATH=21_1
+		export ORCL_VERSION=21.1
+	fi
 	PHP_VERSION=${PHP_VERSION:-false}
 	# set path
 		export ORACLE_HOME=/opt/oracle/instantclient
@@ -32,8 +35,8 @@ installoci8() {
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
 			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
 		mv /opt/oracle/instantclient_$ORCL_PATH $ORACLE_HOME
-		create_symlink 		$ORACLE_HOME/libclntsh.so.$ORCL_PATH $ORACLE_HOME/libclntsh.so
-		create_symlink 		$ORACLE_HOME/libocci.so.$ORCL_PATH $ORACLE_HOME/libocci.so
+		create_symlink 		$ORACLE_HOME/libclntsh.so.$ORCL_VERSION $ORACLE_HOME/libclntsh.so
+		create_symlink 		$ORACLE_HOME/libocci.so.$ORCL_VERSION $ORACLE_HOME/libocci.so
 		create_symlink 		$ORACLE_HOME/sqlplus /usr/bin/sqlplnus
 		echo $ORACLE_HOME > /etc/ld.so.conf.d/oracle-instantclient.conf
 		ldconfig
@@ -96,6 +99,35 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		has_value ${PHP_VERSION} && install_package php$PHP_VERSION-dev php-pear php-dev || say "not have php"
 	# install oracle client
 		installoci8	
+
+elif [[ -f /etc/redhat-release ]]; then
+	# set environment
+		setenvironment
+	# install package depend
+		install_package unzip php-oci8
+	# install oracle client
+		# install oracle client
+		create_folder /opt/oracle
+		FILETEMP=instantclient-basic-linux.x64-$ORACLE_VERSION.zip
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
+		FILETEMP=instantclient-sdk-linux.x64-$ORACLE_VERSION.zip
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
+		FILETEMP=instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
+			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
+		mv /opt/oracle/instantclient_$ORCL_PATH $ORACLE_HOME
+		create_symlink 		$ORACLE_HOME/libclntsh.so.$ORCL_VERSION $ORACLE_HOME/libclntsh.so
+		create_symlink 		$ORACLE_HOME/libocci.so.$ORCL_VERSION $ORACLE_HOME/libocci.so
+		create_symlink 		$ORACLE_HOME/sqlplus /usr/bin/sqlplnus
+		echo $ORACLE_HOME > /etc/ld.so.conf.d/oracle-instantclient.conf
+		ldconfig	
+	#Set environement variables for cli (The server must be restarted)
+		if check_file /etc/environment; then
+			echo "LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/environment
+			echo "ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/environment
+		fi
 
 # OS - other
 else
