@@ -38,14 +38,14 @@ installoci8() {
 		echo $ORACLE_HOME > /etc/ld.so.conf.d/oracle-instantclient.conf
 		ldconfig
 	# install php extension
-		if [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" || "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" || "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" || "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74" ]];then
-			echo 'instantclient,/usr/local/instantclient' 			| pecl install oci8-2.2.0
+		if [[ "$PHP_VERSION" == "7.*" || "$PHP_VERSION" == "7*" ]];then
+			echo "instantclient,$ORACLE_HOME" 			| pecl install oci8-2.2.0
 
 		elif [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
-			echo 'instantclient,/usr/local/instantclient' 			| pecl install oci8-2.0.12
+			echo "instantclient,$ORACLE_HOME"  			| pecl install oci8-2.0.12
 
 		elif [[ "$PHP_VERSION" == "8.0" || "$PHP_VERSION" == "80" ]]; then
-			echo 'instantclient,/usr/local/instantclient' 			| pecl install oci8
+			echo "instantclient,$ORACLE_HOME"			| pecl install oci8
 		fi
 
 		if check_folder /etc/php/; then
