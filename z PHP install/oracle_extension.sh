@@ -24,13 +24,14 @@ installoci8() {
 		create_folder /opt/oracle
 		FILETEMP=instantclient-basic-linux.x64-$ORACLE_VERSION.zip
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
-			unzip_extract $FILETEMP $ORACLE_HOME			&& remove_file $FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
 		FILETEMP=instantclient-sdk-linux.x64-$ORACLE_VERSION.zip
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
-			unzip_extract $FILETEMP $ORACLE_HOME			&& remove_file $FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
 		FILETEMP=instantclient-sqlplus-linux.x64-$ORACLE_VERSION.zip
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
-			unzip_extract $FILETEMP $ORACLE_HOME			&& remove_file $FILETEMP
+			unzip_extract $FILETEMP /opt/oracle			&& remove_file $FILETEMP
+		mv /opt/oracle/instantclient_$ORCL_PATH $ORACLE_HOME
 		create_symlink 		$ORACLE_HOME/libclntsh.so.$ORCL_PATH $ORACLE_HOME/libclntsh.so
 		create_symlink 		$ORACLE_HOME/libocci.so.$ORCL_PATH $ORACLE_HOME/libocci.so
 		create_symlink 		$ORACLE_HOME/sqlplus /usr/bin/sqlplnus
