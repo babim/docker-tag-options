@@ -10,8 +10,8 @@
 
 # set environment
 setenvironment() {
-	export ORACLE_VERSION=21.1.0.0.0dbru
-	if [[ $ORACLE_VERSION == 21.1.0.0.0dbru ]]; then export ORCL_PATH=21_1; fi
+	export ORACLE_VERSION=21.1.0.0.0
+	if [[ $ORACLE_VERSION == 21.1.0.0.0 ]]; then export ORCL_PATH=21_1; fi
 	PHP_VERSION=${PHP_VERSION:-false}
 	# set path
 		export ORACLE_HOME=/opt/oracle/instantclient
@@ -39,7 +39,8 @@ installoci8() {
 		ldconfig
 	# install php extension
 		pecl channel-update pecl.php.net
-		if [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" || "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" || "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" || "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74"]];then
+
+		if [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" || "$PHP_VERSION" == "7.1" || "$PHP_VERSION" == "71" || "$PHP_VERSION" == "7.2" || "$PHP_VERSION" == "72" || "$PHP_VERSION" == "7.3" || "$PHP_VERSION" == "73" || "$PHP_VERSION" == "7.4" || "$PHP_VERSION" == "74" ]];then
 			echo "instantclient,$ORACLE_HOME" 			| pecl install oci8-2.2.0
 
 		elif [[ "$PHP_VERSION" == "5.6" || "$PHP_VERSION" == "56" ]]; then
