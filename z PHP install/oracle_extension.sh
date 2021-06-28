@@ -10,8 +10,8 @@
 
 # set environment
 setenvironment() {
-	export ORACLE_VERSION=21.1.0.0.0
-	if [[ $ORACLE_VERSION == 21.1.0.0.0 ]]; then export ORCL_PATH=21_1; fi
+	export ORACLE_VERSION=19.11.0.0.0
+	if [[ $ORACLE_VERSION == 19.11.0.0.0 ]]; then export ORCL_PATH=19_11; fi
 	PHP_VERSION=${PHP_VERSION:-false}
 	# set path
 		export ORACLE_HOME=/opt/oracle/instantclient
@@ -38,6 +38,7 @@ installoci8() {
 		echo $ORACLE_HOME > /etc/ld.so.conf.d/oracle-instantclient.conf
 		ldconfig
 	# install php extension
+		pecl channel-update pecl.php.net
 		if [[ "$PHP_VERSION" == "7.*" || "$PHP_VERSION" == "7*" ]];then
 			echo "instantclient,$ORACLE_HOME" 			| pecl install oci8-2.2.0
 
@@ -49,9 +50,21 @@ installoci8() {
 		fi
 
 		if check_folder /etc/php/; then
-			FILETEMP=conf.d/30-oci8.ini
+			FILETEMP=/fpm/conf.d/30-oci8.ini
 			for VARIABLE in /etc/php/*; do
-				if [ -f "$VARIABLE/$FILETEMP" ]; then
+				if [ ! -f "$VARIABLE/$FILETEMP" ]; then
+					echo "extension = oci8.so" > $VARIABLE/$FILETEMP
+				fi
+			done
+			FILETEMP=/cli/conf.d/30-oci8.ini
+			for VARIABLE in /etc/php/*; do
+				if [ ! -f "$VARIABLE/$FILETEMP" ]; then
+					echo "extension = oci8.so" > $VARIABLE/$FILETEMP
+				fi
+			done
+			FILETEMP=/apache2/conf.d/30-oci8.ini
+			for VARIABLE in /etc/php/*; do
+				if [ ! -f "$VARIABLE/$FILETEMP" ]; then
 					echo "extension = oci8.so" > $VARIABLE/$FILETEMP
 				fi
 			done
@@ -73,7 +86,7 @@ if [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		setenvironment
 		debian_cmd_interface
 	# install package depend
-		install_package unzip libaio-dev pkg-config libbson-1.0 libmongoc-1.0-0 libaio1
+		install_package unzip libaio-dev pkg-config libmongoc-1.0-0 libaio1 build-essential
 	# install php depend
 		has_value ${PHP_VERSION} && install_package php$PHP_VERSION-dev php-pear php-dev || say "not have php"
 	# install oracle client
