@@ -10,8 +10,8 @@
 
 # set environment
 setenvironment() {
-	export ORACLE_VERSION=21.1.0.0.0
-	if [[ $ORACLE_VERSION == 21.1.0.0.0 ]]; then export ORCL_PATH=21_1; fi
+	export ORACLE_VERSION=12.2.0.1.0
+	if [[ $ORACLE_VERSION == 12.2.0.1.0 ]]; then export ORCL_PATH=12_2; fi
 	PHP_VERSION=${PHP_VERSION:-false}
 	# set path
 		export ORACLE_HOME=/opt/oracle/instantclient
