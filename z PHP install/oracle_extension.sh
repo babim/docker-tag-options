@@ -10,8 +10,8 @@
 
 # set environment
 setenvironment() {
-	export ORACLE_VERSION=19.11.0.0.0dbru
-	if [[ $ORACLE_VERSION == 19.11.0.0.0dbru ]]; then export ORCL_PATH=19_11; fi
+	export ORACLE_VERSION=21.1.0.0.0dbru
+	if [[ $ORACLE_VERSION == 21.1.0.0.0dbru ]]; then export ORCL_PATH=21_1; fi
 	PHP_VERSION=${PHP_VERSION:-false}
 	# set path
 		export ORACLE_HOME=/opt/oracle/instantclient
@@ -71,12 +71,16 @@ installoci8() {
 		fi
 
 	#Set environement variables for cli (The server must be restarted)
-		echo "LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/environment
-		echo "ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/environment
+		if check_file /etc/environment; then
+			echo "LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/environment
+			echo "ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/environment
+		fi
 
 	#Set environement variables for apache.
-		echo "export LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/apache2/envvars
-		echo "export ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/apache2/envvars	
+		if check_file /etc/apache2/envvars; then
+			echo "export LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/apache2/envvars
+			echo "export ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/apache2/envvars
+		fi	
 }
 
 # install by OS
