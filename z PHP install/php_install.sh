@@ -295,7 +295,8 @@ elif [[ -f /etc/redhat-release ]]; then
 			php-memcached php-pear php-xml
 		# config
 			fullphpdo
-	if [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]];then
+
+	elif [[ "$PHP_VERSION" == "7.0" || "$PHP_VERSION" == "70" ]];then
 		# install PHP
 		say "install PHP $PHP_VERSION"
 		yum --enablerepo=remi-php$PHP_VERSION install php -y
