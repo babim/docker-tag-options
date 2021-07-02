@@ -37,9 +37,10 @@ installoci8() {
 		mv /opt/oracle/instantclient_$ORCL_PATH $ORACLE_HOME
 		create_symlink 		$ORACLE_HOME/libclntsh.so.$ORCL_VERSION $ORACLE_HOME/libclntsh.so
 		create_symlink 		$ORACLE_HOME/libocci.so.$ORCL_VERSION $ORACLE_HOME/libocci.so
-		create_symlink 		$ORACLE_HOME/sqlplus /usr/bin/sqlplnus
+		create_symlink 		$ORACLE_HOME/sqlplus /usr/bin/sqlplus
 		echo $ORACLE_HOME > /etc/ld.so.conf.d/oracle-instantclient.conf
 		ldconfig
+
 	# install php extension
 		pecl channel-update pecl.php.net
 
@@ -104,9 +105,8 @@ elif [[ -f /etc/redhat-release ]]; then
 	# set environment
 		setenvironment
 	# install package depend
-		install_package unzip php-oci8
+		install_package unzip
 	# install oracle client
-		# install oracle client
 		create_folder /opt/oracle
 		FILETEMP=instantclient-basic-linux.x64-$ORACLE_VERSION.zip
 			check_file $FILETEMP && say "file $FILETEMP exist" 	|| $download_save $FILETEMP http://file.matmagoc.com/oracle/$FILETEMP
@@ -128,6 +128,8 @@ elif [[ -f /etc/redhat-release ]]; then
 			echo "LD_LIBRARY_PATH=\"${ORACLE_HOME}\"" >> /etc/environment
 			echo "ORACLE_HOME=\"${ORACLE_HOME}\"" >> /etc/environment
 		fi
+	#install OCI8
+		install_package unzip php-oci8
 
 # OS - other
 else
