@@ -44,7 +44,7 @@ setenvironment() {
 	export auser=${auser:-daemon}
 	export aguser=${aguser:-daemon}
 	export OPENJDKV=${OPENJDKV:-8}
-	export POSTGRESQLV=42.2.19
+	export POSTGRESQLV=42.2.23
 	export MYSQLV=8.0.24
 	export MSSQLV=9.2.1.jre8
 	export ORACLEV=8
