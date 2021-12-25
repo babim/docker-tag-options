@@ -152,7 +152,7 @@ if [[ -f /etc/alpine-release ]]; then
 		install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu tzdata \
-			tomcat-native graphviz fontconfig ttf-ubuntu-font-family msttcorefonts-installer \
+			tomcat-native graphviz fontconfig msttcorefonts-installer \
 			apr apr-util apr-dev
 		update-ms-fonts
 	# disable because use adoptopenjdk: libc6-compat
@@ -174,7 +174,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package wget curl ttf-dejavu libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip
+		install_package wget curl ttf-dejavu ttf-ubuntu-font-family libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip
 	# install google chrome for easybi
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list

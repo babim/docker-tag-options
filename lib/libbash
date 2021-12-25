@@ -3183,7 +3183,7 @@ function    installfonts() {
 		unzip_extract $FILETEMP /usr/share/fonts/truetype
         rm -f $FILETEMP
     if [[ -f /etc/lsb-release || $osname == "ubuntu"* ]]; then
-        install_package ttf-mscorefonts-installer
+        install_package ttf-mscorefonts-installer ttf-ubuntu-font-family
     fi
 }
 
