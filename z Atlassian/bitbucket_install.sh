@@ -147,11 +147,12 @@ echo 'Check OS'
 if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
-		installfonts
 	# install depend
 		install_java_jre
 			echo "Install depend packages..."
-		install_package curl xmlstarlet ttf-dejavu git tomcat-native tzdata unzip
+		install_package curl xmlstarlet ttf-dejavu git tomcat-native tzdata \
+			fontconfig msttcorefonts-installer
+		update-ms-fonts
 	# disable because use adoptopenjdk: libc6-compat
 	# Install Atlassian
 		installatlassian
