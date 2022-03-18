@@ -62,7 +62,7 @@ if [[ -f /etc/lsb-release ]]; then
 		debian_add_repo_key http://deb.opera.com/archive.key && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
 		debian_add_repo_key https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 		debian_add_repo teejee2008/ppa
-		debian_add_repo webupd8team/java
+		#debian_add_repo webupd8team/java
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
