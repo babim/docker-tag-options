@@ -74,8 +74,8 @@ if [[ -f /etc/lsb-release ]]; then
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
 		regexxer fwbuilder font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
 		gtkorphan screenruler rsync mysql-client thunar-archive-plugin \
-		tomboy p7zip-full mc telnet fdupes duperemove
-		# zenmap nmap
+		p7zip-full mc telnet fdupes duperemove
+		# zenmap nmap tomboy
 		
 		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
 		# opera-stable google-chrome-stable
