@@ -72,9 +72,9 @@ if [[ -f /etc/lsb-release ]]; then
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
 		install_package \
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
-		regexxer fwbuilder font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
-		gtkorphan screenruler rsync mysql-client thunar-archive-plugin \
-		p7zip-full mc telnet fdupes duperemove
+		regexxer font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
+		screenruler rsync mysql-client thunar-archive-plugin \
+		p7zip-full mc telnet
 		# zenmap nmap tomboy
 		
 		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
