@@ -78,7 +78,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-	install_package alpine-sdk bash curl libuv-dev zlib-dev util-linux-dev libmnl-dev gcc make git autoconf automake pkgconfig python logrotate
+	install_package alpine-sdk bash curl libuv-dev zlib-dev util-linux-dev libmnl-dev libyaml-dev gcc make git autoconf automake pkgconfig python logrotate
 	install_package nodejs ssmtp
 	# install netdata
 		installnetdata

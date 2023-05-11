@@ -67,7 +67,7 @@ if [[ -f /etc/lsb-release ]]; then
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
-		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox microsoft-edge-stable ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox ristretto catfish thunar
     
 	# install admin app
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
@@ -79,7 +79,7 @@ if [[ -f /etc/lsb-release ]]; then
 		# zenmap tomboy
 		
 		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
-		# opera-stable google-chrome-stable
+		# opera-stable google-chrome-stable microsoft-edge-stable
 	fi
 	# Wimlib
 		if check_value_true "$WIMLIB_OPTION" 		|| check_value_true "$ADMINAPPALL";then
