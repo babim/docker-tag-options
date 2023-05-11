@@ -63,10 +63,12 @@ if [[ -f /etc/lsb-release ]]; then
 		debian_add_repo_key https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 		debian_add_repo teejee2008/ppa
 		#debian_add_repo webupd8team/java
+		wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+		debian_add_repo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
-		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox flashplugin-installer ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox microsoft-edge-stable ristretto catfish thunar
     
 	# install admin app
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
@@ -74,8 +76,8 @@ if [[ -f /etc/lsb-release ]]; then
 		filezilla mtr-tiny nload bmon iotop htop putty baobab glogg synaptic \
 		regexxer font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
 		screenruler rsync mysql-client thunar-archive-plugin \
-		p7zip-full mc telnet
-		# zenmap nmap tomboy
+		p7zip-full mc telnet nmap
+		# zenmap tomboy
 		
 		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
 		# opera-stable google-chrome-stable
