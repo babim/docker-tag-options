@@ -59,15 +59,17 @@ if [[ -f /etc/lsb-release ]]; then
 		#debian_add_repo diesch/testing
 		#debian_add_repo libreoffice/ppa
 		#debian_add_repo nilarimogard/webupd8
-		debian_add_repo_key http://deb.opera.com/archive.key && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
-		debian_add_repo_key https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-		debian_add_repo_key https://packages.microsoft.com/keys/microsoft.asc && echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" >> /etc/apt/sources.list.d/edge.list
+		#debian_add_repo_key http://deb.opera.com/archive.key && echo "deb http://deb.opera.com/opera-stable/ stable non-free" >> /etc/apt/sources.list.d/opera.list
+		#debian_add_repo_key https://dl-ssl.google.com/linux/linux_signing_key.pub && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+		#debian_add_repo_key https://packages.microsoft.com/keys/microsoft.asc && echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" >> /etc/apt/sources.list.d/edge.list
 		#debian_add_repo teejee2008/ppa
 		#debian_add_repo webupd8team/java
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
-		install_package nano mousepad xfce4-taskmanager firefox microsoft-edge-stable google-chrome-stable xul-ext-ubufox ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox ristretto catfish thunar
+		wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+		install_package google-chrome-stable_current_amd64.deb && rm -f google-chrome-stable_current_amd64.deb
     
 	# install admin app
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
@@ -76,7 +78,7 @@ if [[ -f /etc/lsb-release ]]; then
 		regexxer font-manager mediainfo-gui gedit qbittorrent inetutils-ping \
 		screenruler rsync mysql-client thunar-archive-plugin \
 		p7zip-full mc telnet nmap
-		# zenmap tomboy
+		# zenmap tomboy microsoft-edge-stable google-chrome-stable
 		
 		remove_package sane* scan* transmission* abiword* gnumeric* parole* banshee* totem*
 		# opera-stable
