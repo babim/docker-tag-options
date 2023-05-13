@@ -7,7 +7,7 @@
 
 say " Install Wimlib"
 
-export WIMLIB=${WIMLIB:-1.13.0}
+export WIMLIB=${WIMLIB:-1.14.1}
 	install_package libxml2-dev ntfs-3g-dev ntfs-3g libfuse-dev libattr1-dev libssl-dev pkg-config build-essential automake
 	cd /tmp
 	FILETEMP=wimlib-${WIMLIB}
