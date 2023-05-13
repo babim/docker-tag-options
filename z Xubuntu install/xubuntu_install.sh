@@ -122,9 +122,9 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 			run_url $DOWN_URL/angryip_install.sh
 		fi
 	# REALVNC Server
-		if check_value_true "$REALVNC_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+		#if check_value_true "$REALVNC_OPTION" 		|| check_value_true "$ADMINAPPALL";then
 			run_url $DOWN_URL/realvnc_install.sh
-		fi
+		#fi
 
 	# google drive ocamfuse
 	#	if check_value_true "$GDRIVE_OPTION" 		|| check_value_true "$ADMINAPPALL";then

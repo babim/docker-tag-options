@@ -14,8 +14,8 @@ USER=root
 HOME=/root
 export USER HOME
     # set password root is root
-    SSHPASS=${SSHPASS:-root}
-    echo "root:$SSHPASS" | chpasswd
+    SSHPASS=${SSHPASS:-$USER}
+    echo "$USER:$SSHPASS" | chpasswd
 /vnckey.sh
 vncserver :1
 sleep infinity
