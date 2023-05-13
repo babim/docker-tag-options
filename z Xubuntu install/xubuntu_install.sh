@@ -67,10 +67,21 @@ if [[ -f /etc/lsb-release ]]; then
 	# install GUI
 		install_package xubuntu-desktop
 	# install app 
-		install_package nano mousepad xfce4-taskmanager firefox xul-ext-ubufox ristretto catfish thunar
+		install_package nano mousepad xfce4-taskmanager xfce4-terminal xul-ext-ubufox ristretto catfish thunar
 		wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+	# install chrome
 		install_package google-chrome-stable_current_amd64.deb && rm -f google-chrome-stable_current_amd64.deb
-    
+	# install firefox
+		debian_add_repo mozillateam/ppa
+		echo '
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+' | tee /etc/apt/preferences.d/mozilla-firefox
+echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+		install_package firefox
+
 	# install admin app
 	if check_value_true "$ADMINAPP" || check_value_true "$ADMINAPPALL";then
 		install_package \
@@ -97,14 +108,14 @@ if [[ -f /etc/lsb-release ]]; then
 		fi
 
 	# navicat_premium
-		if check_value_true "$NAVICAT_OPTION" 		|| check_value_true "$ADMINAPPALL";then
-			run_url $DOWN_URL/navicat_install.sh
-		fi
+	#	if check_value_true "$NAVICAT_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+	#		run_url $DOWN_URL/navicat_install.sh
+	#	fi
 
 	# razorsql
-		if check_value_true "$RAZORSQL_OPTION" 		|| check_value_true "$ADMINAPPALL";then
-			run_url $DOWN_URL/razorsql_install.sh
-		fi
+	#	if check_value_true "$RAZORSQL_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+	#		run_url $DOWN_URL/razorsql_install.sh
+	#	fi
 
 	# angry ip scanner
 		if check_value_true "$IPSCAN_OPTION" 		|| check_value_true "$ADMINAPPALL";then
@@ -116,9 +127,9 @@ if [[ -f /etc/lsb-release ]]; then
 		fi
 
 	# google drive ocamfuse
-		if check_value_true "$GDRIVE_OPTION" 		|| check_value_true "$ADMINAPPALL";then
-			run_url $DOWN_URL/crossover_install.sh
-		fi
+	#	if check_value_true "$GDRIVE_OPTION" 		|| check_value_true "$ADMINAPPALL";then
+	#		run_url $DOWN_URL/crossover_install.sh
+	#	fi
 
 # Web server
 	# APACHE
