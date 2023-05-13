@@ -53,7 +53,7 @@ if [[ -f /etc/lsb-release ]]; then
 		debian_cmd_interface	
 	# install depend
 		apt-get clean && dpkg --add-architecture i386 && \
-		install_package software-properties-common apt-transport-https gnupg
+		install_package software-properties-common apt-transport-https gnupg wget
 	# add repo
 		#debian_add_repo atareao/atareao
 		#debian_add_repo diesch/testing
