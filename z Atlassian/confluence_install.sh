@@ -65,8 +65,8 @@ installatlassian() {
 	say " - Begin install - "
 
 ## directory structure.
-	create_folders                			"${SOFT_HOME}" "${SOFT_INSTALL}"
-	set_filefolder_mod	700            		"${SOFT_HOME}"
+	create_folders			"${SOFT_HOME}" "${SOFT_INSTALL}"
+	set_filefolder_mod		700            		"${SOFT_HOME}"
 	set_filefolder_owner	${auser}:${aguser}	"${SOFT_HOME}"
 
 ## download and extract source software
@@ -101,10 +101,10 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 ## set permission path
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
@@ -149,7 +149,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu tzdata \
 			tomcat-native graphviz fontconfig msttcorefonts-installer \
