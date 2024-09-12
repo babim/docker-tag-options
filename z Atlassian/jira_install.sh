@@ -105,10 +105,10 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 ## set permission path
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
@@ -143,7 +143,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu tzdata
 	# disable because use adoptopenjdk: libc6-compat
@@ -165,7 +165,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package wget curl fonts-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2 unzip
+		install_package wget curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2 unzip
 	# install google chrome for easybi
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
