@@ -174,7 +174,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package wget curl fontconfig fonts-noto python3 python3-jinja2 tini fonts-dejavu libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip graphviz
+		install_package wget curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip graphviz
 	# install google chrome for easybi
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
