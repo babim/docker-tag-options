@@ -110,11 +110,11 @@ installatlassian() {
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 
-	if [[ -f /etc/alpine-release ]]; then
-		create_symlink "/usr/lib/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
-	elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
-		create_symlink "/usr/lib/x86_64-linux-gnu/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
-	fi
+	# if [[ -f /etc/alpine-release ]]; then
+	# 	create_symlink "/usr/lib/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+	# elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
+	# 	create_symlink "/usr/lib/x86_64-linux-gnu/libtcnative-1.so" "${SOFT_INSTALL}/lib/native/libtcnative-1.so"
+	# fi
 
 	FILETEMP="${SOFT_INSTALL}/bin/setenv.sh"
 		say "sed ${FILETEMP}..."	
