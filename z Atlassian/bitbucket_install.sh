@@ -101,10 +101,10 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 ## set permission path
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
@@ -148,7 +148,7 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu git tomcat-native tzdata \
 			fontconfig msttcorefonts-installer
@@ -172,7 +172,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package curl ttf-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2
+		install_package curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh

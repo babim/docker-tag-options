@@ -104,10 +104,10 @@ installatlassian() {
 		check_file "${FILETEMP}" && say_warning "${FILETEMP} exist"	|| $download_save "${FILETEMP}" "${DOWN_URL}/connector/ojdbc${ORACLEV}.jar"
 
 ## set permission path
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
-	set_filefolder_mod 	700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/conf"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/logs"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/temp"	&& say "set done" || say_warning "file/folder not exist"
+	set_filefolder_mod 		700            		"${SOFT_INSTALL}/work"	&& say "set done" || say_warning "file/folder not exist"
 	set_filefolder_owner 	${auser}:${aguser}	"${SOFT_INSTALL}"	&& say "set done" || say_warning "file/folder not exist"
 
 # fix path start file
@@ -130,10 +130,11 @@ if [[ -f /etc/alpine-release ]]; then
 	# set environment
 		setenvironment
 	# install depend
-		install_java_jre
+		#install_java_jre
 			echo "Install depend packages..."
-		install_package curl xmlstarlet ttf-dejavu unzip tzdata \
-			fontconfig msttcorefonts-installer
+		install_package curl xmlstarlet ttf-dejavu tzdata \
+			tomcat-native fontconfig msttcorefonts-installer \
+			apr apr-util apr-dev
 		update-ms-fonts
 	# disable because use adoptopenjdk: libc6-compat
 	# Install Atlassian
@@ -154,7 +155,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package curl ttf-dejavu libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip
+		install_package curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet gnupg gnupg1 gnupg2 unzip
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
