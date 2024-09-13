@@ -151,7 +151,7 @@ if [[ -f /etc/alpine-release ]]; then
 		#install_java_jre
 			echo "Install depend packages..."
 		install_package curl xmlstarlet ttf-dejavu git tomcat-native tzdata \
-			fontconfig msttcorefonts-installer openssh-client
+			fontconfig msttcorefonts-installer openssh-client perl
 		update-ms-fonts
 	# disable because use adoptopenjdk: libc6-compat
 	# Install Atlassian
@@ -172,7 +172,7 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 	# install depend
 		#install_java_jre
 			echo "Install depend packages..."
-		install_package curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2 openssh-client
+		install_package curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet git gnupg gnupg1 gnupg2 openssh-client perl
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
