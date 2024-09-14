@@ -48,8 +48,6 @@ setenvironment() {
 	export MYSQLV=8.0.28
 	export MSSQLV=10.2.0.jre${OPENJDKV}
 	export ORACLEV=8
-	export MAVEN_VERSION=3.6.3
-	export MAVEN_HOME=/opt/maven
 	export VISIBLECODE=${VISIBLECODE:-false}
 	env_openjdk_jre
 # set host download
@@ -136,14 +134,6 @@ installatlassian() {
 
 	e_success " - Install done - "
 }
-installmaven() {
-	echo "Setup Maven..."
-	mkdir -p ${MAVEN_HOME} \
-		&& curl -L --silent https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xz --strip-components=1 -C "${MAVEN_HOME}" \
-		&& ln -s ${MAVEN_HOME}/bin/mvn /usr/local/bin/mvn
-	echo "Download POM for Bamboo..."
-	curl -L --silent https://packages.atlassian.com/maven-external/com/atlassian/bamboo/atlassian-bamboo/${SOFT_VERSION}/atlassian-bamboo-${SOFT_VERSION}.pom > /tmp/pom.xml
-}
 
 # install by OS
 echo 'Check OS'
@@ -158,8 +148,6 @@ if [[ -f /etc/alpine-release ]]; then
 			fontconfig msttcorefonts-installer
 		update-ms-fonts
 	# disable because use adoptopenjdk: libc6-compat
-	# Install Maven
-		installmaven
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
@@ -177,10 +165,8 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/debian_version ]]; then
 		debian_cmd_interface
 	# install depend
 		#install_java_jre
-		echo "Install depend packages..."
+			echo "Install depend packages..."
 		install_package curl fontconfig fonts-noto tini fonts-dejavu libtcnative-1 xmlstarlet git openssh-client gnupg gnupg1 gnupg2
-	# Install Maven
-		installmaven
 	# Install Atlassian
 		installatlassian
 		run_url $DOWN_URL/prepare_final.sh
