@@ -62,6 +62,7 @@ fi
 	[[ ! -d "${SOFT_INSTALL}" ]]	&& 	mkdir -p ${SOFT_INSTALL}
 	[[ -z "`ls ${SOFT_INSTALL}`" ]]	&& 	cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}/
 	[[ ! -d "${SOFT_HOME}" ]]	&& 	mkdir -p "${SOFT_HOME}"
+
 ## set permission path
 UPM_SUBDIR="${SOFT_HOME}/upmconfig"
 
