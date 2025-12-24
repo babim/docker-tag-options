@@ -63,8 +63,8 @@ fi
 	[[ -z "`ls ${SOFT_INSTALL}`" ]]	&& 	cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}/
 	[[ ! -d "${SOFT_HOME}" ]]	&& 	mkdir -p "${SOFT_HOME}"
 ## set permission path
-	[[ -d "${SOFT_HOME}" ]]		&&	chmod -R 700			"${SOFT_HOME}"
-	[[ -d "${SOFT_HOME}" ]] 	&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
+#	[[ -d "${SOFT_HOME}" ]]		&&	chmod -R 700			"${SOFT_HOME}"
+#	[[ -d "${SOFT_HOME}" ]] 	&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
 	[[ -d "${SOFT_INSTALL}" ]] 	&&	chmod -R 755			"${SOFT_INSTALL}"
 	[[ -d "${SOFT_INSTALL}/conf" ]] &&	chmod -R 700			"${SOFT_INSTALL}/conf"
 	[[ -d "${SOFT_INSTALL}/logs" ]] &&	chmod -R 700			"${SOFT_INSTALL}/logs"
