@@ -62,22 +62,9 @@ fi
 	[[ ! -d "${SOFT_INSTALL}" ]]	&& 	mkdir -p ${SOFT_INSTALL}
 	[[ -z "`ls ${SOFT_INSTALL}`" ]]	&& 	cp -R /etc-start/${SOFT}/* ${SOFT_INSTALL}/
 	[[ ! -d "${SOFT_HOME}" ]]	&& 	mkdir -p "${SOFT_HOME}"
-
 ## set permission path
-UPM_SUBDIR="${SOFT_HOME}/upmconfig"
-
-# đảm bảo SOFT_HOME 자체 writable cho Jira (không recursive)
-chmod 700 "${SOFT_HOME}"
-chown ${auser}:${aguser} "${SOFT_HOME}"
-
-if [[ -d "${UPM_SUBDIR}" ]]; then
-  # chmod/chown các thư mục con, nhưng bỏ qua upmconfig
-  find "${SOFT_HOME}" -mindepth 1 -maxdepth 1 ! -path "${UPM_SUBDIR}" -exec chmod -R 700 {} +
-  find "${SOFT_HOME}" -mindepth 1 -maxdepth 1 ! -path "${UPM_SUBDIR}" -exec chown -R ${auser}:${aguser} {} +
-else
-  chmod -R 700 "${SOFT_HOME}"
-  chown -R ${auser}:${aguser} "${SOFT_HOME}"
-fi
+#	[[ -d "${SOFT_HOME}" ]]		&&	chmod -R 700			"${SOFT_HOME}"
+#	[[ -d "${SOFT_HOME}" ]] 	&&	chown -R ${auser}:${aguser}	"${SOFT_HOME}"
 	[[ -d "${SOFT_INSTALL}/conf" ]] &&	chmod -R 700			"${SOFT_INSTALL}/conf"
 	[[ -d "${SOFT_INSTALL}/logs" ]] &&	chmod -R 700			"${SOFT_INSTALL}/logs"
 	[[ -d "${SOFT_INSTALL}/temp" ]] &&	chmod -R 700			"${SOFT_INSTALL}/temp"
